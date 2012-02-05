@@ -1,0 +1,5 @@
+## MaxExtract
+
+%BEGINXML%
+<maxextract property="gb.version" field="VERSION" srcfile="${basedir}/src/com/gitblit/Constants.java" />
+%ENDXML%

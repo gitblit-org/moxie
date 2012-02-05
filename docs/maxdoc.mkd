@@ -1,0 +1,39 @@
+## MaxDoc
+
+%BEGINJSON%
+	"docs" : {
+		"favicon" : "docs",
+		"analyticsId" : "UA-24377072-1",
+		"injectFancybox" : true,
+		"injectPrettify" : true,
+		"sourceFolder" : "docs",
+		"outputFolder" : "site",
+		"structure" : {
+			"overview" : "index.mkd",
+			"tasks" : {				
+				"MaxSetup" : "maxsetup.mkd",
+				"MaxExtract" : "maxextract.mkd",
+				"":"",
+				"MaxJar" : "maxjar.mkd",
+				"MaxDoc" : "maxdoc.mkd"
+			},
+			"design" : "design.mkd",
+			"releases" : "releases.mkd",
+			"download" : {
+				"maxilla-core" : "./maxilla-core.jar",
+				"maxilla-all" : "./maxilla-all.jar"
+			},
+			"GitHub" : "http://github.com"
+		}
+	}
+%ENDJSON%
+
+%BEGINXML%
+<maxdoc injectPrettify="true" injectFancybox="true">
+	<substitute token="%VERSION%" value="${max-version}" />
+	<nomarkdown startToken="%BEGINJSON%" endToken="%ENDJSON%" prettify="true" lang="lang-json" />
+	<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />			
+	<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" 
+		replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />
+</maxdoc>
+%ENDXML%

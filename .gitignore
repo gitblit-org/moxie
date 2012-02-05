@@ -1,0 +1,9 @@
+/ext
+/site
+/.settings
+/.project
+/.directory
+/.classpath
+/bin
+/maxilla-all.jar
+/maxilla-core.jar

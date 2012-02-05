@@ -1,0 +1,5 @@
+## MaxGhPages
+
+%BEGINXML%
+<maxghpages repositoryFolder="${basedir}" sourceFolder="${basedir}/site" obliterate="true"/>
+%ENDXML%

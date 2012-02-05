@@ -1,0 +1,19 @@
+## MaxSetup
+
+%BEGINXML%
+<maxjar destfile="maxilla-all.jar">
+	<classfilter>
+		<exclude name="org.apache." />
+	</classfilter>
+	<class name="com.maxilla.ant.MaxSetup" />
+	<class name="com.maxilla.ant.MaxJar" />
+	<class name="com.maxilla.ant.MaxExtract" />
+	<class name="com.maxilla.ant.MaxDoc" />
+	<resource file="${basedir}/defs/all/tasks.properties" />
+			
+	<!-- Include the MaxDoc resources -->
+	<resource>
+		<fileset dir="${maxilla.bin}" includes="*.zip" />					
+	</resource>
+</maxjar>
+%ENDXML%

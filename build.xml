@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="maxilla" default="main" basedir=".">
+
+	<property name="maxilla.bin" value="${basedir}/bin" />
+
+	<!--
+	Declare the Maxilla tasks and Compile all of Maxilla
+	-->
+	<target name="bootstrap">
+		<!-- Clean -->
+		<delete dir="${maxilla.bin}" />
+		<mkdir dir="${maxilla.bin}" />
+
+		<!-- Compile MaxSetup task and core objects -->
+		<javac debug="true" destdir="${maxilla.bin}" includeantruntime="true" failonerror="false" verbose="no">
+			<src path="${basedir}/core" />
+		</javac>
+
+		<!-- Declare MaxSetup and download dependencies -->
+		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpath="${maxilla.bin}" />
+		<maxsetup verbose="true" />
+
+		<!-- Compile all of Maxilla with retrieved dependencies -->
+		<javac debug="true" destdir="${maxilla.bin}" includeantruntime="true" failonerror="true">
+			<src refid="max-sourceFolders" />
+			<classpath refid="max-classpath" />
+		</javac>
+
+		<!-- Copy the bundled MaxDoc resources -->
+		<copy todir="${maxilla.bin}">
+			<fileset dir="${basedir}/maxdoc">
+				<include name="*.zip" />
+				<include name="*.html" />
+				<include name="*.js" />
+				<include name="*.png" />
+			</fileset>
+		</copy>
+	</target>
+
+
+	<!--
+	Build the Maxilla release
+	-->
+	<target name="main">
+
+		<!-- Bootstrap Maxilla in a separate task -->
+		<antcall target="bootstrap" inheritall="false" inheritrefs="false" />
+
+		<!-- 
+		Manually construct the Maxilla bootstrap classpath and define the tasks 
+		because we need to load the tasks using the same classloader in order
+		to share objects.  This is handled automatically in production Maxilla jars.
+		-->
+		<path id="bootstrap.path">
+			<pathelement path="${maxilla.bin}" />
+			<fileset dir="ext" includes="*.jar" excludes="*-sources.jar" />
+		</path>
+
+		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
+		<taskdef classname="com.maxtk.ant.MaxExtract" name="maxextract" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
+		<taskdef classname="com.maxtk.ant.MaxCommitId" name="maxcommitid" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
+		<taskdef classname="com.maxtk.ant.MaxGhPages" name="maxghpages" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
+
+		<taskdef classname="com.maxtk.ant.MaxJar" name="maxjar" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
+		<taskdef classname="com.maxtk.ant.MaxDoc" name="maxdoc" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
+
+		<!-- Run Maxilla setup -->
+		<maxsetup />
+
+		<!-- <maxcommitid verbose="true" /> -->
+
+		<!-- Maxilla-Core -->
+		<maxjar destfile="maxilla-core.jar">
+			<classfilter>
+				<exclude name="org.apache." />
+				<exclude name="org.eclipse." />
+			</classfilter>
+			<class name="com.maxtk.ant.MaxSetup" />
+			<class name="com.maxtk.ant.MaxExtract" />
+			<class name="com.maxtk.ant.MaxCommitId" />
+			<class name="com.maxtk.ant.MaxGhPages" />
+			<resource file="${basedir}/defs/core/tasks.properties" />
+		</maxjar>
+
+		<!-- Maxilla-All -->
+		<maxjar destfile="maxilla-all.jar">
+			<classfilter>
+				<exclude name="org.apache." />
+				<exclude name="org.eclipse." />
+				<exclude name="org.tautua." />
+			</classfilter>
+			<class name="com.maxtk.ant.MaxSetup" />
+			<class name="com.maxtk.ant.MaxExtract" />
+			<class name="com.maxtk.ant.MaxCommitId" />
+			<class name="com.maxtk.ant.MaxGhPages" />
+			<class name="com.maxtk.ant.MaxJar" />
+			<class name="com.maxtk.ant.MaxDoc" />
+			<resource file="${basedir}/defs/all/tasks.properties" />
+
+			<!-- Include the MaxDoc resources -->
+			<resource>
+				<fileset dir="${maxilla.bin}" includes="*.zip, *.html, *.js, *.png" />
+			</resource>
+		</maxjar>
+
+		<!-- Build the site documentation -->
+		<maxdoc verbose="true" sourceFolder="docs" outputFolder="site" googleAnalyticsId="UA-24377072-1" googlePlusId="114464678392593421684" googlePlusOne="true" injectFancybox="true" injectPrettify="true">
+			<structure>
+				<page name="overview" src="index.mkd" />
+				<menu name="tasks">
+					<page name="MaxSetup" src="maxsetup.mkd" />
+					<page name="MaxExtract" src="maxextract.mkd" />
+					<page name="MaxCommitId" src="maxcommitid.mkd" />
+					<page name="MaxGhPages" src="maxghpages.mkd" />
+					<divider />
+					<page name="MaxJar" src="maxjar.mkd" />
+					<page name="MaxDoc" src="maxdoc.mkd" />
+				</menu>
+				<page name="design" src="design.mkd" />
+				<page name="releases" src="releases.mkd" />
+				<menu name="download">
+					<link name="maxilla-core" src="maxilla-core.jar" />
+					<link name="maxilla-all" src="maxilla-all.jar" />
+				</menu>
+				<link name="GitHub" src="http://github.com/gitblit/maxilla" />
+				<divider />
+			</structure>
+			<substitute token="%VERSION%" value="${max-version}" />
+			<nomarkdown startToken="%BEGINJSON%" endToken="%ENDJSON%" prettify="true" lang="lang-json" />
+			<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />
+			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />
+		</maxdoc>
+	</target>
+</project>

@@ -1,0 +1,5 @@
+## MaxCommitId
+
+%BEGINXML%
+<maxcommitid repositoryFolder="${basedir}" property="gb.version" />
+%ENDXML%
