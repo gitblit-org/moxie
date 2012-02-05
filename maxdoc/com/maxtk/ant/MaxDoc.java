@@ -16,9 +16,13 @@
 package com.maxtk.ant;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.FileSet;
 
 import com.maxtk.Config;
 import com.maxtk.Dependency;
@@ -32,12 +36,15 @@ import com.maxtk.Regex;
 import com.maxtk.Setup;
 import com.maxtk.Substitute;
 import com.maxtk.ant.MaxTask.Property;
+import com.maxtk.utils.FileUtils;
 
 public class MaxDoc extends Task {
 
 	boolean verbose;
 
 	Doc doc = new Doc();
+	
+	List<com.maxtk.Resource> resources = new ArrayList<com.maxtk.Resource>();
 	
 	public Link createStructure() {
 		Link link = new Link();
@@ -73,6 +80,12 @@ public class MaxDoc extends Task {
 		Regex regex = new Regex();
 		doc.regexes.add(regex);
 		return regex;
+	}
+	
+	public com.maxtk.Resource createResource() {
+		com.maxtk.Resource rsc = new com.maxtk.Resource();
+		resources.add(rsc);
+		return rsc;
 	}
 
 	public void setName(String name) {
@@ -116,6 +129,31 @@ public class MaxDoc extends Task {
 		Config conf = (Config) getProject().getReference(Property.max_conf.id());
 		checkDependencies(conf);
 		Docs.execute(conf, doc, verbose);
+		
+		for (com.maxtk.Resource resource : resources) {
+			try {
+				if (resource.file != null) {
+					FileUtils.copy(doc.outputFolder, resource.file);
+				} else {
+					for (FileSet fs : resource.filesets) {
+                        DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+	                    File fromDir = fs.getDir(getProject());
+
+	                    for (String srcFile : ds.getIncludedFiles()) {
+	                    	File file = new File(fromDir, srcFile);
+	                    	FileUtils.copy(doc.outputFolder, file);
+	                    }
+	                    
+	                    for (String  srcDir : ds.getIncludedDirectories()) {
+	                    	File file = new File(fromDir, srcDir);
+	                    	FileUtils.copy(doc.outputFolder, file);
+	                    }
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void checkDependencies(Config config) {
