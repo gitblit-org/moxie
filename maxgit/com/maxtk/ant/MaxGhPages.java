@@ -55,6 +55,12 @@ public class MaxGhPages extends MaxGitTask {
 		if (!sourceFolder.exists()) {
 			throw new BuildException("Source folder does not exist!");
 		}
+		
+		if (repositoryFolder == null || !repositoryFolder.exists()) {
+			repositoryFolder = new File(getProject().getProperty("basedir"));
+			log("Repository folder unspecified, trying " + repositoryFolder);
+		}
+
 		JGitUtils.updateGhPages(repositoryFolder, sourceFolder, obliterate);
 	}
 }
