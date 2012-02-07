@@ -117,6 +117,7 @@
 					<page name="MaxDoc" src="maxdoc.mkd" />
 				</menu>
 				<page name="design" src="design.mkd" />
+				<page name="maxml" src="maxml.mkd" />
 				<page name="releases" src="releases.mkd" />
 				<menu name="download">
 					<link name="maxilla-core" src="maxilla-core.jar" />
@@ -126,7 +127,7 @@
 				<divider />
 			</structure>
 			<substitute token="%VERSION%" value="${max-version}" />
-			<nomarkdown startToken="%BEGINJSON%" endToken="%ENDJSON%" prettify="true" lang="lang-json" />
+			<nomarkdown startToken="%BEGINMAXML%" endToken="%ENDMAXML%" prettify="true" lang="lang-yaml" />
 			<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />
 			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />
 			<resource>

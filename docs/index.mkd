@@ -2,6 +2,8 @@
 
 Maxilla is a small collection of ANT tasks to facilitate building Java projects.
 
+This site and the jar distributions are built with Maxlla.
+
 ### Tasks <small>What can it do?</small>
 
 #### MaxSetup
@@ -36,11 +38,11 @@ Generates a project site or project documentation from a document definition and
 
 ### Builds <small>Maxilla is available in two builds: core and all</small>
 
-#### maxilla-core.jar (50KB)
+#### maxilla-core.jar (40KB)
 
 [Maxilla Core](./maxilla-core.jar) includes MaxSetup, MaxExtract, MaxCommitId, and MaxGhPages.
 
-#### maxilla-all.jar (280KB)
+#### maxilla-all.jar (270KB)
 
 [Maxilla All](./maxilla-all.jar) includes all the Maxilla tasks, their dependencies, and resources.
 

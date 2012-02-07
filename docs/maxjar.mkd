@@ -1,4 +1,4 @@
-## MaxSetup
+## MaxJar
 
 %BEGINXML%
 <maxjar destfile="maxilla-all.jar">

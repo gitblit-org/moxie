@@ -1,24 +1,21 @@
 ## MaxSetup
 
-%BEGINJSON%
-{
-	"name" : "Maxilla",
-	"description" : "Project Build Toolkit",
-	"version" : "0.1.0",
-	"url" : "http://github.com/gitblit/maxilla",
-	"artifactId" : "maxilla",
-	"vendor" : "James Moger", 
-	"configureEclipseClasspath" : true,
-	"sourceFolders" : ["core", "maxjar", "maxdoc"],
-	"outputFolder" : "bin",
-	"mavenUrls" : ["mavencentral"],
-	"dependencyFolder" : "ext",
-	"dependencies" : [
-		["ant", "1.7.0", "org/apache/ant"],
-		["markdownpapers-core", "1.2.5", "org/tautua/markdownpapers"]	
-	]
-}
-%ENDJSON%
+%BEGINMAXML%
+name : 'Maxilla'
+description : 'Project Build Toolkit'
+version : '0.1.0'
+url : 'http://github.com/gitblit/maxilla'
+artifactId : 'maxilla'
+vendor : 'James Moger' 
+configureEclipseClasspath : true
+sourceFolders : ['core', 'maxgit', 'maxjar', 'maxdoc']
+outputFolder : 'bin'
+mavenUrls : ['mavencentral']
+dependencyFolder : 'ext'
+dependencies :
+- ['ant', '1.7.0', 'org/apache/ant'],
+- ['markdownpapers-core', '1.2.5', 'org/tautua/markdownpapers']
+%ENDMAXML%
 
 %BEGINXML%
 <maxsetup />

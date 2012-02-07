@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
-import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,8 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.maxtk.json.parser.JSONParser;
-import com.maxtk.json.parser.ParseException;
+import com.maxtk.MaxmlParser.MaxmlException;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
@@ -52,9 +50,9 @@ public class Config implements Serializable {
 	File dependencyFolder;
 	List<File> sourceFolders;
 	File outputFolder;
-	boolean configureEclipseClasspath;	
+	boolean configureEclipseClasspath;
 
-	public static Config load(String path) throws IOException, ParseException {
+	public static Config load(String path) throws IOException, MaxmlException {
 		return new Config().parse(path);
 	}
 
@@ -79,17 +77,16 @@ public class Config implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	Config parse(String path) throws IOException, ParseException {
+	Config parse(String path) throws IOException, MaxmlException {
 		File conf = new File(path);
 		if (!conf.exists()) {
 			Setup.out.println(MessageFormat.format(
 					"{0} does not exist, using defaults.", path));
 			return this;
 		}
-		String content = FileUtils.readContent(conf, "\n");
-		JSONParser parser = new JSONParser();
-		Map<String, Object> map = (Map<String, Object>) parser
-				.parse(new StringReader(content));
+		
+		String content = FileUtils.readContent(conf, "\n").trim();
+		Map<String, Object> map = MaxmlParser.parse(content);
 
 		// metadata
 		name = readString(map, Key.name, false);
@@ -119,13 +116,10 @@ public class Config implements Serializable {
 
 		// parse library dependencies
 		if (map.containsKey(Key.dependencies.name())) {
-			List<Object> values = (List<Object>) map.get(Key.dependencies
-					.name());
+			List<List<String>> values = (List<List<String>>) map.get(Key.dependencies.name());
 			List<Dependency> libs = new ArrayList<Dependency>();
-			for (Object o : values) {
-				List<Object> lib = (List<Object>) o;
-				Dependency mo = new Dependency(lib.get(0).toString(), lib
-						.get(1).toString(), lib.get(2).toString());
+			for (List<String> lib : values) {
+				Dependency mo = new Dependency(lib.get(0), lib.get(1), lib.get(2));
 				libs.add(mo);
 			}
 			if (libs.size() == 0) {
@@ -165,10 +159,8 @@ public class Config implements Serializable {
 			List<String> strings = new ArrayList<String>();
 			Object o = map.get(key.name());
 			if (o instanceof List) {
-				List<Object> values = (List<Object>) o;
-				for (Object value : values) {
-					strings.add(value.toString());
-				}
+				List<String> values = (List<String>) o;
+				strings.addAll(values);
 			} else if (o instanceof String) {
 				String value = o.toString();
 				if (StringUtils.isEmpty(value)) {
@@ -216,16 +208,14 @@ public class Config implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	List<File> readFiles(Map<String, Object> map, Key key,
-			List<File> defaultValue) {
+	List<File> readFiles(Map<String, Object> map, Key key, List<File> defaultValue) {
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());
 			if (o instanceof List) {
 				// list
 				List<File> values = new ArrayList<File>();
-				List<Object> list = (List<Object>) o;
-				for (Object item : list) {
-					String dir = item.toString();
+				List<String> list = (List<String>) o;
+				for (String dir : list) {
 					if (!StringUtils.isEmpty(dir)) {
 						values.add(new File(dir));
 					}

@@ -30,7 +30,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.maxtk.json.parser.ParseException;
+import com.maxtk.MaxmlParser.MaxmlException;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
@@ -41,7 +41,7 @@ public class Setup {
 	private static File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
 	private static File maxillaDir = new File(System.getProperty("user.home") + "/.maxilla/repository");
 
-	public static Config execute(String configFile, boolean verbose) throws IOException, ParseException {
+	public static Config execute(String configFile, boolean verbose) throws IOException, MaxmlException {
 		String file = "build.max";
 		if (!StringUtils.isEmpty(configFile)) {
 			file = configFile;

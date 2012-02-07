@@ -1,39 +1,35 @@
 ## MaxDoc
 
-%BEGINJSON%
-	"docs" : {
-		"favicon" : "docs",
-		"analyticsId" : "UA-24377072-1",
-		"injectFancybox" : true,
-		"injectPrettify" : true,
-		"sourceFolder" : "docs",
-		"outputFolder" : "site",
-		"structure" : {
-			"overview" : "index.mkd",
-			"tasks" : {				
-				"MaxSetup" : "maxsetup.mkd",
-				"MaxExtract" : "maxextract.mkd",
-				"":"",
-				"MaxJar" : "maxjar.mkd",
-				"MaxDoc" : "maxdoc.mkd"
-			},
-			"design" : "design.mkd",
-			"releases" : "releases.mkd",
-			"download" : {
-				"maxilla-core" : "./maxilla-core.jar",
-				"maxilla-all" : "./maxilla-all.jar"
-			},
-			"GitHub" : "http://github.com"
-		}
-	}
-%ENDJSON%
-
 %BEGINXML%
 <maxdoc injectPrettify="true" injectFancybox="true">
+	<structure>
+		<page name="overview" src="index.mkd" />
+		<menu name="tasks">
+			<page name="MaxSetup" src="maxsetup.mkd" />
+			<page name="MaxExtract" src="maxextract.mkd" />
+			<page name="MaxCommitId" src="maxcommitid.mkd" />
+			<page name="MaxGhPages" src="maxghpages.mkd" />
+			<divider />
+			<page name="MaxJar" src="maxjar.mkd" />
+			<page name="MaxDoc" src="maxdoc.mkd" />
+		</menu>
+		<page name="design" src="design.mkd" />
+		<page name="maxml" src="maxml.mkd" />
+		<page name="releases" src="releases.mkd" />
+		<menu name="download">
+			<link name="maxilla-core" src="maxilla-core.jar" />
+			<link name="maxilla-all" src="maxilla-all.jar" />
+		</menu>
+		<link name="GitHub" src="http://github.com/gitblit/maxilla" />
+		<divider />
+	</structure>
 	<substitute token="%VERSION%" value="${max-version}" />
 	<nomarkdown startToken="%BEGINJSON%" endToken="%ENDJSON%" prettify="true" lang="lang-json" />
 	<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />			
 	<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" 
 		replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />
+	<resource>
+		<fileset dir="${basedir}" includes="*.jar" />
+	</resource>	
 </maxdoc>
 %ENDXML%

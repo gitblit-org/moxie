@@ -1,0 +1,3 @@
+## Maxml
+
+Maxml is simplified YAML combined with some aspects of JSON/XML
