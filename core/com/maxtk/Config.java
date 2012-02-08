@@ -27,7 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.maxtk.MaxmlParser.MaxmlException;
+import com.maxtk.maxml.Maxml;
+import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
@@ -86,7 +87,7 @@ public class Config implements Serializable {
 		}
 		
 		String content = FileUtils.readContent(conf, "\n").trim();
-		Map<String, Object> map = MaxmlParser.parse(content);
+		Map<String, Object> map = Maxml.parse(content);
 
 		// metadata
 		name = readString(map, Key.name, false);

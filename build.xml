@@ -103,6 +103,15 @@
 			</resource>
 		</maxjar>
 
+		<!-- Maxml -->
+		<maxjar destfile="maxml.jar">
+			<class name="com.maxtk.maxml.Maxml" />
+		</maxjar>
+
+		<jar destfile="maxml-sources.jar">
+			<fileset dir="${basedir}/core/com/maxtk/maxml" />
+		</jar>
+
 		<!-- Build the site documentation -->
 		<maxdoc verbose="true" sourceFolder="docs" outputFolder="site" googleAnalyticsId="UA-24377072-1" googlePlusId="114464678392593421684" googlePlusOne="true" injectFancybox="true" injectPrettify="true">
 			<structure>
@@ -122,6 +131,9 @@
 				<menu name="download">
 					<link name="maxilla-core" src="maxilla-core.jar" />
 					<link name="maxilla-all" src="maxilla-all.jar" />
+					<divider />
+					<link name="maxml" src="maxml.jar" />
+					<link name="maxml-sources" src="maxml-sources.jar" />
 				</menu>
 				<link name="GitHub" src="http://github.com/gitblit/maxilla" />
 				<divider />

@@ -2,7 +2,7 @@
 
 Maxilla is a small collection of ANT tasks to facilitate building Java projects.
 
-This site and the jar distributions are built with Maxlla.
+This site and the jar distributions are built with Maxilla.
 
 ### Tasks <small>What can it do?</small>
 

@@ -25,8 +25,8 @@ import org.apache.tools.ant.types.Path.PathElement;
 import com.maxtk.Config;
 import com.maxtk.Constants;
 import com.maxtk.Dependency;
-import com.maxtk.MaxmlParser.MaxmlException;
 import com.maxtk.Setup;
+import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.StringUtils;
 
 public class MaxSetup extends MaxTask {

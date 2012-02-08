@@ -1,6 +1,7 @@
 ## MaxSetup
 
 %BEGINMAXML%
+# Sample build.max file
 name : 'Maxilla'
 description : 'Project Build Toolkit'
 version : '0.1.0'

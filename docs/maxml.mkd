@@ -1,3 +1,154 @@
 ## Maxml
 
-Maxml is simplified YAML combined with some aspects of JSON/XML
+Maxml (pronounced *maximal*) looks and feels like very simple [YAML](http://yaml.org), but it is not YAML.  Maxml is meant to be a very small and simple subset of YAML with some significant structural changes.
+
+The reference implementation parser is a single Java class of about 250 lines.  
+The Maxml binary package is < 10KB.
+
+### Why Maxml?
+
+I like JSON.  
+I would have been satisfied with a simple, really small JSON parser.  The closest I found was [JSON-Simple](http://json-simple.googlecode.com), but that relies on a JFlex-generated parser class.  
+**Verdict:** Unmaintainable.
+
+I like YAML.  
+I would have been satisfied with a simple, really small YAML parser.  The closest I found was [SnakeYaml](http://snakeyaml.googlecode.com), but that is ~250KB.  
+**Verdict:** Too large.
+
+So I wrote my own YAML-ish parser and it is nice and small.  
+**Verdict:** Win!
+
+### Processing Rules
+
+1. Maxml files must be UTF-8 encoded.
+2. Leading whitespace is completely irrelevant and ignored (except for text blocks) so indent all you want.
+3. Lines that start with *#* are comments and are ignored
+4. Lines that equal *---* or *...* are ignored
+5. Blank lines are ignored unless they are within a string block
+6. Values that are not explicitly quoted as strings are subject to fall-through interpretation
+
+### Value Fall-Through Interpretation
+
+Values are deserialized based on the following algorithm.  If a step is successful the interpreted value is returned, otherwise the next step is checked until it falls-through the bottom of the check and a string is returned.
+
+1. Empty value is an empty string
+2. Explicit Null value *~*
+3. Single-quoted strings *'my string'*
+4. Double-quoted strings *"my string"*
+5. Inline-list *[a, b, c, d]*
+6. Boolean interpretation *true, false, yes, no, on, off*
+7. Numeric interpretation *octal* (32-bit signed integer, 64-bit signed long), *whole number* (32-bit signed integer, 64-bit signed long), *hexadecimal* (32-bit signed integer, 64-bit signed long), *decimal* (float, double)  
+if the value fits in the *smaller* container, the smaller container will be used.  
+e.g. 1 is an integer but 4,000,000,000 is a long
+8. Date interpretation: *canonical, iso8601, simple date*
+9. String
+ 
+### Key Definitions
+
+Maxml is a key-value serialization format.  Keys may only be strings.  Keys may not have a **:** character nor be surrounded by single or double-quotes.  Keys are case-insensitive.
+
+### Value Definitions
+
+#### Strings
+
+%BEGINMAXML%
+# fall-through string
+myString1: this is a\nstring
+# explicit single-quoted string, leading/trailing quotes are stripped
+myString2: 'this is another\nstring'
+# explicit double-quoted string, leading/trailing quotes are stripped
+myString2: "this is another\nstring"
+# explicit multi-line string, leading/trailing quotes are stripped
+myString3: """
+this is another string
+which contains
+several lines
+"""
+# explicit multi-line string, leading/trailing quotes are stripped
+myString4: """
+this is another string
+which contains
+several lines"""
+
+%ENDMAXML%
+
+#### Numerics
+
+%BEGINMAXML%
+myInt: 12345
+myLong: 4000000000
+myFloat1: 2.3
+myFloat2: 6.0E+23
+myDouble: 6.0E+56
+# octals lead with 0
+myOctal: 010
+# hexadecimals lead with 0x
+myHex: 0x12345
+%ENDMAXML%
+
+#### Booleans
+
+%BEGINMAXML%
+# true values
+myBool1: true
+myBool2: yes
+myBool3: on
+# false values
+myBool4: false
+myBool5: no
+myBool6: off
+%ENDMAXML%
+
+#### Dates
+
+Dates support second resolution.  When Date objects are deserialized, the msecs value is manually set to 0.
+
+%BEGINMAXML%
+# Simple Date, local timezone
+myDate1: 2012-02-01
+# Canonical, GMT
+myDate2: 2012-02-01T15:30:45Z
+# ISO8601, timezone-specified
+myDate3: 2012-02-01T15:30:45-0400
+%ENDMAXML%
+
+#### Miscellaneous
+
+%BEGINMAXML%
+# null
+myNull: ~
+%ENDMAXML%
+
+### Collections
+
+#### Lists
+
+%BEGINMAXML%
+# inline list
+myList1: [src, tests, extra]
+# multi-line list
+myList2:
+- src
+- tests
+- extra
+# a list of lists
+myList3:
+- [apple, banana, strawberry]
+- [celery, carrot, lettuce]
+%ENDMAXML%
+
+#### Maps
+
+%BEGINMAXML%
+myMap1: {
+    field1: test
+    field2: {
+        subfield1: 10
+        subfield2: [a, b, c]
+    }
+    field3:
+     - src
+     - tests
+     - extra
+}
+%ENDMAXML%
