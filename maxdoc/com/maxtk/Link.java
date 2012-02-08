@@ -26,26 +26,31 @@ public class Link implements Serializable {
 	String name;
 	String src;
 	List<Link> sublinks;
-	
+
 	boolean isLink;
 	boolean isPage;
 	boolean isMenu;
 	boolean isDivider;
+	boolean sidebar;
 
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public void setSrc(String src) {
 		this.src = src;
 	}
 	
+	public void setSidebar(boolean value) {
+		this.sidebar = value;
+	}
+
 	public Link createPage() {
 		Link link = newLink();
 		link.isPage = true;
 		return link;
 	}
-	
+
 	public Link createMenu() {
 		Link link = newLink();
 		link.isMenu = true;
@@ -63,7 +68,7 @@ public class Link implements Serializable {
 		link.isLink = true;
 		return link;
 	}
-	
+
 	private Link newLink() {
 		Link link = new Link();
 		if (sublinks == null) {

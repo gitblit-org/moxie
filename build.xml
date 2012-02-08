@@ -113,7 +113,7 @@
 		</jar>
 
 		<!-- Build the site documentation -->
-		<maxdoc verbose="true" sourceFolder="docs" outputFolder="site" googleAnalyticsId="UA-24377072-1" googlePlusId="114464678392593421684" googlePlusOne="true" injectFancybox="true" injectPrettify="true">
+		<maxdoc verbose="true" sourceFolder="docs" outputFolder="site" googlePlusOne="true" injectPrettify="true">
 			<structure>
 				<page name="overview" src="index.mkd" />
 				<menu name="tasks">
@@ -125,8 +125,8 @@
 					<page name="MaxJar" src="maxjar.mkd" />
 					<page name="MaxDoc" src="maxdoc.mkd" />
 				</menu>
+				<page name="maxml" src="maxml.mkd" sidebar="true" />
 				<page name="design" src="design.mkd" />
-				<page name="maxml" src="maxml.mkd" />
 				<page name="releases" src="releases.mkd" />
 				<menu name="download">
 					<link name="maxilla-core" src="maxilla-core.jar" />
@@ -147,7 +147,7 @@
 			</resource>
 		</maxdoc>
 	</target>
-	
+
 	<!--
 	Build the Maxilla gh-pages branch
 	-->

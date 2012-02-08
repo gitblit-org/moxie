@@ -16,10 +16,12 @@
 package com.maxtk.ant;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.maxtk.Config;
 import com.maxtk.Dependency;
 import com.maxtk.Setup;
+import com.maxtk.maxml.MaxmlException;
 
 public class MaxGitTask extends MaxTask {
 
@@ -29,13 +31,13 @@ public class MaxGitTask extends MaxTask {
 		this.repositoryFolder = new File(path);
 	}
 
-	protected void checkDependencies(Config config) {
+	protected void checkDependencies(Config config) throws IOException,
+			MaxmlException {
 		try {
 			Class.forName("org.eclipse.jgit.api.Git");
 		} catch (Throwable t) {
 			Dependency jgit = new Dependency("org.eclipse.jgit",
 					"1.2.0.201112221803-r", "org/eclipse/jgit");
-			config.addMavenUrl("http://download.eclipse.org/jgit/maven");
 			Setup.retriveInternalDependency(config, jgit);
 		}
 	}

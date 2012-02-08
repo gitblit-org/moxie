@@ -304,7 +304,8 @@ public class Mft {
 	 * 
 	 * 
 	 * 
-	 * @author Original Code: <a href="mailto:jake@riggshill.com">John W. Kohler</a>
+	 * @author Original Code: <a href="mailto:jake@riggshill.com">John W.
+	 *         Kohler</a>
 	 * @version
 	 * @version@
 	 */
@@ -390,7 +391,8 @@ public class Mft {
 	 * This class is used to get the MIME mapping info from the project file
 	 * into the Mft's type map.
 	 * 
-	 * @author Original Code: <a href="mailto:jake@riggshill.com">John W. Kohler</a>
+	 * @author Original Code: <a href="mailto:jake@riggshill.com">John W.
+	 *         Kohler</a>
 	 * @version
 	 * @version@
 	 */

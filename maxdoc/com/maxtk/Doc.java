@@ -30,33 +30,33 @@ public class Doc implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public String name;
-	
+
 	public File sourceFolder;
-	
+
 	public File outputFolder;
-	
+
 	public File header;
-	
+
 	public File footer;
-	
+
 	public String favicon;
-	
+
 	public String googleAnalyticsId;
-	
+
 	public String googlePlusId;
-	
+
 	public boolean googlePlusOne;
-	
+
 	public File ads;
-	
+
 	public Link structure;
-	
+
 	public List<String> keywords;
-	
+
 	public boolean injectPrettify;
-	
+
 	public boolean injectFancybox;
-	
+
 	public List<Substitute> substitutions = new ArrayList<Substitute>();
 
 	public List<Load> loads = new ArrayList<Load>();
@@ -66,7 +66,7 @@ public class Doc implements Serializable {
 	public List<NoMarkdown> nomarkdowns = new ArrayList<NoMarkdown>();
 
 	public List<Regex> regexes = new ArrayList<Regex>();
-		
+
 	public List<File> getSources() {
 		List<File> files = new ArrayList<File>();
 		files.addAll(getSources(structure.sublinks));
@@ -86,7 +86,7 @@ public class Doc implements Serializable {
 	}
 
 	void describe(PrintStream out) {
-		out.println("doc:");		
+		out.println("doc:");
 		describe(out, Key.sourceFolder, sourceFolder.toString());
 		describe(out, Key.outputFolder, outputFolder.toString());
 		describe(out, Key.googleAnalyticsId, googleAnalyticsId);
@@ -118,7 +118,7 @@ public class Doc implements Serializable {
 		out.print(": ");
 		out.println(value);
 	}
-	
+
 	void describe(PrintStream out, Link link) {
 		if (link.isPage || link.isLink) {
 			// page link or external link

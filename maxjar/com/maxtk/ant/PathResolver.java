@@ -74,12 +74,11 @@ import java.util.Locale;
  * 
  * This approach is taken for two reasons:
  * <ol>
- * <li> To encapsulate the specifics of fetching streams and what attributes are
- * set on a jar entry's manifest entry. </li>
- * <li> To provide an association between the <i>source</i> of a class (or
+ * <li>To encapsulate the specifics of fetching streams and what attributes are
+ * set on a jar entry's manifest entry.</li>
+ * <li>To provide an association between the <i>source</i> of a class (or
  * resource) and the repository from which it came. This info is priceless when
- * trying to figure out why the wrong classes are being included in your jar.
- * </li>
+ * trying to figure out why the wrong classes are being included in your jar.</li>
  * </ol>
  * </p>
  * 

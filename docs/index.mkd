@@ -1,50 +1,51 @@
 ## Maxilla Project Build Toolkit
 
+<span class="label label-warning">alpha: Not-production ready</span>
 Maxilla is a small collection of ANT tasks to facilitate building Java projects.
 
-This site and the jar distributions are built with Maxilla.
+The Maxilla binaries and this site are built with Maxilla.
 
-### Tasks <small>What can it do?</small>
+### Core Distribution (40KB)
 
-#### MaxSetup
+The core distribution includes the Setup task, the Git tasks, and some simple processing tasks.
 
-* Dependency retrieval from local Maven repository or content-addressable remote Maven repositories like MavenCentral.
+The Git tasks depend on [JGit](http://eclipse.org/jgit) which is resolved automatically either from your local Maven repository, your local Maxilla repository, or MavenCentral. 
+
+#### [MaxSetup](./maxsetup.html)
+
+* Dependency retrieval from a local Maven repository, local Maxilla repository, or content-addressable remote Maven repositories like MavenCentral.
 * Eclipse .classpath generation
 
-#### MaxExtract
+#### [MaxExtract](./maxextract.html)
 
 Pull the contents of a field from a source file.  
 This is useful for pulling a version identifier from source that you want to use in your build script.
 
-#### MaxCommitId
+#### [MaxCommitId](./maxcommitid.html)
 
 Determines the Git commit hash of HEAD for the repository.
 
-#### MaxGhPages
+#### [MaxGhPages](./maxghpages.html)
 
 Updates the gh-pages branch of a Git repository with content from the specified folder.
 
-#### MaxJar
+### All Distribution (280KB)
+
+The all distribution includes the core plus the following tasks.
+
+#### [MaxJar](./maxjar.html)
 
 This is a fork of the super-useful GenJar.
 
-#### MaxDoc
+#### [MaxDoc](./maxdoc.html)
 
-Generates a project site or project documentation from a document definition and markdown source files.
+Generates a project site or project documentation from markdown source files.
 
 * Uses Twitter Bootstrap 2.0 for the generated content
 * Optionally injects GoogleCode Prettify for syntax highlighting
 * Optionally injects FancyBox for JavaScript-enhanced image gallery viewing
 
-### Builds <small>Maxilla is available in two builds: core and all</small>
-
-#### maxilla-core.jar (40KB)
-
-[Maxilla Core](./maxilla-core.jar) includes MaxSetup, MaxExtract, MaxCommitId, and MaxGhPages.
-
-#### maxilla-all.jar (270KB)
-
-[Maxilla All](./maxilla-all.jar) includes all the Maxilla tasks, their dependencies, and resources.
+The MaxDoc task depends on [MarkdownPapers](http://markdown.tautua.org) which is resolved automatically either from your local Maven repository, your local Maxilla repository, or MavenCentral. 
 
 ### License
 

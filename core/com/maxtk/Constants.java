@@ -18,10 +18,14 @@ package com.maxtk;
 public class Constants {
 
 	public static final String VERSION = "0.1.0";
-	
+
 	public static final String HDR = "===========================================";
-	
+
 	public static final String SEP = "-------------------------------------------";
-	
+
 	public static final String INDENT = "   ";
+
+	public static final String MAVENCENTRAL = "central";
+
+	public static final String MAVENCENTRAL_URL = "http://repo1.maven.org/maven2";
 }

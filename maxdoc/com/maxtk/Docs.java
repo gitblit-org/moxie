@@ -34,11 +34,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import com.maxtk.Config;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.MarkdownUtils;
 import com.maxtk.utils.StringUtils;
@@ -63,7 +63,7 @@ public class Docs {
 		doc.outputFolder.mkdirs();
 		injectBootstrap(doc, true, verbose);
 		injectPrettify(doc, doc.injectPrettify, verbose);
-		injectFancybox(doc, doc.injectFancybox, verbose);		
+		injectFancybox(doc, doc.injectFancybox, verbose);
 
 		generatePages(conf, doc, verbose);
 	}
@@ -80,11 +80,12 @@ public class Docs {
 				allLinks.addAll(link.sublinks);
 			}
 		}
-		
+
 		String header = generateHeader(projectName, conf, doc);
 		String footer = generateFooter(doc);
 
-		out.println(MessageFormat.format( "Generating HTML from Markdown files in {0} ",
+		out.println(MessageFormat.format(
+				"Generating HTML from Markdown files in {0} ",
 				doc.sourceFolder.getAbsolutePath()));
 
 		for (Link link : allLinks) {
@@ -94,8 +95,10 @@ public class Docs {
 			}
 			try {
 				String fileName = getHref(link);
-				System.out.println(MessageFormat.format("  {0} => {1}", link.src, fileName));
-				String markdownContent = FileUtils.readContent(new File(doc.sourceFolder, link.src), "\n");
+				System.out.println(MessageFormat.format("  {0} => {1}",
+						link.src, fileName));
+				String markdownContent = FileUtils.readContent(new File(
+						doc.sourceFolder, link.src), "\n");
 
 				Map<String, String> nomarkdownMap = new HashMap<String, String>();
 
@@ -151,9 +154,9 @@ public class Docs {
 										ppclass.append(nomarkdown.lang);
 									}
 									StringBuilder code = new StringBuilder();
-									code.append(MessageFormat
-												.format("<pre class=''{0}''>\n",
-														ppclass.toString()));
+									code.append(MessageFormat.format(
+											"<pre class=''{0}''>\n",
+											ppclass.toString()));
 									code.append(StringUtils.escapeForHtml(hunk,
 											false));
 									code.append("</pre>");
@@ -186,6 +189,44 @@ public class Docs {
 
 					// replace markdown content with the stripped content
 					markdownContent = strippedContent.toString();
+				}
+
+				// page navigation
+				List<Section> sections = new ArrayList<Section>();
+				if (link.sidebar) {
+					Map<String, AtomicInteger> counts = new HashMap<String, AtomicInteger>();
+					StringBuilder sb = new StringBuilder();
+					for (String line : Arrays.asList(markdownContent
+							.split("\n"))) {
+						if (line.length() == 0) {
+							sb.append('\n');
+							continue;
+						}
+						if (line.charAt(0) == '#') {
+							String section = line.substring(0,
+									line.indexOf(' '));
+							String name = line.substring(line.indexOf(' ') + 1)
+									.trim();
+							if (name.endsWith(section)) {
+								name = name.substring(0, name.indexOf(section))
+										.trim();
+							}
+							String h = "h" + section.length();
+							if (!counts.containsKey(h)) {
+								counts.put(h,  new AtomicInteger());
+							}
+							String id = section.length() + "." + counts.get(h).addAndGet(1);
+							sections.add(new Section(id, name));							
+							sb.append(MessageFormat.format("<{0} id=''{2}''>{1}</{0}>\n", h, name, id));
+						} else {
+							// preserve line
+							sb.append(line);
+							sb.append('\n');
+						}
+					}
+					
+					// replace markdown content with the navigable content
+					markdownContent = sb.toString();
 				}
 
 				// transform markdown to html
@@ -223,9 +264,11 @@ public class Docs {
 				String links = createLinks(link, doc.structure.sublinks, false);
 
 				if (!StringUtils.isEmpty(doc.googlePlusId)) {
-					links += "<li><a href='https://plus.google.com/" + doc.googlePlusId + "?prsrc=3' class='gpluspage'><img src='https://ssl.gstatic.com/images/icons/gplus-16.png' width='16' height='16 style='order: 0;'/></a></li>";
+					links += "<li><a href='https://plus.google.com/"
+							+ doc.googlePlusId
+							+ "?prsrc=3' class='gpluspage'><img src='https://ssl.gstatic.com/images/icons/gplus-16.png' width='16' height='16 style='order: 0;'/></a></li>";
 				}
-				
+
 				// add Google+1 link
 				if (doc.googlePlusOne && !StringUtils.isEmpty(conf.url)) {
 					links += "<li><div class='gplusone'><g:plusone size='small' href='"
@@ -245,26 +288,45 @@ public class Docs {
 				writer.write(links);
 				writer.write("\n</head>");
 				if (doc.injectPrettify) {
-					writer.write("\n<body onload='prettyPrint()'>");	
+					writer.write("\n<body onload='prettyPrint()'>");
 				} else {
 					writer.write("\n<body>");
 				}
-				writer.write("\n<div class='container'>");
+				if (link.sidebar) {
+					writer.write("\n<div class='container-fluid'>");
+					writer.write("\n<div class='row-fluid'>");
+					writer.write("\n<!-- sidebar -->");
+					writer.write("\n<div class='span3'>");
+					writer.write("\n<div class='well sidebar-nav'>");
+					writer.write("\n<ul class='nav nav-list'>");
+					writer.write("\n<li class='nav-header'>Table of Contents</li>");
+					for (Section section : sections) {
+						writer.write(MessageFormat.format("\n<li><a href=''#{0}''>{1}</a></li>\n", section.id, section.name));	
+					}
+					writer.write("\n</ul>");
+					writer.write("\n</div>");
+					writer.write("\n</div>");
+					writer.write("\n<div class='span9'>");
+				} else {
+					writer.write("\n<div class='container'>");
+				}
 				writer.write("\n<!-- Begin Markdown -->\n");
 				writer.write(content);
 				writer.write("\n<!-- End Markdown -->\n");
 				writer.write("<footer class=\"footer\">");
 				writer.write(footer);
 				writer.write("\n</footer>\n</div>");
-				
+				if (link.sidebar) {
+					writer.write("\n</div></div>");
+				}
 				writer.write("\n\n<!-- Include scripts at end for faster page loading -->");
 				if (doc.injectPrettify) {
 					writer.append("\n<script src=\"./prettify/prettify.js\"></script>");
 				}
-				
+
 				writer.append("\n<script src=\"./bootstrap/js/jquery.js\"></script>");
 				writer.append("\n<script src=\"./bootstrap/js/bootstrap.js\"></script>");
-				
+
 				if (doc.injectFancybox) {
 					String fancybox = readResource(doc, "fancybox.html");
 					writer.append('\n');
@@ -274,7 +336,8 @@ public class Docs {
 
 				if (!StringUtils.isEmpty(doc.googleAnalyticsId)) {
 					String analytics = readResource(doc, "analytics.html");
-					analytics = analytics.replace("%ANALYTICSID%", doc.googleAnalyticsId);
+					analytics = analytics.replace("%ANALYTICSID%",
+							doc.googleAnalyticsId);
 					writer.append('\n');
 					writer.append(analytics);
 					writer.append('\n');
@@ -322,12 +385,13 @@ public class Docs {
 
 	static void extractZippedResource(Doc doc, String folder, String resource) {
 		try {
-			ZipInputStream is = new ZipInputStream(doc.getClass().getResourceAsStream("/" + resource));			
+			ZipInputStream is = new ZipInputStream(doc.getClass()
+					.getResourceAsStream("/" + resource));
 			File destFolder;
 			if (StringUtils.isEmpty(folder)) {
 				destFolder = doc.outputFolder;
 			} else {
-				destFolder= new File(doc.outputFolder, folder);
+				destFolder = new File(doc.outputFolder, folder);
 			}
 			destFolder.mkdirs();
 			ZipEntry entry = null;
@@ -337,7 +401,8 @@ public class Docs {
 					file.mkdirs();
 					continue;
 				}
-				FileOutputStream os = new FileOutputStream(new File(destFolder, entry.getName()));
+				FileOutputStream os = new FileOutputStream(new File(destFolder,
+						entry.getName()));
 				byte[] buffer = new byte[32767];
 				int len = 0;
 				while ((len = is.read(buffer)) > -1) {
@@ -351,7 +416,7 @@ public class Docs {
 			e.printStackTrace();
 		}
 	}
-	
+
 	static String extractResource(Doc doc, String folder, String resource) {
 		String content = "";
 		try {
@@ -369,7 +434,8 @@ public class Docs {
 			if (StringUtils.isEmpty(folder)) {
 				outputFile = new File(doc.outputFolder, resource);
 			} else {
-				outputFile = new File(new File(doc.outputFolder, folder), resource);
+				outputFile = new File(new File(doc.outputFolder, folder),
+						resource);
 			}
 			FileUtils.writeContent(outputFile, content);
 		} catch (Exception e) {
@@ -405,7 +471,8 @@ public class Docs {
 		return content;
 	}
 
-	private static String createLinks(Link currentLink, List<Link> links, boolean isMenu) {
+	private static String createLinks(Link currentLink, List<Link> links,
+			boolean isMenu) {
 		String linkPattern = "<li><a href=''{0}''>{1}</a></li>\n";
 		String currentLinkPattern = "<li class=''active''><a href=''{0}''>{1}</a></li>\n";
 
@@ -434,8 +501,9 @@ public class Docs {
 			} else {
 				// drop down menu
 				sb.append("<li class='dropdown'> <!-- Menu -->\n");
-				sb.append(MessageFormat.format(
-						"<a class=''dropdown-toggle'' href=''#'' data-toggle=''dropdown''>{0}<b class=''caret''></b></a>\n", link.name));
+				sb.append(MessageFormat
+						.format("<a class=''dropdown-toggle'' href=''#'' data-toggle=''dropdown''>{0}<b class=''caret''></b></a>\n",
+								link.name));
 				sb.append("<ul class='dropdown-menu'>\n");
 				sb.append(createLinks(link, link.sublinks, true));
 				sb.append("</ul></li> <!-- End Menu -->\n");
@@ -451,7 +519,8 @@ public class Docs {
 			return link.src;
 		} else if (link.isPage) {
 			// page link
-			String html = link.src.substring(0, link.src.lastIndexOf('.')) + ".html";
+			String html = link.src.substring(0, link.src.lastIndexOf('.'))
+					+ ".html";
 			return html;
 		}
 		return null;
@@ -469,7 +538,8 @@ public class Docs {
 		return md;
 	}
 
-	private static String generateHeader(String projectName, Config conf, Doc doc) {
+	private static String generateHeader(String projectName, Config conf,
+			Doc doc) {
 		out.println("Generating HTML header...");
 		StringBuilder sb = new StringBuilder();
 		String header = readResource(doc, "header.html");
@@ -481,15 +551,16 @@ public class Docs {
 			sb.append(MessageFormat.format(
 					"<meta name=\"keywords\" content=\"{0}\" />\n", keywords));
 		}
-		
+
 		if (!StringUtils.isEmpty(doc.favicon)) {
-			sb.append("\n<link rel='shortcut icon' type='image/png' href='./" + doc.favicon + "' />");			
+			sb.append("\n<link rel='shortcut icon' type='image/png' href='./"
+					+ doc.favicon + "' />");
 		}
-		
+
 		if (doc.injectPrettify) {
-			sb.append("\n<link rel=\"stylesheet\" href=\"./prettify/prettify.css\" />");			
+			sb.append("\n<link rel=\"stylesheet\" href=\"./prettify/prettify.css\" />");
 		}
-		
+
 		if (!StringUtils.isEmpty(doc.googlePlusId)) {
 			String content = readResource(doc, "pluspage.html");
 			content = content.replace("%PLUSID%", doc.googlePlusId);
@@ -504,7 +575,7 @@ public class Docs {
 			sb.append('\n');
 			sb.append(content);
 			sb.append('\n');
-		}		
+		}
 
 		if (doc.header != null && doc.header.exists()) {
 			String content = FileUtils.readContent(doc.header, "\n");
@@ -600,6 +671,16 @@ public class Docs {
 			this.name = name;
 			this.value = value;
 			this.comments = new ArrayList<String>(comments);
+		}
+	}
+	
+	private static class Section {
+		String name;
+		String id;
+		
+		Section(String id, String name) {
+			this.id = id;
+			this.name = name;
 		}
 	}
 }

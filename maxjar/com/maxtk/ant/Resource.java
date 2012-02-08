@@ -60,15 +60,12 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.DataType;
 import org.apache.tools.ant.types.FileSet;
 
-
 /**
- * Represents a &lt;resource&gt; element within the project file.
- * </p>
+ * Represents a &lt;resource&gt; element within the project file. </p>
  * <p>
  * 
- * In addition to holding the final <i>jar name</i> of the resource, it
- * performs the actual resolution of file names along with expansion of
- * <i>filesets</i> .
+ * In addition to holding the final <i>jar name</i> of the resource, it performs
+ * the actual resolution of file names along with expansion of <i>filesets</i> .
  * 
  * @author Original Code: <a href="mailto:jake@riggshill.com">John W. Kohler
  *         </a>

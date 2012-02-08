@@ -16,6 +16,7 @@
 package com.maxtk.ant;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import com.maxtk.Regex;
 import com.maxtk.Setup;
 import com.maxtk.Substitute;
 import com.maxtk.ant.MaxTask.Property;
+import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.FileUtils;
 
 public class MaxDoc extends Task {
@@ -43,9 +45,9 @@ public class MaxDoc extends Task {
 	boolean verbose;
 
 	Doc doc = new Doc();
-	
+
 	List<com.maxtk.Resource> resources = new ArrayList<com.maxtk.Resource>();
-	
+
 	public Link createStructure() {
 		Link link = new Link();
 		doc.structure = link;
@@ -81,7 +83,7 @@ public class MaxDoc extends Task {
 		doc.regexes.add(regex);
 		return regex;
 	}
-	
+
 	public com.maxtk.Resource createResource() {
 		com.maxtk.Resource rsc = new com.maxtk.Resource();
 		resources.add(rsc);
@@ -91,7 +93,7 @@ public class MaxDoc extends Task {
 	public void setName(String name) {
 		doc.name = name;
 	}
-	
+
 	public void setSourceFolder(File folder) {
 		doc.sourceFolder = folder;
 	}
@@ -124,30 +126,37 @@ public class MaxDoc extends Task {
 		doc.googlePlusOne = value;
 	}
 
-		@Override
+	@Override
 	public void execute() throws BuildException {
-		Config conf = (Config) getProject().getReference(Property.max_conf.id());
-		checkDependencies(conf);
+		Config conf = (Config) getProject()
+				.getReference(Property.max_conf.id());
+		try {
+			checkDependencies(conf);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException(e);
+		}
 		Docs.execute(conf, doc, verbose);
-		
+
 		for (com.maxtk.Resource resource : resources) {
 			try {
 				if (resource.file != null) {
 					FileUtils.copy(doc.outputFolder, resource.file);
 				} else {
 					for (FileSet fs : resource.filesets) {
-                        DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-	                    File fromDir = fs.getDir(getProject());
+						DirectoryScanner ds = fs
+								.getDirectoryScanner(getProject());
+						File fromDir = fs.getDir(getProject());
 
-	                    for (String srcFile : ds.getIncludedFiles()) {
-	                    	File file = new File(fromDir, srcFile);
-	                    	FileUtils.copy(doc.outputFolder, file);
-	                    }
-	                    
-	                    for (String  srcDir : ds.getIncludedDirectories()) {
-	                    	File file = new File(fromDir, srcDir);
-	                    	FileUtils.copy(doc.outputFolder, file);
-	                    }
+						for (String srcFile : ds.getIncludedFiles()) {
+							File file = new File(fromDir, srcFile);
+							FileUtils.copy(doc.outputFolder, file);
+						}
+
+						for (String srcDir : ds.getIncludedDirectories()) {
+							File file = new File(fromDir, srcDir);
+							FileUtils.copy(doc.outputFolder, file);
+						}
 					}
 				}
 			} catch (Exception e) {
@@ -156,12 +165,13 @@ public class MaxDoc extends Task {
 		}
 	}
 
-	private void checkDependencies(Config config) {
+	private void checkDependencies(Config config) throws IOException,
+			MaxmlException {
 		try {
 			Class.forName("org.tautua.markdownpapers.Markdown");
 		} catch (Throwable t) {
-			Dependency markdownpapers = new Dependency("markdownpapers-core", "1.2.5",
-					"org/tautua/markdownpapers");
+			Dependency markdownpapers = new Dependency("markdownpapers-core",
+					"1.2.5", "org/tautua/markdownpapers");
 			Setup.retriveInternalDependency(config, markdownpapers);
 		}
 	}

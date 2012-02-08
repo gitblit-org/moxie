@@ -35,9 +35,11 @@ public class Dependency {
 
 	public String getArtifactPath(String jarType) {
 		if ("<googlecode>".equals(group)) {
-			return MessageFormat.format("http://{0}.googlecode.com/files/{1}", version, artifact);
+			return MessageFormat.format("http://{0}.googlecode.com/files/{1}",
+					version, artifact);
 		}
-		return group + "/" + artifact + "/" + version + "/" + artifact + "-" + version + jarType + ".jar";
+		return group.replace('.', '/') + "/" + artifact + "/" + version + "/"
+				+ artifact + "-" + version + jarType + ".jar";
 	}
 
 	public String getArtifactName(String jarType) {
@@ -46,7 +48,7 @@ public class Dependency {
 		}
 		return artifact + "-" + version + jarType + ".jar";
 	}
-	
+
 	public boolean isMavenObject() {
 		return group.charAt(0) != '<';
 	}
@@ -58,12 +60,14 @@ public class Dependency {
 
 		if (new File(dependencyFolder, src).exists()) {
 			// have sources
-			sb.append(MessageFormat.format(
-					"<classpathentry kind=\"lib\" path=\"{0}/{1}\" sourcepath=\"{0}/{2}\" />\n", folder, lib,
-					src));
+			sb.append(MessageFormat
+					.format("<classpathentry kind=\"lib\" path=\"{0}/{1}\" sourcepath=\"{0}/{2}\" />\n",
+							folder, lib, src));
 		} else {
 			// no sources
-			sb.append(MessageFormat.format("<classpathentry kind=\"lib\" path=\"{0}/{1}\" />\n", folder, lib));
+			sb.append(MessageFormat.format(
+					"<classpathentry kind=\"lib\" path=\"{0}/{1}\" />\n",
+					folder, lib));
 		}
 	}
 

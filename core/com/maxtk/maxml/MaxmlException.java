@@ -1,4 +1,5 @@
 package com.maxtk.maxml;
+
 /**
  * MaxmlException is thrown by the MaxmlParser.
  * 

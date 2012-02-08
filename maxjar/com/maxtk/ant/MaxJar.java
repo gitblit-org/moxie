@@ -49,7 +49,8 @@ public class MaxJar extends GenJar {
 		// automatic manifest entries from Maxilla metadata
 		setManifest("Created-By", "Maxilla");
 		setManifest("Build-Jdk", System.getProperty("java.version"));
-		setManifest("Build-Date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		setManifest("Build-Date",
+				new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
 		setManifest("Implementation-Title", Property.max_name);
 		setManifest("Implementation-Vendor", Property.max_vendor);
@@ -65,9 +66,9 @@ public class MaxJar extends GenJar {
 		if (mainclass != null) {
 			setManifest("Main-Class", mainclass.getName().replace('/', '.'));
 		}
-//		if (splash != null) {
-//			setManifest("SplashScreen-Image", splash);
-//		}
+		// if (splash != null) {
+		// setManifest("SplashScreen-Image", splash);
+		// }
 
 		// automatic classpath resolution, if not manually specufued
 		if (classpath == null) {

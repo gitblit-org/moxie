@@ -15,6 +15,8 @@
  */
 package com.maxtk.maxml;
 
+import static java.text.MessageFormat.format;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -24,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -50,7 +51,8 @@ public class MaxmlParser {
 	 * @param lines
 	 * @return an object map
 	 */
-	public Map<String, Object> parse(BufferedReader reader) throws IOException {
+	public Map<String, Object> parse(BufferedReader reader) throws IOException,
+			MaxmlException {
 		String lastKey = null;
 		MaxmlMap map = new MaxmlMap();
 		ArrayList<Object> array = null;
@@ -148,7 +150,7 @@ public class MaxmlParser {
 	 * @param value
 	 * @return and object
 	 */
-	public Object parseValue(String value) {
+	public Object parseValue(String value) throws MaxmlException {
 		value = value.trim();
 		if (value.length() == 0) {
 			// empty value
@@ -168,15 +170,33 @@ public class MaxmlParser {
 			return value.substring(1, value.length() - 1).trim();
 		}
 		if (value.charAt(0) == '[' && value.charAt(value.length() - 1) == ']') {
-			// array
+			// inline list
 			ArrayList<Object> array = new ArrayList<Object>();
 			String inside = value.substring(1, value.length() - 1).trim();
 			// http://www.programmersheaven.com/user/Jonathan/blog/73-Splitting-CSV-with-regex
-			for (String field : inside.split(",(?=(?:[^\\\"]*\\\"[^\\\"]*[\\\"^,]*\\\")*(?![^\\\"]*\\\"))")) {
+			for (String field : inside
+					.split(",(?=(?:[^\\\"]*\\\"[^\\\"]*[\\\"^,]*\\\")*(?![^\\\"]*\\\"))")) {
 				Object object = parseValue(field);
 				array.add(object);
 			}
 			return array;
+		}
+		if (value.charAt(0) == '{' && value.charAt(value.length() - 1) == '}') {
+			// inline map
+			MaxmlMap map = new MaxmlMap();
+			String inside = value.substring(1, value.length() - 1).trim();
+			for (String kvp : inside.split(",")) {
+				int colon = kvp.indexOf(':');
+				if (colon < 0) {
+					throw new MaxmlException(
+							format("Illegal value \"{0}\". Inline map must have key:value pairs!\n{1}",
+									kvp, value));
+				}
+				String[] chunks = kvp.split(":");
+				Object o = parseValue(chunks[1].trim());
+				map.put(chunks[0].trim(), o);
+			}
+			return map;
 		}
 
 		String vlc = value.toLowerCase();

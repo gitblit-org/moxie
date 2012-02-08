@@ -62,7 +62,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.DataType;
 import org.apache.tools.ant.types.Path;
 
-
 /**
  * This class encapsulates the concept of a library - either a set of files in a
  * directory or a jar's content. If a directory is specified, all files in that
@@ -258,7 +257,9 @@ public class LibrarySpec extends DataType implements JarSpec {
 				// this means Manifests, Index lists and signing information
 				String name = zentry.getName();
 				if (name.startsWith("META-INF")) {
-					if (name.toUpperCase().endsWith(".SF") || name.toUpperCase().endsWith(".RSA") || name.toUpperCase().endsWith(".MF"))
+					if (name.toUpperCase().endsWith(".SF")
+							|| name.toUpperCase().endsWith(".RSA")
+							|| name.toUpperCase().endsWith(".MF"))
 						continue;
 				}
 				//

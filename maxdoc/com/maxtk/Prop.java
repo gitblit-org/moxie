@@ -31,13 +31,13 @@ public class Prop {
 	public void setFile(String file) {
 		this.file = file;
 	}
-	
+
 	public void addKeyword(Keyword keyword) {
 		keywords.add(keyword.value);
 	}
-	
+
 	public boolean containsKeyword(String comment) {
-		for (String keyword:keywords) {
+		for (String keyword : keywords) {
 			if (comment.contains(keyword)) {
 				return true;
 			}

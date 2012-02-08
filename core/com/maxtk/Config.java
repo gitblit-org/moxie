@@ -53,8 +53,8 @@ public class Config implements Serializable {
 	File outputFolder;
 	boolean configureEclipseClasspath;
 
-	public static Config load(String path) throws IOException, MaxmlException {
-		return new Config().parse(path);
+	public static Config load(File file) throws IOException, MaxmlException {
+		return new Config().parse(file);
 	}
 
 	private Config() {
@@ -70,23 +70,26 @@ public class Config implements Serializable {
 	public String toString() {
 		return "Config (" + name + " " + version + ")";
 	}
-	
+
 	public void addMavenUrl(String url) {
+		if (url.equalsIgnoreCase(Constants.MAVENCENTRAL)) {
+			url = Constants.MAVENCENTRAL_URL;
+		}
 		Set<String> urls = new LinkedHashSet<String>(mavenUrls);
 		urls.add(url);
 		mavenUrls = new ArrayList<String>(urls);
 	}
 
 	@SuppressWarnings("unchecked")
-	Config parse(String path) throws IOException, MaxmlException {
-		File conf = new File(path);
-		if (!conf.exists()) {
+	Config parse(File file) throws IOException, MaxmlException {
+		if (!file.exists()) {
 			Setup.out.println(MessageFormat.format(
-					"{0} does not exist, using defaults.", path));
+					"{0} does not exist, using defaults.",
+					file.getAbsolutePath()));
 			return this;
 		}
-		
-		String content = FileUtils.readContent(conf, "\n").trim();
+
+		String content = FileUtils.readContent(file, "\n").trim();
 		Map<String, Object> map = Maxml.parse(content);
 
 		// metadata
@@ -108,8 +111,8 @@ public class Config implements Serializable {
 		List<String> urls = readStrings(map, Key.mavenUrls, mavenUrls);
 		mavenUrls = new ArrayList<String>();
 		for (String url : urls) {
-			if ("mavencentral".equalsIgnoreCase(url)) {
-				mavenUrls.add("http://repo1.maven.org/maven2");
+			if (Constants.MAVENCENTRAL.equalsIgnoreCase(url)) {
+				mavenUrls.add(Constants.MAVENCENTRAL_URL);
 			} else {
 				mavenUrls.add(url);
 			}
@@ -117,11 +120,19 @@ public class Config implements Serializable {
 
 		// parse library dependencies
 		if (map.containsKey(Key.dependencies.name())) {
-			List<List<String>> values = (List<List<String>>) map.get(Key.dependencies.name());
+			List<?> values = (List<?>) map.get(Key.dependencies.name());
 			List<Dependency> libs = new ArrayList<Dependency>();
-			for (List<String> lib : values) {
-				Dependency mo = new Dependency(lib.get(0), lib.get(1), lib.get(2));
-				libs.add(mo);
+			for (Object definition : values) {
+				if (definition instanceof String) {
+					String[] list = definition.toString().split(":");
+					Dependency mo = new Dependency(list[0], list[1], list[2]);
+					libs.add(mo);
+				} else if (definition instanceof List<?>) {
+					List<String> list = (List<String>) definition;
+					Dependency mo = new Dependency(list.get(0), list.get(1),
+							list.get(2));
+					libs.add(mo);
+				}
 			}
 			if (libs.size() == 0) {
 				keyError(Key.dependencies);
@@ -209,7 +220,8 @@ public class Config implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	List<File> readFiles(Map<String, Object> map, Key key, List<File> defaultValue) {
+	List<File> readFiles(Map<String, Object> map, Key key,
+			List<File> defaultValue) {
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());
 			if (o instanceof List) {

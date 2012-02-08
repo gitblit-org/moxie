@@ -67,7 +67,6 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 
-
 /**
  * Driver class for the <genjar> task.
  * <p>
@@ -79,7 +78,7 @@ import org.apache.tools.ant.types.Reference;
  * @version $Revision: 1.11 $ $Date: 2003/03/06 01:22:00 $
  */
 public class GenJar extends Task {
-	
+
 	protected List jarSpecs = new ArrayList(32);
 
 	private List libraries = new ArrayList(8);
@@ -108,15 +107,15 @@ public class GenJar extends Task {
 	/**
 	 * main execute for genjar
 	 * <ol>
-	 * <li> setup logger
-	 * <li> ensure classpath is setup (with any additions from sub-elements
-	 * <li> initialize file resolvers
-	 * <li> initialize the manifest
-	 * <li> resolve resource file paths resolve class file paths generate
+	 * <li>setup logger
+	 * <li>ensure classpath is setup (with any additions from sub-elements
+	 * <li>initialize file resolvers
+	 * <li>initialize the manifest
+	 * <li>resolve resource file paths resolve class file paths generate
 	 * dependancy graphs for class files and resolve those paths check for
 	 * duplicates
-	 * <li> generate manifest entries for all candidate files
-	 * <li> build jar
+	 * <li>generate manifest entries for all candidate files
+	 * <li>build jar
 	 * </ol>
 	 * 
 	 * 
@@ -130,7 +129,7 @@ public class GenJar extends Task {
 		if (classFilter == null) {
 			classFilter = new ClassFilter(logger);
 		}
-		
+
 		if ((destFile == null) && (destDir == null)) {
 			throw new BuildException(
 					"maxjar: Either a destfile or destdir attribute is required",
@@ -205,11 +204,12 @@ public class GenJar extends Task {
 			try {
 				js.resolve(this);
 			} catch (FileNotFoundException ioe) {
-					throw new BuildException("Unable to resolve: " + js.getName() + "\nFileNotFound=" + ioe.getMessage(),
-							ioe, getLocation());
+				throw new BuildException("Unable to resolve: " + js.getName()
+						+ "\nFileNotFound=" + ioe.getMessage(), ioe,
+						getLocation());
 			} catch (IOException ioe) {
-					throw new BuildException("Unable to resolve: " + js.getName() + "\nMSG=" + ioe.getMessage(),
-						ioe, getLocation());
+				throw new BuildException("Unable to resolve: " + js.getName()
+						+ "\nMSG=" + ioe.getMessage(), ioe, getLocation());
 			}
 			//
 			// before adding a new jarspec - see if it already exists
@@ -244,15 +244,15 @@ public class GenJar extends Task {
 									+ jes.toString(), ioe, getLocation());
 				}
 			}
-//			mft.addEntry(jes.getJarName(), jes.getAttributes());
+			// mft.addEntry(jes.getJarName(), jes.getAttributes());
 		}
 
 		if (destFile != null) {
 			JarOutputStream jout = null;
 			InputStream is = null;
 			try {
-				jout = new JarOutputStream(new FileOutputStream(destFile), mft
-						.getManifest());
+				jout = new JarOutputStream(new FileOutputStream(destFile),
+						mft.getManifest());
 
 				for (Iterator it = entries.iterator(); it.hasNext();) {
 					JarEntrySpec jes = (JarEntrySpec) it.next();
@@ -260,8 +260,7 @@ public class GenJar extends Task {
 					is = resolveEntry(jes);
 
 					if (is == null) {
-						logger
-								.error("Unable to locate previously resolved resource");
+						logger.error("Unable to locate previously resolved resource");
 						logger.error("       Jar Name:" + jes.getJarName());
 						logger.error(" Resoved Source:" + jes.getSourceFile());
 						try {
@@ -346,8 +345,7 @@ public class GenJar extends Task {
 					is = resolveEntry(jes);
 
 					if (is == null) {
-						logger
-								.error("Unable to locate previously resolved resource");
+						logger.error("Unable to locate previously resolved resource");
 						logger.error("       Jar Name:" + jes.getJarName());
 						logger.error(" Resoved Source:" + jes.getSourceFile());
 						try {
@@ -415,7 +413,7 @@ public class GenJar extends Task {
 	 * 
 	 * @return A <path>
 	 * 
-	 * element.
+	 *         element.
 	 */
 	public Path createClasspath() {
 		if (classpath == null) {
@@ -444,7 +442,7 @@ public class GenJar extends Task {
 		jarSpecs.add(cs);
 		return cs;
 	}
-	
+
 	/**
 	 * Builds a manifest element.
 	 * 
@@ -490,7 +488,6 @@ public class GenJar extends Task {
 		libraries.add(lspec);
 		return lspec;
 	}
-
 
 	/**
 	 * Sets the name of the jar file to be created.

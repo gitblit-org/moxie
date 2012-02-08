@@ -63,11 +63,12 @@ public class JGitUtils {
 		if (gitDir == null || !gitDir.exists()) {
 			throw new BuildException("Can not find .git folder for " + folder);
 		}
-		
+
 		String hashid = "";
 		try {
 			Repository repository = new FileRepository(gitDir);
-			ObjectId objectId = repository.resolve(org.eclipse.jgit.lib.Constants.HEAD);
+			ObjectId objectId = repository
+					.resolve(org.eclipse.jgit.lib.Constants.HEAD);
 			hashid = objectId.getName().toString();
 			repository.close();
 		} catch (IOException io) {
@@ -77,7 +78,7 @@ public class JGitUtils {
 		}
 		return hashid;
 	}
-	
+
 	/**
 	 * Create an orphaned branch in a repository.
 	 * 
@@ -87,8 +88,8 @@ public class JGitUtils {
 	 *            if unspecified, Maxilla will be the author of this new branch
 	 * @return true if successful
 	 */
-	public static boolean createOrphanBranch(Repository repository, String branchName,
-			PersonIdent author) {
+	public static boolean createOrphanBranch(Repository repository,
+			String branchName, PersonIdent author) {
 		boolean success = false;
 		String message = "Created branch " + branchName;
 		if (author == null) {
@@ -126,7 +127,8 @@ public class JGitUtils {
 					}
 					RefUpdate ru = repository.updateRef(branchName);
 					ru.setNewObjectId(commitId);
-					ru.setRefLogMessage("commit: " + revCommit.getShortMessage(), false);
+					ru.setRefLogMessage(
+							"commit: " + revCommit.getShortMessage(), false);
 					Result rc = ru.forceUpdate();
 					switch (rc) {
 					case NEW:
@@ -148,10 +150,11 @@ public class JGitUtils {
 		}
 		return success;
 	}
-	
-	public static void updateGhPages(File repositoryFolder, File sourceFolder, boolean obliterate) {
+
+	public static void updateGhPages(File repositoryFolder, File sourceFolder,
+			boolean obliterate) {
 		String ghpages = "refs/heads/gh-pages";
-		try {			
+		try {
 			File gitDir = FileKey.resolve(repositoryFolder, FS.DETECTED);
 			Repository repository = new FileRepository(gitDir);
 
@@ -165,11 +168,13 @@ public class JGitUtils {
 			ObjectInserter odi = repository.newObjectInserter();
 			try {
 				// Create the in-memory index of the new/updated issue.
-				DirCache index = createIndex(repository, headId, sourceFolder, obliterate);
+				DirCache index = createIndex(repository, headId, sourceFolder,
+						obliterate);
 				ObjectId indexTreeId = index.writeTree(odi);
 
 				// Create a commit object
-				PersonIdent author = new PersonIdent("Maxilla", "maxilla@localhost");
+				PersonIdent author = new PersonIdent("Maxilla",
+						"maxilla@localhost");
 				CommitBuilder commit = new CommitBuilder();
 				commit.setAuthor(author);
 				commit.setCommitter(author);
@@ -188,7 +193,8 @@ public class JGitUtils {
 					RefUpdate ru = repository.updateRef(ghpages);
 					ru.setNewObjectId(commitId);
 					ru.setExpectedOldObjectId(headId);
-					ru.setRefLogMessage("commit: " + revCommit.getShortMessage(), false);
+					ru.setRefLogMessage(
+							"commit: " + revCommit.getShortMessage(), false);
 					Result rc = ru.forceUpdate();
 					switch (rc) {
 					case NEW:
@@ -197,11 +203,13 @@ public class JGitUtils {
 						break;
 					case REJECTED:
 					case LOCK_FAILURE:
-						throw new ConcurrentRefUpdateException(JGitText.get().couldNotLockHEAD,
-								ru.getRef(), rc);
+						throw new ConcurrentRefUpdateException(
+								JGitText.get().couldNotLockHEAD, ru.getRef(),
+								rc);
 					default:
 						throw new JGitInternalException(MessageFormat.format(
-								JGitText.get().updatingRefFailed, ghpages, commitId.toString(), rc));
+								JGitText.get().updatingRefFailed, ghpages,
+								commitId.toString(), rc));
 					}
 				} finally {
 					revWalk.release();
@@ -214,7 +222,7 @@ public class JGitUtils {
 			t.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Creates an in-memory index of the issue change.
 	 * 
@@ -227,8 +235,8 @@ public class JGitUtils {
 	 * @return an in-memory index
 	 * @throws IOException
 	 */
-	private static DirCache createIndex(Repository repo, ObjectId headId, File sourceFolder,
-			boolean obliterate) throws IOException {
+	private static DirCache createIndex(Repository repo, ObjectId headId,
+			File sourceFolder, boolean obliterate) throws IOException {
 
 		DirCache inCoreIndex = DirCache.newInCore();
 		DirCacheBuilder dcBuilder = inCoreIndex.builder();
@@ -240,8 +248,9 @@ public class JGitUtils {
 			List<File> files = listFiles(sourceFolder);
 			for (File file : files) {
 				// create an index entry for the file
-				final DirCacheEntry dcEntry = new DirCacheEntry(StringUtils.getRelativePath(
-						sourceFolder.getPath(), file.getPath()));
+				final DirCacheEntry dcEntry = new DirCacheEntry(
+						StringUtils.getRelativePath(sourceFolder.getPath(),
+								file.getPath()));
 				dcEntry.setLength(file.length());
 				dcEntry.setLastModified(file.lastModified());
 				dcEntry.setFileMode(FileMode.REGULAR_FILE);
@@ -252,8 +261,8 @@ public class JGitUtils {
 				// insert object
 				InputStream inputStream = new FileInputStream(file);
 				try {
-					dcEntry.setObjectId(inserter.insert(Constants.OBJ_BLOB, file.length(),
-							inputStream));
+					dcEntry.setObjectId(inserter.insert(Constants.OBJ_BLOB,
+							file.length(), inputStream));
 				} finally {
 					inputStream.close();
 				}
@@ -267,21 +276,24 @@ public class JGitUtils {
 				TreeWalk treeWalk = new TreeWalk(repo);
 				int hIdx = -1;
 				if (headId != null)
-					hIdx = treeWalk.addTree(new RevWalk(repo).parseTree(headId));
+					hIdx = treeWalk
+							.addTree(new RevWalk(repo).parseTree(headId));
 				treeWalk.setRecursive(true);
 
 				while (treeWalk.next()) {
 					String path = treeWalk.getPathString();
 					CanonicalTreeParser hTree = null;
 					if (hIdx != -1)
-						hTree = treeWalk.getTree(hIdx, CanonicalTreeParser.class);
+						hTree = treeWalk.getTree(hIdx,
+								CanonicalTreeParser.class);
 					if (!ignorePaths.contains(path)) {
 						// add entries from HEAD for all other paths
 						if (hTree != null) {
 							// create a new DirCacheEntry with data retrieved
 							// from
 							// HEAD
-							final DirCacheEntry dcEntry = new DirCacheEntry(path);
+							final DirCacheEntry dcEntry = new DirCacheEntry(
+									path);
 							dcEntry.setObjectId(hTree.getEntryObjectId());
 							dcEntry.setFileMode(hTree.getEntryFileMode());
 
@@ -294,7 +306,7 @@ public class JGitUtils {
 				// release the treewalk
 				treeWalk.release();
 			}
-			
+
 			// finish temporary in-core index used for this commit
 			dcBuilder.finish();
 		} finally {

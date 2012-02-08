@@ -45,7 +45,8 @@ public class StringUtils {
 	 * @return plain text with html line breaks
 	 */
 	public static String breakLinesForHtml(String string) {
-		return string.replace("\r\n", "<br/>").replace("\r", "<br/>").replace("\n", "<br/>");
+		return string.replace("\r\n", "<br/>").replace("\r", "<br/>")
+				.replace("\n", "<br/>");
 	}
 
 	/**
@@ -100,7 +101,7 @@ public class StringUtils {
 		}
 		return input;
 	}
-	
+
 	/**
 	 * Calculates the SHA1 of the string.
 	 * 
@@ -188,7 +189,8 @@ public class StringUtils {
 	 * @param separator
 	 * @return flattened list
 	 */
-	public static String flattenStrings(Collection<String> values, String separator) {
+	public static String flattenStrings(Collection<String> values,
+			String separator) {
 		StringBuilder sb = new StringBuilder();
 		for (String value : values) {
 			sb.append(value).append(separator);
@@ -216,7 +218,7 @@ public class StringUtils {
 		}
 		return baseUrl + resource;
 	}
-	
+
 	/**
 	 * Returns the path remainder after subtracting the basePath from the
 	 * fullPath.
@@ -226,7 +228,8 @@ public class StringUtils {
 	 * @return the relative path
 	 */
 	public static String getRelativePath(String basePath, String fullPath) {
-		String relativePath = fullPath.substring(basePath.length()).replace('\\', '/');
+		String relativePath = fullPath.substring(basePath.length()).replace(
+				'\\', '/');
 		if (relativePath.charAt(0) == '/') {
 			relativePath = relativePath.substring(1);
 		}

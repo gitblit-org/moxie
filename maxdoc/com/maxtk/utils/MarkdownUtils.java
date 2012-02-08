@@ -38,7 +38,8 @@ public class MarkdownUtils {
 	 * @return html version of markdown text
 	 * @throws java.text.ParseException
 	 */
-	public static String transformMarkdown(String markdown) throws java.text.ParseException {
+	public static String transformMarkdown(String markdown)
+			throws java.text.ParseException {
 		try {
 			StringReader reader = new StringReader(markdown);
 			String html = transformMarkdown(reader);
@@ -57,7 +58,8 @@ public class MarkdownUtils {
 	 * @return html version of the markdown text
 	 * @throws java.text.ParseException
 	 */
-	public static String transformMarkdown(Reader markdownReader) throws java.text.ParseException {
+	public static String transformMarkdown(Reader markdownReader)
+			throws java.text.ParseException {
 		// Read raw markdown content and transform it to html
 		StringWriter writer = new StringWriter();
 		try {

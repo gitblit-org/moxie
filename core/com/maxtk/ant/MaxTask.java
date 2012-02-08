@@ -43,7 +43,7 @@ public abstract class MaxTask extends Task {
 			}
 		}
 	}
-	
+
 	protected void setProperty(String prop, String value) {
 		if (!StringUtils.isEmpty(value)) {
 			getProject().setProperty(prop, value);

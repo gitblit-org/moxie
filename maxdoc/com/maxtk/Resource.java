@@ -22,7 +22,6 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.FileSet;
 
-
 public class Resource {
 
 	public List<FileSet> filesets = new ArrayList<FileSet>();

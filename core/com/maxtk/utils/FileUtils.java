@@ -47,7 +47,8 @@ public class FileUtils {
 	public static String readContent(File file, String lineEnding) {
 		StringBuilder sb = new StringBuilder();
 		try {
-			InputStreamReader is = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+			InputStreamReader is = new InputStreamReader(new FileInputStream(
+					file), Charset.forName("UTF-8"));
 			BufferedReader reader = new BufferedReader(is);
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -58,7 +59,8 @@ public class FileUtils {
 			}
 			reader.close();
 		} catch (Throwable t) {
-			System.err.println("Failed to read content of " + file.getAbsolutePath());
+			System.err.println("Failed to read content of "
+					+ file.getAbsolutePath());
 			t.printStackTrace();
 		}
 		return sb.toString();
@@ -74,7 +76,8 @@ public class FileUtils {
 	public static List<String> readLines(File file, String lineEnding) {
 		List<String> lines = new ArrayList<String>();
 		try {
-			InputStreamReader is = new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8"));
+			InputStreamReader is = new InputStreamReader(new FileInputStream(
+					file), Charset.forName("UTF-8"));
 			BufferedReader reader = new BufferedReader(is);
 			String line = null;
 			while ((line = reader.readLine()) != null) {
@@ -82,7 +85,8 @@ public class FileUtils {
 			}
 			reader.close();
 		} catch (Throwable t) {
-			System.err.println("Failed to read content of " + file.getAbsolutePath());
+			System.err.println("Failed to read content of "
+					+ file.getAbsolutePath());
 			t.printStackTrace();
 		}
 		return lines;
@@ -96,13 +100,14 @@ public class FileUtils {
 	 */
 	public static void writeContent(File file, String content) {
 		try {
-			OutputStreamWriter os = new OutputStreamWriter(new FileOutputStream(file),
-					Charset.forName("UTF-8"));
+			OutputStreamWriter os = new OutputStreamWriter(
+					new FileOutputStream(file), Charset.forName("UTF-8"));
 			BufferedWriter writer = new BufferedWriter(os);
 			writer.append(content);
 			writer.close();
 		} catch (Throwable t) {
-			System.err.println("Failed to write content of " + file.getAbsolutePath());
+			System.err.println("Failed to write content of "
+					+ file.getAbsolutePath());
 			t.printStackTrace();
 		}
 	}
@@ -141,12 +146,13 @@ public class FileUtils {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static void copy(File destinationFolder, File... filesOrFolders) throws FileNotFoundException,
-			IOException {
+	public static void copy(File destinationFolder, File... filesOrFolders)
+			throws FileNotFoundException, IOException {
 		destinationFolder.mkdirs();
 		for (File file : filesOrFolders) {
 			if (file.isDirectory()) {
-				copy(new File(destinationFolder, file.getName()), file.listFiles());
+				copy(new File(destinationFolder, file.getName()),
+						file.listFiles());
 			} else {
 				File dFile = new File(destinationFolder, file.getName());
 				BufferedInputStream bufin = null;

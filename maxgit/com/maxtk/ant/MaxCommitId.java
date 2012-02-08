@@ -17,6 +17,8 @@ package com.maxtk.ant;
 
 import java.io.File;
 
+import org.apache.tools.ant.BuildException;
+
 import com.maxtk.Config;
 import com.maxtk.utils.JGitUtils;
 import com.maxtk.utils.StringUtils;
@@ -33,7 +35,12 @@ public class MaxCommitId extends MaxGitTask {
 	public void execute() throws org.apache.tools.ant.BuildException {
 		Config conf = (Config) getProject()
 				.getReference(Property.max_conf.id());
-		checkDependencies(conf);
+		try {
+			checkDependencies(conf);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new BuildException(e);
+		}
 
 		if (repositoryFolder == null || !repositoryFolder.exists()) {
 			repositoryFolder = new File(getProject().getProperty("basedir"));

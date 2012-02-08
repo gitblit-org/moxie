@@ -29,7 +29,7 @@ public class MaxExtract extends MaxTask {
 	String srcfile;
 
 	String field;
-	
+
 	String property;
 
 	public void setSrcfile(String file) {
@@ -57,7 +57,7 @@ public class MaxExtract extends MaxTask {
 		}
 		File f = new File(srcfile);
 		String content = FileUtils.readContent(f, "\n");
-		String[] lines = content.split("\n");		
+		String[] lines = content.split("\n");
 		Pattern p = Pattern.compile(field + "\\s*=\\s*\"?(.*?)(\"?\\s*;)");
 		for (String line : lines) {
 			Matcher m = p.matcher(line);

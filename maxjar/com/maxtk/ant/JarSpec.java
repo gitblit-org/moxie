@@ -51,7 +51,6 @@ package com.maxtk.ant;
 import java.io.IOException;
 import java.util.List;
 
-
 /**
  * Interface for file-like elements specified in the project file.
  * 

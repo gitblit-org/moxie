@@ -17,6 +17,7 @@ import org.junit.Test;
 import com.maxtk.Config;
 import com.maxtk.maxml.Maxml;
 import com.maxtk.maxml.MaxmlException;
+import com.maxtk.maxml.MaxmlMap;
 import com.maxtk.maxml.MaxmlParser;
 import com.maxtk.utils.FileUtils;
 
@@ -24,7 +25,7 @@ import com.maxtk.utils.FileUtils;
  * Unit tests for the Maxml parser.
  * 
  * @author James Moger
- *
+ * 
  */
 public class TestMaxmlParser {
 	String config = "name: Maxilla\ndescription: Project Build Toolkit\nversion: 0.1.0\nurl: http://github.com/gitblit/maxilla\nartifactId: maxilla\nvendor: James Moger\nconfigureEclipseClasspath: true\nsourceFolders: [core, maxjar, maxdoc]\nmap: { \na1: 12\na2: 3.14f\na3 : {\nb1:100l\nb2 : {\nc1:6.023d\nc2:c2value\n}\nb3:b3value\n}\na4: a4value\n}\noutputFolder: bin\nmavenUrls: [mavencentral]\ndependencyFolder: ext\ndependencies:\n - [ant, 1.7.0, org/apache/ant]\n - [markdownpapers-core, 1.2.5, org/tautua/markdownpapers]\nsimpledate:2003-07-04\ncanonical:2001-07-04T16:08:56.235Z\niso8601:2002-07-04T12:08:56.235-0400";
@@ -32,6 +33,8 @@ public class TestMaxmlParser {
 	String blockTest = "name: Maxilla\ndescription: \"\"\"\nMaxilla\nis a\nJava Project Build Toolkit\n\"\"\"\nversion: 0.1.0";
 
 	String blockTest2 = "name: Maxilla\ndescription:\n\"\"\"\nMaxilla\n is a\n  Java Project Build Toolkit\"\"\"\nversion: 0.1.0";
+	
+	String inlineMap = "{ id: myproxy, active: true, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }";
 
 	@SuppressWarnings("rawtypes")
 	@Test
@@ -41,10 +44,10 @@ public class TestMaxmlParser {
 		assertEquals("string", parser.parseValue("string"));
 		assertEquals("string", parser.parseValue("'string'"));
 		assertEquals("string", parser.parseValue("\"string\""));
-//		assertEquals("Maxilla\n is a\n  Java Project Build Toolkit", Maxml
-//				.parse(blockTest).get("description"));
-//		assertEquals("Maxilla\n is a\n  Java Project Build Toolkit", Maxml
-//				.parse(blockTest2).get("description"));
+		// assertEquals("Maxilla\n is a\n  Java Project Build Toolkit", Maxml
+		// .parse(blockTest).get("description"));
+		// assertEquals("Maxilla\n is a\n  Java Project Build Toolkit", Maxml
+		// .parse(blockTest2).get("description"));
 
 		// numerics
 		assertEquals(101, parser.parseValue("101"));
@@ -72,13 +75,19 @@ public class TestMaxmlParser {
 		// null
 		assertNull(parser.parseValue("~"));
 
-		// lists
+		// inline lists
 		assertEquals("[a, b, c]", parser.parseValue("[a, b, c]").toString());
-		assertEquals("[a, b, c]", parser.parseValue("['a', 'b', 'c']").toString());
-		assertEquals("[a, b, c]", parser.parseValue("[\"a\", \"b\", \"c\"]").toString());
+		assertEquals("[a, b, c]", parser.parseValue("['a', 'b', 'c']")
+				.toString());
+		assertEquals("[a, b, c]", parser.parseValue("[\"a\", \"b\", \"c\"]")
+				.toString());
 		assertEquals(3, ((List) parser.parseValue("[a, b, c]")).size());
+
+		assertEquals(3,
+				((List) parser.parseValue("[a, \"b, or beta\", c]")).size());
 		
-		assertEquals(3, ((List) parser.parseValue("[a, \"b, or beta\", c]")).size());
+		// inline map
+		assertEquals(7, ((MaxmlMap) parser.parseValue(inlineMap)).size());
 
 		// dates
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -121,7 +130,7 @@ public class TestMaxmlParser {
 
 	@Test
 	public void testConfig() throws Exception {
-		Config config = Config.load("build.maxml");
+		Config config = Config.load(new File("build.maxml"));
 		assertEquals("Maxilla", config.getName());
 		assertEquals(5, config.getSourceFolders().size());
 	}
