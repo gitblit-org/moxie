@@ -1,8 +1,7 @@
 ## Maxml
 
 Maxml (pronounced *maximal*) looks and feels like very simple [YAML](http://yaml.org), but it is not YAML.  Maxml is meant to be a very small and simple subset of YAML with some significant structural changes.
-
-The reference implementation parser is a single Java class of about 250 lines.  
+ 
 The Maxml binary package is < 10KB.
 
 ### Why Maxml?
@@ -22,10 +21,16 @@ So I wrote my own YAML-ish parser and it is nice and small.
 
 1. Maxml files must be UTF-8 encoded.
 2. Leading whitespace is completely irrelevant and ignored (except for text blocks) so indent all you want.
-3. Lines that start with *#* are comments and are ignored
-4. Lines that equal *---* or *...* are ignored
-5. Blank lines are ignored unless they are within a string block
-6. Values that are not explicitly quoted as strings are subject to fall-through interpretation
+3. All lines are expected to begin with a *key*: sequence unless
+    1. the line equals **"""** *(start/end text block)*
+	2. the line is blank *(included in a text block, otherwise ignored)*
+    3. the line starts with **#** *(comment, ignored)*
+	4. the line equals **---** or **...** *(reserved, ignored)*
+    5. the line equals **}** *(end map)*
+    6. the line begins with a **-** dash *(list item)*
+4. Values that equal **{** define a map and all subsequent lines will fill the map until a **}** line is processed    
+5. Values that equals **"""** define a text block and all subsequent lines will be appended to that text block until a **"""** line is processed
+6. All remaining values are subject to fall-through interpretation
 
 ### Value Fall-Through Interpretation
 
@@ -36,12 +41,13 @@ Values are deserialized based on the following algorithm.  If a step is successf
 3. Single-quoted strings *'my string'*
 4. Double-quoted strings *"my string"*
 5. Inline-list *[a, b, c, d]*
-6. Boolean interpretation *true, false, yes, no, on, off*
-7. Numeric interpretation *octal* (32-bit signed integer, 64-bit signed long), *whole number* (32-bit signed integer, 64-bit signed long), *hexadecimal* (32-bit signed integer, 64-bit signed long), *decimal* (float, double)  
+6. Inline-map *{a:1, b:2, c:3, d:4}*
+7. Boolean interpretation *true, false, yes, no, on, off*
+8. Numeric interpretation *octal* (32-bit signed integer, 64-bit signed long), *whole number* (32-bit signed integer, 64-bit signed long), *hexadecimal* (32-bit signed integer, 64-bit signed long), *decimal* (float, double)  
 if the value fits in the *smaller* container, the smaller container will be used.  
 e.g. 1 is an integer but 4,000,000,000 is a long
-8. Date interpretation: *canonical, iso8601, simple date*
-9. String
+9. Date interpretation: *canonical, iso8601, simple date*
+10. String
  
 ### Key Definitions
 
@@ -121,23 +127,38 @@ myNull: ~
 
 ### Collections
 
-#### Lists
+Parsed collections preserve definition order.
+
+#### Lists/Sequences
+*java.util.ArrayList*
+
+Lists may be defined using the following notation where each item in the list is defined on a separate line with a leading dash character.
 
 %BEGINMAXML%
-# inline list
-myList1: [src, tests, extra]
 # multi-line list
 myList2:
 - src
 - tests
 - extra
-# a list of lists
+%ENDMAXML%
+
+Simple lists may also be defined inline as key-value pairs.  
+Inline lists may not have nested collections.
+
+%BEGINMAXML%
+# inline list
+myList1: [src, tests, extra]
+# a list of inline lists
 myList3:
 - [apple, banana, strawberry]
 - [celery, carrot, lettuce]
 %ENDMAXML%
 
 #### Maps
+*java.util.LinkedHashMap*
+
+Maps may be defined using the familiar curly brace notation.  
+Indentation is used for readability but is otherwise ignored by the parser. 
 
 %BEGINMAXML%
 myMap1: {
@@ -151,4 +172,11 @@ myMap1: {
      - tests
      - extra
 }
+%ENDMAXML%
+
+Simple maps may also be defined inline as key-value pairs.  
+Inline maps may not have nested collections and they may not have strings with commas.
+
+%BEGINMAXML%
+myMap2: { field1: test, field2: 100, field3: true }
 %ENDMAXML%
