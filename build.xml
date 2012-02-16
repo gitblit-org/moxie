@@ -74,6 +74,7 @@
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
+				<exclude name="org.w3c." />
 			</classfilter>
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxExtract" />
@@ -88,6 +89,7 @@
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
 				<exclude name="org.tautua." />
+				<exclude name="org.w3c." />
 			</classfilter>
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxExtract" />

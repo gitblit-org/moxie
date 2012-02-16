@@ -24,7 +24,6 @@ import org.apache.tools.ant.types.Path.PathElement;
 
 import com.maxtk.Config;
 import com.maxtk.Constants;
-import com.maxtk.Dependency;
 import com.maxtk.Setup;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.StringUtils;
@@ -39,8 +38,6 @@ public class MaxSetup extends MaxTask {
 
 	@Override
 	public void execute() throws BuildException {
-		checkDependencies();
-
 		try {
 			Config conf;
 			if (StringUtils.isEmpty(config)) {
@@ -95,15 +92,4 @@ public class MaxSetup extends MaxTask {
 			throw new BuildException(e);
 		}
 	}
-
-	protected void checkDependencies() {
-		try {
-			Class.forName("argo.jdom.JdomParser");
-		} catch (Throwable t) {
-			Dependency argo = new Dependency("argo", "2.23",
-					"net/sourceforge/argo");
-			// Setup.retriveInternalDependency(config, argo);
-		}
-	}
-
 }

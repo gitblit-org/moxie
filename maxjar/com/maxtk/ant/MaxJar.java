@@ -64,7 +64,11 @@ public class MaxJar extends GenJar {
 		setManifest("Bundle-Vendor", Property.max_vendor);
 
 		if (mainclass != null) {
-			setManifest("Main-Class", mainclass.getName().replace('/', '.'));
+			String mc = mainclass.getName().replace('/', '.');
+			if (mc.endsWith(".class")) {
+				mc = mc.substring(0, mc.length() - ".class".length());
+			}
+			setManifest("Main-Class", mc);
 		}
 		// if (splash != null) {
 		// setManifest("SplashScreen-Image", splash);

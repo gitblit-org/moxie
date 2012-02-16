@@ -15,13 +15,16 @@
  */
 package com.maxtk;
 
-import java.io.File;
 import java.text.MessageFormat;
 
 /**
  * Dependency represents a retrievable artifact.
  */
 public class Dependency {
+		
+	public static final String POM = ".pom";
+	public static final String LIB = ".jar";
+	public static final String SRC = "-sources.jar";
 
 	final String group;
 	final String artifact;
@@ -33,42 +36,24 @@ public class Dependency {
 		this.group = group;
 	}
 
-	public String getArtifactPath(String jarType) {
+	public String getArtifactPath(String fileType) {
 		if ("<googlecode>".equals(group)) {
 			return MessageFormat.format("http://{0}.googlecode.com/files/{1}",
 					version, artifact);
 		}
 		return group.replace('.', '/') + "/" + artifact + "/" + version + "/"
-				+ artifact + "-" + version + jarType + ".jar";
+				+ artifact + "-" + version + fileType;
 	}
 
-	public String getArtifactName(String jarType) {
+	public String getArtifactName(String fileType) {
 		if ("<googlecode>".equals(group)) {
 			return artifact;
 		}
-		return artifact + "-" + version + jarType + ".jar";
+		return artifact + "-" + version + fileType;
 	}
 
 	public boolean isMavenObject() {
 		return group.charAt(0) != '<';
-	}
-
-	public void buildEclipseClasspath(File dependencyFolder, StringBuilder sb) {
-		String folder = dependencyFolder.toString();
-		String lib = getArtifactName("");
-		String src = getArtifactName("-sources");
-
-		if (new File(dependencyFolder, src).exists()) {
-			// have sources
-			sb.append(MessageFormat
-					.format("<classpathentry kind=\"lib\" path=\"{0}/{1}\" sourcepath=\"{0}/{2}\" />\n",
-							folder, lib, src));
-		} else {
-			// no sources
-			sb.append(MessageFormat.format(
-					"<classpathentry kind=\"lib\" path=\"{0}/{1}\" />\n",
-					folder, lib));
-		}
 	}
 
 	@Override

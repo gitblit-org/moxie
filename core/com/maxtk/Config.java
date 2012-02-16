@@ -16,6 +16,7 @@
 package com.maxtk;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -57,7 +58,7 @@ public class Config implements Serializable {
 		return new Config().parse(file);
 	}
 
-	private Config() {
+	public Config() {
 		// default configuration
 		sourceFolders = Arrays.asList(new File("src"));
 		outputFolder = new File("bin");
@@ -324,11 +325,15 @@ public class Config implements Serializable {
 	}
 
 	public List<File> getClasspath() {
+		File[] jars = dependencyFolder.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File file) {
+				return file.isFile() && file.getName().endsWith(Dependency.LIB)
+						&& !file.getName().endsWith(Dependency.SRC);
+			}
+		});
 		List<File> files = new ArrayList<File>();
-		for (Dependency obj : dependencies) {
-			File file = new File(dependencyFolder, obj.getArtifactName(""));
-			files.add(file);
-		}
+		files.addAll(Arrays.asList(jars));
 		files.add(outputFolder);
 		return files;
 	}

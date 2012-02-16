@@ -285,13 +285,13 @@ public class Docs {
 								fileName)), Charset.forName("UTF-8"));
 				writer.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n<html>\n<head>\n");
 				writer.write(header);
-				writer.write(links);
 				writer.write("\n</head>");
 				if (doc.injectPrettify) {
 					writer.write("\n<body onload='prettyPrint()'>");
 				} else {
 					writer.write("\n<body>");
 				}
+				writer.write(links);
 				if (link.sidebar) {
 					writer.write("\n<div class='container-fluid'>");
 					writer.write("\n<div class='row-fluid'>");
