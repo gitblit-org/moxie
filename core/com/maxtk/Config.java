@@ -38,7 +38,7 @@ public class Config implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	enum Key {
-		version, name, description, url, vendor, artifactId, sourceFolder, sourceFolders, outputFolder, projects, dependencyFolder, mavenUrls, dependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
+		version, name, description, url, vendor, artifactId, sourceFolder, sourceFolders, outputFolder, projects, dependencyFolder, mavenUrls, dependencies, compileDependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
 	}
 
 	String name;
@@ -49,7 +49,8 @@ public class Config implements Serializable {
 	String artifactId;
 	List<String> projects;
 	List<String> mavenUrls;
-	List<Dependency> dependencies;
+	List<Dependency> runtimeDependencies;
+	List<Dependency> compileDependencies;
 	File dependencyFolder;
 	List<File> sourceFolders;
 	File outputFolder;
@@ -65,7 +66,8 @@ public class Config implements Serializable {
 		outputFolder = new File("bin");
 		projects = new ArrayList<String>();
 		mavenUrls = Arrays.asList("mavencentral");
-		dependencies = new ArrayList<Dependency>();
+		runtimeDependencies = new ArrayList<Dependency>();
+		compileDependencies = new ArrayList<Dependency>();
 		dependencyFolder = new File("lib");
 	}
 
@@ -86,8 +88,7 @@ public class Config implements Serializable {
 	@SuppressWarnings("unchecked")
 	Config parse(File file) throws IOException, MaxmlException {
 		if (!file.exists()) {
-			Setup.out.println(MessageFormat.format(
-					"{0} does not exist, using defaults.",
+			Setup.out.println(MessageFormat.format("{0} does not exist, using defaults.",
 					file.getAbsolutePath()));
 			return this;
 		}
@@ -104,8 +105,7 @@ public class Config implements Serializable {
 		artifactId = readString(map, Key.artifactId, false);
 
 		// build parameters
-		configureEclipseClasspath = readBoolean(map,
-				Key.configureEclipseClasspath, false);
+		configureEclipseClasspath = readBoolean(map, Key.configureEclipseClasspath, false);
 		sourceFolders = readFiles(map, Key.sourceFolders, sourceFolders);
 		outputFolder = readFile(map, Key.outputFolder, outputFolder);
 		projects = readStrings(map, Key.projects, projects);
@@ -121,10 +121,14 @@ public class Config implements Serializable {
 				mavenUrls.add(url);
 			}
 		}
+		runtimeDependencies = parseDependencies(map, Key.dependencies);
+		compileDependencies = parseDependencies(map, Key.compileDependencies);
+		return this;
+	}
 
-		// parse library dependencies
-		if (map.containsKey(Key.dependencies.name())) {
-			List<?> values = (List<?>) map.get(Key.dependencies.name());
+	List<Dependency> parseDependencies(Map<String, Object> map, Key key) {
+		if (map.containsKey(key.name())) {
+			List<?> values = (List<?>) map.get(key.name());
 			List<Dependency> libs = new ArrayList<Dependency>();
 			for (Object definition : values) {
 				if (definition instanceof String) {
@@ -133,18 +137,17 @@ public class Config implements Serializable {
 					libs.add(mo);
 				} else if (definition instanceof List<?>) {
 					List<String> list = (List<String>) definition;
-					Dependency mo = new Dependency(list.get(0), list.get(1),
-							list.get(2));
+					Dependency mo = new Dependency(list.get(0), list.get(1), list.get(2));
 					libs.add(mo);
 				}
 			}
 			if (libs.size() == 0) {
-				keyError(Key.dependencies);
+				keyError(key);
 			} else {
-				dependencies = libs;
+				return libs;
 			}
 		}
-		return this;
+		return new ArrayList<Dependency>();
 	}
 
 	String readString(Map<String, Object> map, Key key, boolean required) {
@@ -169,8 +172,7 @@ public class Config implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	List<String> readStrings(Map<String, Object> map, Key key,
-			List<String> defaultValue) {
+	List<String> readStrings(Map<String, Object> map, Key key, List<String> defaultValue) {
 		if (map.containsKey(key.name())) {
 			List<String> strings = new ArrayList<String>();
 			Object o = map.get(key.name());
@@ -224,8 +226,7 @@ public class Config implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	List<File> readFiles(Map<String, Object> map, Key key,
-			List<File> defaultValue) {
+	List<File> readFiles(Map<String, Object> map, Key key, List<File> defaultValue) {
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());
 			if (o instanceof List) {
@@ -254,8 +255,7 @@ public class Config implements Serializable {
 	}
 
 	void keyError(Key key) {
-		Setup.out.println(MessageFormat.format(
-				"{0} is improperly specified, using default", key.name()));
+		Setup.out.println(MessageFormat.format("{0} is improperly specified, using default", key.name()));
 	}
 
 	void describe(PrintStream out) {
@@ -285,9 +285,8 @@ public class Config implements Serializable {
 			out.println(url);
 		}
 		out.println(Constants.SEP);
-		out.println(MessageFormat.format("library dependencies (=> {0})",
-				dependencyFolder));
-		for (Dependency dep : dependencies) {
+		out.println(MessageFormat.format("library dependencies (=> {0})", dependencyFolder));
+		for (Dependency dep : runtimeDependencies) {
 			out.print(Constants.INDENT);
 			out.println(dep.toString());
 		}
@@ -326,8 +325,18 @@ public class Config implements Serializable {
 	public String getArtifactId() {
 		return artifactId;
 	}
+	
+	public List<File> getRuntimeArtifacts() {
+		List<File> jars = getCompileTimeArtifacts();
+		for (Dependency dependency : compileDependencies) {
+			// remove compile-time dependencies
+			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
+			jars.remove(jar);
+		}
+		return jars;
+	}
 
-	public List<File> getArtifactClasspath() {
+	public List<File> getCompileTimeArtifacts() {
 		File[] jars = dependencyFolder.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File file) {
@@ -347,11 +356,11 @@ public class Config implements Serializable {
 	public File getOutputFolder() {
 		return outputFolder;
 	}
-	
+
 	public List<String> getProjects() {
 		return projects;
 	}
-	
+
 	public boolean configureEclipseClasspath() {
 		return configureEclipseClasspath;
 	}

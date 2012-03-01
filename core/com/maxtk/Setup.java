@@ -83,7 +83,12 @@ public class Setup {
 		out.println(Constants.SEP);
 		out.println("resolving dependencies");
 		List<Dependency> allDependencies = new ArrayList<Dependency>();
-		for (Dependency obj : conf.dependencies) {
+		for (Dependency obj : conf.runtimeDependencies) {
+			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
+					conf.dependencyFolder, obj);
+			allDependencies.addAll(set);
+		}
+		for (Dependency obj : conf.compileDependencies) {
 			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
 					conf.dependencyFolder, obj);
 			allDependencies.addAll(set);

@@ -84,24 +84,8 @@ public class MaxSetup extends MaxTask {
 			}
 			addReference(Property.max_sourceFolders, sources);
 
-			// setup max-classpath reference
-			Path classpath = new Path(getProject());
-			for (File file : conf.getArtifactClasspath()) {
-				PathElement element = classpath.createPathElement();
-				element.setLocation(file);
-			}
-
-			// output folder
-			PathElement of = classpath.createPathElement();
-			of.setLocation(conf.getOutputFolder());
-			
-			// add project dependencies 
-			for (File folder : buildDependentProjectsClasspath(conf)) {
-				PathElement element = classpath.createPathElement();
-				element.setLocation(folder);
-			}
-
-			addReference(Property.max_classpath, classpath);
+			setClasspath(Property.max_runtime_classpath, conf, conf.getRuntimeArtifacts());
+			setClasspath(Property.max_compiletime_classpath, conf, conf.getCompileTimeArtifacts());
 
 			setProperty(Property.max_outputFolder, conf.getOutputFolder()
 					.toString());
@@ -118,6 +102,26 @@ public class MaxSetup extends MaxTask {
 			e.printStackTrace();
 			throw new BuildException(e);
 		}
+	}
+	
+	private void setClasspath(Property key, Config conf, List<File> jars) {
+		Path cp = new Path(getProject());
+		// jars
+		for (File jar : jars) {
+			PathElement element = cp.createPathElement();
+			element.setLocation(jar);
+		}
+
+		// output folder
+		PathElement of = cp.createPathElement();
+		of.setLocation(conf.getOutputFolder());
+		
+		// add project dependencies 
+		for (File folder : buildDependentProjectsClasspath(conf)) {
+			PathElement element = cp.createPathElement();
+			element.setLocation(folder);
+		}
+		addReference(key, cp);
 	}
 	
 	private List<File> buildDependentProjectsClasspath(Config conf) {
@@ -185,7 +189,7 @@ public class MaxSetup extends MaxTask {
 	}
 	
 	void writeEclipseClasspath(Config conf) {
-		List<File> jars = conf.getArtifactClasspath();
+		List<File> jars = conf.getCompileTimeArtifacts();
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<classpath>\n");

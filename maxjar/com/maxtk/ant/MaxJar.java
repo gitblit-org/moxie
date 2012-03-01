@@ -20,6 +20,7 @@ import java.util.Date;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Path.PathElement;
 
 import com.maxtk.ant.MaxTask.Property;
 import com.maxtk.ant.Mft.MftAttr;
@@ -28,6 +29,8 @@ import com.maxtk.utils.StringUtils;
 public class MaxJar extends GenJar {
 
 	ClassSpec mainclass;
+
+	boolean fatjar;
 
 	/**
 	 * Builds a <mainclass> element.
@@ -44,13 +47,16 @@ public class MaxJar extends GenJar {
 		throw new BuildException("Can only specify one main class");
 	}
 
+	public void setFatjar(boolean value) {
+		this.fatjar = value;
+	}
+
 	@Override
 	public void execute() throws BuildException {
 		// automatic manifest entries from Maxilla metadata
 		setManifest("Created-By", "Maxilla");
 		setManifest("Build-Jdk", System.getProperty("java.version"));
-		setManifest("Build-Date",
-				new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		setManifest("Build-Date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
 		setManifest("Implementation-Title", Property.max_name);
 		setManifest("Implementation-Vendor", Property.max_vendor);
@@ -74,11 +80,27 @@ public class MaxJar extends GenJar {
 		// setManifest("SplashScreen-Image", splash);
 		// }
 
-		// automatic classpath resolution, if not manually specufued
+		// automatic classpath resolution, if not manually specified
 		if (classpath == null) {
-			Object o = getProject().getReference(Property.max_classpath.id());
+			Object o = getProject().getReference(Property.max_runtime_classpath.id());
 			if (o != null && o instanceof Path) {
-				classpath = (Path) o;
+				Path cp = (Path) o;
+				if (fatjar) {
+					// FatJar generation
+					classpath = createClasspath();					
+					for (String path : cp.list()) {
+						if (path.toLowerCase().endsWith(".jar")) {
+							LibrarySpec lib = createLibrary();
+							lib.setJar(path);
+						} else {
+							PathElement element = classpath.createPathElement();
+							element.setPath(path);
+						}
+					}
+				} else {
+					// standard GenJar class dependency resolution
+					classpath = cp;
+				}
 			}
 		}
 

@@ -23,7 +23,7 @@
 		<!-- Compile all of Maxilla with retrieved dependencies -->
 		<javac debug="true" destdir="${maxilla.bin}" includeantruntime="true" failonerror="true">
 			<src refid="max-sourceFolders" />
-			<classpath refid="max-classpath" />
+			<classpath refid="max-compiletime-classpath" />
 		</javac>
 
 		<!-- Copy the bundled MaxDoc resources -->

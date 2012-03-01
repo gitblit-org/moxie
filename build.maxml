@@ -9,7 +9,7 @@ sourceFolders : [core, maxgit, maxjar, maxdoc, tests]
 outputFolder : bin
 mavenUrls : [ central ]
 dependencyFolder : ext
-dependencies :
+compileDependencies :
 - ant:1.7.0:org.apache.ant
 - junit:4.8.2:junit
 - org.eclipse.jgit:1.2.0.201112221803-r:org/eclipse/jgit

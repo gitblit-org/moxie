@@ -98,6 +98,8 @@ public class GenJar extends Task {
 	private Set resolved = new HashSet();
 
 	private Logger logger = null;
+	
+	private boolean resolveClassDependencies;
 
 	/** Constructor for the GenJar object */
 	public GenJar() {
