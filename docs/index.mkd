@@ -5,11 +5,9 @@ Maxilla is a small collection of ANT tasks to facilitate building Java projects.
 
 The Maxilla binaries and this site are built with Maxilla.
 
-### Core Distribution (40KB)
+### Core Package (45KB)
 
-The core distribution includes the Setup task, the Git tasks, and some simple processing tasks.
-
-The Git tasks depend on [JGit](http://eclipse.org/jgit) which is resolved automatically either from your local Maven repository, your local Maxilla repository, or MavenCentral. 
+The core package includes the Setup task and some simple processing tasks.
 
 #### [MaxSetup](./maxsetup.html)
 
@@ -21,6 +19,12 @@ The Git tasks depend on [JGit](http://eclipse.org/jgit) which is resolved automa
 Pull the contents of a field from a source file.  
 This is useful for pulling a version identifier from source that you want to use in your build script.
 
+### Pro Package (90KB)
+
+The pro package adds some Git tasks and a fork of the super-useful GenJar task.
+
+The Git tasks depend on [JGit](http://eclipse.org/jgit) which is resolved automatically either from your local Maven repository, your local Maxilla repository, or MavenCentral.
+
 #### [MaxCommitId](./maxcommitid.html)
 
 Determines the Git commit hash of HEAD for the repository.
@@ -29,13 +33,13 @@ Determines the Git commit hash of HEAD for the repository.
 
 Updates the gh-pages branch of a Git repository with content from the specified folder.
 
-### All Distribution (280KB)
-
-The all distribution includes the core plus the following tasks.
-
 #### [MaxJar](./maxjar.html)
 
 This is a fork of the super-useful GenJar.
+
+### All Package (285KB)
+
+The all package includes the pro package plus the following tasks.
 
 #### [MaxDoc](./maxdoc.html)
 

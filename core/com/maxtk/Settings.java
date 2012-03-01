@@ -92,10 +92,12 @@ public class Settings implements Serializable {
 	}
 
 	void describe(PrintStream out) {
-		out.println("maxilla settings");
-		for (Proxy proxy : proxies) {
-			if (proxy.active) {
-				describe(out, "proxy", proxy.host + ":" + proxy.port);
+		if (proxies.size() > 0) {
+			out.println("maxilla settings");
+			for (Proxy proxy : proxies) {
+				if (proxy.active) {
+					describe(out, "proxy", proxy.host + ":" + proxy.port);
+				}
 			}
 		}
 	}

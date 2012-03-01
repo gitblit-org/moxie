@@ -15,12 +15,9 @@
  */
 package com.maxtk;
 
-import static java.text.MessageFormat.format;
-
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -58,6 +55,9 @@ public class Setup {
 			file = configFile;
 		}
 
+		// make the maxilla folder
+		maxillaSettings.getParentFile().mkdirs();
+
 		if (!maxillaSettings.exists()) {
 			// write default maxilla settings
 			FileWriter writer = new FileWriter(maxillaSettings);
@@ -87,19 +87,6 @@ public class Setup {
 			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
 					conf.dependencyFolder, obj);
 			allDependencies.addAll(set);
-		}
-
-		// create/update Eclipse configuration files
-		if (conf.configureEclipseClasspath) {
-			if (verbose) {
-				out.println(Constants.SEP);
-			}
-			out.println("rebuilding eclipse .classpath");
-			configureEclipseClasspath(conf);
-			if (verbose) {
-				out.print(Constants.INDENT);
-			}
-			out.println("done. refresh your project.");
 		}
 		return conf;
 	}
@@ -388,43 +375,5 @@ public class Setup {
 			t.printStackTrace();
 		}
 		return null;
-	}
-
-	static void configureEclipseClasspath(Config conf) {
-		File[] jars = conf.dependencyFolder.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File file) {
-				return file.isFile() && file.getName().endsWith(Dependency.LIB)
-						&& !file.getName().endsWith(Dependency.SRC);
-			}
-		});
-		StringBuilder sb = new StringBuilder();
-		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		sb.append("<classpath>\n");
-		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
-		for (File folder : conf.sourceFolders) {
-			sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n",
-					folder));
-		}
-		for (File jar : jars) {
-			File srcJar = new File(conf.dependencyFolder, jar.getName()
-					.substring(0, jar.getName().lastIndexOf('.'))
-					+ "-sources.jar");
-			if (srcJar.exists()) {
-				// have sources
-				sb.append(format(
-						"<classpathentry kind=\"lib\" path=\"{0}\" sourcepath=\"{1}\" />\n",
-						jar.getAbsolutePath(), srcJar.getAbsolutePath()));
-			} else {
-				// no sources
-				sb.append(format(
-						"<classpathentry kind=\"lib\" path=\"{0}\" />\n",
-						jar.getAbsolutePath()));
-			}
-		}
-		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n",
-				conf.outputFolder));
-		sb.append("</classpath>");
-		FileUtils.writeContent(new File(".classpath"), sb.toString());
 	}
 }

@@ -38,7 +38,7 @@ public class Config implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	enum Key {
-		version, name, description, url, vendor, artifactId, sourceFolder, sourceFolders, outputFolder, dependencyFolder, mavenUrls, dependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
+		version, name, description, url, vendor, artifactId, sourceFolder, sourceFolders, outputFolder, projects, dependencyFolder, mavenUrls, dependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
 	}
 
 	String name;
@@ -47,6 +47,7 @@ public class Config implements Serializable {
 	String url;
 	String vendor;
 	String artifactId;
+	List<String> projects;
 	List<String> mavenUrls;
 	List<Dependency> dependencies;
 	File dependencyFolder;
@@ -62,6 +63,7 @@ public class Config implements Serializable {
 		// default configuration
 		sourceFolders = Arrays.asList(new File("src"));
 		outputFolder = new File("bin");
+		projects = new ArrayList<String>();
 		mavenUrls = Arrays.asList("mavencentral");
 		dependencies = new ArrayList<Dependency>();
 		dependencyFolder = new File("lib");
@@ -106,6 +108,7 @@ public class Config implements Serializable {
 				Key.configureEclipseClasspath, false);
 		sourceFolders = readFiles(map, Key.sourceFolders, sourceFolders);
 		outputFolder = readFile(map, Key.outputFolder, outputFolder);
+		projects = readStrings(map, Key.projects, projects);
 		dependencyFolder = readFile(map, Key.dependencyFolder, dependencyFolder);
 
 		// allow shortcut names for maven repositories
@@ -256,7 +259,7 @@ public class Config implements Serializable {
 	}
 
 	void describe(PrintStream out) {
-		out.println("metadata");
+		out.println("project metadata");
 		describe(out, Key.name, name);
 		describe(out, Key.description, description);
 		describe(out, Key.version, version);
@@ -324,7 +327,7 @@ public class Config implements Serializable {
 		return artifactId;
 	}
 
-	public List<File> getClasspath() {
+	public List<File> getArtifactClasspath() {
 		File[] jars = dependencyFolder.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File file) {
@@ -334,7 +337,6 @@ public class Config implements Serializable {
 		});
 		List<File> files = new ArrayList<File>();
 		files.addAll(Arrays.asList(jars));
-		files.add(outputFolder);
 		return files;
 	}
 
@@ -344,5 +346,13 @@ public class Config implements Serializable {
 
 	public File getOutputFolder() {
 		return outputFolder;
+	}
+	
+	public List<String> getProjects() {
+		return projects;
+	}
+	
+	public boolean configureEclipseClasspath() {
+		return configureEclipseClasspath;
 	}
 }

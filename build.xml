@@ -56,12 +56,16 @@
 			<fileset dir="ext" includes="*.jar" excludes="*-sources.jar" />
 		</path>
 
+		<!-- Core -->
 		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
 		<taskdef classname="com.maxtk.ant.MaxExtract" name="maxextract" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
+
+		<!-- Pro -->
 		<taskdef classname="com.maxtk.ant.MaxCommitId" name="maxcommitid" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
 		<taskdef classname="com.maxtk.ant.MaxGhPages" name="maxghpages" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
-
 		<taskdef classname="com.maxtk.ant.MaxJar" name="maxjar" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
+		
+		<!-- All -->
 		<taskdef classname="com.maxtk.ant.MaxDoc" name="maxdoc" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
 
 		<!-- Run Maxilla setup -->
@@ -78,11 +82,26 @@
 			</classfilter>
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxExtract" />
-			<class name="com.maxtk.ant.MaxCommitId" />
-			<class name="com.maxtk.ant.MaxGhPages" />
 			<resource file="${basedir}/defs/core/tasks.properties" />
 		</maxjar>
+		
+		
+		<!-- Maxilla-Pro -->
+		<maxjar destfile="maxilla-pro.jar">
+			<classfilter>
+				<exclude name="org.apache." />
+				<exclude name="org.eclipse." />
+				<exclude name="org.w3c." />
+			</classfilter>
+			<class name="com.maxtk.ant.MaxSetup" />
+			<class name="com.maxtk.ant.MaxExtract" />
+			<class name="com.maxtk.ant.MaxCommitId" />
+			<class name="com.maxtk.ant.MaxGhPages" />
+			<class name="com.maxtk.ant.MaxJar" />
+			<resource file="${basedir}/defs/pro/tasks.properties" />
+		</maxjar>
 
+		
 		<!-- Maxilla-All -->
 		<maxjar destfile="maxilla-all.jar">
 			<classfilter>
@@ -121,10 +140,11 @@
 				<menu name="tasks">
 					<page name="MaxSetup" src="maxsetup.mkd" />
 					<page name="MaxExtract" src="maxextract.mkd" />
-					<page name="MaxCommitId" src="maxcommitid.mkd" />
-					<page name="MaxGhPages" src="maxghpages.mkd" />
 					<divider />
+					<page name="MaxCommitId" src="maxcommitid.mkd" />
+					<page name="MaxGhPages" src="maxghpages.mkd" />					
 					<page name="MaxJar" src="maxjar.mkd" />
+					<divider />
 					<page name="MaxDoc" src="maxdoc.mkd" />
 				</menu>
 				<page name="maxml" src="maxml.mkd" sidebar="true" />
@@ -132,6 +152,7 @@
 				<page name="releases" src="releases.mkd" />
 				<menu name="download">
 					<link name="maxilla-core" src="maxilla-core.jar" />
+					<link name="maxilla-pro" src="maxilla-pro.jar" />
 					<link name="maxilla-all" src="maxilla-all.jar" />
 					<divider />
 					<link name="maxml" src="maxml.jar" />
