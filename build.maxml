@@ -9,8 +9,8 @@ sourceFolders : [core, maxgit, maxjar, maxdoc, tests]
 outputFolder : bin
 mavenUrls : [ central ]
 dependencyFolder : ext
-compileDependencies :
-- ant:1.7.0:org.apache.ant
-- junit:4.8.2:junit
-- org.eclipse.jgit:1.2.0.201112221803-r:org/eclipse/jgit
-- [markdownpapers-core, 1.2.5, org/tautua/markdownpapers]
+dependencies :
+- compile org.apache.ant:ant:1.7.0
+- compile "junit:junit:4.8.2"
+- compile org/eclipse/jgit:org.eclipse.jgit:1.3.0.201202151440-r@jar
+- [compile, org/tautua/markdownpapers, markdownpapers-core, 1.2.7]

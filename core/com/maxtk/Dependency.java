@@ -16,6 +16,9 @@
 package com.maxtk;
 
 import java.text.MessageFormat;
+import java.util.List;
+
+import com.maxtk.utils.StringUtils;
 
 /**
  * Dependency represents a retrievable artifact.
@@ -29,11 +32,48 @@ public class Dependency {
 	final String group;
 	final String artifact;
 	final String version;
+	final String classifier;
+	final boolean resolveTransitiveDependencies;
 
-	public Dependency(String artifact, String version, String group) {
-		this.artifact = artifact;
-		this.version = version;
+	public Dependency(String def) {
+		this(def.split(":"));		
+	}
+	
+	public Dependency(String [] def) {
+		this(def[0], def[1], def[2], def.length == 4 ? def[3] : null);
+	}
+	
+	public Dependency(List<String> def) {
+		this(def.get(0), def.get(1), def.get(2), def.size() == 4 ? def.get(3) : null);
+	}
+	
+	public Dependency(String group, String artifact, String version) {
+		this(group, artifact, version, null);
+	}
+	
+	public Dependency(String group, String artifact, String version, String classifier) {
 		this.group = group;
+		this.artifact = artifact;		
+		this.version = stripExtension(version);
+		this.classifier = stripExtension(classifier);
+		if (!StringUtils.isEmpty(this.classifier)) {
+			// check for @extension on classifier
+			resolveTransitiveDependencies = this.classifier.equals(classifier);
+		} else {
+			// check for @extension on version
+			resolveTransitiveDependencies = this.version.equals(version);
+		}
+	}
+	
+	private String stripExtension(String def) {
+		if (!StringUtils.isEmpty(def)) {			
+			if (def.indexOf('@') > -1) {
+				return def.substring(0, def.indexOf('@'));
+			}
+			return def;
+		} else {
+			return "";
+		}
 	}
 
 	public String getArtifactPath(String fileType) {

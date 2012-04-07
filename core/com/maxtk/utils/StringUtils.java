@@ -235,5 +235,23 @@ public class StringUtils {
 		}
 		return relativePath;
 	}
-
+	
+	/**
+	 * Strip surrounding quotes from a string.
+	 * 
+	 * @param value
+	 * @return the string without leading or trailing quotes 
+	 */
+	public static String stripQuotes(String value) {
+		if ((value.charAt(0) == '\"') || (value.charAt(0) == '\'')) {
+			// strip leading quote
+			value = value.substring(1);
+		}
+		if ((value.charAt(value.length() - 1) == '\"') ||
+				(value.charAt(value.length() - 1) == '\'')) {
+			// strip trailing quote
+			value = value.substring(0, value.length() - 1);
+		}
+		return value;
+	}
 }

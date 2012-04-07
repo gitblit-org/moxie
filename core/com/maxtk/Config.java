@@ -38,7 +38,7 @@ public class Config implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	enum Key {
-		version, name, description, url, vendor, artifactId, sourceFolder, sourceFolders, outputFolder, projects, dependencyFolder, mavenUrls, dependencies, compileDependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
+		version, name, description, url, vendor, artifactId, sourceFolder, sourceFolders, outputFolder, projects, dependencyFolder, mavenUrls, dependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
 	}
 
 	String name;
@@ -84,8 +84,7 @@ public class Config implements Serializable {
 		urls.add(url);
 		mavenUrls = new ArrayList<String>(urls);
 	}
-
-	@SuppressWarnings("unchecked")
+	
 	Config parse(File file) throws IOException, MaxmlException {
 		if (!file.exists()) {
 			Setup.out.println(MessageFormat.format("{0} does not exist, using defaults.",
@@ -121,33 +120,57 @@ public class Config implements Serializable {
 				mavenUrls.add(url);
 			}
 		}
-		runtimeDependencies = parseDependencies(map, Key.dependencies);
-		compileDependencies = parseDependencies(map, Key.compileDependencies);
+		parseDependencies(map, Key.dependencies);		
 		return this;
 	}
 
-	List<Dependency> parseDependencies(Map<String, Object> map, Key key) {
+	void parseDependencies(Map<String, Object> map, Key key) {
 		if (map.containsKey(key.name())) {
 			List<?> values = (List<?>) map.get(key.name());
-			List<Dependency> libs = new ArrayList<Dependency>();
+			List<Dependency> libs;
 			for (Object definition : values) {
 				if (definition instanceof String) {
-					String[] list = definition.toString().split(":");
-					Dependency mo = new Dependency(list[0], list[1], list[2]);
+					String def = definition.toString();
+					if (def.startsWith("compile")) {
+						// compile-time dependency
+						libs = compileDependencies;
+						def = def.substring("compile".length()).trim();
+					} else if (def.startsWith("runtime")) {
+						// runtime dependency
+						libs = runtimeDependencies;
+						def = def.substring("runtime".length()).trim();
+					} else {
+						// default to compile-time dependency
+						libs = compileDependencies;
+					}
+					
+					def = StringUtils.stripQuotes(def);										
+					Dependency mo = new Dependency(def);
 					libs.add(mo);
 				} else if (definition instanceof List<?>) {
 					List<String> list = (List<String>) definition;
-					Dependency mo = new Dependency(list.get(0), list.get(1), list.get(2));
+					int offset = 0;
+					if (list.get(0).equals("compile")) {
+						// compile-time dependency
+						libs = compileDependencies;
+						offset = 1;
+					} else if (list.get(0).equals("runtime")) {
+						// runtime dependency
+						libs = runtimeDependencies;
+						offset = 1;
+					} else {
+						// default to compile-time dependency
+						libs = compileDependencies;
+					}
+					if (offset > 0) {
+						// drop first element
+						list = list.subList(offset, list.size());
+					}
+					Dependency mo = new Dependency(list);
 					libs.add(mo);
 				}
 			}
-			if (libs.size() == 0) {
-				keyError(key);
-			} else {
-				return libs;
-			}
-		}
-		return new ArrayList<Dependency>();
+		}		
 	}
 
 	String readString(Map<String, Object> map, Key key, boolean required) {

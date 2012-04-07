@@ -331,7 +331,7 @@ public class Setup {
 		}
 
 		// Read the POM and retrieve any transitive dependencies
-		if (obj.isMavenObject()) {
+		if (obj.isMavenObject() && obj.resolveTransitiveDependencies) {
 			try {
 				File pom = new File(maxillaDir, obj.getArtifactPath(Dependency.POM));
 				if (pom.exists()) {
@@ -341,7 +341,7 @@ public class Setup {
 								&& (StringUtils.isEmpty(dep.scope) || "runtime"
 										.equals(dep.scope))) {
 							Dependency dependency = new Dependency(
-									dep.artifactId, dep.version, dep.groupId);
+									dep.artifactId, dep.version, dep.groupId, null);
 							List<Dependency> transitives = retrieveArtifact(
 									settings, mavenUrls, libsFolder, dependency);
 							allDependencies.addAll(transitives);

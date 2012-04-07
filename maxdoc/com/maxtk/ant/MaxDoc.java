@@ -170,8 +170,8 @@ public class MaxDoc extends Task {
 		try {
 			Class.forName("org.tautua.markdownpapers.Markdown");
 		} catch (Throwable t) {
-			Dependency markdownpapers = new Dependency("markdownpapers-core",
-					"1.2.5", "org/tautua/markdownpapers");
+			Dependency markdownpapers = new Dependency("org/tautua/markdownpapers",
+					"markdownpapers-core", "1.2.5");
 			Setup.retriveInternalDependency(config, markdownpapers);
 		}
 	}

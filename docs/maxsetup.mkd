@@ -14,8 +14,10 @@ outputFolder : 'bin'
 mavenUrls : ['mavencentral']
 dependencyFolder : 'ext'
 dependencies :
-- ['ant', '1.7.0', 'org/apache/ant'],
-- ['markdownpapers-core', '1.2.5', 'org/tautua/markdownpapers']
+- compile org.apache.ant:ant:1.7.0
+- compile "junit:junit:4.8.2"
+- compile org/eclipse/jgit:org.eclipse.jgit:1.3.0.201202151440-r@jar
+- [compile, org/tautua/markdownpapers, markdownpapers-core, 1.2.7]
 %ENDMAXML%
 
 %BEGINXML%
