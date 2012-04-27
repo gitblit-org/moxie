@@ -3,7 +3,9 @@ package com.maxtk;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,6 +42,7 @@ public class PomReader {
 
 	public static List<PomDep> readDependencies(File file) throws Exception {
 		List<PomDep> deps = new ArrayList<PomDep>();
+		Map<String, String> propertyMap = new HashMap<String, String>();
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = factory.newDocumentBuilder();
 		Document doc = builder.parse(file);
@@ -49,7 +52,30 @@ public class PomReader {
 			Node pNode = projectNodes.item(i);
 			if (pNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element element = (Element) pNode;
-				if ("dependencies".equals(element.getTagName())) {
+				if ("groupId".equals(element.getTagName())) {
+					// project groupId
+					String groupId = readStringTag(pNode, "groupId");
+					if (!StringUtils.isEmpty(groupId)) {
+						propertyMap.put("${project.groupId}", groupId);
+					}
+				} else if ("version".equals(element.getTagName())) {
+					// project version
+					String version = readStringTag(pNode, "version");
+					if (!StringUtils.isEmpty(version)) {
+						propertyMap.put("${project.version}", version);
+					}
+				} else if ("parent".equals(element.getTagName())) {
+					// parent properties (shortcut)
+					String groupId = readStringTag(pNode, "groupId");
+					if (!StringUtils.isEmpty(groupId)) {
+						propertyMap.put("${project.groupId}", groupId);
+					}
+					String version = readStringTag(pNode, "version");
+					if (!StringUtils.isEmpty(version)) {
+						propertyMap.put("${project.version}", version);
+					}
+				} else if ("dependencies".equals(element.getTagName())) {
+					// read dependencies
 					NodeList dependencies = (NodeList) element;
 					for (int j = 0; j < dependencies.getLength(); j++) {
 						Node node = dependencies.item(j);
@@ -63,6 +89,12 @@ public class PomReader {
 								dep.scope = "compile";
 							}
 							dep.optional = readBooleanTag(node, "optional");
+							
+							// substitute properties
+							dep.groupId = get(dep.groupId, propertyMap);
+							dep.version = get(dep.version, propertyMap);
+							
+							// add dep object
 							deps.add(dep);
 						}
 					}
@@ -70,6 +102,13 @@ public class PomReader {
 			}
 		}
 		return deps;
+	}
+	
+	private static String get(String key, Map<String, String> propertyMap) {
+		if (propertyMap.containsKey(key)) {
+			return propertyMap.get(key);
+		}
+		return key;
 	}
 
 	private static String readStringTag(Node node, String tag) {
