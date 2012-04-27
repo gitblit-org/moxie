@@ -2,6 +2,7 @@ name : Maxilla
 description : Project Build Toolkit
 version : 0.1.0
 url : http://gitblit.github.com/maxilla
+groupId : com.maxtk
 artifactId : maxilla
 vendor : James Moger 
 configureEclipseClasspath : true

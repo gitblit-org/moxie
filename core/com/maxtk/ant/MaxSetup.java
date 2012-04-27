@@ -72,6 +72,7 @@ public class MaxSetup extends MaxTask {
 			setProperty(Property.max_name, conf.getName());
 			setProperty(Property.max_description, conf.getDescription());
 			setProperty(Property.max_version, conf.getVersion());
+			setProperty(Property.max_groupId, conf.getGroupId());
 			setProperty(Property.max_artifactId, conf.getArtifactId());
 			setProperty(Property.max_url, conf.getUrl());
 			setProperty(Property.max_vendor, conf.getVendor());

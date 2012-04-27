@@ -37,7 +37,7 @@ public class Config implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	enum Key {
-		version, name, description, url, vendor, artifactId, sourceFolder, sourceFolders, outputFolder, projects, dependencyFolder, mavenUrls, dependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
+		version, name, description, url, vendor, groupId, artifactId, sourceFolder, sourceFolders, outputFolder, projects, dependencyFolder, mavenUrls, dependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
 	}
 
 	String name;
@@ -45,6 +45,7 @@ public class Config implements Serializable {
 	String description;
 	String url;
 	String vendor;
+	String groupId;
 	String artifactId;
 	List<String> projects;
 	List<String> mavenUrls;
@@ -106,6 +107,7 @@ public class Config implements Serializable {
 		description = readString(map, Key.description, false);
 		url = readString(map, Key.url, false);
 		vendor = readString(map, Key.vendor, false);
+		groupId = readString(map, Key.groupId, false);
 		artifactId = readString(map, Key.artifactId, false);
 
 		// build parameters
@@ -294,6 +296,7 @@ public class Config implements Serializable {
 		describe(out, Key.version, version);
 		describe(out, Key.vendor, vendor);
 		describe(out, Key.url, url);
+		describe(out, Key.groupId, groupId);
 		describe(out, Key.artifactId, artifactId);
 		out.println(Constants.SEP);
 
@@ -351,6 +354,10 @@ public class Config implements Serializable {
 		return vendor;
 	}
 
+	public String getGroupId() {
+		return groupId;
+	}
+	
 	public String getArtifactId() {
 		return artifactId;
 	}

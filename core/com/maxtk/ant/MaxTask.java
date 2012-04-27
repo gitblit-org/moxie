@@ -22,7 +22,7 @@ import com.maxtk.utils.StringUtils;
 public abstract class MaxTask extends Task {
 
 	public enum Property {
-		max_conf, max_version, max_name, max_description, max_vendor, max_artifactId, max_url, max_outputFolder, max_runtime_classpath, max_compile_classpath, max_test_classpath, max_sourceFolders, max_commit;
+		max_conf, max_version, max_name, max_description, max_vendor, max_groupId, max_artifactId, max_url, max_outputFolder, max_runtime_classpath, max_compile_classpath, max_test_classpath, max_sourceFolders, max_commit;
 
 		public String id() {
 			return name().replace('_', '.');

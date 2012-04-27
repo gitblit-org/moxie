@@ -60,7 +60,7 @@ public class MaxJar extends GenJar {
 
 		setManifest("Implementation-Title", Property.max_name);
 		setManifest("Implementation-Vendor", Property.max_vendor);
-		setManifest("Implementation-Vendor-Id", Property.max_artifactId);
+		setManifest("Implementation-Vendor-Id", Property.max_groupId);
 		setManifest("Implementation-Vendor-URL", Property.max_url);
 		setManifest("Implementation-Version", Property.max_version);
 
@@ -80,6 +80,8 @@ public class MaxJar extends GenJar {
 		// setManifest("SplashScreen-Image", splash);
 		// }
 
+		// TODO specify import-package? and export-package?
+		
 		// automatic classpath resolution, if not manually specified
 		if (classpath == null) {
 			Object o = getProject().getReference(Property.max_compile_classpath.id());
