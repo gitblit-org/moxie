@@ -41,15 +41,11 @@ public class Setup {
 
 	public static PrintStream out = System.out;
 
-	private static File mavenDir = new File(System.getProperty("user.home")
-			+ "/.m2/repository");
-	private static File maxillaSettings = new File(
-			System.getProperty("user.home") + "/.maxilla/settings.maxml");
-	public static File maxillaDir = new File(System.getProperty("user.home")
-			+ "/.maxilla/repository");
+	private static File mavenDir = new File(System.getProperty("user.home") + "/.m2/repository");
+	private static File maxillaSettings = new File(System.getProperty("user.home") + "/.maxilla/settings.maxml");
+	public static File maxillaDir = new File(System.getProperty("user.home") + "/.maxilla/repository");
 
-	public static Config execute(String configFile, boolean verbose)
-			throws IOException, MaxmlException {
+	public static Config execute(String configFile, boolean verbose) throws IOException, MaxmlException {
 		String file = "build.maxml";
 		if (!StringUtils.isEmpty(configFile)) {
 			file = configFile;
@@ -83,23 +79,19 @@ public class Setup {
 		out.println(Constants.SEP);
 		List<Dependency> allDependencies = new ArrayList<Dependency>();
 		for (Dependency obj : conf.compileDependencies) {
-			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
-					conf.dependencyFolder, obj);
+			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls, conf.dependencyFolder, obj);
 			allDependencies.addAll(set);
 		}
 		for (Dependency obj : conf.providedDependencies) {
-			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
-					conf.dependencyFolder, obj);
+			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls, conf.dependencyFolder, obj);
 			allDependencies.addAll(set);
 		}
 		for (Dependency obj : conf.runtimeDependencies) {
-			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
-					conf.dependencyFolder, obj);
+			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls, conf.dependencyFolder, obj);
 			allDependencies.addAll(set);
 		}
 		for (Dependency obj : conf.testDependencies) {
-			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
-					conf.dependencyFolder, obj);
+			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls, conf.dependencyFolder, obj);
 			allDependencies.addAll(set);
 		}		
 		return conf;
@@ -112,8 +104,7 @@ public class Setup {
 	 * @param config
 	 * @param dependencies
 	 */
-	public static void retriveInternalDependency(Config config,
-			Dependency... dependencies) throws IOException, MaxmlException {
+	public static void retriveInternalDependency(Config config, Dependency... dependencies) throws IOException, MaxmlException {
 
 		Settings settings = Settings.load(maxillaSettings);
 
@@ -125,24 +116,20 @@ public class Setup {
 
 		// load classpath from local maven or maxilla repository
 		Class<?>[] PARAMETERS = new Class[] { URL.class };
-		URLClassLoader sysloader = (URLClassLoader) ClassLoader
-				.getSystemClassLoader();
+		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
 		File[] cpFolders = new File[] { mavenDir, maxillaDir };
 		for (Dependency dependency : dependencies) {
 			for (File folder : cpFolders) {
-				File localFile = new File(folder,
-						dependency.getArtifactPath(Dependency.LIB));
+				File localFile = new File(folder, dependency.getArtifactPath(Dependency.LIB));
 				if (localFile.exists()) {
 					try {
 						URL u = localFile.toURI().toURL();
-						Method method = sysclass.getDeclaredMethod("addURL",
-								PARAMETERS);
+						Method method = sysclass.getDeclaredMethod("addURL", PARAMETERS);
 						method.setAccessible(true);
 						method.invoke(sysloader, new Object[] { u });
 					} catch (Throwable t) {
-						System.err
-								.println(MessageFormat
+						System.err.println(MessageFormat
 										.format("Error, could not add {0} to system classloader",
 												localFile.getPath()));
 						t.printStackTrace();
@@ -163,8 +150,7 @@ public class Setup {
 	 *            the maven object to download.
 	 * @return
 	 */
-	static List<Dependency> retrieveArtifact(Settings settings,
-			List<String> mavenUrls, File libsFolder, Dependency obj) {
+	static List<Dependency> retrieveArtifact(Settings settings, List<String> mavenUrls, File libsFolder, Dependency obj) {
 		List<Dependency> allDependencies = new ArrayList<Dependency>();
 		allDependencies.add(obj);
 		for (String mavenUrl : mavenUrls) {
@@ -254,14 +240,10 @@ public class Setup {
 					}
 				}
 
-				String fullUrl = StringUtils.makeUrl(mavenUrl,
-						obj.getArtifactPath(fileType));
+				String fullUrl = StringUtils.makeUrl(mavenUrl, obj.getArtifactPath(fileType));
 				if (!localSource.getAbsoluteFile().getParentFile().exists()) {
-					boolean success = localSource.getAbsoluteFile().getParentFile()
-							.mkdirs();
-					if (!success) {
-						throw new RuntimeException(
-								"Failed to create destination folder structure!");
+					if (!localSource.getAbsoluteFile().getParentFile().mkdirs()) {
+						throw new RuntimeException("Failed to create destination folder structure!");
 					}
 				}
 
@@ -278,8 +260,7 @@ public class Setup {
 						String auth = settings.getProxyAuthorization(mavenUrl);
 						conn.setRequestProperty("Proxy-Authorization", auth);
 					}
-					InputStream in = new BufferedInputStream(
-							conn.getInputStream());
+					InputStream in = new BufferedInputStream(conn.getInputStream());
 					byte[] buffer = new byte[32767];
 
 					while (true) {
@@ -299,44 +280,34 @@ public class Setup {
 				byte[] data = buff.toByteArray();
 				String calculatedSHA1 = StringUtils.getSHA1(data);
 
-				if (!StringUtils.isEmpty(expectedSHA1)
-						&& !calculatedSHA1.equals(expectedSHA1)) {
-					throw new RuntimeException("SHA1 checksum mismatch; got: "
-							+ calculatedSHA1);
+				if (!StringUtils.isEmpty(expectedSHA1) && !calculatedSHA1.equals(expectedSHA1)) {
+					throw new RuntimeException("SHA1 checksum mismatch; got: " + calculatedSHA1);
 				}
 
 				// save artifact to the local Maxilla repository
-				File maxillaFile = new File(maxillaDir,
-						obj.getArtifactPath(fileType));
+				File maxillaFile = new File(maxillaDir, obj.getArtifactPath(fileType));
 				try {
 					maxillaFile.getParentFile().mkdirs();
-					RandomAccessFile ra = new RandomAccessFile(maxillaFile,
-							"rw");
+					RandomAccessFile ra = new RandomAccessFile(maxillaFile, "rw");
 					ra.write(data);
 					ra.setLength(data.length);
 					ra.close();
 				} catch (IOException e) {
-					throw new RuntimeException("Error writing to file "
-							+ maxillaFile, e);
+					throw new RuntimeException("Error writing to file " + maxillaFile, e);
 				}
 
 				// save artifact to the project dependency folder
 				if (!Dependency.POM.equals(fileType) && libsFolder != null) {
-					File projectFile = new File(libsFolder,
-							obj.getArtifactName(fileType));
+					File projectFile = new File(libsFolder, obj.getArtifactName(fileType));
 					try {
-						out.println(StringUtils.leftPad("",
-								maxillaIntro.length() - 3, ' ')
-								+ "=> " + projectFile);
+						out.println(StringUtils.leftPad("", maxillaIntro.length() - 3, ' ') + "=> " + projectFile);
 						projectFile.getParentFile().mkdirs();
-						RandomAccessFile ra = new RandomAccessFile(projectFile,
-								"rw");
+						RandomAccessFile ra = new RandomAccessFile(projectFile, "rw");
 						ra.write(data);
 						ra.setLength(data.length);
 						ra.close();
 					} catch (IOException e) {
-						throw new RuntimeException("Error writing to file "
-								+ projectFile, e);
+						throw new RuntimeException("Error writing to file " + projectFile, e);
 					}
 				}
 			}
@@ -354,10 +325,9 @@ public class Setup {
 					for (PomDep dep : list) {
 						out.append("   ").append(dep.toString()).append('\n');
 						if (dep.resolveDependencies()) {
-							Dependency dependency = new Dependency(dep.groupId,
-									dep.artifactId, dep.version, null);
-							List<Dependency> transitives = retrieveArtifact(
-									settings, mavenUrls, libsFolder, dependency);
+							Dependency dependency = new Dependency(dep.groupId, dep.artifactId, dep.version, null);
+							List<Dependency> transitives = retrieveArtifact(settings, mavenUrls, libsFolder, dependency);
+							obj.transitiveDependencies.addAll(transitives);
 							allDependencies.addAll(transitives);
 						}
 					}

@@ -16,6 +16,8 @@
 package com.maxtk;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.maxtk.utils.StringUtils;
 
@@ -33,6 +35,7 @@ public class Dependency {
 	final String version;
 	final String classifier;
 	final boolean resolveTransitiveDependencies;
+	List<Dependency> transitiveDependencies;
 
 	public Dependency(String def) {
 		this(def.split(":"));		
@@ -47,6 +50,7 @@ public class Dependency {
 		this.artifact = artifact;		
 		this.version = stripExtension(version);
 		this.classifier = stripExtension(classifier);
+		this.transitiveDependencies = new ArrayList<Dependency>();
 		if (!StringUtils.isEmpty(this.classifier)) {
 			// check for @extension on classifier
 			resolveTransitiveDependencies = this.classifier.equals(classifier);

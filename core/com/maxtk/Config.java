@@ -362,49 +362,40 @@ public class Config implements Serializable {
 		return artifactId;
 	}
 	
-	public List<File> getCompileArtifacts() {
+	private List<File> getArtifacts(List<Dependency> dependencies) {
 		List<File> jars = new ArrayList<File>();
-		for (Dependency dependency : compileDependencies) {
+		for (Dependency dependency : dependencies) {
+			if (StringUtils.isEmpty(dependency.version)) {
+				// TODO skip unversioned dependencies for now
+				continue;
+			}
 			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
 			jars.add(jar);
+			if (dependency.transitiveDependencies.size() > 0) {
+				jars.addAll(getArtifacts(dependency.transitiveDependencies));
+			}
 		}
 		return jars;
+	}
+	
+	public List<File> getCompileArtifacts() {		
+		return getArtifacts(compileDependencies);
 	}
 
 	public List<File> getProvidedArtifacts() {
-		List<File> jars = new ArrayList<File>();
-		for (Dependency dependency : providedDependencies) {
-			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
-			jars.add(jar);
-		}
-		return jars;
+		return getArtifacts(providedDependencies);
 	}
 
 	public List<File> getRuntimeArtifacts() {
-		List<File> jars = new ArrayList<File>();
-		for (Dependency dependency : runtimeDependencies) {
-			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
-			jars.add(jar);
-		}
-		return jars;
+		return getArtifacts(runtimeDependencies);
 	}
 	
 	public List<File> getTestArtifacts() {
-		List<File> jars = new ArrayList<File>();
-		for (Dependency dependency : testDependencies) {
-			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
-			jars.add(jar);
-		}
-		return jars;
+		return getArtifacts(testDependencies);
 	}
 	
 	public List<File> getSystemArtifacts() {
-		List<File> jars = new ArrayList<File>();
-		for (Dependency dependency : systemDependencies) {
-			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
-			jars.add(jar);
-		}
-		return jars;
+		return getArtifacts(systemDependencies);
 	}
 	
 	private List<File> getBaseClasspath() {
