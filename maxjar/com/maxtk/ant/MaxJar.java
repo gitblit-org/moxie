@@ -15,6 +15,7 @@
  */
 package com.maxtk.ant;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -104,6 +105,15 @@ public class MaxJar extends GenJar {
 					classpath = cp;
 				}
 			}
+		}
+		
+		if (destFile == null) {
+			// default output jar if file unspecified
+			String name = getProject().getProperty(Property.max_artifactId.id());
+			if (!StringUtils.isEmpty(getProject().getProperty(Property.max_version.id()))) {
+				name += "-" + getProject().getProperty(Property.max_version.id());
+			}
+			destFile = new File(name + ".jar");
 		}
 
 		super.execute();

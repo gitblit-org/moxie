@@ -89,7 +89,7 @@ public class GenJar extends Task {
 
 	private ClassFilter classFilter = null;
 
-	private File destFile = null;
+	protected File destFile = null;
 
 	private File destDir = null;
 
