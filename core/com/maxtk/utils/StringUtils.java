@@ -18,7 +18,9 @@ package com.maxtk.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Utility class of string functions.
@@ -253,5 +255,21 @@ public class StringUtils {
 			value = value.substring(0, value.length() - 1);
 		}
 		return value;
+	}
+	
+	/**
+	 * Breaks the CSV line into strings.
+	 * 
+	 * @param value
+	 * @return a list of strings
+	 */
+	public static List<String> breakCSV(String value) {
+		List<String> array = new ArrayList<String>();
+		// http://www.programmersheaven.com/user/Jonathan/blog/73-Splitting-CSV-with-regex
+		for (String field : value
+				.split(",(?=(?:[^\\\"]*\\\"[^\\\"]*[\\\"^,]*\\\")*(?![^\\\"]*\\\"))")) {
+			array.add(stripQuotes(field.trim()).trim());
+		}
+		return array;
 	}
 }

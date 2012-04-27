@@ -201,11 +201,11 @@ public class Config implements Serializable {
 				List<String> values = (List<String>) o;
 				strings.addAll(values);
 			} else if (o instanceof String) {
-				String value = o.toString();
-				if (StringUtils.isEmpty(value)) {
-					keyError(key);
-				} else {
-					strings.add(value);
+				String list = o.toString();
+				for (String value : StringUtils.breakCSV(list)) {
+					if (!StringUtils.isEmpty(value)) {
+						strings.add(value);
+					}
 				}
 			}
 			if (strings.size() == 0) {
@@ -265,10 +265,18 @@ public class Config implements Serializable {
 					return values;
 				}
 			} else {
-				// single definition
-				String dir = o.toString();
-				if (!StringUtils.isEmpty(dir)) {
-					return Arrays.asList(new File(dir));
+				// string definition
+				List<File> values = new ArrayList<File>();
+				String list = o.toString();
+				for (String value : StringUtils.breakCSV(list)) {
+					if (!StringUtils.isEmpty(value)) {
+						values.add(new File(value));
+					}
+				}
+				if (values.size() == 0) {
+					keyError(key);
+				} else {
+					return values;
 				}
 			}
 		}

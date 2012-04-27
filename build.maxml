@@ -5,9 +5,9 @@ url : http://gitblit.github.com/maxilla
 artifactId : maxilla
 vendor : James Moger 
 configureEclipseClasspath : true
-sourceFolders : [core, maxgit, maxjar, maxdoc, tests]
+sourceFolders : core, maxgit, maxjar, maxdoc, tests
 outputFolder : bin
-mavenUrls : [ central ]
+mavenUrls : central
 dependencyFolder : ext
 dependencies :
 - provided org.apache.ant:ant:1.7.0
