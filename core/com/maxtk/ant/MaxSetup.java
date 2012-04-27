@@ -84,8 +84,9 @@ public class MaxSetup extends MaxTask {
 			}
 			addReference(Property.max_sourceFolders, sources);
 
-			setClasspath(Property.max_runtime_classpath, conf, conf.getRuntimeArtifacts());
-			setClasspath(Property.max_compiletime_classpath, conf, conf.getCompileTimeArtifacts());
+			setClasspath(Property.max_compile_classpath, conf, conf.getCompileClasspath());
+			setClasspath(Property.max_runtime_classpath, conf, conf.getRuntimeClasspath());
+			setClasspath(Property.max_test_classpath, conf, conf.getTestClasspath());
 
 			setProperty(Property.max_outputFolder, conf.getOutputFolder()
 					.toString());
@@ -189,7 +190,7 @@ public class MaxSetup extends MaxTask {
 	}
 	
 	void writeEclipseClasspath(Config conf) {
-		List<File> jars = conf.getCompileTimeArtifacts();
+		List<File> jars = conf.getTestClasspath();
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<classpath>\n");

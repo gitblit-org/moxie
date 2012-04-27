@@ -59,6 +59,9 @@ public class PomReader {
 							dep.artifactId = readStringTag(node, "artifactId");
 							dep.version = readStringTag(node, "version");
 							dep.scope = readStringTag(node, "scope");
+							if (StringUtils.isEmpty(dep.scope)) {
+								dep.scope = "compile";
+							}
 							dep.optional = readBooleanTag(node, "optional");
 							deps.add(dep);
 						}
@@ -96,9 +99,13 @@ public class PomReader {
 		String scope;
 		boolean optional;
 
-		public String toString() {
-			return artifactId + ":" + version + ":" + groupId + " (" + scope
-					+ ")";
+		public boolean resolveDependencies() {
+			return !optional && ("compile".equals(scope) || "runtime".equals(scope));
 		}
+		
+		@Override
+		public String toString() {
+			return  groupId + ":" + artifactId + (version == null ? "":(":" +version)) + " (" + scope + (optional ? ", optional)":")");
+		}		
 	}
 }

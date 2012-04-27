@@ -16,7 +16,6 @@
 package com.maxtk;
 
 import java.text.MessageFormat;
-import java.util.List;
 
 import com.maxtk.utils.StringUtils;
 
@@ -39,18 +38,10 @@ public class Dependency {
 		this(def.split(":"));		
 	}
 	
-	public Dependency(String [] def) {
+	private Dependency(String [] def) {
 		this(def[0], def[1], def[2], def.length == 4 ? def[3] : null);
 	}
-	
-	public Dependency(List<String> def) {
-		this(def.get(0), def.get(1), def.get(2), def.size() == 4 ? def.get(3) : null);
-	}
-	
-	public Dependency(String group, String artifact, String version) {
-		this(group, artifact, version, null);
-	}
-	
+
 	public Dependency(String group, String artifact, String version, String classifier) {
 		this.group = group;
 		this.artifact = artifact;		
@@ -84,7 +75,7 @@ public class Dependency {
 		return group.replace('.', '/') + "/" + artifact + "/" + version + "/"
 				+ artifact + "-" + version + fileType;
 	}
-
+	
 	public String getArtifactName(String fileType) {
 		if ("<googlecode>".equals(group)) {
 			return artifact;

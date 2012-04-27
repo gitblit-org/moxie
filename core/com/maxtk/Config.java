@@ -16,7 +16,6 @@
 package com.maxtk;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -49,8 +48,11 @@ public class Config implements Serializable {
 	String artifactId;
 	List<String> projects;
 	List<String> mavenUrls;
-	List<Dependency> runtimeDependencies;
 	List<Dependency> compileDependencies;
+	List<Dependency> providedDependencies;
+	List<Dependency> runtimeDependencies;
+	List<Dependency> testDependencies;
+	List<Dependency> systemDependencies;
 	File dependencyFolder;
 	List<File> sourceFolders;
 	File outputFolder;
@@ -66,9 +68,12 @@ public class Config implements Serializable {
 		outputFolder = new File("bin");
 		projects = new ArrayList<String>();
 		mavenUrls = Arrays.asList("mavencentral");
-		runtimeDependencies = new ArrayList<Dependency>();
 		compileDependencies = new ArrayList<Dependency>();
-		dependencyFolder = new File("lib");
+		providedDependencies = new ArrayList<Dependency>();
+		runtimeDependencies = new ArrayList<Dependency>();
+		testDependencies = new ArrayList<Dependency>();
+		systemDependencies = new ArrayList<Dependency>();
+		dependencyFolder = null;
 	}
 
 	@Override
@@ -108,7 +113,7 @@ public class Config implements Serializable {
 		sourceFolders = readFiles(map, Key.sourceFolders, sourceFolders);
 		outputFolder = readFile(map, Key.outputFolder, outputFolder);
 		projects = readStrings(map, Key.projects, projects);
-		dependencyFolder = readFile(map, Key.dependencyFolder, dependencyFolder);
+		dependencyFolder = readFile(map, Key.dependencyFolder, Setup.maxillaDir);
 
 		// allow shortcut names for maven repositories
 		List<String> urls = readStrings(map, Key.mavenUrls, mavenUrls);
@@ -135,10 +140,22 @@ public class Config implements Serializable {
 						// compile-time dependency
 						libs = compileDependencies;
 						def = def.substring("compile".length()).trim();
+					} else if (def.startsWith("provided")) {
+						// provided dependency
+						libs = providedDependencies;
+						def = def.substring("provided".length()).trim();
 					} else if (def.startsWith("runtime")) {
 						// runtime dependency
 						libs = runtimeDependencies;
 						def = def.substring("runtime".length()).trim();
+					} else if (def.startsWith("test")) {
+						// test dependency
+						libs = testDependencies;
+						def = def.substring("test".length()).trim();
+					} else if (def.startsWith("system")) {
+						// system dependency
+						libs = systemDependencies;
+						def = def.substring("system".length()).trim();
 					} else {
 						// default to compile-time dependency
 						libs = compileDependencies;
@@ -147,27 +164,8 @@ public class Config implements Serializable {
 					def = StringUtils.stripQuotes(def);										
 					Dependency mo = new Dependency(def);
 					libs.add(mo);
-				} else if (definition instanceof List<?>) {
-					List<String> list = (List<String>) definition;
-					int offset = 0;
-					if (list.get(0).equals("compile")) {
-						// compile-time dependency
-						libs = compileDependencies;
-						offset = 1;
-					} else if (list.get(0).equals("runtime")) {
-						// runtime dependency
-						libs = runtimeDependencies;
-						offset = 1;
-					} else {
-						// default to compile-time dependency
-						libs = compileDependencies;
-					}
-					if (offset > 0) {
-						// drop first element
-						list = list.subList(offset, list.size());
-					}
-					Dependency mo = new Dependency(list);
-					libs.add(mo);
+				} else {
+					throw new RuntimeException("Illegal dependency " + definition);
 				}
 			}
 		}		
@@ -349,27 +347,77 @@ public class Config implements Serializable {
 		return artifactId;
 	}
 	
-	public List<File> getRuntimeArtifacts() {
-		List<File> jars = getCompileTimeArtifacts();
+	public List<File> getCompileArtifacts() {
+		List<File> jars = new ArrayList<File>();
 		for (Dependency dependency : compileDependencies) {
-			// remove compile-time dependencies
 			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
-			jars.remove(jar);
+			jars.add(jar);
 		}
 		return jars;
 	}
 
-	public List<File> getCompileTimeArtifacts() {
-		File[] jars = dependencyFolder.listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File file) {
-				return file.isFile() && file.getName().endsWith(Dependency.LIB)
-						&& !file.getName().endsWith(Dependency.SRC);
-			}
-		});
-		List<File> files = new ArrayList<File>();
-		files.addAll(Arrays.asList(jars));
-		return files;
+	public List<File> getProvidedArtifacts() {
+		List<File> jars = new ArrayList<File>();
+		for (Dependency dependency : providedDependencies) {
+			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
+			jars.add(jar);
+		}
+		return jars;
+	}
+
+	public List<File> getRuntimeArtifacts() {
+		List<File> jars = new ArrayList<File>();
+		for (Dependency dependency : runtimeDependencies) {
+			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
+			jars.add(jar);
+		}
+		return jars;
+	}
+	
+	public List<File> getTestArtifacts() {
+		List<File> jars = new ArrayList<File>();
+		for (Dependency dependency : testDependencies) {
+			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
+			jars.add(jar);
+		}
+		return jars;
+	}
+	
+	public List<File> getSystemArtifacts() {
+		List<File> jars = new ArrayList<File>();
+		for (Dependency dependency : systemDependencies) {
+			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
+			jars.add(jar);
+		}
+		return jars;
+	}
+	
+	private List<File> getBaseClasspath() {
+		List<File> jars = new ArrayList<File>();
+		jars.addAll(getCompileArtifacts());
+		jars.addAll(getSystemArtifacts());
+		return jars;
+	}
+
+	public List<File> getCompileClasspath() {
+		List<File> jars = getBaseClasspath();
+		jars.addAll(getProvidedArtifacts());
+		jars.addAll(getTestArtifacts());
+		return jars;
+	}
+	
+	public List<File> getRuntimeClasspath() {
+		List<File> jars = getBaseClasspath();
+		jars.addAll(getRuntimeArtifacts());
+		return jars;
+	}
+	
+	public List<File> getTestClasspath() {
+		List<File> jars = getBaseClasspath();		
+		jars.addAll(getProvidedArtifacts());
+		jars.addAll(getTestArtifacts());
+		jars.addAll(getRuntimeArtifacts());
+		return jars;
 	}
 
 	public List<File> getSourceFolders() {

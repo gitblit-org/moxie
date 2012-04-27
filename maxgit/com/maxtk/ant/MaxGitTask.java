@@ -36,8 +36,7 @@ public class MaxGitTask extends MaxTask {
 		try {
 			Class.forName("org.eclipse.jgit.api.Git");
 		} catch (Throwable t) {
-			Dependency jgit = new Dependency("org/eclipse/jgit", "org.eclipse.jgit",
-					"1.2.0.201112221803-r");
+			Dependency jgit = new Dependency("org.eclipse.jgit:org.eclipse.jgit:1.2.0.201112221803-r");
 			Setup.retriveInternalDependency(config, jgit);
 		}
 	}

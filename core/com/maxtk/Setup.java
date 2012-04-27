@@ -45,7 +45,7 @@ public class Setup {
 			+ "/.m2/repository");
 	private static File maxillaSettings = new File(
 			System.getProperty("user.home") + "/.maxilla/settings.maxml");
-	private static File maxillaDir = new File(System.getProperty("user.home")
+	public static File maxillaDir = new File(System.getProperty("user.home")
 			+ "/.maxilla/repository");
 
 	public static Config execute(String configFile, boolean verbose)
@@ -81,18 +81,27 @@ public class Setup {
 
 		// download or copy the dependencies, if necessary
 		out.println(Constants.SEP);
-		out.println("resolving dependencies");
 		List<Dependency> allDependencies = new ArrayList<Dependency>();
-		for (Dependency obj : conf.runtimeDependencies) {
-			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
-					conf.dependencyFolder, obj);
-			allDependencies.addAll(set);
-		}
 		for (Dependency obj : conf.compileDependencies) {
 			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
 					conf.dependencyFolder, obj);
 			allDependencies.addAll(set);
 		}
+		for (Dependency obj : conf.providedDependencies) {
+			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
+					conf.dependencyFolder, obj);
+			allDependencies.addAll(set);
+		}
+		for (Dependency obj : conf.runtimeDependencies) {
+			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
+					conf.dependencyFolder, obj);
+			allDependencies.addAll(set);
+		}
+		for (Dependency obj : conf.testDependencies) {
+			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls,
+					conf.dependencyFolder, obj);
+			allDependencies.addAll(set);
+		}		
 		return conf;
 	}
 
@@ -158,43 +167,41 @@ public class Setup {
 			List<String> mavenUrls, File libsFolder, Dependency obj) {
 		List<Dependency> allDependencies = new ArrayList<Dependency>();
 		allDependencies.add(obj);
-
 		for (String mavenUrl : mavenUrls) {
 			String[] jarTypes = { Dependency.POM, Dependency.LIB, Dependency.SRC };
 			for (String fileType : jarTypes) {
 				// check to see if we already have the artifact
-				File target;
+				File localSource;
 				if (libsFolder == null) {
 					// retrieving internal dependency
 					// use a local Maven artifact if we have one
-					target = new File(mavenDir, obj.getArtifactPath(fileType));
+					localSource = new File(mavenDir, obj.getArtifactPath(fileType));
 
-					if (!target.exists()) {
+					if (!localSource.exists()) {
 						// download the artifact to the Maxilla repository
-						target = new File(maxillaDir,
-								obj.getArtifactPath(fileType));
+						localSource = new File(maxillaDir, obj.getArtifactPath(fileType));
 					}
+				} else if (maxillaDir.equals(libsFolder)) {
+					// using artifact directly from maxilla cache
+					localSource = new File(maxillaDir, obj.getArtifactPath(fileType));						
 				} else {
-					// retrieving project dependency: jars stored in flat
-					// hierarchy
-					target = new File(libsFolder, obj.getArtifactName(fileType));
+					// retrieving artifact into project-specified folder
+					localSource = new File(libsFolder, obj.getArtifactName(fileType));
 				}
 
-				if (target.exists()) {
+				if (localSource.exists()) {
 					// we already have the artifact
 					// this could be a project dependency OR an internal
 					// dependency
 					continue;
 				}
 
-				String projectIntro = "   " + target.getParentFile().toString() + " <= ";
+				String projectIntro = "   " + localSource.getParentFile().toString() + " <= ";
 
 				// check the local repositories for the artifact
 				if (obj.isMavenObject()) {
-					File mavenFile = new File(mavenDir,
-							obj.getArtifactPath(fileType));
-					File maxillaFile = new File(maxillaDir,
-							obj.getArtifactPath(fileType));
+					File mavenFile = new File(mavenDir, obj.getArtifactPath(fileType));
+					File maxillaFile = new File(maxillaDir, obj.getArtifactPath(fileType));
 					if (mavenFile.exists()) {
 						// we have the artifact in the local Maven repository
 						if (Dependency.POM.equals(fileType)) {
@@ -244,8 +251,8 @@ public class Setup {
 
 				String fullUrl = StringUtils.makeUrl(mavenUrl,
 						obj.getArtifactPath(fileType));
-				if (!target.getAbsoluteFile().getParentFile().exists()) {
-					boolean success = target.getAbsoluteFile().getParentFile()
+				if (!localSource.getAbsoluteFile().getParentFile().exists()) {
+					boolean success = localSource.getAbsoluteFile().getParentFile()
 							.mkdirs();
 					if (!success) {
 						throw new RuntimeException(
@@ -280,7 +287,7 @@ public class Setup {
 					in.close();
 				} catch (IOException e) {
 					throw new RuntimeException("Error downloading " + fullUrl
-							+ " to " + target
+							+ " to " + localSource
 							+ "\nDo you need to specify a proxy server in "
 							+ maxillaSettings.getAbsolutePath() + "?", e);
 				}
@@ -336,12 +343,14 @@ public class Setup {
 				File pom = new File(maxillaDir, obj.getArtifactPath(Dependency.POM));
 				if (pom.exists()) {
 					List<PomDep> list = PomReader.readDependencies(pom);
+					if (list.size() > 0) {
+						out.append("resolving transitive dependencies for " + obj).append('\n');
+					}
 					for (PomDep dep : list) {
-						if (!dep.optional
-								&& (StringUtils.isEmpty(dep.scope) || "runtime"
-										.equals(dep.scope))) {
-							Dependency dependency = new Dependency(
-									dep.artifactId, dep.version, dep.groupId, null);
+						out.append("   ").append(dep.toString()).append('\n');
+						if (dep.resolveDependencies()) {
+							Dependency dependency = new Dependency(dep.groupId,
+									dep.artifactId, dep.version, null);
 							List<Dependency> transitives = retrieveArtifact(
 									settings, mavenUrls, libsFolder, dependency);
 							allDependencies.addAll(transitives);
@@ -376,6 +385,12 @@ public class Setup {
 		} catch (FileNotFoundException t) {
 			// swallow these errors, this is how we tell if Maven does not have
 			// the requested artifact
+		} catch (IOException t) {
+			if (t.getMessage().contains("400") || t.getMessage().contains("404")) {
+				// disregard bad request and not found responses
+			} else {
+				t.printStackTrace();
+			}
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}
