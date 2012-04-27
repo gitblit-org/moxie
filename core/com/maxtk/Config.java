@@ -68,7 +68,7 @@ public class Config implements Serializable {
 		sourceFolders = Arrays.asList(new File("src"));
 		outputFolder = new File("bin");
 		projects = new ArrayList<String>();
-		mavenUrls = Arrays.asList("mavencentral");
+		mavenUrls = Arrays.asList(Constants.MAVENCENTRAL);
 		compileDependencies = new ArrayList<Dependency>();
 		providedDependencies = new ArrayList<Dependency>();
 		runtimeDependencies = new ArrayList<Dependency>();
