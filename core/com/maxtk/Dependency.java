@@ -73,14 +73,14 @@ public class Dependency {
 					version, artifact);
 		}
 		return group.replace('.', '/') + "/" + artifact + "/" + version + "/"
-				+ artifact + "-" + version + fileType;
+				+ artifact + "-" + (StringUtils.isEmpty(version) ? "?":version) + fileType;
 	}
 	
 	public String getArtifactName(String fileType) {
 		if ("<googlecode>".equals(group)) {
 			return artifact;
 		}
-		return artifact + "-" + version + fileType;
+		return artifact + "-" + (StringUtils.isEmpty(version) ? "?":version) + fileType;
 	}
 
 	public boolean isMavenObject() {
@@ -89,6 +89,6 @@ public class Dependency {
 
 	@Override
 	public String toString() {
-		return artifact + " " + version;
+		return artifact + "-" + (StringUtils.isEmpty(version) ? "?":version);
 	}
 }

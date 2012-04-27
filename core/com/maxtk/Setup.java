@@ -241,6 +241,11 @@ public class Setup {
 
 				String expectedSHA1 = null;
 				if (obj.isMavenObject()) {
+					if (StringUtils.isEmpty(obj.version)) {
+						// TODO implement "latest version" determination
+						out.println(MessageFormat.format("   SKIPPING {0}, artifacts must be explicitly versioned", obj.getArtifactName(fileType)));
+						continue;
+					}
 					expectedSHA1 = downloadSHA1(mavenUrl, obj, fileType);
 					if (StringUtils.isEmpty(expectedSHA1)) {
 						// could not connect to the Maven repository or
@@ -366,8 +371,12 @@ public class Setup {
 
 	static String downloadSHA1(String mavenUrl, Dependency obj, String jarType) {
 		try {
-			String hashUrl = StringUtils.makeUrl(mavenUrl,
-					obj.getArtifactPath(jarType) + ".sha1");
+			File hashFile = new File(maxillaDir, obj.getArtifactPath(jarType) + ".sha1");
+			if (hashFile.exists()) {
+				return FileUtils.readContent(hashFile, "\n").trim();
+			}
+			hashFile.getParentFile().mkdirs();
+			String hashUrl = StringUtils.makeUrl(mavenUrl, obj.getArtifactPath(jarType) + ".sha1");
 			ByteArrayOutputStream buff = new ByteArrayOutputStream();
 			URL url = new URL(hashUrl);
 			InputStream in = new BufferedInputStream(url.openStream());
@@ -381,7 +390,9 @@ public class Setup {
 			}
 			in.close();
 			String content = buff.toString("UTF-8").trim();
-			return content.substring(0, 40);
+			String hashCode = content.substring(0, 40);
+			FileUtils.writeContent(hashFile, hashCode);
+			return hashCode;
 		} catch (FileNotFoundException t) {
 			// swallow these errors, this is how we tell if Maven does not have
 			// the requested artifact
