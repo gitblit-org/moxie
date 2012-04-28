@@ -30,9 +30,9 @@ public class Dependency {
 	public static final String LIB = ".jar";
 	public static final String SRC = "-sources.jar";
 
-	final String group;
+	String group;
 	final String artifact;
-	final String version;
+	String version;
 	final String classifier;
 	final boolean resolveTransitiveDependencies;
 	List<Dependency> transitiveDependencies;

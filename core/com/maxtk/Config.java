@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ public class Config implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	enum Key {
-		version, name, description, url, vendor, groupId, artifactId, sourceFolder, sourceFolders, outputFolder, projects, dependencyFolder, mavenUrls, dependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
+		version, name, description, url, vendor, groupId, artifactId, sourceFolder, sourceFolders, outputFolder, projects, dependencyFolder, mavenUrls, properties, dependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
 	}
 
 	String name;
@@ -49,6 +50,7 @@ public class Config implements Serializable {
 	String artifactId;
 	List<String> projects;
 	List<String> mavenUrls;
+	Map<String, String> properties;
 	List<Dependency> compileDependencies;
 	List<Dependency> providedDependencies;
 	List<Dependency> runtimeDependencies;
@@ -69,6 +71,7 @@ public class Config implements Serializable {
 		outputFolder = new File("bin");
 		projects = new ArrayList<String>();
 		mavenUrls = Arrays.asList(Constants.MAVENCENTRAL);
+		properties = new HashMap<String, String>();
 		compileDependencies = new ArrayList<Dependency>();
 		providedDependencies = new ArrayList<Dependency>();
 		runtimeDependencies = new ArrayList<Dependency>();
@@ -116,7 +119,18 @@ public class Config implements Serializable {
 		outputFolder = readFile(map, Key.outputFolder, outputFolder);
 		projects = readStrings(map, Key.projects, projects);
 		dependencyFolder = readFile(map, Key.dependencyFolder, Setup.maxillaDir);
-
+		List<String> props = readStrings(map, Key.properties, new ArrayList<String>());
+		for (String prop : props) {
+			String [] values = prop.split(" ");
+			properties.put("${" + values[0].trim() + "}", values[1].trim());
+		}
+		if (!StringUtils.isEmpty(groupId)) {
+			properties.put("${project.groupId}", groupId);
+		}
+		if (!StringUtils.isEmpty(version)) {
+			properties.put("${project.version}", version);	
+		}
+		
 		// allow shortcut names for maven repositories
 		List<String> urls = readStrings(map, Key.mavenUrls, mavenUrls);
 		mavenUrls = new ArrayList<String>();
@@ -165,6 +179,12 @@ public class Config implements Serializable {
 					
 					def = StringUtils.stripQuotes(def);										
 					Dependency mo = new Dependency(def);
+					if (properties.containsKey(mo.version)) {
+						mo.version = properties.get(mo.version);
+					}
+					if (properties.containsKey(mo.group)) {
+						mo.group = properties.get(mo.group);
+					}
 					libs.add(mo);
 				} else {
 					throw new RuntimeException("Illegal dependency " + definition);
