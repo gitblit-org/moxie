@@ -65,15 +65,33 @@ public class PomReader {
 						propertyMap.put("${project.version}", version);
 					}
 				} else if ("parent".equals(element.getTagName())) {
-					// parent properties (shortcut)
-					String groupId = readStringTag(pNode, "groupId");
-					if (!StringUtils.isEmpty(groupId)) {
-						propertyMap.put("${project.groupId}", groupId);
+					// parent properties (shortcut)					
+					String parentArtifactId = readStringTag(pNode, "artifactId");
+					if (!StringUtils.isEmpty(parentArtifactId)) {
+						propertyMap.put("${parent.artifactId}", parentArtifactId);
 					}
-					String version = readStringTag(pNode, "version");
-					if (!StringUtils.isEmpty(version)) {
-						propertyMap.put("${project.version}", version);
+					String parentGroupId = readStringTag(pNode, "groupId");
+					if (!StringUtils.isEmpty(parentGroupId)) {
+						propertyMap.put("${project.groupId}", parentGroupId);
 					}
+					String parentVersion = readStringTag(pNode, "version");
+					if (!StringUtils.isEmpty(parentVersion)) {
+						propertyMap.put("${project.version}", parentVersion);
+					}
+				} else if ("properties".equals(element.getTagName())) {
+					// read properties
+					NodeList properties = (NodeList) element;
+					for (int j = 0; j < properties.getLength(); j++) {
+						Node node = properties.item(j);
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							String property = node.getNodeName();							
+							if (node.getFirstChild() != null) {							
+								propertyMap.put("${" + property + "}", node.getFirstChild().getNodeValue());
+							}
+						}						
+					}
+				} else if ("dependencyManagement".equals(element.getTagName())) {
+					// read super/parent-defined dependency versions
 				} else if ("dependencies".equals(element.getTagName())) {
 					// read dependencies
 					NodeList dependencies = (NodeList) element;
@@ -91,6 +109,9 @@ public class PomReader {
 							dep.optional = readBooleanTag(node, "optional");
 							
 							// substitute properties
+							if (propertyMap.containsKey("${parent.artifactId}")) {
+								dep.parentArtifactId = get("${parent.artifactId}", propertyMap);
+							}
 							dep.groupId = get(dep.groupId, propertyMap);
 							dep.version = get(dep.version, propertyMap);
 							
@@ -132,6 +153,7 @@ public class PomReader {
 	}
 
 	public static class PomDep {
+		String parentArtifactId;
 		String groupId;
 		String artifactId;
 		String version;
