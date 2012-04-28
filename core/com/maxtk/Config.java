@@ -418,32 +418,32 @@ public class Config implements Serializable {
 		return getArtifacts(systemDependencies);
 	}
 	
-	private List<File> getBaseClasspath() {
-		List<File> jars = new ArrayList<File>();
+	private Set<File> getBaseClasspath() {
+		Set<File> jars = new LinkedHashSet<File>();
 		jars.addAll(getCompileArtifacts());
 		jars.addAll(getSystemArtifacts());
 		return jars;
 	}
 
 	public List<File> getCompileClasspath() {
-		List<File> jars = getBaseClasspath();
+		Set<File> jars = getBaseClasspath();
 		jars.addAll(getProvidedArtifacts());
 		jars.addAll(getTestArtifacts());
-		return jars;
+		return new ArrayList<File>(jars);
 	}
 	
 	public List<File> getRuntimeClasspath() {
-		List<File> jars = getBaseClasspath();
+		Set<File> jars = getBaseClasspath();
 		jars.addAll(getRuntimeArtifacts());
-		return jars;
+		return new ArrayList<File>(jars);
 	}
 	
 	public List<File> getTestClasspath() {
-		List<File> jars = getBaseClasspath();		
+		Set<File> jars = getBaseClasspath();		
 		jars.addAll(getProvidedArtifacts());
 		jars.addAll(getTestArtifacts());
 		jars.addAll(getRuntimeArtifacts());
-		return jars;
+		return new ArrayList<File>(jars);
 	}
 
 	public List<File> getSourceFolders() {
