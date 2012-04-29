@@ -76,7 +76,6 @@ public class Setup {
 		}
 
 		// download or copy the dependencies, if necessary
-		out.println(Constants.SEP);
 		List<Dependency> allDependencies = new ArrayList<Dependency>();
 		for (Dependency obj : conf.compileDependencies) {
 			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls, conf.dependencyFolder, obj);
@@ -93,6 +92,9 @@ public class Setup {
 		for (Dependency obj : conf.testDependencies) {
 			List<Dependency> set = retrieveArtifact(settings, conf.mavenUrls, conf.dependencyFolder, obj);
 			allDependencies.addAll(set);
+		}
+		if (allDependencies.size() > 0) {
+			out.println(Constants.SEP);
 		}		
 		return conf;
 	}
@@ -229,7 +231,7 @@ public class Setup {
 				if (obj.isMavenObject()) {
 					if (StringUtils.isEmpty(obj.version)) {
 						// TODO implement "latest version" determination
-						out.println(MessageFormat.format("   SKIPPING {0}, artifacts must be explicitly versioned", obj.getArtifactName(fileType)));
+						out.println(MessageFormat.format("   SKIPPING {0}, dependencyManagement node not yet supported", obj.getArtifactName(fileType)));
 						continue;
 					}
 					expectedSHA1 = downloadSHA1(mavenUrl, obj, fileType);

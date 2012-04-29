@@ -34,7 +34,7 @@ public abstract class MaxTask extends Task {
 		}
 	}
 
-	protected boolean verbose;
+	protected boolean verbose = true;
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;

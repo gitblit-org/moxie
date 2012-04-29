@@ -57,18 +57,14 @@ public class MaxSetup extends MaxTask {
 
 			// create/update Eclipse configuration files
 			if (conf.configureEclipseClasspath()) {
-				if (verbose) {
-					log(Constants.SEP);
-				}
 				log("rebuilding eclipse .classpath");
 				writeEclipseClasspath(conf);
 				log("done. refresh your project.");
 			}
 			
-			if (verbose) {
-				log(Constants.SEP);
-				log("ant properties");
-			}
+			log(Constants.SEP);
+			log("ant properties");
+
 			setProperty(Property.max_name, conf.getName());
 			setProperty(Property.max_description, conf.getDescription());
 			setProperty(Property.max_version, conf.getVersion());
