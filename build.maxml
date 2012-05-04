@@ -6,7 +6,9 @@ version : 0.2.0
 vendor : James Moger 
 url : http://gitblit.github.com/maxilla
 configureEclipseClasspath : true
-sourceFolders : core, opt, maxgit, maxjar, maxdoc, tests
+sourceFolders : 
+- compile core, opt, maxgit, maxjar, maxdoc
+- { scope: test, folder: tests }
 outputFolder : bin
 dependencySources : gitblit, central
 dependencyFolder : ext

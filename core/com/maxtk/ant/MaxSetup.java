@@ -27,6 +27,7 @@ import org.apache.tools.ant.types.Path.PathElement;
 import com.maxtk.Build;
 import com.maxtk.Config;
 import com.maxtk.Constants.Key;
+import com.maxtk.SourceFolder;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.StringUtils;
 
@@ -71,9 +72,9 @@ public class MaxSetup extends MaxTask {
 
 			// setup max-sourceFolders reference
 			Path sources = new Path(getProject());
-			for (File file : conf.getSourceFolders()) {
+			for (SourceFolder sourceFolder : conf.getSourceFolders()) {
 				PathElement element = sources.createPathElement();
-				element.setLocation(file);
+				element.setLocation(sourceFolder.folder);
 			}
 			addReference(Key.sourceFolders, sources, true);
 

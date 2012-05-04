@@ -41,7 +41,7 @@ public class Config implements Serializable {
 	List<String> repositoryUrls;	
 	
 	File dependencyFolder;
-	List<File> sourceFolders;
+	List<SourceFolder> sourceFolders;
 	File outputFolder;
 	boolean configureEclipseClasspath;
 	boolean debug;
@@ -52,7 +52,7 @@ public class Config implements Serializable {
 
 	public Config() {
 		// default configuration
-		sourceFolders = Arrays.asList(new File("src"));
+		sourceFolders = Arrays.asList(new SourceFolder(new File("src"), Scope.compile));
 		outputFolder = new File("bin");
 		projects = new ArrayList<String>();
 		repositoryUrls = new ArrayList<String>();		
@@ -84,7 +84,7 @@ public class Config implements Serializable {
 
 		// build parameters
 		configureEclipseClasspath = readBoolean(map, Key.configureEclipseClasspath, false);
-		sourceFolders = readFiles(map, Key.sourceFolders, sourceFolders);
+		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);
 		outputFolder = readFile(map, Key.outputFolder, outputFolder);
 		projects = readStrings(map, Key.projects, projects);
 		dependencyFolder = readFile(map, Key.dependencyFolder, null);
@@ -221,16 +221,34 @@ public class Config implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	List<File> readFiles(Map<String, Object> map, Key key, List<File> defaultValue) {
+	List<SourceFolder> readSourceFolders(Map<String, Object> map, Key key, List<SourceFolder> defaultValue) {
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());
 			if (o instanceof List) {
 				// list
-				List<File> values = new ArrayList<File>();
-				List<String> list = (List<String>) o;
-				for (String dir : list) {
-					if (!StringUtils.isEmpty(dir)) {
-						values.add(new File(dir));
+				List<SourceFolder> values = new ArrayList<SourceFolder>();
+				List<Object> list = (List<Object>) o;
+				for (Object value : list) {
+					if (value == null) {
+						continue;
+					}
+					if (value instanceof String) {
+						String def = value.toString();
+						String scopeString = def.substring(0, def.indexOf(' ')).trim();
+						Scope scope = Scope.fromString(scopeString);
+						def = def.substring(scopeString.length()).trim();
+						for (String dir : StringUtils.breakCSV(def)) {
+							if (!StringUtils.isEmpty(dir)) {
+								values.add(new SourceFolder(new File(dir), scope));
+							}
+						}
+					} else if (value instanceof Map) {
+						Map<String, Object> dirMap = (Map<String, Object>) value;
+						String dir = readString(dirMap, Key.folder, true);
+						Scope scope = Scope.fromString(readString(dirMap, Key.scope, true));
+						if (!StringUtils.isEmpty(dir)) {
+							values.add(new SourceFolder(new File(dir), scope));
+						}
 					}
 				}
 				if (values.size() == 0) {
@@ -239,12 +257,12 @@ public class Config implements Serializable {
 					return values;
 				}
 			} else {
-				// string definition
-				List<File> values = new ArrayList<File>();
+				// string definition - all source folders are compile
+				List<SourceFolder> values = new ArrayList<SourceFolder>();
 				String list = o.toString();
 				for (String value : StringUtils.breakCSV(list)) {
 					if (!StringUtils.isEmpty(value)) {
-						values.add(new File(value));
+						values.add(new SourceFolder(new File(value)));
 					}
 				}
 				if (values.size() == 0) {
@@ -289,7 +307,7 @@ public class Config implements Serializable {
 		return pom.artifactId;
 	}
 	
-	public List<File> getSourceFolders() {
+	public List<SourceFolder> getSourceFolders() {
 		return sourceFolders;
 	}
 

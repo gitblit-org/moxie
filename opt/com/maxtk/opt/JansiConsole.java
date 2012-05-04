@@ -26,6 +26,7 @@ import org.fusesource.jansi.AnsiConsole;
 import com.maxtk.Console;
 import com.maxtk.Constants;
 import com.maxtk.Dependency;
+import com.maxtk.SourceFolder;
 import com.maxtk.Dependency.Scope;
 import com.maxtk.utils.StringUtils;
 
@@ -43,6 +44,15 @@ public class JansiConsole extends Console {
 	@Override
 	public void header() {		
 		out.println(ansi().fg(Color.CYAN).a(Constants.HDR).reset());
+	}
+
+	@Override
+	public void sourceFolder(SourceFolder sourceFolder) {
+		out.append(Constants.INDENT);
+		out.print(ansi().fg(Color.GREEN).a(sourceFolder.folder.getName()).reset());
+		out.print(" (");
+		out.print(ansi().fg(Color.MAGENTA).a(sourceFolder.scope).reset());
+		out.println(")");
 	}
 
 	@Override

@@ -122,7 +122,6 @@ public class Pom {
 			dep.version = getProperty(dep.version);
 		}
 		dep.group = getProperty(dep.group);
-//		dep.scope = scope;
 		
 		if (!dependencies.containsKey(scope)) {
 			dependencies.put(scope, new ArrayList<Dependency>());
@@ -158,18 +157,6 @@ public class Pom {
 					set.add(dependency);
 				}
 			}
-//			// some scopes are not transitive so they are dropped
-//			// optional dependencies are not transitive
-//			// or dependency definition disables transitive resolution
-//			if (depScope == null || (ring > 0 && (dep.optional || !dep.resolveDependencies))) {
-//				//System.out.println("   dropping " + ring + " " + scope + "->" + depScope + " " + dep);
-//				continue;
-//			}
-//						
-//			// include this dependency			
-//			dep.ring = ring;
-//			dep.scope = depScope;
-//			list.add(dep);
 		}
 		return new ArrayList<Dependency>(set);
 	}

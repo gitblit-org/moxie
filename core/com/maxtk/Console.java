@@ -40,6 +40,14 @@ public class Console {
 	public void separator() {
 		out.println(Constants.SEP);
 	}
+	
+	public void sourceFolder(SourceFolder sourceFolder) {
+		out.append(Constants.INDENT);
+		out.print(sourceFolder.folder.getName());
+		out.print(" (");
+		out.print(sourceFolder.scope);
+		out.println(")");
+	}
 
 	public void scope(Scope scope) {
 		out.print(scope);

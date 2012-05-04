@@ -207,7 +207,10 @@ public class Build {
 	}
 	
 	private List<Dependency> solve(Scope scope, Dependency dependency) {
-		List<Dependency> resolved = new ArrayList<Dependency>();		
+		List<Dependency> resolved = new ArrayList<Dependency>();
+		if (!dependency.resolveDependencies) {
+			return resolved;
+		}
 		File pomFile = retrievePOM(dependency);
 		if (pomFile == null || !pomFile.exists()) {
 			return resolved;
@@ -394,8 +397,8 @@ public class Build {
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<classpath>\n");
 		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
-		for (File folder : conf.getSourceFolders()) {
-			sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", folder));
+		for (SourceFolder sourceFolder : conf.getSourceFolders()) {
+			sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", sourceFolder.folder));
 		}
 		for (File jar : jars) {			
 			File srcJar = new File(jar.getParentFile(), jar.getName().substring(0, jar.getName().lastIndexOf('.')) + "-sources.jar");
@@ -429,8 +432,8 @@ public class Build {
 		console.separator();
 
 		console.log("source folders");
-		for (File folder : conf.sourceFolders) {
-			console.log(1, folder.toString());
+		for (SourceFolder folder : conf.sourceFolders) {
+			console.sourceFolder(folder);
 		}
 		console.separator();
 
