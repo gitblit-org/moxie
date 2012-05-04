@@ -15,29 +15,25 @@
  */
 package com.maxtk.ant;
 
-import static java.text.MessageFormat.format;
-
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 
+import com.maxtk.Build;
 import com.maxtk.Config;
-import com.maxtk.Constants;
-import com.maxtk.Setup;
+import com.maxtk.Constants.Key;
 import com.maxtk.maxml.MaxmlException;
-import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
 public class MaxSetup extends MaxTask {
 
 	private String config;
-
+	
 	public void setConfig(String config) {
 		this.config = config;
 	}
@@ -45,33 +41,33 @@ public class MaxSetup extends MaxTask {
 	@Override
 	public void execute() throws BuildException {
 		try {
-			Config conf;
+			Build build;
 			if (StringUtils.isEmpty(config)) {
 				// default configuration
-				conf = Setup.execute(null, verbose);
+				build = new Build();
 			} else {
 				// specified configuration
-				File file = new File(config);
-				conf = Setup.execute(file.getAbsolutePath(), verbose);
+				build = new Build(config);
 			}
-
-			// create/update Eclipse configuration files
-			if (conf.configureEclipseClasspath()) {
-				log("rebuilding eclipse .classpath");
-				writeEclipseClasspath(conf);
-				log("done. refresh your project.");
-			}
+			build.setup();
 			
-			log(Constants.SEP);
-			log("ant properties");
+			console = build.console;
+			Config conf = build.conf;
+			
+			build.console.separator();
+			build.console.log("ant properties");
 
-			setProperty(Property.max_name, conf.getName());
-			setProperty(Property.max_description, conf.getDescription());
-			setProperty(Property.max_version, conf.getVersion());
-			setProperty(Property.max_groupId, conf.getGroupId());
-			setProperty(Property.max_artifactId, conf.getArtifactId());
-			setProperty(Property.max_url, conf.getUrl());
-			setProperty(Property.max_vendor, conf.getVendor());
+			// add a reference to the full build object
+			addReference(Key.build, build, false);
+			setProperty(Key.name, conf.getName());
+			setProperty(Key.description, conf.getDescription());
+			setProperty(Key.groupId, conf.getGroupId());
+			setProperty(Key.artifactId, conf.getArtifactId());
+			setProperty(Key.version, conf.getVersion());
+			setProperty(Key.vendor, conf.getVendor());
+			setProperty(Key.url, conf.getUrl());
+
+			setProperty(Key.outputFolder, conf.getOutputFolder().toString());
 
 			// setup max-sourceFolders reference
 			Path sources = new Path(getProject());
@@ -79,30 +75,23 @@ public class MaxSetup extends MaxTask {
 				PathElement element = sources.createPathElement();
 				element.setLocation(file);
 			}
-			addReference(Property.max_sourceFolders, sources);
+			addReference(Key.sourceFolders, sources, true);
 
-			setClasspath(Property.max_compile_classpath, conf, conf.getCompileClasspath());
-			setClasspath(Property.max_runtime_classpath, conf, conf.getRuntimeClasspath());
-			setClasspath(Property.max_test_classpath, conf, conf.getTestClasspath());
+			setClasspath(Key.compile_classpath, build, build.getCompileClasspath());
+			setClasspath(Key.runtime_classpath, build, build.getRuntimeClasspath());
+			setClasspath(Key.test_classpath, build, build.getTestClasspath());
 
-			setProperty(Property.max_outputFolder, conf.getOutputFolder()
-					.toString());
 
-			// add a reference to the full conf object
-			addReference(Property.max_conf, conf);
 		} catch (MaxmlException e) {
-			log("Maxilla failed to parse your configuration file!", e,
-					Project.MSG_ERR);
-			e.printStackTrace();
+			console.error(e, "Maxilla failed to parse your configuration file!");
 			throw new BuildException(e);
 		} catch (Exception e) {
-			log("Maxilla failed to setup your project!", e, Project.MSG_ERR);
-			e.printStackTrace();
+			console.error(e, "Maxilla failed to setup your project!");
 			throw new BuildException(e);
 		}
 	}
 	
-	private void setClasspath(Property key, Config conf, List<File> jars) {
+	private void setClasspath(Key key, Build build, List<File> jars) {
 		Path cp = new Path(getProject());
 		// jars
 		for (File jar : jars) {
@@ -112,43 +101,43 @@ public class MaxSetup extends MaxTask {
 
 		// output folder
 		PathElement of = cp.createPathElement();
-		of.setLocation(conf.getOutputFolder());
+		of.setLocation(build.conf.getOutputFolder());
 		
 		// add project dependencies 
-		for (File folder : buildDependentProjectsClasspath(conf)) {
+		for (File folder : buildDependentProjectsClasspath(build)) {
 			PathElement element = cp.createPathElement();
 			element.setLocation(folder);
 		}
-		addReference(key, cp);
+		addReference(key, cp, true);
 	}
 	
-	private List<File> buildDependentProjectsClasspath(Config conf) {
+	private List<File> buildDependentProjectsClasspath(Build build) {
 		List<File> folders = new ArrayList<File>();
 		File basedir = getProject().getBaseDir();
 		String workspace = getProject().getProperty("eclipse.workspace");
-		for (String project : conf.getProjects()) {
+		for (String project : build.conf.getProjects()) {
 			File projectDir = new File(basedir, "/../" + project);
 			if (projectDir.exists()) {
 				// project dependency is relative to this project
-				File outputFolder = getProjectOutputFolder(project, projectDir);
+				File outputFolder = getProjectOutputFolder(build, project, projectDir);
 				if (outputFolder != null && outputFolder.exists()) {
 					folders.add(outputFolder);
 				}
 			} else {
 				if (StringUtils.isEmpty(workspace)) {
 					// workspace is undefined, done looking
-					log(MessageFormat.format("Failed to find project \"{0}\".  (FYI $'{'eclipse.workspace'}' is not set.)", project), Project.MSG_ERR);
+					build.console.warn(MessageFormat.format("Failed to find project \"{0}\".  (FYI $'{'eclipse.workspace'}' is not set.)", project));
 				} else {
 					// check workspace
 					File wsDir = new File(workspace);
 					projectDir = new File(wsDir, project);
 					if (projectDir.exists()) {
-						File outputFolder = getProjectOutputFolder(project, projectDir);
+						File outputFolder = getProjectOutputFolder(build, project, projectDir);
 						if (outputFolder != null && outputFolder.exists()) {
 							folders.add(outputFolder);
 						}
 					} else {
-						log(MessageFormat.format("Failed to find project \"{0}\".", project), Project.MSG_ERR);
+						build.console.error(MessageFormat.format("Failed to find project \"{0}\".", project));
 					}
 				}
 			}
@@ -162,7 +151,7 @@ public class MaxSetup extends MaxTask {
 	 * @param projectDir
 	 * @return
 	 */
-	private File getProjectOutputFolder(String project, File projectDir) {
+	private File getProjectOutputFolder(Build build, String project, File projectDir) {
 		File projectMax = new File(projectDir, "build.maxml");
 		if (projectMax.exists()) {
 			// dependent project has a build.maxml descriptor
@@ -171,54 +160,18 @@ public class MaxSetup extends MaxTask {
 				File projectOutputFolder = projectConfig.getOutputFolder();
 				return projectOutputFolder;
 			} catch (Exception e) {
-				e.printStackTrace();
+				console.error(e);
 			}
 		}
 		String [] tryThese = { "bin/java", "bin/classes", "bin", "build/classes", "build/java" };
 		for (String tryThis : tryThese) {
 		File projectOutputFolder = new File(projectDir, tryThis);
 			if (projectOutputFolder.exists() && projectOutputFolder.isDirectory()) {
-				log(MessageFormat.format("Project {0} does not have a build.maxml descriptor but does have a \"{1}\" folder.", project, tryThis), Project.MSG_WARN);
+				build.console.warn(MessageFormat.format("Project {0} does not have a build.maxml descriptor but does have a \"{1}\" folder.", project, tryThis));
 				return projectOutputFolder;
 			}
 		}
-		log(MessageFormat.format("Could not find an output folder for project \"{0}\"!", project), Project.MSG_ERR);
+		build.console.error(MessageFormat.format("Could not find an output folder for project \"{0}\"!", project));
 		return null;
-	}
-	
-	void writeEclipseClasspath(Config conf) {
-		List<File> jars = conf.getTestClasspath();
-		StringBuilder sb = new StringBuilder();
-		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		sb.append("<classpath>\n");
-		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
-		for (File folder : conf.getSourceFolders()) {
-			sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n",
-					folder));
-		}
-		for (File jar : jars) {			
-			File srcJar = new File(jar.getParentFile(), jar.getName()
-					.substring(0, jar.getName().lastIndexOf('.'))
-					+ "-sources.jar");
-			if (srcJar.exists()) {
-				// have sources
-				sb.append(format(
-						"<classpathentry kind=\"lib\" path=\"{0}\" sourcepath=\"{1}\" />\n",
-						jar.getAbsolutePath(), srcJar.getAbsolutePath()));
-			} else {
-				// no sources
-				sb.append(format(
-						"<classpathentry kind=\"lib\" path=\"{0}\" />\n",
-						jar.getAbsolutePath()));
-			}
-		}
-		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n",
-				conf.getOutputFolder()));
-				
-		for (String project : conf.getProjects()) {
-			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", project));
-		}
-		sb.append("</classpath>");
-		FileUtils.writeContent(new File(".classpath"), sb.toString());
 	}
 }

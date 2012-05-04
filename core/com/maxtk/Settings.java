@@ -16,20 +16,21 @@
 package com.maxtk;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.maxtk.maxml.Maxml;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.maxml.MaxmlMap;
 import com.maxtk.utils.Base64;
 import com.maxtk.utils.FileUtils;
-import com.maxtk.utils.StringUtils;
 
 /**
  * Represents Maxilla user settings.
@@ -41,37 +42,56 @@ public class Settings implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final File maxillaSettings = new File(System.getProperty("user.home") + "/.maxilla/settings.maxml");
+	
 	enum Key {
 		proxies;
 	}
+	
+	File file;
 
 	List<Proxy> proxies;
-
+		
+	Set<Repository> repositories;
+	
+	public static Settings load() throws IOException, MaxmlException {
+		return load(null);
+	}
+	
 	public static Settings load(File file) throws IOException, MaxmlException {
+		if (file == null) {
+			maxillaSettings.getParentFile().mkdirs();
+			if (!maxillaSettings.exists()) {
+				// write default maxilla settings
+				FileWriter writer = new FileWriter(maxillaSettings);
+				writer.append("proxies:\n- { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }");
+				// TODO write repositories
+				writer.close();
+			}
+			file = maxillaSettings;
+		}
 		return new Settings().parse(file);
 	}
 
 	private Settings() {
 		// default configuration
 		proxies = new ArrayList<Proxy>();
+		repositories = new LinkedHashSet<Repository>();
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	Settings parse(File file) throws IOException, MaxmlException {
 		if (!file.exists()) {
-			Setup.out.println(MessageFormat.format(
-					"{0} does not exist, using defaults.",
-					file.getAbsolutePath()));
-			return this;
+			throw new MaxmlException(MessageFormat.format("{0} does not exist!", file));
 		}
 
+		this.file = file;
 		String content = FileUtils.readContent(file, "\n").trim();
 		Map<String, Object> map = Maxml.parse(content);
 
 		// parse proxies
 		if (map.containsKey(Key.proxies.name())) {
-			List<MaxmlMap> values = (List<MaxmlMap>) map
-					.get(Key.proxies.name());
+			List<MaxmlMap> values = (List<MaxmlMap>) map.get(Key.proxies.name());
 			List<Proxy> ps = new ArrayList<Proxy>();
 			for (MaxmlMap definition : values) {
 				Proxy proxy = new Proxy();
@@ -82,34 +102,26 @@ public class Settings implements Serializable {
 				proxy.port = definition.getInt("port", 80);
 				proxy.username = definition.getString("username", "");
 				proxy.password = definition.getString("password", "");
-				proxy.nonProxyHosts = definition.getStrings("nonProxyHosts",
-						new ArrayList<String>());
+				proxy.nonProxyHosts = definition.getStrings("nonProxyHosts", new ArrayList<String>());
 				ps.add(proxy);
 			}
 			proxies = ps;
 		}
 		return this;
 	}
-
-	void describe(PrintStream out) {
-		if (proxies.size() > 0) {
-			out.println("maxilla settings");
-			for (Proxy proxy : proxies) {
-				if (proxy.active) {
-					describe(out, "proxy", proxy.host + ":" + proxy.port);
-				}
-			}
-		}
+	
+	void add(Repository repository) {
+		repositories.add(repository);
 	}
 
-	void describe(PrintStream out, String key, String value) {
-		if (StringUtils.isEmpty(value)) {
-			return;
+	public List<Proxy> getActiveProxies() {
+		List<Proxy> activeProxies = new ArrayList<Proxy>();
+		for (Proxy proxy : proxies) {
+			if (proxy.active) {
+				activeProxies.add(proxy);
+			}
 		}
-		out.print(Constants.INDENT);
-		out.print(StringUtils.leftPad(key, 12, ' '));
-		out.print(": ");
-		out.println(value);
+		return activeProxies;
 	}
 
 	public java.net.Proxy getProxy(String url) {
@@ -118,8 +130,7 @@ public class Settings implements Serializable {
 		}
 		for (Proxy proxy : proxies) {
 			if (proxy.active && proxy.matches(url)) {
-				return new java.net.Proxy(java.net.Proxy.Type.HTTP,
-						proxy.getSocketAddress());
+				return new java.net.Proxy(java.net.Proxy.Type.HTTP, proxy.getSocketAddress());
 			}
 		}
 		return java.net.Proxy.NO_PROXY;
@@ -128,9 +139,7 @@ public class Settings implements Serializable {
 	public String getProxyAuthorization(String url) {
 		for (Proxy proxy : proxies) {
 			if (proxy.active && proxy.matches(url)) {
-				return "Basic "
-						+ Base64.encodeBytes((proxy.username + ":" + proxy.password)
-								.getBytes());
+				return "Basic " + Base64.encodeBytes((proxy.username + ":" + proxy.password).getBytes());
 			}
 		}
 		return "";

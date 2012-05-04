@@ -1,10 +1,5 @@
 package com.maxtk.tests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import com.maxtk.Config;
@@ -27,7 +23,7 @@ import com.maxtk.utils.FileUtils;
  * @author James Moger
  * 
  */
-public class TestMaxmlParser {
+public class TestMaxmlParser extends Assert {
 	String config = "name: Maxilla\ndescription: Project Build Toolkit\nversion: 0.1.0\nurl: http://github.com/gitblit/maxilla\nartifactId: maxilla\nvendor: James Moger\nconfigureEclipseClasspath: true\nsourceFolders: [core, maxjar, maxdoc]\nmap: { \na1: 12\na2: 3.14f\na3 : {\nb1:100l\nb2 : {\nc1:6.023d\nc2:c2value\n}\nb3:b3value\n}\na4: a4value\n}\noutputFolder: bin\nmavenUrls: [mavencentral]\ndependencyFolder: ext\ndependencies:\n - [ant, 1.7.0, org/apache/ant]\n - [markdownpapers-core, 1.2.5, org/tautua/markdownpapers]\nsimpledate:2003-07-04\ncanonical:2001-07-04T16:08:56.235Z\niso8601:2002-07-04T12:08:56.235-0400";
 
 	String blockTest = "name: Maxilla\ndescription: \"\"\"\nMaxilla\nis a\nJava Project Build Toolkit\n\"\"\"\nversion: 0.1.0";

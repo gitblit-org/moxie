@@ -15,24 +15,17 @@
  */
 package com.maxtk.ant;
 
+import java.io.File;
+
 import org.apache.tools.ant.Task;
 
+import com.maxtk.Console;
+import com.maxtk.Constants.Key;
 import com.maxtk.utils.StringUtils;
 
 public abstract class MaxTask extends Task {
 
-	public enum Property {
-		max_conf, max_version, max_name, max_description, max_vendor, max_groupId, max_artifactId, max_url, max_outputFolder, max_runtime_classpath, max_compile_classpath, max_test_classpath, max_sourceFolders, max_commit;
-
-		public String id() {
-			return name().replace('_', '.');
-		}
-		
-		@Override
-		public String toString() {
-			return id();
-		}
-	}
+	protected Console console = new Console();
 
 	protected boolean verbose = true;
 
@@ -40,28 +33,37 @@ public abstract class MaxTask extends Task {
 		this.verbose = verbose;
 	}
 
-	protected void setProperty(Property prop, String value) {
+	protected void setProperty(Key prop, String value) {
 		if (!StringUtils.isEmpty(value)) {
-			getProject().setProperty(prop.id(), value);
-			if (verbose) {
-				log(StringUtils.leftPad(prop.id(), 18, ' ') + ": " + value);
-			}
+			getProject().setProperty(prop.maxId(), value);
+			log(prop.maxId(), value, false);
 		}
 	}
 
 	protected void setProperty(String prop, String value) {
 		if (!StringUtils.isEmpty(value)) {
 			getProject().setProperty(prop, value);
-			if (verbose) {
-				log(StringUtils.leftPad(prop, 18, ' ') + ": " + value);
-			}
+			log(prop, value, false);
 		}
 	}
 
-	protected void addReference(Property prop, Object obj) {
-		getProject().addReference(prop.id(), obj);
+	protected void addReference(Key prop, Object obj, boolean split) {
+		getProject().addReference(prop.maxId(), obj);
+		log(prop.maxId(), obj.toString(), split);
+	}
+	
+	protected void log(String key, String value, boolean split) {
 		if (verbose) {
-			log(StringUtils.leftPad(prop.id(), 18, ' ') + ": " + obj.toString());
+			int indent = 22;
+			if (split) {
+				String [] paths = value.split(File.pathSeparator);
+				console.key(StringUtils.leftPad(key, indent, ' '), paths[0]);
+				for (int i = 1; i < paths.length; i++) {
+					console.key(StringUtils.leftPad("", indent, ' '), paths[i]);	
+				}
+			} else {
+				console.key(StringUtils.leftPad(key, indent, ' '), value);
+			}
 		}
 	}
 }

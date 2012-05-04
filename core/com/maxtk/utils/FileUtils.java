@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,15 +101,33 @@ public class FileUtils {
 	 */
 	public static void writeContent(File file, String content) {
 		try {
+			file.getAbsoluteFile().getParentFile().mkdirs();
 			OutputStreamWriter os = new OutputStreamWriter(
 					new FileOutputStream(file), Charset.forName("UTF-8"));
 			BufferedWriter writer = new BufferedWriter(os);
 			writer.append(content);
 			writer.close();
 		} catch (Throwable t) {
-			System.err.println("Failed to write content of "
-					+ file.getAbsolutePath());
+			System.err.println("Failed to write content of " + file);
 			t.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Writes the string content to the file.
+	 * 
+	 * @param file
+	 * @param content
+	 */
+	public static void writeContent(File file, byte [] data) {
+		try {
+			file.getAbsoluteFile().getParentFile().mkdirs();
+			RandomAccessFile ra = new RandomAccessFile(file, "rw");
+			ra.write(data);
+			ra.setLength(data.length);
+			ra.close();			
+		} catch (IOException e) {
+			throw new RuntimeException("Error writing to file " + file, e);
 		}
 	}
 

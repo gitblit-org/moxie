@@ -91,7 +91,7 @@ public class GenJar extends Task {
 
 	protected File destFile = null;
 
-	private File destDir = null;
+	protected File destDir = null;
 
 	private PathResolver[] resolvers = null;
 
@@ -142,14 +142,6 @@ public class GenJar extends Task {
 		// throw new BuildException("No manifest specified", getLocation());
 		// }
 		mft.setBaseDir(getProject().getBaseDir());
-
-		if (destFile != null) {
-			log("Generating jar: " + destFile);
-		}
-
-		if (destDir != null) {
-			log("Generating class structure in: " + destDir);
-		}
 
 		//
 		// set up the classpath & resolvers - file/jar/zip
@@ -302,8 +294,7 @@ public class GenJar extends Task {
 				} catch (IOException ioe) {
 				}
 			}
-			log("Jar Generated (" + (System.currentTimeMillis() - start)
-					+ " ms)");
+			logger.verbose("Jar Generated (" + (System.currentTimeMillis() - start) + " ms)");
 		}
 
 		// Destdir has been specified, so try to generate the dependencies on
@@ -387,8 +378,7 @@ public class GenJar extends Task {
 				}
 			}
 
-			log("Class Structure Generated ("
-					+ (System.currentTimeMillis() - start) + " ms)");
+			logger.verbose("Class Structure Generated (" + (System.currentTimeMillis() - start) + " ms)");
 		}
 
 		// Close all the resolvers

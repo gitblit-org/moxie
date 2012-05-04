@@ -17,7 +17,7 @@ package com.maxtk;
 
 public class Constants {
 
-	public static final String VERSION = "0.1.0";
+	public static final String VERSION = "0.2.0";
 
 	public static final String HDR = "===========================================";
 
@@ -28,4 +28,16 @@ public class Constants {
 	public static final String MAVENCENTRAL = "central";
 
 	public static final String MAVENCENTRAL_URL = "http://repo1.maven.org/maven2";
+	
+	public static enum Key {
+		build, name, description, url, vendor, scope, groupId, artifactId, version,
+		type, classifier, optional, sourceFolder, sourceFolders, outputFolder, projects,
+		dependencyFolder, dependencySources, properties, dependencies, configureEclipseClasspath,
+		googleAnalyticsId, googlePlusId, runtime_classpath, compile_classpath, test_classpath,
+		commit;
+		
+		public String maxId() {
+			return "max." + name().replace('_', '.');
+		}
+	}
 }

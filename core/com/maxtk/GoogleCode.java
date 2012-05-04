@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.maxtk.ant;
+package com.maxtk;
 
-import java.io.File;
 
-import com.maxtk.Build;
-import com.maxtk.Dependency;
+public class GoogleCode extends Repository {
 
-public class MaxGitTask extends MaxTask {
-
-	protected File repositoryFolder;
-
-	public void setRepositoryFolder(String path) {
-		this.repositoryFolder = new File(path);
+	public GoogleCode() {
+		super("GoogleCode", "http://", "${artifactId}.googlecode.com/files/${version}");
 	}
-
-	protected void loadDependency(Build build) {
-		build.loadDependency(new Dependency("org.eclipse.jgit:org.eclipse.jgit:1.3.0.201202151440-r"));
+	
+	@Override
+	protected boolean calculateSHA1() {
+		return false;
+	}
+	
+	@Override
+	protected boolean isMavenSource() {
+		return false;
 	}
 }

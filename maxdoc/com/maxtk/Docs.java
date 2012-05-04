@@ -51,25 +51,30 @@ import com.maxtk.utils.StringUtils;
  */
 public class Docs {
 
-	static PrintStream out = System.out;
-
-	public static void execute(Config conf, Doc doc, boolean verbose) {
+	private static PrintStream out = System.out;
+	
+	public static void execute(Build build, Doc doc, boolean verbose) {
+		build.console.header();
+		build.console.log("MaxDoc for {0}", build.conf.getName());
+		build.console.header();
 		if (verbose) {
-			doc.describe(out);
+			doc.describe(build.console);
 		}
 		if (doc.outputFolder.exists()) {
 			FileUtils.delete(doc.outputFolder);
 		}
 		doc.outputFolder.mkdirs();
+		
 		injectBootstrap(doc, true, verbose);
 		injectPrettify(doc, doc.injectPrettify, verbose);
 		injectFancybox(doc, doc.injectFancybox, verbose);
-
-		generatePages(conf, doc, verbose);
+		build.console.separator();
+		
+		generatePages(build, doc, verbose);
 	}
 
-	private static void generatePages(Config conf, Doc doc, boolean verbose) {
-		String projectName = conf.name;
+	private static void generatePages(Build build, Doc doc, boolean verbose) {
+		String projectName = build.conf.getName();
 		if (StringUtils.isEmpty(projectName) && !StringUtils.isEmpty(doc.name)) {
 			projectName = doc.name;
 		}
@@ -81,12 +86,10 @@ public class Docs {
 			}
 		}
 
-		String header = generateHeader(projectName, conf, doc);
+		String header = generateHeader(projectName, build.conf, doc);
 		String footer = generateFooter(doc);
 
-		out.println(MessageFormat.format(
-				"Generating HTML from Markdown files in {0} ",
-				doc.sourceFolder.getAbsolutePath()));
+		build.console.log("Generating HTML from Markdown files in {0} ", doc.sourceFolder.getAbsolutePath());
 
 		for (Link link : allLinks) {
 			if (link.isMenu || link.isDivider || link.isLink) {
@@ -95,18 +98,15 @@ public class Docs {
 			}
 			try {
 				String fileName = getHref(link);
-				System.out.println(MessageFormat.format("  {0} => {1}",
-						link.src, fileName));
-				String markdownContent = FileUtils.readContent(new File(
-						doc.sourceFolder, link.src), "\n");
+				build.console.log(1, "{0} => {1}", link.src, fileName);
+				String markdownContent = FileUtils.readContent(new File(doc.sourceFolder, link.src), "\n");
 
 				Map<String, String> nomarkdownMap = new HashMap<String, String>();
 
 				// extract sections marked as no-markdown
 				int nmd = 0;
 				for (NoMarkdown nomarkdown : doc.nomarkdowns) {
-					List<String> lines = Arrays.asList(markdownContent
-							.split("\n"));
+					List<String> lines = Arrays.asList(markdownContent.split("\n"));
 					StringBuilder strippedContent = new StringBuilder();
 					for (int i = 0; i < lines.size(); i++) {
 						String line = lines.get(i);
@@ -117,8 +117,7 @@ public class Docs {
 							int endCode = beginCode;
 							for (int j = beginCode; j < lines.size(); j++) {
 								String endLine = lines.get(j);
-								if (endLine.trim().startsWith(
-										nomarkdown.endToken)) {
+								if (endLine.trim().startsWith(nomarkdown.endToken)) {
 									endCode = j;
 									break;
 								}
@@ -126,16 +125,13 @@ public class Docs {
 
 							if (endCode > beginCode) {
 								// append a placeholder for extracted content
-								String nomarkdownKey = "%NOMARKDOWN" + nmd
-										+ "%";
-								strippedContent.append(nomarkdownKey).append(
-										'\n');
+								String nomarkdownKey = "%NOMARKDOWN" + nmd + "%";
+								strippedContent.append(nomarkdownKey).append( '\n');
 								nmd++;
 
 								// build the hunk from lines
 								StringBuilder sb = new StringBuilder();
-								for (String nl : lines.subList(beginCode,
-										endCode)) {
+								for (String nl : lines.subList(beginCode, endCode)) {
 									sb.append(nl).append('\n');
 								}
 								String hunk = sb.toString();
@@ -154,19 +150,13 @@ public class Docs {
 										ppclass.append(nomarkdown.lang);
 									}
 									StringBuilder code = new StringBuilder();
-									code.append(MessageFormat.format(
-											"<pre class=''{0}''>\n",
-											ppclass.toString()));
-									code.append(StringUtils.escapeForHtml(hunk,
-											false));
+									code.append(MessageFormat.format("<pre class=''{0}''>\n", ppclass.toString()));
+									code.append(StringUtils.escapeForHtml(hunk, false));
 									code.append("</pre>");
-									nomarkdownMap.put(nomarkdownKey,
-											code.toString());
+									nomarkdownMap.put(nomarkdownKey, code.toString());
 								} else if (nomarkdown.escape) {
 									// escape the hunk
-									nomarkdownMap.put(nomarkdownKey,
-											StringUtils.escapeForHtml(hunk,
-													false));
+									nomarkdownMap.put(nomarkdownKey, StringUtils.escapeForHtml(hunk, false));
 								} else {
 									// leave the hunk as-is
 									nomarkdownMap.put(nomarkdownKey, hunk);
@@ -196,20 +186,16 @@ public class Docs {
 				if (link.sidebar) {
 					Map<String, AtomicInteger> counts = new HashMap<String, AtomicInteger>();
 					StringBuilder sb = new StringBuilder();
-					for (String line : Arrays.asList(markdownContent
-							.split("\n"))) {
+					for (String line : Arrays.asList(markdownContent.split("\n"))) {
 						if (line.length() == 0) {
 							sb.append('\n');
 							continue;
 						}
 						if (line.charAt(0) == '#') {
-							String section = line.substring(0,
-									line.indexOf(' '));
-							String name = line.substring(line.indexOf(' ') + 1)
-									.trim();
+							String section = line.substring(0, line.indexOf(' '));
+							String name = line.substring(line.indexOf(' ') + 1) .trim();
 							if (name.endsWith(section)) {
-								name = name.substring(0, name.indexOf(section))
-										.trim();
+								name = name.substring(0, name.indexOf(section)) .trim();
 							}
 							String h = "h" + section.length();
 							if (!counts.containsKey(h)) {
@@ -233,30 +219,24 @@ public class Docs {
 				String content = transformMarkdown(markdownContent.toString());
 
 				// reinsert nomarkdown chunks
-				for (Map.Entry<String, String> nomarkdown : nomarkdownMap
-						.entrySet()) {
-					content = content.replaceFirst(nomarkdown.getKey(),
-							Matcher.quoteReplacement(nomarkdown.getValue()));
+				for (Map.Entry<String, String> nomarkdown : nomarkdownMap .entrySet()) {
+					content = content.replaceFirst(nomarkdown.getKey(), Matcher.quoteReplacement(nomarkdown.getValue()));
 				}
 
 				for (Substitute sub : doc.substitutions) {
 					content = content.replace(sub.token, sub.value);
 				}
 				for (Regex regex : doc.regexes) {
-					content = content.replaceAll(regex.searchPattern,
-							regex.replacePattern);
+					content = content.replaceAll(regex.searchPattern, regex.replacePattern);
 				}
 				for (Prop prop : doc.props) {
 					String loadedContent = generatePropertiesContent(prop);
 					content = content.replace(prop.token, loadedContent);
 				}
 				for (Load load : doc.loads) {
-					String loadedContent = FileUtils.readContent(new File(
-							load.file), "\n");
-					loadedContent = StringUtils.escapeForHtml(loadedContent,
-							false);
-					loadedContent = StringUtils
-							.breakLinesForHtml(loadedContent);
+					String loadedContent = FileUtils.readContent(new File( load.file), "\n");
+					loadedContent = StringUtils.escapeForHtml(loadedContent, false);
+					loadedContent = StringUtils.breakLinesForHtml(loadedContent);
 					content = content.replace(load.token, loadedContent);
 				}
 
@@ -270,9 +250,9 @@ public class Docs {
 				}
 
 				// add Google+1 link
-				if (doc.googlePlusOne && !StringUtils.isEmpty(conf.url)) {
+				if (doc.googlePlusOne && !StringUtils.isEmpty(build.conf.getUrl())) {
 					links += "<li><div class='gplusone'><g:plusone size='small' href='"
-							+ conf.url + "'></g:plusone></div></li>";
+							+ build.conf.getUrl() + "'></g:plusone></div></li>";
 				}
 				String linksHtml = readResource(doc, "links.html");
 				linksHtml = linksHtml.replace("%PROJECTNAME%", projectName);
@@ -336,8 +316,7 @@ public class Docs {
 
 				if (!StringUtils.isEmpty(doc.googleAnalyticsId)) {
 					String analytics = readResource(doc, "analytics.html");
-					analytics = analytics.replace("%ANALYTICSID%",
-							doc.googleAnalyticsId);
+					analytics = analytics.replace("%ANALYTICSID%", doc.googleAnalyticsId);
 					writer.append('\n');
 					writer.append(analytics);
 					writer.append('\n');
@@ -347,8 +326,7 @@ public class Docs {
 				writer.write("\n</html>");
 				writer.close();
 			} catch (Throwable t) {
-				System.err.println("Failed to transform " + link.src);
-				t.printStackTrace();
+				build.console.error(t, "Failed to transform " + link.src);
 			}
 		}
 	}
@@ -471,8 +449,7 @@ public class Docs {
 		return content;
 	}
 
-	private static String createLinks(Link currentLink, List<Link> links,
-			boolean isMenu) {
+	private static String createLinks(Link currentLink, List<Link> links, boolean isMenu) {
 		String linkPattern = "<li><a href=''{0}''>{1}</a></li>\n";
 		String currentLinkPattern = "<li class=''active''><a href=''{0}''>{1}</a></li>\n";
 
@@ -526,8 +503,7 @@ public class Docs {
 		return null;
 	}
 
-	private static String transformMarkdown(String comment)
-			throws ParseException {
+	private static String transformMarkdown(String comment) throws ParseException {
 		String md = MarkdownUtils.transformMarkdown(comment);
 		if (md.startsWith("<p>")) {
 			md = md.substring(3);
@@ -538,8 +514,7 @@ public class Docs {
 		return md;
 	}
 
-	private static String generateHeader(String projectName, Config conf,
-			Doc doc) {
+	private static String generateHeader(String projectName, Config conf, Doc doc) {
 		out.println("Generating HTML header...");
 		StringBuilder sb = new StringBuilder();
 		String header = readResource(doc, "header.html");
@@ -569,9 +544,9 @@ public class Docs {
 			sb.append('\n');
 		}
 
-		if (doc.googlePlusOne && !StringUtils.isEmpty(conf.url)) {
+		if (doc.googlePlusOne && !StringUtils.isEmpty(conf.pom.url)) {
 			String content = readResource(doc, "plusone.html");
-			content = content.replace("%URL%", conf.url);
+			content = content.replace("%URL%", conf.pom.url);
 			sb.append('\n');
 			sb.append(content);
 			sb.append('\n');

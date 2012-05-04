@@ -23,7 +23,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 
-import com.maxtk.ant.MaxTask.Property;
+import com.maxtk.Build;
+import com.maxtk.Constants.Key;
 import com.maxtk.ant.Mft.MftAttr;
 import com.maxtk.utils.StringUtils;
 
@@ -54,21 +55,26 @@ public class MaxJar extends GenJar {
 
 	@Override
 	public void execute() throws BuildException {
+		Build build = (Build) getProject().getReference(Key.build.maxId());
+		build.console.header();
+		build.console.log("MaxJar");
+		build.console.header();
+
 		// automatic manifest entries from Maxilla metadata
 		setManifest("Created-By", "Maxilla");
 		setManifest("Build-Jdk", System.getProperty("java.version"));
 		setManifest("Build-Date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
-		setManifest("Implementation-Title", Property.max_name);
-		setManifest("Implementation-Vendor", Property.max_vendor);
-		setManifest("Implementation-Vendor-Id", Property.max_groupId);
-		setManifest("Implementation-Vendor-URL", Property.max_url);
-		setManifest("Implementation-Version", Property.max_version);
+		setManifest("Implementation-Title", Key.name);
+		setManifest("Implementation-Vendor", Key.vendor);
+		setManifest("Implementation-Vendor-Id", Key.groupId);
+		setManifest("Implementation-Vendor-URL", Key.url);
+		setManifest("Implementation-Version", Key.version);
 
-		setManifest("Bundle-Name", Property.max_name);
-		setManifest("Bundle-SymbolicName", Property.max_artifactId);
-		setManifest("Bundle-Version", Property.max_version);
-		setManifest("Bundle-Vendor", Property.max_vendor);
+		setManifest("Bundle-Name", Key.name);
+		setManifest("Bundle-SymbolicName", Key.artifactId);
+		setManifest("Bundle-Version", Key.version);
+		setManifest("Bundle-Vendor", Key.vendor);
 
 		if (mainclass != null) {
 			String mc = mainclass.getName().replace('/', '.');
@@ -85,7 +91,7 @@ public class MaxJar extends GenJar {
 		
 		// automatic classpath resolution, if not manually specified
 		if (classpath == null) {
-			Object o = getProject().getReference(Property.max_runtime_classpath.id());
+			Object o = getProject().getReference(Key.runtime_classpath.maxId());
 			if (o != null && o instanceof Path) {
 				Path cp = (Path) o;
 				if (fatjar) {
@@ -109,14 +115,25 @@ public class MaxJar extends GenJar {
 		
 		if (destFile == null) {
 			// default output jar if file unspecified
-			String name = getProject().getProperty(Property.max_artifactId.id());
-			if (!StringUtils.isEmpty(getProject().getProperty(Property.max_version.id()))) {
-				name += "-" + getProject().getProperty(Property.max_version.id());
+			String name = getProject().getProperty(Key.artifactId.maxId());
+			if (!StringUtils.isEmpty(getProject().getProperty(Key.version.maxId()))) {
+				name += "-" + getProject().getProperty(Key.version.maxId());
 			}
 			destFile = new File(name + ".jar");
 		}
-
+		
+		if (destFile != null) {
+			build.console.log(1, destFile.getAbsolutePath());
+		} else if (destDir != null) {
+			build.console.log(1, "class structure => " + destDir);
+		}
+		
+		long start = System.currentTimeMillis();
 		super.execute();
+
+		if (destFile != null) {
+			build.console.log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
+		}
 	}
 
 	void setManifest(String key, String value) {
@@ -132,8 +149,8 @@ public class MaxJar extends GenJar {
 		attr.setValue(value);
 	}
 
-	void setManifest(String key, Property prop) {
-		String value = getProject().getProperty(prop.id());
+	void setManifest(String key, Key prop) {
+		String value = getProject().getProperty(prop.maxId());
 		if (!StringUtils.isEmpty(value)) {
 			setManifest(key, value);
 		}

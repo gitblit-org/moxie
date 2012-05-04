@@ -15,52 +15,172 @@
  */
 package com.maxtk;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 
 import com.maxtk.utils.StringUtils;
 
 /**
  * Dependency represents a retrievable artifact.
  */
-public class Dependency {
+public class Dependency implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	public static enum Scope {
+		compile, provided, runtime, test, system;
 		
-	public static final String POM = ".pom";
-	public static final String LIB = ".jar";
-	public static final String SRC = "-sources.jar";
-
-	String group;
-	final String artifact;
-	String version;
-	final String classifier;
-	final boolean resolveTransitiveDependencies;
-	List<Dependency> transitiveDependencies;
-
-	public Dependency(String def) {
-		this(def.split(":"));		
-	}
-	
-	private Dependency(String [] def) {
-		this(def[0], def[1], def[2], def.length == 4 ? def[3] : null);
-	}
-
-	public Dependency(String group, String artifact, String version, String classifier) {
-		this.group = group;
-		this.artifact = artifact;		
-		this.version = stripExtension(version);
-		this.classifier = stripExtension(classifier);
-		this.transitiveDependencies = new ArrayList<Dependency>();
-		if (!StringUtils.isEmpty(this.classifier)) {
-			// check for @extension on classifier
-			resolveTransitiveDependencies = this.classifier.equals(classifier);
-		} else {
-			// check for @extension on version
-			resolveTransitiveDependencies = this.version.equals(version);
+		// http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope		
+		public boolean includeOnClasspath(Scope dependencyScope) {
+			if (dependencyScope == null) {
+				return false;
+			}
+			if (compile.equals(dependencyScope)) {
+				// compile dependency is on all classpaths
+				return true;
+			} else if (system.equals(dependencyScope)) {
+				// system dependency is on all classpaths
+				return true;
+			}
+			switch(this) {
+			case compile:
+				// compile classpath
+				switch(dependencyScope) {
+					case provided:
+						return true;
+				}
+				break;
+			case provided:
+				// provided classpath
+				switch (dependencyScope) {
+					case provided:
+						return true;
+				}
+				break;
+			case runtime:
+				// runtime classpath
+				switch (dependencyScope) {
+					case runtime:
+						return true;
+				}
+				break;
+			case test:
+				// test classpath
+				return true;
+			}
+			return false;
+		}
+		
+		// http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope
+		public Scope getTransitiveScope(Scope transitiveDependency) {
+			// left-column in table
+			switch(this) {
+			case compile:
+				// compile dependency
+				switch (transitiveDependency) {
+				case compile:
+					return compile;
+				case runtime:
+					return runtime;
+				}
+				break;
+			case provided:
+				// provided dependency
+				switch (transitiveDependency) {
+				case compile:
+				case runtime:
+					return provided;
+				}
+				break;
+			case runtime:
+				// runtime dependency
+				switch (transitiveDependency) {
+				case compile:
+				case runtime:
+					return runtime;
+				}
+				break;
+			case test:
+				// test dependency
+				switch (transitiveDependency) {
+				case compile:
+				case runtime:
+					return test;
+				}
+				break;
+			}
+			return null;
+		}
+		
+		public static Scope fromString(String str) {
+			for (Scope value : Scope.values()) {
+				if (value.name().equalsIgnoreCase(str)) {
+					return value;
+				}
+			}
+			return Scope.compile;
 		}
 	}
 	
-	private String stripExtension(String def) {
+	public static enum Extension {
+		POM(".pom"), POM_SHA1(".pom.sha1"), LIB(".jar"), LIB_SHA1(".jar.sha1"), SRC("-sources.jar"), SRC_SHA1("-sources.jar.sha1");
+		
+		final String ext;
+		
+		Extension(String ext) {
+			this.ext = ext;
+		}
+		
+		public Extension sha1() {
+			if (toString().endsWith(".sha1")) {
+				return this;
+			}
+			String wanted = toString() + ".sha1";
+			for (Extension ext : Extension.values()) {
+				if (ext.toString().equals(wanted)) {
+					return ext;
+				}
+			}
+			return null;
+		}
+		
+		@Override
+		public String toString() {
+			return ext;
+		}
+	}
+
+	public String group;
+	public String artifact;
+	public String version;
+	public boolean optional;	
+	public boolean resolveDependencies;
+
+	public int ring;
+
+	public Dependency() {
+		resolveDependencies = true;
+	}
+	
+	public Dependency(String def) {
+		this(def.split(":"));
+	}
+	
+	private Dependency(String [] def) {
+		this(def[0], def[1], def[2]);
+	}
+	
+	public Dependency(String group, String artifact, String version) {
+		this.group = group.replace('/', '.');
+		this.artifact = artifact;
+		this.version = stripFetch(version);
+		this.resolveDependencies = true;
+		if (!StringUtils.isEmpty(version) && (version.indexOf('@') > -1)) {
+			// trailing @ on the version disables transitive resolution
+			this.resolveDependencies = false;
+		}
+	}
+	
+	private String stripFetch(String def) {
 		if (!StringUtils.isEmpty(def)) {			
 			if (def.indexOf('@') > -1) {
 				return def.substring(0, def.indexOf('@'));
@@ -70,29 +190,34 @@ public class Dependency {
 			return "";
 		}
 	}
-
-	public String getArtifactPath(String fileType) {
-		if ("<googlecode>".equals(group)) {
-			return MessageFormat.format("http://{0}.googlecode.com/files/{1}",
-					version, artifact);
-		}
-		return group.replace('.', '/') + "/" + artifact + "/" + version + "/"
-				+ artifact + "-" + (StringUtils.isEmpty(version) ? "?":version) + fileType;
-	}
 	
-	public String getArtifactName(String fileType) {
-		if ("<googlecode>".equals(group)) {
-			return artifact;
-		}
-		return artifact + "-" + (StringUtils.isEmpty(version) ? "?":version) + fileType;
-	}
-
 	public boolean isMavenObject() {
 		return group.charAt(0) != '<';
 	}
+	
+	public String getProjectId() {
+		return group + ":" + artifact;
+	}
+
+	public String getCoordinates() {
+		return group + ":" + artifact + ":" + version;
+	}
 
 	@Override
-	public String toString() {
-		return artifact + "-" + (StringUtils.isEmpty(version) ? "?":version);
+	public int hashCode() {
+		return (group + artifact + (version == null ? "":version)).hashCode();
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Dependency) {
+			return hashCode() == o.hashCode();
+		}
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		return (group.replace('/', '.') + ":" + artifact + ":" + version) + " (" + (optional ? ", optional":"") + (resolveDependencies ? "":", @jar") + ")";
+	}		
 }

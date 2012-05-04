@@ -17,9 +17,8 @@ package com.maxtk.ant;
 
 import java.io.File;
 
-import org.apache.tools.ant.BuildException;
-
-import com.maxtk.Config;
+import com.maxtk.Build;
+import com.maxtk.Constants.Key;
 import com.maxtk.utils.JGitUtils;
 import com.maxtk.utils.StringUtils;
 
@@ -33,25 +32,24 @@ public class MaxCommitId extends MaxGitTask {
 
 	@Override
 	public void execute() throws org.apache.tools.ant.BuildException {
-		Config conf = (Config) getProject()
-				.getReference(Property.max_conf.id());
-		try {
-			checkDependencies(conf);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new BuildException(e);
-		}
+		Build build = (Build) getProject().getReference(Key.build.maxId());
+		build.console.header();
+		build.console.log("MaxCommitId");
+		build.console.header();
+		loadDependency(build);
 
 		if (repositoryFolder == null || !repositoryFolder.exists()) {
-			repositoryFolder = new File(getProject().getProperty("basedir"));
-			log("Repository folder unspecified, trying " + repositoryFolder);
+			repositoryFolder = new File(getProject().getProperty("basedir"));			
 		}
 		String hashid = JGitUtils.getCommitId(repositoryFolder);
 
+		verbose = false;
 		if (StringUtils.isEmpty(property)) {
-			setProperty(Property.max_commit, hashid);
+			setProperty(Key.commit, hashid);
+			build.console.key(Key.commit.maxId(), hashid);
 		} else {
 			setProperty(property, hashid);
-		}
+			build.console.key(property, hashid);
+		}		
 	}
 }

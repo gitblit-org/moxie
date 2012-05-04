@@ -103,6 +103,14 @@ public class StringUtils {
 		}
 		return input;
 	}
+	
+	public static String createBlank(int length) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < length; i++) {
+			sb.append(' ');
+		}
+		return sb.toString();
+	}
 
 	/**
 	 * Calculates the SHA1 of the string.

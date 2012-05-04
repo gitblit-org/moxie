@@ -23,7 +23,7 @@
 		<!-- Compile all of Maxilla with retrieved dependencies -->
 		<javac debug="true" destdir="${maxilla.bin}" includeantruntime="true" failonerror="true">
 			<src refid="max.sourceFolders" />
-			<classpath refid="max.compile.classpath" />
+			<classpath refid="max.test.classpath" />
 		</javac>
 
 		<!-- Copy the bundled MaxDoc resources -->
@@ -78,10 +78,14 @@
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
-				<exclude name="org.w3c." />
+				<exclude name="org.fusesource." />
+				<exclude name="org.w3c." />				
 			</classfilter>
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxExtract" />
+						
+			<class name="com.maxtk.opt.JansiConsole" />
+			
 			<resource file="${basedir}/defs/core/tasks.properties" />
 		</maxjar>
 		
@@ -91,13 +95,18 @@
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
+				<exclude name="org.fusesource." />
 				<exclude name="org.w3c." />
+				<include name="com.maxtk.opt." />
 			</classfilter>
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxExtract" />
 			<class name="com.maxtk.ant.MaxCommitId" />
 			<class name="com.maxtk.ant.MaxGhPages" />
 			<class name="com.maxtk.ant.MaxJar" />
+			
+			<class name="com.maxtk.opt.JansiConsole" />
+			
 			<resource file="${basedir}/defs/pro/tasks.properties" />
 		</maxjar>
 
@@ -107,8 +116,9 @@
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
+				<exclude name="org.fusesource." />
 				<exclude name="org.tautua." />
-				<exclude name="org.w3c." />
+				<exclude name="org.w3c." />				
 			</classfilter>
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxExtract" />
@@ -116,6 +126,9 @@
 			<class name="com.maxtk.ant.MaxGhPages" />
 			<class name="com.maxtk.ant.MaxJar" />
 			<class name="com.maxtk.ant.MaxDoc" />
+			
+			<class name="com.maxtk.opt.JansiConsole" />
+			
 			<resource file="${basedir}/defs/all/tasks.properties" />
 
 			<!-- Include the MaxDoc resources -->

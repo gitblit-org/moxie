@@ -19,7 +19,8 @@ import java.io.File;
 
 import org.apache.tools.ant.BuildException;
 
-import com.maxtk.Config;
+import com.maxtk.Build;
+import com.maxtk.Constants.Key;
 import com.maxtk.utils.JGitUtils;
 
 public class MaxGhPages extends MaxGitTask {
@@ -44,14 +45,11 @@ public class MaxGhPages extends MaxGitTask {
 
 	@Override
 	public void execute() throws org.apache.tools.ant.BuildException {
-		Config conf = (Config) getProject()
-				.getReference(Property.max_conf.id());
-		try {
-			checkDependencies(conf);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new BuildException(e);
-		}
+		Build build = (Build) getProject().getReference(Key.build.maxId());
+		build.console.header();
+		build.console.log("MaxGhPages");
+		build.console.header();
+		loadDependency(build);
 
 		if (sourceFolder == null) {
 			throw new BuildException("You did not specify a sourceFolder!");
@@ -63,7 +61,6 @@ public class MaxGhPages extends MaxGitTask {
 
 		if (repositoryFolder == null || !repositoryFolder.exists()) {
 			repositoryFolder = new File(getProject().getProperty("basedir"));
-			log("Repository folder unspecified, trying " + repositoryFolder);
 		}
 
 		JGitUtils.updateGhPages(repositoryFolder, sourceFolder, obliterate);

@@ -1,11 +1,22 @@
+/*
+ * Copyright 2012 James Moger
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.maxtk;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.MessageFormat;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,158 +26,164 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.maxtk.Constants.Key;
+import com.maxtk.Dependency.Extension;
+import com.maxtk.Dependency.Scope;
 import com.maxtk.utils.StringUtils;
 
 public class PomReader {
 
-	public static void main(String[] args) throws Exception {
-		File[] files = new File("ext").listFiles(new FileFilter() {
-			@Override
-			public boolean accept(File file) {
-				return file.isFile() && file.getName().endsWith(".pom");
-			}
-		});
-
-		for (File file : files) {
-			List<PomDep> deps = readDependencies(file);
-			System.out.println(file.getName());
-			if (deps.size() == 0) {
-				System.out.println("  none");
-			} else {
-				for (PomDep dep : deps) {
-					System.out.println("  " + dep);
-				}
-			}
+	/**
+	 * Reads a POM file from an artifact cache.  Parent POMs will be read and
+	 * applied automatically, if they exist in the cache.
+	 * 
+	 * @param cache
+	 * @param dependency
+	 * @return
+	 * @throws Exception
+	 */
+	public static Pom readPom(ArtifactCache cache, Dependency dependency) {
+		File pomFile = cache.getFile(dependency, Extension.POM);
+		if (!pomFile.exists()) {
+			return null;
 		}
-	}
-
-	public static List<PomDep> readDependencies(File file) throws Exception {
-		List<PomDep> deps = new ArrayList<PomDep>();
-		Map<String, String> propertyMap = new HashMap<String, String>();
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder builder = factory.newDocumentBuilder();
-		Document doc = builder.parse(file);
-		doc.getDocumentElement().normalize();
-		NodeList projectNodes = doc.getDocumentElement().getChildNodes();
+		
+		Pom pom = new Pom();
+		pom.groupId = dependency.group;
+		pom.artifactId = dependency.artifact;
+		pom.version = dependency.version;
+		
+		Document doc = null;
+		try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			doc = builder.parse(pomFile);
+			doc.getDocumentElement().normalize();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+				
+		Element docElement = doc.getDocumentElement();
+		pom.name = readStringTag(docElement, Key.name);
+		pom.description = readStringTag(docElement, Key.description);
+		pom.url = readStringTag(docElement, Key.url);
+		pom.vendor = readStringTag(docElement, Key.vendor);
+		
+		pom.setProperty("project.groupId", pom.groupId);
+		pom.setProperty("project.artifactId", pom.artifactId);
+		pom.setProperty("project.version", pom.version);
+		
+		NodeList projectNodes = docElement.getChildNodes();
 		for (int i = 0; i < projectNodes.getLength(); i++) {
 			Node pNode = projectNodes.item(i);
 			if (pNode.getNodeType() == Node.ELEMENT_NODE) {
-				Element element = (Element) pNode;
-				if ("groupId".equals(element.getTagName())) {
-					// project groupId
-					String groupId = readStringTag(pNode, "groupId");
-					if (!StringUtils.isEmpty(groupId)) {
-						propertyMap.put("${project.groupId}", groupId);
-					}
-				} else if ("version".equals(element.getTagName())) {
-					// project version
-					String version = readStringTag(pNode, "version");
-					if (!StringUtils.isEmpty(version)) {
-						propertyMap.put("${project.version}", version);
-					}
-				} else if ("parent".equals(element.getTagName())) {
-					// parent properties (shortcut)					
-					String parentArtifactId = readStringTag(pNode, "artifactId");
-					if (!StringUtils.isEmpty(parentArtifactId)) {
-						propertyMap.put("${parent.artifactId}", parentArtifactId);
-					}
-					String parentGroupId = readStringTag(pNode, "groupId");
-					if (!StringUtils.isEmpty(parentGroupId)) {
-						propertyMap.put("${project.groupId}", parentGroupId);
-					}
-					String parentVersion = readStringTag(pNode, "version");
-					if (!StringUtils.isEmpty(parentVersion)) {
-						propertyMap.put("${project.version}", parentVersion);
-					}
-				} else if ("properties".equals(element.getTagName())) {
-					// read properties
+				Element element = (Element) pNode;				
+				if ("parent".equalsIgnoreCase(element.getTagName())) {
+					// parent properties	
+					pom.parentGroupId = readStringTag(pNode, Key.groupId);
+					pom.parentArtifactId = readStringTag(pNode, Key.artifactId);
+					pom.parentVersion = readStringTag(pNode, Key.version);
+				} else if ("properties".equalsIgnoreCase(element.getTagName())) {
+					// pom properties
 					NodeList properties = (NodeList) element;
 					for (int j = 0; j < properties.getLength(); j++) {
 						Node node = properties.item(j);
 						if (node.getNodeType() == Node.ELEMENT_NODE) {
 							String property = node.getNodeName();							
 							if (node.getFirstChild() != null) {							
-								propertyMap.put("${" + property + "}", node.getFirstChild().getNodeValue());
+								pom.setProperty(property, node.getFirstChild().getNodeValue());
 							}
 						}						
 					}
-				} else if ("dependencyManagement".equals(element.getTagName())) {
-					// read super/parent-defined dependency versions
-				} else if ("dependencies".equals(element.getTagName())) {
+				} else if ("dependencyManagement".equalsIgnoreCase(element.getTagName())) {
+					// dependencyManagement definitions
+					NodeList dependencies = element.getElementsByTagName("dependency");
+					for (int j = 0, jlen = dependencies.getLength(); j < jlen; j++) {
+						Node node = dependencies.item(j);
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							Dependency dep = new Dependency();
+							dep.group = readStringTag(node, Key.groupId);
+							dep.artifact = readStringTag(node, Key.artifactId);
+							dep.version = readStringTag(node, Key.version);
+							
+							// substitute version property
+							dep.version = pom.getProperty(dep.version);			
+
+							// add dependency management definition
+							pom.addManagedVersion(dep);
+						}
+					}
+				} else if ("dependencies".equalsIgnoreCase(element.getTagName())) {
 					// read dependencies
 					NodeList dependencies = (NodeList) element;
 					for (int j = 0; j < dependencies.getLength(); j++) {
 						Node node = dependencies.item(j);
 						if (node.getNodeType() == Node.ELEMENT_NODE) {
-							PomDep dep = new PomDep();
-							dep.groupId = readStringTag(node, "groupId");
-							dep.artifactId = readStringTag(node, "artifactId");
-							dep.version = readStringTag(node, "version");
-							dep.scope = readStringTag(node, "scope");
-							if (StringUtils.isEmpty(dep.scope)) {
-								dep.scope = "compile";
-							}
-							dep.optional = readBooleanTag(node, "optional");
+							Dependency dep = new Dependency();
+							dep.group = readStringTag(node, Key.groupId);
+							dep.artifact = readStringTag(node, Key.artifactId);
+							dep.version = readStringTag(node, Key.version);							
+							dep.optional = readBooleanTag(node, Key.optional);
 							
-							// substitute properties
-							if (propertyMap.containsKey("${parent.artifactId}")) {
-								dep.parentArtifactId = get("${parent.artifactId}", propertyMap);
-							}
-							dep.groupId = get(dep.groupId, propertyMap);
-							dep.version = get(dep.version, propertyMap);
+							Scope scope = Scope.fromString(readStringTag(node, Key.scope));
 							
 							// add dep object
-							deps.add(dep);
+							pom.addDependency(dep, scope);
 						}
 					}
 				}
 			}
 		}
-		return deps;
+		
+		if (pom.hasParentDependency()) {
+			// read parent pom
+			Dependency parent = pom.getParentDependency();
+			Pom parentPom = readPom(cache, parent);
+			if (parentPom != null) {
+				pom.inherit(parentPom);
+			}
+		}		
+		
+		// resolve properties
+		for (Scope scope : pom.getScopes()) {
+			for (Dependency dep : pom.getDependencies(scope, 0)) {
+				dep.group = pom.getProperty(dep.group);
+
+				if (StringUtils.isEmpty(dep.version)) {
+					// try retrieving version from parent pom
+					dep.version = pom.getManagedVersion(dep);
+					if (StringUtils.isEmpty(dep.version) && !pom.hasParentDependency()) {
+						System.err.println(MessageFormat.format("{0} dependency {1} does not specify a version!", pom, dep.getProjectId()));
+					}
+				}
+				// substitute version property
+				dep.version = pom.getProperty(dep.version);
+			}
+		}
+		return pom;
 	}
 	
-	private static String get(String key, Map<String, String> propertyMap) {
-		if (propertyMap.containsKey(key)) {
-			return propertyMap.get(key);
-		}
-		return key;
-	}
-
-	private static String readStringTag(Node node, String tag) {
+	private static String readStringTag(Node node, Key tag) {
 		Element element = (Element) node;
-		NodeList tagList = element.getElementsByTagName(tag);
+		NodeList tagList = element.getElementsByTagName(tag.name());
 		if (tagList == null || tagList.getLength() == 0) {
 			return null;
 		}
 		Element tagElement = (Element) tagList.item(0);
 		NodeList textList = tagElement.getChildNodes();
-		String content = textList.item(0).getNodeValue().trim();
+		Node itemNode = textList.item(0);
+		if (itemNode == null) {
+			return null;
+		}
+		String content = itemNode.getNodeValue().trim();
 		return content;
 	}
 
-	private static boolean readBooleanTag(Node node, String tag) {
+	private static boolean readBooleanTag(Node node, Key tag) {
 		String content = readStringTag(node, tag);
 		if (StringUtils.isEmpty(content)) {
 			return false;
 		}
 		return Boolean.parseBoolean(content);
-	}
-
-	public static class PomDep {
-		String parentArtifactId;
-		String groupId;
-		String artifactId;
-		String version;
-		String scope;
-		boolean optional;
-
-		public boolean resolveDependencies() {
-			return !optional && ("compile".equals(scope) || "runtime".equals(scope));
-		}
-		
-		@Override
-		public String toString() {
-			return  groupId + ":" + artifactId + (version == null ? "":(":" +version)) + " (" + scope + (optional ? ", optional)":")");
-		}		
 	}
 }

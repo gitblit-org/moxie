@@ -16,7 +16,6 @@
 package com.maxtk.ant;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,8 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 
-import com.maxtk.Config;
+import com.maxtk.Build;
+import com.maxtk.Constants.Key;
 import com.maxtk.Dependency;
 import com.maxtk.Doc;
 import com.maxtk.Docs;
@@ -34,10 +34,7 @@ import com.maxtk.Load;
 import com.maxtk.NoMarkdown;
 import com.maxtk.Prop;
 import com.maxtk.Regex;
-import com.maxtk.Setup;
 import com.maxtk.Substitute;
-import com.maxtk.ant.MaxTask.Property;
-import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.FileUtils;
 
 public class MaxDoc extends Task {
@@ -128,15 +125,10 @@ public class MaxDoc extends Task {
 
 	@Override
 	public void execute() throws BuildException {
-		Config conf = (Config) getProject()
-				.getReference(Property.max_conf.id());
-		try {
-			checkDependencies(conf);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new BuildException(e);
-		}
-		Docs.execute(conf, doc, verbose);
+		Build build = (Build) getProject().getReference(Key.build.maxId());
+		build.loadDependency(new Dependency("org.tautua.markdownpapers:markdownpapers-core:1.2.7"));
+
+		Docs.execute(build, doc, verbose);
 
 		for (com.maxtk.Resource resource : resources) {
 			try {
@@ -144,8 +136,7 @@ public class MaxDoc extends Task {
 					FileUtils.copy(doc.outputFolder, resource.file);
 				} else {
 					for (FileSet fs : resource.filesets) {
-						DirectoryScanner ds = fs
-								.getDirectoryScanner(getProject());
+						DirectoryScanner ds = fs.getDirectoryScanner(getProject());
 						File fromDir = fs.getDir(getProject());
 
 						for (String srcFile : ds.getIncludedFiles()) {
@@ -162,16 +153,6 @@ public class MaxDoc extends Task {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}
-	}
-
-	private void checkDependencies(Config config) throws IOException,
-			MaxmlException {
-		try {
-			Class.forName("org.tautua.markdownpapers.Markdown");
-		} catch (Throwable t) {
-			Dependency markdownpapers = new Dependency("org.tautua.markdownpapers:markdownpapers-core:1.2.5");
-			Setup.retriveInternalDependency(config, markdownpapers);
 		}
 	}
 }

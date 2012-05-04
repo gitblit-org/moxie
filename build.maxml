@@ -1,17 +1,18 @@
 name : Maxilla
 description : Project Build Toolkit
-version : 0.1.0
-url : http://gitblit.github.com/maxilla
 groupId : com.maxtk
 artifactId : maxilla
+version : 0.2.0
 vendor : James Moger 
+url : http://gitblit.github.com/maxilla
 configureEclipseClasspath : true
-sourceFolders : core, maxgit, maxjar, maxdoc, tests
+sourceFolders : core, opt, maxgit, maxjar, maxdoc, tests
 outputFolder : bin
-mavenUrls : central
+dependencySources : gitblit, central
 dependencyFolder : ext
 dependencies :
+- provided 'org.fusesource.jansi:jansi:1.8'
 - provided org.apache.ant:ant:1.7.0
-- provided org/eclipse/jgit:org.eclipse.jgit:1.3.0.201202151440-r
-- provided org/tautua/markdownpapers:markdownpapers-core:1.2.7
+- provided 'org/eclipse/jgit:org.eclipse.jgit:1.3.0.201202151440-r'
+- provided 'org/tautua/markdownpapers:markdownpapers-core:1.2.7'
 - test "junit:junit:4.8.2"

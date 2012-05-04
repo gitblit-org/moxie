@@ -17,17 +17,15 @@ package com.maxtk;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import com.maxtk.Constants.Key;
+import com.maxtk.Dependency.Scope;
 import com.maxtk.maxml.Maxml;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.FileUtils;
@@ -37,29 +35,16 @@ public class Config implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	enum Key {
-		version, name, description, url, vendor, groupId, artifactId, sourceFolder, sourceFolders, outputFolder, projects, dependencyFolder, mavenUrls, properties, dependencies, configureEclipseClasspath, googleAnalyticsId, googlePlusId;
-	}
-
-	String name;
-	String version;
-	String description;
-	String url;
-	String vendor;
-	String groupId;
-	String artifactId;
+	Pom pom;
+	
 	List<String> projects;
-	List<String> mavenUrls;
-	Map<String, String> properties;
-	List<Dependency> compileDependencies;
-	List<Dependency> providedDependencies;
-	List<Dependency> runtimeDependencies;
-	List<Dependency> testDependencies;
-	List<Dependency> systemDependencies;
+	List<String> repositoryUrls;	
+	
 	File dependencyFolder;
 	List<File> sourceFolders;
 	File outputFolder;
 	boolean configureEclipseClasspath;
+	boolean debug;
 
 	public static Config load(File file) throws IOException, MaxmlException {
 		return new Config().parse(file);
@@ -70,77 +55,50 @@ public class Config implements Serializable {
 		sourceFolders = Arrays.asList(new File("src"));
 		outputFolder = new File("bin");
 		projects = new ArrayList<String>();
-		mavenUrls = Arrays.asList(Constants.MAVENCENTRAL);
-		properties = new HashMap<String, String>();
-		compileDependencies = new ArrayList<Dependency>();
-		providedDependencies = new ArrayList<Dependency>();
-		runtimeDependencies = new ArrayList<Dependency>();
-		testDependencies = new ArrayList<Dependency>();
-		systemDependencies = new ArrayList<Dependency>();
+		repositoryUrls = new ArrayList<String>();		
+		pom = new Pom();
 		dependencyFolder = null;
 	}
 
 	@Override
 	public String toString() {
-		return "Config (" + name + " " + version + ")";
+		return "Config (" + pom + ")";
 	}
 
-	public void addMavenUrl(String url) {
-		if (url.equalsIgnoreCase(Constants.MAVENCENTRAL)) {
-			url = Constants.MAVENCENTRAL_URL;
-		}
-		Set<String> urls = new LinkedHashSet<String>(mavenUrls);
-		urls.add(url);
-		mavenUrls = new ArrayList<String>(urls);
-	}
-	
 	Config parse(File file) throws IOException, MaxmlException {
 		if (!file.exists()) {
-			Setup.out.println(MessageFormat.format("{0} does not exist, using defaults.",
-					file.getAbsolutePath()));
-			return this;
+			throw new MaxmlException(MessageFormat.format("{0} does not exist!", file));			
 		}
-
+		
 		String content = FileUtils.readContent(file, "\n").trim();
 		Map<String, Object> map = Maxml.parse(content);
 
 		// metadata
-		name = readString(map, Key.name, false);
-		version = readString(map, Key.version, false);
-		description = readString(map, Key.description, false);
-		url = readString(map, Key.url, false);
-		vendor = readString(map, Key.vendor, false);
-		groupId = readString(map, Key.groupId, false);
-		artifactId = readString(map, Key.artifactId, false);
+		pom.name = readString(map, Key.name, false);
+		pom.version = readString(map, Key.version, false);
+		pom.groupId = readString(map, Key.groupId, false);
+		pom.artifactId = readString(map, Key.artifactId, false);
+		pom.description = readString(map, Key.description, false);
+		pom.url = readString(map, Key.url, false);
+		pom.vendor = readString(map, Key.vendor, false);
 
 		// build parameters
 		configureEclipseClasspath = readBoolean(map, Key.configureEclipseClasspath, false);
 		sourceFolders = readFiles(map, Key.sourceFolders, sourceFolders);
 		outputFolder = readFile(map, Key.outputFolder, outputFolder);
 		projects = readStrings(map, Key.projects, projects);
-		dependencyFolder = readFile(map, Key.dependencyFolder, Setup.maxillaDir);
+		dependencyFolder = readFile(map, Key.dependencyFolder, null);
+		
 		List<String> props = readStrings(map, Key.properties, new ArrayList<String>());
 		for (String prop : props) {
 			String [] values = prop.split(" ");
-			properties.put("${" + values[0].trim() + "}", values[1].trim());
+			pom.setProperty(values[0], values[1]);
 		}
-		if (!StringUtils.isEmpty(groupId)) {
-			properties.put("${project.groupId}", groupId);
-		}
-		if (!StringUtils.isEmpty(version)) {
-			properties.put("${project.version}", version);	
-		}
+		pom.setProperty("project.groupId", pom.groupId);
+		pom.setProperty("project.artifactId", pom.artifactId);
+		pom.setProperty("project.version", pom.version);	
 		
-		// allow shortcut names for maven repositories
-		List<String> urls = readStrings(map, Key.mavenUrls, mavenUrls);
-		mavenUrls = new ArrayList<String>();
-		for (String url : urls) {
-			if (Constants.MAVENCENTRAL.equalsIgnoreCase(url)) {
-				mavenUrls.add(Constants.MAVENCENTRAL_URL);
-			} else {
-				mavenUrls.add(url);
-			}
-		}
+		repositoryUrls = readStrings(map, Key.dependencySources, repositoryUrls);
 		parseDependencies(map, Key.dependencies);		
 		return this;
 	}
@@ -148,44 +106,38 @@ public class Config implements Serializable {
 	void parseDependencies(Map<String, Object> map, Key key) {
 		if (map.containsKey(key.name())) {
 			List<?> values = (List<?>) map.get(key.name());
-			List<Dependency> libs;
+			Scope scope;
 			for (Object definition : values) {
 				if (definition instanceof String) {
 					String def = definition.toString();
 					if (def.startsWith("compile")) {
 						// compile-time dependency
-						libs = compileDependencies;
+						scope = Scope.compile;
 						def = def.substring("compile".length()).trim();
 					} else if (def.startsWith("provided")) {
 						// provided dependency
-						libs = providedDependencies;
+						scope = Scope.provided;
 						def = def.substring("provided".length()).trim();
 					} else if (def.startsWith("runtime")) {
 						// runtime dependency
-						libs = runtimeDependencies;
+						scope = Scope.runtime;
 						def = def.substring("runtime".length()).trim();
 					} else if (def.startsWith("test")) {
 						// test dependency
-						libs = testDependencies;
+						scope = Scope.test;
 						def = def.substring("test".length()).trim();
 					} else if (def.startsWith("system")) {
 						// system dependency
-						libs = systemDependencies;
+						scope = Scope.system;
 						def = def.substring("system".length()).trim();
 					} else {
 						// default to compile-time dependency
-						libs = compileDependencies;
+						scope = Scope.compile;
 					}
 					
 					def = StringUtils.stripQuotes(def);										
-					Dependency mo = new Dependency(def);
-					if (properties.containsKey(mo.version)) {
-						mo.version = properties.get(mo.version);
-					}
-					if (properties.containsKey(mo.group)) {
-						mo.group = properties.get(mo.group);
-					}
-					libs.add(mo);
+					Dependency dep = new Dependency(def);					
+					pom.addDependency(dep, scope);
 				} else {
 					throw new RuntimeException("Illegal dependency " + definition);
 				}
@@ -306,146 +258,37 @@ public class Config implements Serializable {
 	}
 
 	void keyError(Key key) {
-		Setup.out.println(MessageFormat.format("{0} is improperly specified, using default", key.name()));
-	}
-
-	void describe(PrintStream out) {
-		out.println("project metadata");
-		describe(out, Key.name, name);
-		describe(out, Key.description, description);
-		describe(out, Key.version, version);
-		describe(out, Key.vendor, vendor);
-		describe(out, Key.url, url);
-		describe(out, Key.groupId, groupId);
-		describe(out, Key.artifactId, artifactId);
-		out.println(Constants.SEP);
-
-		out.println("source folders");
-		for (File folder : sourceFolders) {
-			out.print(Constants.INDENT);
-			out.println(folder);
-		}
-		out.println(Constants.SEP);
-
-		out.println("output folder");
-		describe(out, Key.outputFolder, outputFolder.toString());
-		out.println(Constants.SEP);
-
-		out.println("maven urls");
-		for (String url : mavenUrls) {
-			out.print(Constants.INDENT);
-			out.println(url);
-		}
-		out.println(Constants.SEP);
-		out.println(MessageFormat.format("library dependencies (=> {0})", dependencyFolder));
-		for (Dependency dep : runtimeDependencies) {
-			out.print(Constants.INDENT);
-			out.println(dep.toString());
-		}
-	}
-
-	void describe(PrintStream out, Key key, String value) {
-		if (StringUtils.isEmpty(value)) {
-			return;
-		}
-		out.print(Constants.INDENT);
-		out.print(StringUtils.leftPad(key.name(), 12, ' '));
-		out.print(": ");
-		out.println(value);
+		System.err.println(MessageFormat.format("{0} is improperly specified, using default", key.name()));
 	}
 
 	public String getName() {
-		return name;
+		return pom.name;
 	}
 
 	public String getDescription() {
-		return description;
+		return pom.description;
 	}
 
 	public String getVersion() {
-		return version;
+		return pom.version;
 	}
 
 	public String getUrl() {
-		return url;
+		return pom.url;
 	}
 
 	public String getVendor() {
-		return vendor;
+		return pom.vendor;
 	}
 
 	public String getGroupId() {
-		return groupId;
+		return pom.groupId;
 	}
 	
 	public String getArtifactId() {
-		return artifactId;
+		return pom.artifactId;
 	}
 	
-	private List<File> getArtifacts(List<Dependency> dependencies) {
-		List<File> jars = new ArrayList<File>();
-		for (Dependency dependency : dependencies) {
-			if (StringUtils.isEmpty(dependency.version)) {
-				// TODO skip unversioned dependencies for now
-				continue;
-			}
-			File jar = new File(dependencyFolder, dependency.getArtifactName(Dependency.LIB));
-			jars.add(jar);
-			if (dependency.transitiveDependencies.size() > 0) {
-				jars.addAll(getArtifacts(dependency.transitiveDependencies));
-			}
-		}
-		return jars;
-	}
-	
-	public List<File> getCompileArtifacts() {		
-		return getArtifacts(compileDependencies);
-	}
-
-	public List<File> getProvidedArtifacts() {
-		return getArtifacts(providedDependencies);
-	}
-
-	public List<File> getRuntimeArtifacts() {
-		return getArtifacts(runtimeDependencies);
-	}
-	
-	public List<File> getTestArtifacts() {
-		return getArtifacts(testDependencies);
-	}
-	
-	public List<File> getSystemArtifacts() {
-		return getArtifacts(systemDependencies);
-	}
-	
-	private Set<File> getBaseClasspath() {
-		Set<File> jars = new LinkedHashSet<File>();
-		jars.addAll(getCompileArtifacts());
-		jars.addAll(getSystemArtifacts());
-		return jars;
-	}
-
-	public List<File> getCompileClasspath() {
-		Set<File> jars = getBaseClasspath();
-		jars.addAll(getProvidedArtifacts());
-		jars.addAll(getTestArtifacts());
-		return new ArrayList<File>(jars);
-	}
-	
-	public List<File> getRuntimeClasspath() {
-		Set<File> jars = getBaseClasspath();
-		jars.addAll(getRuntimeArtifacts());
-		return new ArrayList<File>(jars);
-	}
-	
-	public List<File> getTestClasspath() {
-		Set<File> jars = getBaseClasspath();		
-		jars.addAll(getProvidedArtifacts());
-		jars.addAll(getTestArtifacts());
-		jars.addAll(getRuntimeArtifacts());
-		return new ArrayList<File>(jars);
-	}
-
 	public List<File> getSourceFolders() {
 		return sourceFolders;
 	}
