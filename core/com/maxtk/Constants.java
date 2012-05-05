@@ -31,10 +31,11 @@ public class Constants {
 	
 	public static enum Key {
 		build, name, description, url, vendor, scope, groupId, artifactId, version,
-		type, classifier, optional, folder, sourceFolder, sourceFolders, outputFolder,
-		projects, dependencyFolder, dependencySources, properties, dependencies,
-		configureEclipseClasspath, googleAnalyticsId, googlePlusId, runtime_classpath,
-		compile_classpath, test_classpath, commit;
+		type, classifier, optional, folder, sourceFolder, sourceFolders, compile_sourcepath,
+		test_sourcepath, outputFolder, compile_outputpath, test_outputpath, projects,
+		dependencyFolder, dependencySources, properties, dependencies, configureEclipseClasspath,
+		googleAnalyticsId, googlePlusId, runtime_classpath, compile_classpath, test_classpath,
+		commit;
 		
 		public String maxId() {
 			return "max." + name().replace('_', '.');

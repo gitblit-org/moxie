@@ -358,7 +358,7 @@ public class Build {
 		}
 	}
 	
-	private List<File> getClasspath(Scope scope) {
+	public List<File> getClasspath(Scope scope) {
 		File projectFolder = null;
 		if (conf.dependencyFolder != null && conf.dependencyFolder.exists()) {
 			projectFolder = conf.dependencyFolder;
@@ -379,26 +379,27 @@ public class Build {
 		return jars;
 	}
 	
-	public List<File> getCompileClasspath() {
-		return getClasspath(Scope.compile);
-	}
-
-	public List<File> getRuntimeClasspath() {
-		return getClasspath(Scope.runtime);
-	}
-
-	public List<File> getTestClasspath() {
-		return getClasspath(Scope.test);
+	public File getOutputFolder(Scope scope) {
+		switch (scope) {
+		case test:
+			return new File(conf.outputFolder, "tests");
+		default:
+			return new File(conf.outputFolder, "classes");
+		}
 	}
 
 	public void writeEclipseClasspath() {
-		List<File> jars = getTestClasspath();
+		List<File> jars = getClasspath(Scope.test);
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<classpath>\n");
 		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
 		for (SourceFolder sourceFolder : conf.getSourceFolders()) {
-			sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", sourceFolder.folder));
+			if (sourceFolder.scope.isDefault()) {
+				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", sourceFolder.folder));
+			} else {
+				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" output=\"{1}\"/>\n", sourceFolder.folder, getOutputFolder(sourceFolder.scope)));
+			}
 		}
 		for (File jar : jars) {			
 			File srcJar = new File(jar.getParentFile(), jar.getName().substring(0, jar.getName().lastIndexOf('.')) + "-sources.jar");
@@ -410,7 +411,7 @@ public class Build {
 				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", jar.getAbsolutePath()));
 			}
 		}
-		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", conf.getOutputFolder()));
+		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", getOutputFolder(Scope.compile)));
 				
 		for (String project : conf.getProjects()) {
 			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", project));

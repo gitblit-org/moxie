@@ -29,6 +29,10 @@ public class Dependency implements Serializable {
 	public static enum Scope {
 		compile, provided, runtime, test, system;
 		
+		public boolean isDefault() {
+			return compile.equals(this);
+		}
+		
 		// http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope		
 		public boolean includeOnClasspath(Scope dependencyScope) {
 			if (dependencyScope == null) {

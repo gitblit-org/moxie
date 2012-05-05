@@ -91,7 +91,7 @@ public class MaxJar extends GenJar {
 		
 		// automatic classpath resolution, if not manually specified
 		if (classpath == null) {
-			Object o = getProject().getReference(Key.runtime_classpath.maxId());
+			Object o = getProject().getReference(Key.compile_classpath.maxId());
 			if (o != null && o instanceof Path) {
 				Path cp = (Path) o;
 				if (fatjar) {

@@ -53,7 +53,7 @@ public class Config implements Serializable {
 	public Config() {
 		// default configuration
 		sourceFolders = Arrays.asList(new SourceFolder(new File("src"), Scope.compile));
-		outputFolder = new File("bin");
+		outputFolder = new File("build");
 		projects = new ArrayList<String>();
 		repositoryUrls = new ArrayList<String>();		
 		pom = new Pom();

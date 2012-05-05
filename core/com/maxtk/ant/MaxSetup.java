@@ -27,6 +27,7 @@ import org.apache.tools.ant.types.Path.PathElement;
 import com.maxtk.Build;
 import com.maxtk.Config;
 import com.maxtk.Constants.Key;
+import com.maxtk.Dependency.Scope;
 import com.maxtk.SourceFolder;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.StringUtils;
@@ -54,9 +55,10 @@ public class MaxSetup extends MaxTask {
 			
 			console = build.console;
 			Config conf = build.conf;
-			
-			build.console.separator();
-			build.console.log("ant properties");
+			if (verbose) {
+				build.console.separator();
+				build.console.log("ant properties");
+			}
 
 			// add a reference to the full build object
 			addReference(Key.build, build, false);
@@ -68,21 +70,15 @@ public class MaxSetup extends MaxTask {
 			setProperty(Key.vendor, conf.getVendor());
 			setProperty(Key.url, conf.getUrl());
 
-			setProperty(Key.outputFolder, conf.getOutputFolder().toString());
+			setProperty(Key.compile_outputpath, build.getOutputFolder(Scope.compile).toString());
+			setProperty(Key.test_outputpath, build.getOutputFolder(Scope.test).toString());
 
-			// setup max-sourceFolders reference
-			Path sources = new Path(getProject());
-			for (SourceFolder sourceFolder : conf.getSourceFolders()) {
-				PathElement element = sources.createPathElement();
-				element.setLocation(sourceFolder.folder);
-			}
-			addReference(Key.sourceFolders, sources, true);
+			setSourcepath(Key.compile_sourcepath, build, Scope.compile);
+			setSourcepath(Key.test_sourcepath, build, Scope.test);
 
-			setClasspath(Key.compile_classpath, build, build.getCompileClasspath());
-			setClasspath(Key.runtime_classpath, build, build.getRuntimeClasspath());
-			setClasspath(Key.test_classpath, build, build.getTestClasspath());
-
-
+			setClasspath(Key.compile_classpath, build, Scope.compile);
+			setClasspath(Key.runtime_classpath, build, Scope.runtime);
+			setClasspath(Key.test_classpath, build, Scope.test);
 		} catch (MaxmlException e) {
 			console.error(e, "Maxilla failed to parse your configuration file!");
 			throw new BuildException(e);
@@ -92,23 +88,39 @@ public class MaxSetup extends MaxTask {
 		}
 	}
 	
-	private void setClasspath(Key key, Build build, List<File> jars) {
-		Path cp = new Path(getProject());
-		// jars
-		for (File jar : jars) {
-			PathElement element = cp.createPathElement();
-			element.setLocation(jar);
+	private void setSourcepath(Key key, Build build, Scope scope) {
+		Path sources = new Path(getProject());
+		for (SourceFolder sourceFolder : build.conf.getSourceFolders()) {
+			if (sourceFolder.scope.isDefault() || sourceFolder.scope.equals(scope)) {
+				PathElement element = sources.createPathElement();
+				element.setLocation(sourceFolder.folder);
+			}
 		}
-
+		addReference(key, sources, true);
+	}
+	
+	private void setClasspath(Key key, Build build, Scope scope) {
+		List<File> jars = build.getClasspath(scope);
+		Path cp = new Path(getProject());
 		// output folder
 		PathElement of = cp.createPathElement();
-		of.setLocation(build.conf.getOutputFolder());
+		of.setLocation(build.getOutputFolder(scope));
+		if (!scope.isDefault()) {
+			of.setLocation(build.getOutputFolder(Scope.compile));
+		}
 		
 		// add project dependencies 
 		for (File folder : buildDependentProjectsClasspath(build)) {
 			PathElement element = cp.createPathElement();
 			element.setLocation(folder);
 		}
+		
+		// jars
+		for (File jar : jars) {
+			PathElement element = cp.createPathElement();
+			element.setLocation(jar);
+		}
+
 		addReference(key, cp, true);
 	}
 	

@@ -39,6 +39,10 @@ public class SourceFolder implements Serializable {
 		this.scope = scope;
 	}
 	
+	public File getOutputFolder(File baseFolder) {
+		return new File(baseFolder, scope.equals(Scope.compile) ? "classes":"test");
+	}
+	
 	@Override
 	public int hashCode() {
 		return folder.hashCode();

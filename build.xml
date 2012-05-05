@@ -2,6 +2,7 @@
 <project name="maxilla" default="main" basedir=".">
 
 	<property name="maxilla.bin" value="${basedir}/bin" />
+	<property name="maxilla.bin.classes" value="${maxilla.bin}/classes" />
 
 	<!--
 	Declare the Maxilla tasks and Compile all of Maxilla
@@ -10,24 +11,25 @@
 		<!-- Clean -->
 		<delete dir="${maxilla.bin}" />
 		<mkdir dir="${maxilla.bin}" />
+		<mkdir dir="${maxilla.bin.classes}" />
 
 		<!-- Compile MaxSetup task and core objects -->
-		<javac debug="true" destdir="${maxilla.bin}" includeantruntime="true" failonerror="false" verbose="no">
+		<javac debug="true" destdir="${maxilla.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
 			<src path="${basedir}/core" />
 		</javac>
 
 		<!-- Declare MaxSetup and download dependencies -->
-		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpath="${maxilla.bin}" />
-		<maxsetup verbose="true" />
+		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpath="${maxilla.bin.classes}" />
+		<maxsetup verbose="false" />
 
 		<!-- Compile all of Maxilla with retrieved dependencies -->
-		<javac debug="true" destdir="${maxilla.bin}" includeantruntime="true" failonerror="true">
-			<src refid="max.sourceFolders" />
-			<classpath refid="max.test.classpath" />
+		<javac debug="true" destdir="${maxilla.bin.classes}" includeantruntime="true" failonerror="true">
+			<src refid="max.compile.sourcepath" />
+			<classpath refid="max.compile.classpath" />
 		</javac>
 
 		<!-- Copy the bundled MaxDoc resources -->
-		<copy todir="${maxilla.bin}">
+		<copy todir="${maxilla.bin.classes}">
 			<fileset dir="${basedir}/maxdoc">
 				<include name="*.zip" />
 				<include name="*.html" />
@@ -52,7 +54,7 @@
 		to share objects.  This is handled automatically in production Maxilla jars.
 		-->
 		<path id="bootstrap.path">
-			<pathelement path="${maxilla.bin}" />
+			<pathelement path="${maxilla.bin.classes}" />
 			<fileset dir="ext" includes="*.jar" excludes="*-sources.jar" />
 		</path>
 
@@ -133,7 +135,7 @@
 
 			<!-- Include the MaxDoc resources -->
 			<resource>
-				<fileset dir="${maxilla.bin}" includes="*.zip, *.html, *.js, *.png" />
+				<fileset dir="${max.compile.outputpath}" includes="*.zip, *.html, *.js, *.png" />
 			</resource>
 		</maxjar>
 
