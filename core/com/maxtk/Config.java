@@ -236,6 +236,13 @@ public class Config implements Serializable {
 						String def = value.toString();
 						String scopeString = def.substring(0, def.indexOf(' ')).trim();
 						Scope scope = Scope.fromString(scopeString);
+						if (scope == null) {
+							scope = Scope.defaultScope;
+						} else {
+							if (!scope.isValidSourceScope()) {
+								scope = Scope.defaultScope;
+							}
+						}
 						def = def.substring(scopeString.length()).trim();
 						for (String dir : StringUtils.breakCSV(def)) {
 							if (!StringUtils.isEmpty(dir)) {
@@ -246,6 +253,13 @@ public class Config implements Serializable {
 						Map<String, Object> dirMap = (Map<String, Object>) value;
 						String dir = readString(dirMap, Key.folder, true);
 						Scope scope = Scope.fromString(readString(dirMap, Key.scope, true));
+						if (scope == null) {
+							scope = Scope.defaultScope;
+						} else {
+							if (!scope.isValidSourceScope()) {
+								scope = Scope.defaultScope;
+							}
+						}
 						if (!StringUtils.isEmpty(dir)) {
 							values.add(new SourceFolder(new File(dir), scope));
 						}

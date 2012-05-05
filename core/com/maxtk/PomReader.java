@@ -83,6 +83,13 @@ public class PomReader {
 					pom.parentGroupId = readStringTag(pNode, Key.groupId);
 					pom.parentArtifactId = readStringTag(pNode, Key.artifactId);
 					pom.parentVersion = readStringTag(pNode, Key.version);
+					
+					// read parent pom
+					Dependency parent = pom.getParentDependency();
+					Pom parentPom = readPom(cache, parent);
+					if (parentPom != null) {
+						pom.inherit(parentPom);
+					}					
 				} else if ("properties".equalsIgnoreCase(element.getTagName())) {
 					// pom properties
 					NodeList properties = (NodeList) element;
@@ -105,12 +112,13 @@ public class PomReader {
 							dep.group = readStringTag(node, Key.groupId);
 							dep.artifact = readStringTag(node, Key.artifactId);
 							dep.version = readStringTag(node, Key.version);
+							Scope scope = Scope.fromString(readStringTag(node, Key.scope));
 							
 							// substitute version property
 							dep.version = pom.getProperty(dep.version);			
 
 							// add dependency management definition
-							pom.addManagedVersion(dep);
+							pom.addManagedDependency(dep, scope);
 						}
 					}
 				} else if ("dependencies".equalsIgnoreCase(element.getTagName())) {
@@ -125,39 +133,37 @@ public class PomReader {
 							dep.version = readStringTag(node, Key.version);							
 							dep.optional = readBooleanTag(node, Key.optional);
 							
+							// substitute group property
+							dep.group = pom.getProperty(dep.group);
+							
+							if (StringUtils.isEmpty(dep.version)) {
+								// try retrieving version from parent pom
+								dep.version = pom.getManagedVersion(dep);
+								if (StringUtils.isEmpty(dep.version) && !pom.hasParentDependency()) {
+									System.err.println(MessageFormat.format("{0} dependency {1} does not specify a version!", pom, dep.getProjectId()));
+								}
+							}
+
+							// substitute version property
+							dep.version = pom.getProperty(dep.version);
+
+							// determine scope
 							Scope scope = Scope.fromString(readStringTag(node, Key.scope));
+							if (scope == null) {
+								// try retrieving scope from parent pom
+								scope = pom.getManagedScope(dep);
+								
+								if (scope == null) {
+									// scope is still undefined, use default
+									scope = Scope.defaultScope;
+								}
+							}
 							
 							// add dep object
 							pom.addDependency(dep, scope);
 						}
 					}
 				}
-			}
-		}
-		
-		if (pom.hasParentDependency()) {
-			// read parent pom
-			Dependency parent = pom.getParentDependency();
-			Pom parentPom = readPom(cache, parent);
-			if (parentPom != null) {
-				pom.inherit(parentPom);
-			}
-		}		
-		
-		// resolve properties
-		for (Scope scope : pom.getScopes()) {
-			for (Dependency dep : pom.getDependencies(scope, 0)) {
-				dep.group = pom.getProperty(dep.group);
-
-				if (StringUtils.isEmpty(dep.version)) {
-					// try retrieving version from parent pom
-					dep.version = pom.getManagedVersion(dep);
-					if (StringUtils.isEmpty(dep.version) && !pom.hasParentDependency()) {
-						System.err.println(MessageFormat.format("{0} dependency {1} does not specify a version!", pom, dep.getProjectId()));
-					}
-				}
-				// substitute version property
-				dep.version = pom.getProperty(dep.version);
 			}
 		}
 		return pom;

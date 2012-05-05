@@ -29,6 +29,8 @@ public class Dependency implements Serializable {
 	public static enum Scope {
 		compile, provided, runtime, test, system;
 		
+		public static final Scope defaultScope = compile;
+		
 		public boolean isDefault() {
 			return compile.equals(this);
 		}
@@ -121,7 +123,17 @@ public class Dependency implements Serializable {
 					return value;
 				}
 			}
-			return Scope.compile;
+			return null;
+		}
+		
+		public boolean isValidSourceScope() {
+			switch(this) {
+			case compile:
+			case test:
+				return true;
+			default:
+				return false;
+			}
 		}
 	}
 	

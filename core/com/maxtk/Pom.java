@@ -56,9 +56,11 @@ public class Pom {
 	private final Map<String, String> properties;
 	private final Map<Scope, List<Dependency>> dependencies;
 	private final Map<String, String> managedVersions;
+	private final Map<String, Scope> managedScopes;
 	
 	public Pom() {
 		managedVersions = new TreeMap<String, String>();
+		managedScopes = new TreeMap<String, Scope>();
 		properties = new TreeMap<String, String>();
 		dependencies = new LinkedHashMap<Scope, List<Dependency>>();
 		
@@ -95,9 +97,12 @@ public class Pom {
 		return key;
 	}
 	
-	public void addManagedVersion(Dependency dep) {
+	public void addManagedDependency(Dependency dep, Scope scope) {
 		dep.version = getProperty(dep.version);		
 		managedVersions.put(dep.getProjectId().toUpperCase(), dep.version);
+		if (scope != null) {
+			managedScopes.put(dep.getProjectId().toUpperCase(), scope);
+		}
 	}
 	
 	public String getManagedVersion(Dependency dep) {
@@ -105,6 +110,13 @@ public class Pom {
 			return managedVersions.get(dep.getProjectId().toUpperCase());
 		}
 		return dep.version;
+	}
+	
+	public Scope getManagedScope(Dependency dep) {
+		if (managedScopes.containsKey(dep.getProjectId().toUpperCase())) {
+			return managedScopes.get(dep.getProjectId().toUpperCase());
+		}
+		return null;
 	}
 	
 	public List<Scope> getScopes() {
@@ -171,6 +183,7 @@ public class Pom {
 	
 	public void inherit(Pom pom) {
 		nonDestructiveCopy(pom.managedVersions, managedVersions);
+		nonDestructiveCopy(pom.managedScopes, managedScopes);
 		nonDestructiveCopy(pom.properties, properties);
 	}
 	
@@ -181,7 +194,7 @@ public class Pom {
 	 * @param sourceMap
 	 * @param destinationMap
 	 */
-	private void nonDestructiveCopy(Map<String, String> sourceMap, Map<String, String> destinationMap) {
+	private <K> void nonDestructiveCopy(Map<String, K> sourceMap, Map<String, K> destinationMap) {
 		Set<String> sourceKeys = new HashSet<String>(sourceMap.keySet());
 		sourceKeys.removeAll(destinationMap.keySet());
 		for (String key : sourceKeys) {
