@@ -31,6 +31,9 @@ import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
+/**
+ * Reads the build.maxml file 
+ */
 public class Config implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -43,6 +46,7 @@ public class Config implements Serializable {
 	File dependencyFolder;
 	List<SourceFolder> sourceFolders;
 	File outputFolder;
+	File targetFolder;
 	boolean configureEclipseClasspath;
 	boolean debug;
 
@@ -54,10 +58,15 @@ public class Config implements Serializable {
 		// default configuration
 		sourceFolders = Arrays.asList(new SourceFolder(new File("src"), Scope.compile));
 		outputFolder = new File("build");
+		targetFolder = new File("target");
 		projects = new ArrayList<String>();
 		repositoryUrls = new ArrayList<String>();		
 		pom = new Pom();
 		dependencyFolder = null;
+	}
+	
+	public Pom getPom() {
+		return pom;
 	}
 
 	@Override
@@ -86,6 +95,7 @@ public class Config implements Serializable {
 		configureEclipseClasspath = readBoolean(map, Key.configureEclipseClasspath, false);
 		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);
 		outputFolder = readFile(map, Key.outputFolder, outputFolder);
+		targetFolder = readFile(map, Key.targetFolder, targetFolder);
 		projects = readStrings(map, Key.projects, projects);
 		dependencyFolder = readFile(map, Key.dependencyFolder, null);
 		
@@ -113,26 +123,26 @@ public class Config implements Serializable {
 					if (def.startsWith("compile")) {
 						// compile-time dependency
 						scope = Scope.compile;
-						def = def.substring("compile".length()).trim();
+						def = def.substring(Scope.compile.name().length()).trim();
 					} else if (def.startsWith("provided")) {
 						// provided dependency
 						scope = Scope.provided;
-						def = def.substring("provided".length()).trim();
+						def = def.substring(Scope.provided.name().length()).trim();
 					} else if (def.startsWith("runtime")) {
 						// runtime dependency
 						scope = Scope.runtime;
-						def = def.substring("runtime".length()).trim();
+						def = def.substring(Scope.runtime.name().length()).trim();
 					} else if (def.startsWith("test")) {
 						// test dependency
 						scope = Scope.test;
-						def = def.substring("test".length()).trim();
+						def = def.substring(Scope.test.name().length()).trim();
 					} else if (def.startsWith("system")) {
 						// system dependency
 						scope = Scope.system;
-						def = def.substring("system".length()).trim();
+						def = def.substring(Scope.system.name().length()).trim();
 					} else {
 						// default to compile-time dependency
-						scope = Scope.compile;
+						scope = Scope.defaultScope;
 					}
 					
 					def = StringUtils.stripQuotes(def);										
@@ -292,48 +302,8 @@ public class Config implements Serializable {
 	void keyError(Key key) {
 		System.err.println(MessageFormat.format("{0} is improperly specified, using default", key.name()));
 	}
-
-	public String getName() {
-		return pom.name;
-	}
-
-	public String getDescription() {
-		return pom.description;
-	}
-
-	public String getVersion() {
-		return pom.version;
-	}
-
-	public String getUrl() {
-		return pom.url;
-	}
-
-	public String getVendor() {
-		return pom.vendor;
-	}
-
-	public String getGroupId() {
-		return pom.groupId;
-	}
-	
-	public String getArtifactId() {
-		return pom.artifactId;
-	}
 	
 	public List<SourceFolder> getSourceFolders() {
 		return sourceFolders;
-	}
-
-	public File getOutputFolder() {
-		return outputFolder;
-	}
-
-	public List<String> getProjects() {
-		return projects;
-	}
-
-	public boolean configureEclipseClasspath() {
-		return configureEclipseClasspath;
 	}
 }

@@ -55,7 +55,7 @@ public class Docs {
 	
 	public static void execute(Build build, Doc doc, boolean verbose) {
 		build.console.header();
-		build.console.log("MaxDoc for {0}", build.conf.getName());
+		build.console.log("MaxDoc for {0}", build.getPom().name);
 		build.console.header();
 		if (verbose) {
 			doc.describe(build.console);
@@ -74,7 +74,7 @@ public class Docs {
 	}
 
 	private static void generatePages(Build build, Doc doc, boolean verbose) {
-		String projectName = build.conf.getName();
+		String projectName = build.getPom().name;
 		if (StringUtils.isEmpty(projectName) && !StringUtils.isEmpty(doc.name)) {
 			projectName = doc.name;
 		}
@@ -250,9 +250,9 @@ public class Docs {
 				}
 
 				// add Google+1 link
-				if (doc.googlePlusOne && !StringUtils.isEmpty(build.conf.getUrl())) {
+				if (doc.googlePlusOne && !StringUtils.isEmpty(build.getPom().url)) {
 					links += "<li><div class='gplusone'><g:plusone size='small' href='"
-							+ build.conf.getUrl() + "'></g:plusone></div></li>";
+							+ build.getPom().url + "'></g:plusone></div></li>";
 				}
 				String linksHtml = readResource(doc, "links.html");
 				linksHtml = linksHtml.replace("%PROJECTNAME%", projectName);

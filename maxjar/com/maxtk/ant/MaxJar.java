@@ -123,8 +123,10 @@ public class MaxJar extends GenJar {
 		}
 		
 		if (destFile != null) {
+			destFile.getParentFile().mkdirs();
 			build.console.log(1, destFile.getAbsolutePath());
 		} else if (destDir != null) {
+			destDir.mkdirs();
 			build.console.log(1, "class structure => " + destDir);
 		}
 		

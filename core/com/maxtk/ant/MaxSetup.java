@@ -25,9 +25,9 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 
 import com.maxtk.Build;
-import com.maxtk.Config;
 import com.maxtk.Constants.Key;
 import com.maxtk.Dependency.Scope;
+import com.maxtk.Pom;
 import com.maxtk.SourceFolder;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.StringUtils;
@@ -54,22 +54,26 @@ public class MaxSetup extends MaxTask {
 			build.setup();
 			
 			console = build.console;
-			Config conf = build.conf;
 			if (verbose) {
 				build.console.separator();
-				build.console.log("ant properties");
+				build.console.log(getProject().getProperty("ant.version"));
+				build.console.log("Maxilla ant properties", getProject().getProperty("ant.version"));
 			}
 
 			// add a reference to the full build object
 			addReference(Key.build, build, false);
-			setProperty(Key.name, conf.getName());
-			setProperty(Key.description, conf.getDescription());
-			setProperty(Key.groupId, conf.getGroupId());
-			setProperty(Key.artifactId, conf.getArtifactId());
-			setProperty(Key.version, conf.getVersion());
-			setProperty(Key.vendor, conf.getVendor());
-			setProperty(Key.url, conf.getUrl());
+			
+			Pom pom = build.getPom();
+			setProperty(Key.name, pom.name);
+			setProperty(Key.description, pom.description);
+			setProperty(Key.groupId, pom.groupId);
+			setProperty(Key.artifactId, pom.artifactId);
+			setProperty(Key.version, pom.version);
+			setProperty(Key.vendor, pom.vendor);
+			setProperty(Key.url, pom.url);
 
+			setProperty(Key.targetFolder, build.getTargetFolder().toString());
+			setProperty(Key.outputFolder, build.getOutputFolder(null).toString());
 			setProperty(Key.compile_outputpath, build.getOutputFolder(Scope.compile).toString());
 			setProperty(Key.test_outputpath, build.getOutputFolder(Scope.test).toString());
 
@@ -79,6 +83,10 @@ public class MaxSetup extends MaxTask {
 			setClasspath(Key.compile_classpath, build, Scope.compile);
 			setClasspath(Key.runtime_classpath, build, Scope.runtime);
 			setClasspath(Key.test_classpath, build, Scope.test);
+
+			setDependencypath(Key.compile_dependencypath, build, Scope.compile);
+			setDependencypath(Key.runtime_dependencypath, build, Scope.runtime);
+			setDependencypath(Key.test_dependencypath, build, Scope.test);
 		} catch (MaxmlException e) {
 			console.error(e, "Maxilla failed to parse your configuration file!");
 			throw new BuildException(e);
@@ -90,7 +98,7 @@ public class MaxSetup extends MaxTask {
 	
 	private void setSourcepath(Key key, Build build, Scope scope) {
 		Path sources = new Path(getProject());
-		for (SourceFolder sourceFolder : build.conf.getSourceFolders()) {
+		for (SourceFolder sourceFolder : build.getSourceFolders()) {
 			if (sourceFolder.scope.isDefault() || sourceFolder.scope.equals(scope)) {
 				PathElement element = sources.createPathElement();
 				element.setLocation(sourceFolder.folder);
@@ -124,11 +132,21 @@ public class MaxSetup extends MaxTask {
 		addReference(key, cp, true);
 	}
 	
+	private void setDependencypath(Key key, Build build, Scope scope) {
+		List<File> jars = build.getClasspath(scope);
+		Path cp = new Path(getProject());
+		for (File jar : jars) {
+			PathElement element = cp.createPathElement();
+			element.setLocation(jar);
+		}
+		addReference(key, cp, true);
+	}
+	
 	private List<File> buildDependentProjectsClasspath(Build build) {
 		List<File> folders = new ArrayList<File>();
 		File basedir = getProject().getBaseDir();
 		String workspace = getProject().getProperty("eclipse.workspace");
-		for (String project : build.conf.getProjects()) {
+		for (String project : build.getProjects()) {
 			File projectDir = new File(basedir, "/../" + project);
 			if (projectDir.exists()) {
 				// project dependency is relative to this project
@@ -169,8 +187,9 @@ public class MaxSetup extends MaxTask {
 		if (projectMax.exists()) {
 			// dependent project has a build.maxml descriptor
 			try {
-				Config projectConfig = Config.load(projectMax);
-				File projectOutputFolder = projectConfig.getOutputFolder();
+				// TODO subproject dependencies?
+				Build subbuild = new Build(projectMax.getAbsolutePath());
+				File projectOutputFolder = subbuild.getOutputFolder(Scope.compile);
 				return projectOutputFolder;
 			} catch (Exception e) {
 				console.error(e);

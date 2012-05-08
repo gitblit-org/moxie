@@ -27,7 +27,7 @@ public abstract class MaxTask extends Task {
 
 	protected Console console = new Console();
 
-	protected boolean verbose = true;
+	protected boolean verbose = false;
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;

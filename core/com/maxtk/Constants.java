@@ -35,7 +35,7 @@ public class Constants {
 		test_sourcepath, outputFolder, compile_outputpath, test_outputpath, projects,
 		dependencyFolder, dependencySources, properties, dependencies, configureEclipseClasspath,
 		googleAnalyticsId, googlePlusId, runtime_classpath, compile_classpath, test_classpath,
-		commit;
+		compile_dependencypath, runtime_dependencypath, test_dependencypath, commit, targetFolder;
 		
 		public String maxId() {
 			return "max." + name().replace('_', '.');

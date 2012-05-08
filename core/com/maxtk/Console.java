@@ -128,6 +128,10 @@ public class Console {
 		error(null, message, emptyArray);
 	}
 
+	public void error(String message, Object... args) {
+		error(null, message, args);
+	}
+
 	public final void error(Throwable t, String message) {
 		error(t, message, emptyArray);
 	}

@@ -127,7 +127,7 @@ public class TestMaxmlParser extends Assert {
 	@Test
 	public void testConfig() throws Exception {
 		Config config = Config.load(new File("build.maxml"));
-		assertEquals("Maxilla", config.getName());
+		assertEquals("Maxilla", config.getPom().name);
 		assertEquals(5, config.getSourceFolders().size());
 	}
 

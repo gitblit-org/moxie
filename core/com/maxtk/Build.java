@@ -37,6 +37,10 @@ import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
+/**
+ * Represents the current build (build.maxml, settings.maxml, and all instance
+ * state.
+ */
 public class Build {
 	
 	public final Settings settings;
@@ -46,13 +50,19 @@ public class Build {
 	
 	private final Map<Scope, Set<Dependency>> solutions;
 	
+	private final File configFile;
+	private final File projectFolder;
+	
 	public Build() throws MaxmlException, IOException {
 		this("build.maxml");
 	}
 	
-	public Build(String configFile) throws MaxmlException, IOException {
+	public Build(String filename) throws MaxmlException, IOException {
+		this.configFile = new File(filename);
+		this.projectFolder = configFile.getParentFile();
+		
 		this.settings = Settings.load();
-		this.conf = Config.load(new File(configFile));
+		this.conf = Config.load(configFile);
 		
 		this.artifactCache = new MaxillaCache();
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
@@ -92,7 +102,7 @@ public class Build {
 		}
 
 		console.header();
-		console.log("Maxilla - Project Build Toolkit v" + Constants.VERSION);
+		console.log("{0} v{1}", getPom().name, getPom().version);
 		console.header();
 
 		describeConfig();
@@ -102,11 +112,23 @@ public class Build {
 		retrieveJARs();
 		
 		// create/update Eclipse configuration files
-		if (conf.configureEclipseClasspath()) {
+		if (conf.configureEclipseClasspath) {
 			writeEclipseClasspath();
 			console.separator();
 			console.log("rebuilt eclipse .classpath");
 		}
+	}
+	
+	public Pom getPom() {
+		return conf.pom;
+	}
+	
+	public List<SourceFolder> getSourceFolders() {
+		return conf.sourceFolders;
+	}
+
+	public List<String> getProjects() {
+		return conf.projects;
 	}
 	
 	/**
@@ -380,6 +402,9 @@ public class Build {
 	}
 	
 	public File getOutputFolder(Scope scope) {
+		if (scope == null) {
+			return conf.outputFolder;
+		}
 		switch (scope) {
 		case test:
 			return new File(conf.outputFolder, "tests");
@@ -387,18 +412,35 @@ public class Build {
 			return new File(conf.outputFolder, "classes");
 		}
 	}
+	
+	private File getEclipseOutputFolder(Scope scope) {
+		File baseFolder = new File(projectFolder, "bin");
+		if (scope == null) {
+			return baseFolder;
+		}
+		switch (scope) {
+		case test:
+			return new File(baseFolder, "tests");
+		default:
+			return new File(baseFolder, "classes");
+		}
+	}
+	
+	public File getTargetFolder() {
+		return conf.targetFolder;
+	}
 
-	public void writeEclipseClasspath() {
+	private void writeEclipseClasspath() {
 		List<File> jars = getClasspath(Scope.test);
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<classpath>\n");
 		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
-		for (SourceFolder sourceFolder : conf.getSourceFolders()) {
+		for (SourceFolder sourceFolder : conf.sourceFolders) {
 			if (sourceFolder.scope.isDefault()) {
 				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", sourceFolder.folder));
 			} else {
-				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" output=\"{1}\"/>\n", sourceFolder.folder, getOutputFolder(sourceFolder.scope)));
+				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" output=\"{1}\"/>\n", sourceFolder.folder, getEclipseOutputFolder(sourceFolder.scope)));
 			}
 		}
 		for (File jar : jars) {			
@@ -411,9 +453,9 @@ public class Build {
 				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", jar.getAbsolutePath()));
 			}
 		}
-		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", getOutputFolder(Scope.compile)));
+		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", getEclipseOutputFolder(Scope.compile)));
 				
-		for (String project : conf.getProjects()) {
+		for (String project : conf.projects) {
 			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", project));
 		}
 		sb.append("</classpath>");
@@ -422,14 +464,15 @@ public class Build {
 	}
 	
 	void describeConfig() {
+		Pom pom = conf.pom;
 		console.log("project metadata");
-		describe(Key.name, conf.getName());
-		describe(Key.description, conf.getDescription());
-		describe(Key.groupId, conf.getGroupId());
-		describe(Key.artifactId, conf.getArtifactId());
-		describe(Key.version, conf.getVersion());
-		describe(Key.vendor, conf.getVendor());
-		describe(Key.url, conf.getUrl());
+		describe(Key.name, pom.name);
+		describe(Key.description, pom.description);
+		describe(Key.groupId, pom.groupId);
+		describe(Key.artifactId, pom.artifactId);
+		describe(Key.version, pom.version);
+		describe(Key.vendor, pom.vendor);
+		describe(Key.url, pom.url);
 		console.separator();
 
 		console.log("source folders");
