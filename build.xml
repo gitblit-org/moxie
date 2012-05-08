@@ -16,7 +16,7 @@
 
 		<!-- Bootstrap compile MaxSetup task and core objects -->
 		<javac debug="true" destdir="${maxilla.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
-			<src path="${basedir}/core" />
+			<src path="${basedir}/src/main/core" />
 		</javac>
 
 		<!-- Declare MaxSetup and download dependencies -->
@@ -31,7 +31,7 @@
 		
 		<!-- Copy the bundled MaxDoc resources -->
 		<copy todir="${maxilla.bin.classes}">
-			<fileset dir="${basedir}/maxdoc">
+			<fileset dir="${basedir}/src/main/maxdoc">
 				<include name="*.zip" />
 				<include name="*.html" />
 				<include name="*.js" />
@@ -156,11 +156,11 @@
 		</maxjar>
 
 		<jar destfile="${max.targetFolder}/maxml-sources.jar">
-			<fileset dir="${basedir}/core/com/maxtk/maxml" />
+			<fileset dir="${basedir}/src/main/core/com/maxtk/maxml" />
 		</jar>
 
 		<!-- Build the site documentation -->
-		<maxdoc verbose="true" sourceFolder="docs" outputFolder="${max.targetFolder}/site" googlePlusOne="true" injectPrettify="true">
+		<maxdoc verbose="true" googlePlusOne="true" injectPrettify="true">
 			<structure>
 				<page name="overview" src="index.mkd" />
 				<menu name="tasks">

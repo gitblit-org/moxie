@@ -7,10 +7,10 @@ vendor : James Moger
 url : http://gitblit.github.com/maxilla
 configureEclipseClasspath : true
 sourceFolders : 
-- compile core, opt, maxgit
-- compile maxjar
-- compile maxdoc
-- { scope: test, folder: tests }
+- compile src/main/core, src/main/opt, src/main/maxgit
+- compile src/main/maxjar
+- compile src/main/maxdoc
+- { scope: test, folder: src/test/java }
 dependencySources : gitblit, central
 dependencyFolder : ext
 dependencies :

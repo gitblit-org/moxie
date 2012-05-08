@@ -429,6 +429,10 @@ public class Build {
 	public File getTargetFolder() {
 		return conf.targetFolder;
 	}
+	
+	public File getProjectFolder() {
+		return projectFolder;
+	}
 
 	private void writeEclipseClasspath() {
 		List<File> jars = getClasspath(Scope.test);
