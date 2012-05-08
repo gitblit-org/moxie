@@ -56,7 +56,10 @@ public class Config implements Serializable {
 
 	public Config() {
 		// default configuration
-		sourceFolders = Arrays.asList(new SourceFolder(new File("src"), Scope.compile));
+		sourceFolders = Arrays.asList(
+				new SourceFolder(new File("src/main/java"), Scope.compile), 
+				new SourceFolder(new File("src/main/resources"), Scope.compile),
+				new SourceFolder(new File("src/test/java"), Scope.test));
 		outputFolder = new File("build");
 		targetFolder = new File("target");
 		projects = new ArrayList<String>();
@@ -298,7 +301,7 @@ public class Config implements Serializable {
 		}
 		return defaultValue;
 	}
-
+	
 	void keyError(Key key) {
 		System.err.println(MessageFormat.format("{0} is improperly specified, using default", key.name()));
 	}
