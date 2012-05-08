@@ -129,11 +129,11 @@ public class MaxDoc extends Task {
 		build.loadDependency(new Dependency("org.tautua.markdownpapers:markdownpapers-core:1.2.7"));
 
 		if (doc.sourceFolder == null) {
-			doc.sourceFolder = new File(build.getProjectFolder(), "src/site");
+			doc.sourceFolder = build.getSiteSourceFolder();
 		}
 
 		if (doc.outputFolder == null) {
-			doc.outputFolder = new File(build.getTargetFolder(), "site");
+			doc.outputFolder = build.getSiteOutputFolder();
 		}
 		
 		Docs.execute(build, doc, verbose);

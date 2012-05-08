@@ -433,6 +433,14 @@ public class Build {
 	public File getProjectFolder() {
 		return projectFolder;
 	}
+	
+	public File getSiteSourceFolder() {
+		return new File(projectFolder, "src/site");
+	}
+
+	public File getSiteOutputFolder() {
+		return new File(getTargetFolder(), "site");
+	}
 
 	private void writeEclipseClasspath() {
 		List<File> jars = getClasspath(Scope.test);
