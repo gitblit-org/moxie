@@ -1,0 +1,66 @@
+Maxilla
+Copyright 2012 James Moger
+
+This product includes software developed at
+The Apache Software Foundation (http://www.apache.org/).
+
+This is an aggregated NOTICE file for the projects included
+in this distribution or linked to by this distribution.
+
+---------------------------------------------------------------------------
+Bootstrap
+---------------------------------------------------------------------------
+   Bootstrap, released under the
+   Apache Software License, Version 2.0.
+
+   http://twitter.github.com/bootstrap
+
+---------------------------------------------------------------------------
+google-code-prettify
+---------------------------------------------------------------------------
+   google-code-prettify, released under the
+   Apache Software License, Version 2.0.
+
+   http://code.google.com/p/google-code-prettify
+  
+---------------------------------------------------------------------------
+JGit
+---------------------------------------------------------------------------
+   JGit, released under the
+   Eclipse Distribution License 1.0.
+
+   http://eclipse.org/jgit
+   
+---------------------------------------------------------------------------
+MarkdownPapers
+---------------------------------------------------------------------------
+   MarkdownPapers, released under the
+   Apache Software License, Version 2.0.
+
+   http://markdown.tautua.org
+   
+---------------------------------------------------------------------------
+JSch
+---------------------------------------------------------------------------
+   JSch - Java Secure Channel, released under the
+   BSD License.
+
+   http://www.jcraft.com/jsch
+
+---------------------------------------------------------------------------
+JUnit
+---------------------------------------------------------------------------
+   JUnit, released under the
+   Common Public License.
+
+   http://junit.org
+
+---------------------------------------------------------------------------
+Fancybox image viewer
+---------------------------------------------------------------------------
+   Fancybox image viewer, released under the
+   MIT and GPL Licenses.
+
+   http://fancybox.net
+   
+   
