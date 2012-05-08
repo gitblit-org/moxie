@@ -24,6 +24,7 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 
 import com.maxtk.Build;
+import com.maxtk.Constants;
 import com.maxtk.Constants.Key;
 import com.maxtk.ant.Mft.MftAttr;
 import com.maxtk.utils.StringUtils;
@@ -61,7 +62,7 @@ public class MaxJar extends GenJar {
 		build.console.header();
 
 		// automatic manifest entries from Maxilla metadata
-		setManifest("Created-By", "Maxilla");
+		setManifest("Created-By", "Maxilla v" + Constants.VERSION);
 		setManifest("Build-Jdk", System.getProperty("java.version"));
 		setManifest("Build-Date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
@@ -75,6 +76,8 @@ public class MaxJar extends GenJar {
 		setManifest("Bundle-SymbolicName", Key.artifactId);
 		setManifest("Bundle-Version", Key.version);
 		setManifest("Bundle-Vendor", Key.vendor);
+		
+		setManifest("Git-Commit", Key.commit);
 
 		if (mainclass != null) {
 			String mc = mainclass.getName().replace('/', '.');
