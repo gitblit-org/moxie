@@ -94,7 +94,7 @@
 						
 			<class name="com.maxtk.opt.JansiConsole" />
 			
-			<resource file="${basedir}/src/config/core/tasks.properties" />
+			<resource file="${basedir}/src/main/config/core/tasks.properties" />
 		</maxjar>
 		
 		
@@ -118,7 +118,7 @@
 			
 			<class name="com.maxtk.opt.JansiConsole" />
 			
-			<resource file="${basedir}/src/config/pro/tasks.properties" />
+			<resource file="${basedir}/src/main/config/pro/tasks.properties" />
 		</maxjar>
 
 		
@@ -143,7 +143,7 @@
 			
 			<class name="com.maxtk.opt.JansiConsole" />
 			
-			<resource file="${basedir}/src/config/all/tasks.properties" />
+			<resource file="${basedir}/src/main/config/all/tasks.properties" />
 
 			<!-- Include the MaxDoc resources -->
 			<resource>
