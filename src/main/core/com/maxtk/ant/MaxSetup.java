@@ -43,13 +43,14 @@ public class MaxSetup extends MaxTask {
 	@Override
 	public void execute() throws BuildException {
 		try {
+			String projectName = getProject().getProperty("project.name");
 			Build build;
 			if (StringUtils.isEmpty(config)) {
 				// default configuration
-				build = new Build();
+				build = new Build("build.maxml", projectName);
 			} else {
 				// specified configuration
-				build = new Build(config);
+				build = new Build(config, projectName);
 			}
 			build.setup();
 			
@@ -188,7 +189,7 @@ public class MaxSetup extends MaxTask {
 			// dependent project has a build.maxml descriptor
 			try {
 				// TODO subproject dependencies?
-				Build subbuild = new Build(projectMax.getAbsolutePath());
+				Build subbuild = new Build(projectMax.getAbsolutePath(), null);
 				File projectOutputFolder = subbuild.getOutputFolder(Scope.compile);
 				return projectOutputFolder;
 			} catch (Exception e) {

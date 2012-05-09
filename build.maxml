@@ -5,7 +5,7 @@ artifactId : maxilla
 version : 0.2.0
 vendor : James Moger 
 url : http://gitblit.github.com/maxilla
-configureEclipseClasspath : true
+apply : eclipse, pom
 sourceFolders : 
 - compile src/main/core, src/main/opt, src/main/maxgit
 - compile src/main/maxjar

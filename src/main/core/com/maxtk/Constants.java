@@ -29,13 +29,20 @@ public class Constants {
 
 	public static final String MAVENCENTRAL_URL = "http://repo1.maven.org/maven2";
 	
+	public static final String GOOGLECODE = "googlecode";
+	
+	public static final String ECLIPSE_CLASSPATH = "eclipse";
+	
+	public static final String POM = "pom";
+	
 	public static enum Key {
 		build, name, description, url, vendor, scope, groupId, artifactId, version,
 		type, classifier, optional, folder, sourceFolder, sourceFolders, compile_sourcepath,
 		test_sourcepath, outputFolder, compile_outputpath, test_outputpath, projects,
-		dependencyFolder, dependencySources, properties, dependencies, configureEclipseClasspath,
+		dependencyFolder, dependencySources, properties, dependencies, apply,
 		googleAnalyticsId, googlePlusId, runtime_classpath, compile_classpath, test_classpath,
-		compile_dependencypath, runtime_dependencypath, test_dependencypath, commit, targetFolder;
+		compile_dependencypath, runtime_dependencypath, test_dependencypath, commit, targetFolder,
+		proxies;
 		
 		public String maxId() {
 			return "max." + name().replace('_', '.');

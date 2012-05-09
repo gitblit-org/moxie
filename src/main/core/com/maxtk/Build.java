@@ -34,61 +34,55 @@ import com.maxtk.Constants.Key;
 import com.maxtk.Dependency.Extension;
 import com.maxtk.Dependency.Scope;
 import com.maxtk.maxml.MaxmlException;
+import com.maxtk.utils.Base64;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
 /**
- * Represents the current build (build.maxml, settings.maxml, and all instance
- * state.
+ * Represents the current build (build.maxml, settings.maxml, and build state)
  */
 public class Build {
+
+	public static final File SETTINGS = new File(System.getProperty("user.home") + "/.maxilla/settings.maxml");
+
+	public static final Repository CENTRAL = new Repository("MavenCentral", Constants.MAVENCENTRAL_URL);
+
+	public static final Repository GOOGLECODE = new GoogleCode();
 	
-	public final Settings settings;
-	public final Config conf;
+	public final Set<Proxy> proxies;
+	public final Set<Repository> repositories;
+	public final Config maxilla;
+	public final Config project;
 	public final ArtifactCache artifactCache;
 	public Console console;
-	
+
 	private final Map<Scope, Set<Dependency>> solutions;
 	
 	private final File configFile;
 	private final File projectFolder;
 	
-	public Build() throws MaxmlException, IOException {
-		this("build.maxml");
-	}
-	
-	public Build(String filename) throws MaxmlException, IOException {
+	public Build(String filename, String projectName) throws MaxmlException, IOException {
 		this.configFile = new File(filename);
 		this.projectFolder = configFile.getParentFile();
 		
-		this.settings = Settings.load();
-		this.conf = Config.load(configFile);
+		this.maxilla = Config.load(SETTINGS, true);
+		this.project = Config.load(configFile, false);
 		
+		if (StringUtils.isEmpty(project.getPom().name)) {
+			// use Ant project name if not set in build.maxml
+			project.getPom().name = projectName;
+		}
+		
+		this.proxies = new LinkedHashSet<Proxy>();
+		this.repositories = new LinkedHashSet<Repository>();
 		this.artifactCache = new MaxillaCache();
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
 		this.console = new Console();
 	}
 	
 	public void setup() {
-		Repository central = new Repository("MavenCentral", Constants.MAVENCENTRAL_URL);
-		for (String mavenUrl : conf.repositoryUrls) {
-			if (Constants.MAVENCENTRAL_URL.equalsIgnoreCase(mavenUrl)
-					|| Constants.MAVENCENTRAL.equalsIgnoreCase(mavenUrl)) {
-				// MavenCentral
-				settings.add(central);
-			} else if ("gitblit".equalsIgnoreCase(mavenUrl)) {
-				// Gitblit Maven Proxy
-				String url = getGitblitUrl();
-				if (!StringUtils.isEmpty(url)) {
-					settings.add(new Repository("Gitblit", url));	
-				}
-			} else {
-				// unidentified repository
-				settings.add(new Repository(null, mavenUrl));
-			}
-		}
-		settings.add(central);
-		settings.add(new GoogleCode());
+		determineProxies();
+		determineRepositories();
 		
 		// bootstrap
 		loadDependency(new Dependency("org.fusesource.jansi:jansi:1.8"));
@@ -111,24 +105,65 @@ public class Build {
 		retrievePOMs();
 		retrieveJARs();
 		
-		// create/update Eclipse configuration files
-		if (conf.configureEclipseClasspath) {
-			writeEclipseClasspath();
+		if (project.apply.size() > 0) {
 			console.separator();
-			console.log("rebuilt eclipse .classpath");
+			console.log("apply");
+			console.separator();
+
+			// create/update Eclipse configuration files
+			if (project.apply(Constants.ECLIPSE_CLASSPATH)) {
+				writeEclipseClasspath();			
+				console.log(1, "rebuilt Eclipse .classpath");
+			}
+		
+			// create/update Maven POM
+			if (project.apply(Constants.POM)) {
+				writePOM();
+				console.log(1, "rebuilt pom.xml");
+			}
+		}
+	}
+	
+	private void determineProxies() {
+		proxies.addAll(project.getActiveProxies());
+		proxies.addAll(maxilla.getActiveProxies());
+	}
+	
+	private void determineRepositories() {
+		List<String> urls = new ArrayList<String>();
+		urls.addAll(project.repositoryUrls);
+		urls.addAll(maxilla.repositoryUrls);
+		
+		for (String url : urls) {
+			if (Constants.MAVENCENTRAL_URL.equalsIgnoreCase(url) || Constants.MAVENCENTRAL.equalsIgnoreCase(url)) {
+				// MavenCentral
+				repositories.add(CENTRAL);
+			} else if (Constants.GOOGLECODE.equalsIgnoreCase(url)) {
+					// GoogleCode
+				repositories.add(GOOGLECODE);
+			} else if ("gitblit".equalsIgnoreCase(url)) {
+				// Gitblit Maven Proxy
+				String gitblit = getGitblitUrl();
+				if (!StringUtils.isEmpty(gitblit)) {
+					repositories.add(new Repository("Gitblit", gitblit));	
+				}
+			} else {
+				// unidentified repository
+				repositories.add(new Repository(null, url));
+			}
 		}
 	}
 	
 	public Pom getPom() {
-		return conf.pom;
+		return project.pom;
 	}
 	
 	public List<SourceFolder> getSourceFolders() {
-		return conf.sourceFolders;
+		return project.sourceFolders;
 	}
 
 	public List<String> getProjects() {
-		return conf.projects;
+		return project.projects;
 	}
 	
 	/**
@@ -183,13 +218,34 @@ public class Build {
 	}
 	
 	public Collection<Repository> getRepositories() {
-		return settings.repositories;
+		return repositories;
+	}
+	
+	public java.net.Proxy getProxy(String url) {
+		if (proxies.size() == 0) {
+			return java.net.Proxy.NO_PROXY;
+		}
+		for (Proxy proxy : proxies) {
+			if (proxy.active && proxy.matches(url)) {
+				return new java.net.Proxy(java.net.Proxy.Type.HTTP, proxy.getSocketAddress());
+			}
+		}
+		return java.net.Proxy.NO_PROXY;
+	}
+	
+	public String getProxyAuthorization(String url) {
+		for (Proxy proxy : proxies) {
+			if (proxy.active && proxy.matches(url)) {
+				return "Basic " + Base64.encodeBytes((proxy.username + ":" + proxy.password).getBytes());
+			}
+		}
+		return "";
 	}
 	
 	public void retrievePOMs() {
 		// retrieve POMs for all dependencies in all scopes
-		for (Scope scope : conf.pom.getScopes()) {
-			for (Dependency dependency : conf.pom.getDependencies(scope, 0)) {
+		for (Scope scope : project.pom.getScopes()) {
+			for (Dependency dependency : project.pom.getDependencies(scope, 0)) {
 				retrievePOM(dependency);
 			}
 		}
@@ -218,7 +274,7 @@ public class Build {
 			return solutions.get(solutionScope);
 		}
 		Set<Dependency> solution = new LinkedHashSet<Dependency>();
-		for (Dependency dependency : conf.pom.getDependencies(solutionScope, 0)) {
+		for (Dependency dependency : project.pom.getDependencies(solutionScope, 0)) {
 			solution.add(dependency);
 			solution.addAll(solve(solutionScope, dependency));
 		}
@@ -256,10 +312,10 @@ public class Build {
 		if (StringUtils.isEmpty(dependency.version)) {
 			return null;
 		}
-		File pomFile = artifactCache.getFile(dependency,  Extension.POM);
+		File pomFile = artifactCache.getFile(dependency, Extension.POM);
 		if (!pomFile.exists()) {
 			// download the POM
-			for (Repository repository : settings.repositories) {
+			for (Repository repository : repositories) {
 				if (!repository.isMavenSource()) {
 					// skip non-Maven repositories
 					continue;
@@ -308,7 +364,7 @@ public class Build {
 	 * @return
 	 */
 	private void retrieveArtifact(Dependency dependency, boolean forProject) {
-		for (Repository repository : settings.repositories) {
+		for (Repository repository : repositories) {
 			if (!repository.isSource(dependency)) {
 				// dependency incompatible with repository
 				continue;
@@ -323,8 +379,8 @@ public class Build {
 
 				if (cachedFile != null && cachedFile.exists()) {
 					// optionally copy artifact to project-specified folder
-					if (forProject && conf.dependencyFolder != null) {
-						File projectFile = new File(conf.dependencyFolder, cachedFile.getName());
+					if (forProject && project.dependencyFolder != null) {
+						File projectFile = new File(project.dependencyFolder, cachedFile.getName());
 						if (!projectFile.exists()) {
 							try {
 								projectFile.getParentFile().mkdirs();
@@ -382,8 +438,8 @@ public class Build {
 	
 	public List<File> getClasspath(Scope scope) {
 		File projectFolder = null;
-		if (conf.dependencyFolder != null && conf.dependencyFolder.exists()) {
-			projectFolder = conf.dependencyFolder;
+		if (project.dependencyFolder != null && project.dependencyFolder.exists()) {
+			projectFolder = project.dependencyFolder;
 		}
 		
 		Set<Dependency> dependencies = solve(scope);
@@ -403,13 +459,13 @@ public class Build {
 	
 	public File getOutputFolder(Scope scope) {
 		if (scope == null) {
-			return conf.outputFolder;
+			return project.outputFolder;
 		}
 		switch (scope) {
 		case test:
-			return new File(conf.outputFolder, "tests");
+			return new File(project.outputFolder, "tests");
 		default:
-			return new File(conf.outputFolder, "classes");
+			return new File(project.outputFolder, "classes");
 		}
 	}
 	
@@ -427,7 +483,7 @@ public class Build {
 	}
 	
 	public File getTargetFolder() {
-		return conf.targetFolder;
+		return project.targetFolder;
 	}
 	
 	public File getProjectFolder() {
@@ -448,7 +504,7 @@ public class Build {
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<classpath>\n");
 		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
-		for (SourceFolder sourceFolder : conf.sourceFolders) {
+		for (SourceFolder sourceFolder : project.sourceFolders) {
 			if (sourceFolder.scope.isDefault()) {
 				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", sourceFolder.folder));
 			} else {
@@ -467,16 +523,23 @@ public class Build {
 		}
 		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", getEclipseOutputFolder(Scope.compile)));
 				
-		for (String project : conf.projects) {
-			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", project));
+		for (String projectRef : project.projects) {
+			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", projectRef));
 		}
 		sb.append("</classpath>");
 		
-		FileUtils.writeContent(new File(".classpath"), sb.toString());
+		FileUtils.writeContent(new File(projectFolder, ".classpath"), sb.toString());
+	}
+	
+	private void writePOM() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<!-- This file is automatically generated by Maxilla. DO NOT HAND EDIT! -->\n");
+		sb.append(project.pom.toXML());
+		FileUtils.writeContent(new File(projectFolder, "pom.xml"), sb.toString());
 	}
 	
 	void describeConfig() {
-		Pom pom = conf.pom;
+		Pom pom = project.pom;
 		console.log("project metadata");
 		describe(Key.name, pom.name);
 		describe(Key.description, pom.description);
@@ -488,25 +551,25 @@ public class Build {
 		console.separator();
 
 		console.log("source folders");
-		for (SourceFolder folder : conf.sourceFolders) {
+		for (SourceFolder folder : project.sourceFolders) {
 			console.sourceFolder(folder);
 		}
 		console.separator();
 
 		console.log("output folder");
-		console.log(1, conf.outputFolder.toString());
+		console.log(1, project.outputFolder.toString());
 		console.separator();
 	}
 	
 	void describeSettings() {
 		console.log("dependency sources");
-		for (Repository repository : settings.repositories) {
+		for (Repository repository : repositories) {
 			console.log(1, repository.toString());
 			console.download(repository.getArtifactUrl());
 			console.log();
 		}
 
-		List<Proxy> actives = settings.getActiveProxies();
+		List<Proxy> actives = maxilla.getActiveProxies();
 		if (actives.size() > 0) {
 			console.log("proxy settings");
 			for (Proxy proxy : actives) {
@@ -531,6 +594,6 @@ public class Build {
 	
 	@Override
 	public String toString() {
-		return "Build (" + conf.pom.toString() + ")";
+		return "Build (" + project.pom.toString() + ")";
 	}
 }

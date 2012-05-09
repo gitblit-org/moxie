@@ -146,10 +146,10 @@ public class Repository {
 			
 			ByteArrayOutputStream buff = new ByteArrayOutputStream();
 			try {			
-				java.net.Proxy proxy = build.settings.getProxy(repositoryUrl);
+				java.net.Proxy proxy = build.getProxy(repositoryUrl);
 				URLConnection conn = url.openConnection(proxy);
 				if (java.net.Proxy.Type.DIRECT != proxy.type()) {
-					String auth = build.settings.getProxyAuthorization(repositoryUrl);
+					String auth = build.getProxyAuthorization(repositoryUrl);
 					conn.setRequestProperty("Proxy-Authorization", auth);
 				}
 				InputStream in = new BufferedInputStream(conn.getInputStream());
@@ -166,7 +166,7 @@ public class Repository {
 			} catch (IOException e) {
 				throw new RuntimeException("Error downloading " + url
 						+ "\nDo you need to specify a proxy server in "
-						+ build.settings.file.getAbsolutePath() + "?", e);
+						+ build.maxilla.file.getAbsolutePath() + "?", e);
 			}
 			byte[] data = buff.toByteArray();
 			

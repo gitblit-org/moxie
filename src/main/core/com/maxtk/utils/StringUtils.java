@@ -18,6 +18,7 @@ package com.maxtk.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -279,5 +280,27 @@ public class StringUtils {
 			array.add(stripQuotes(field.trim()).trim());
 		}
 		return array;
+	}
+	
+	/**
+	 * Creates an XML node for the field, if the value is not null.
+	 * 
+	 * @param field
+	 * @param value
+	 * @return
+	 */
+	public static <K> String toXML(String field, K value) {
+		if (value != null) {
+			return MessageFormat.format("\t<{0}>{1}</{0}>\n", field, value);
+		}
+		return "";
+	}
+	
+	public static String insertTab(String content) {
+		StringBuilder sb = new StringBuilder();
+		for (String line : content.split("\n")) {
+			sb.append('\t').append(line).append('\n');
+		}
+		return sb.toString();
 	}
 }

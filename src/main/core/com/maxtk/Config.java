@@ -16,6 +16,7 @@
 package com.maxtk;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -23,11 +24,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.maxtk.Constants.Key;
 import com.maxtk.Dependency.Scope;
 import com.maxtk.maxml.Maxml;
 import com.maxtk.maxml.MaxmlException;
+import com.maxtk.maxml.MaxmlMap;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
@@ -38,8 +42,10 @@ public class Config implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	File file;
 	Pom pom;
 	
+	List<Proxy> proxies;
 	List<String> projects;
 	List<String> repositoryUrls;	
 	
@@ -47,10 +53,19 @@ public class Config implements Serializable {
 	List<SourceFolder> sourceFolders;
 	File outputFolder;
 	File targetFolder;
-	boolean configureEclipseClasspath;
+	Set<String> apply;
 	boolean debug;
 
-	public static Config load(File file) throws IOException, MaxmlException {
+	public static Config load(File file, boolean create) throws IOException, MaxmlException {
+		if (!file.exists()) {
+			file.getParentFile().mkdirs();
+			// write default maxilla settings
+			FileWriter writer = new FileWriter(file);
+			writer.append("proxies:\n- { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }");
+			// TODO write repositories
+			writer.close();
+		}
+
 		return new Config().parse(file);
 	}
 
@@ -66,6 +81,8 @@ public class Config implements Serializable {
 		repositoryUrls = new ArrayList<String>();		
 		pom = new Pom();
 		dependencyFolder = null;
+		apply = new TreeSet<String>();
+		proxies = new ArrayList<Proxy>();
 	}
 	
 	public Pom getPom() {
@@ -82,6 +99,8 @@ public class Config implements Serializable {
 			throw new MaxmlException(MessageFormat.format("{0} does not exist!", file));			
 		}
 		
+		this.file = file;
+		
 		String content = FileUtils.readContent(file, "\n").trim();
 		Map<String, Object> map = Maxml.parse(content);
 
@@ -95,7 +114,7 @@ public class Config implements Serializable {
 		pom.vendor = readString(map, Key.vendor, false);
 
 		// build parameters
-		configureEclipseClasspath = readBoolean(map, Key.configureEclipseClasspath, false);
+		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(), true));
 		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);
 		outputFolder = readFile(map, Key.outputFolder, outputFolder);
 		targetFolder = readFile(map, Key.targetFolder, targetFolder);
@@ -113,6 +132,7 @@ public class Config implements Serializable {
 		
 		repositoryUrls = readStrings(map, Key.dependencySources, repositoryUrls);
 		parseDependencies(map, Key.dependencies);		
+		parseProxies(map, Key.proxies);
 		return this;
 	}
 
@@ -157,6 +177,26 @@ public class Config implements Serializable {
 			}
 		}		
 	}
+	
+	void parseProxies(Map<String, Object> map, Key key) {
+		if (map.containsKey(key.name())) {
+			List<MaxmlMap> values = (List<MaxmlMap>) map.get(key.name());
+			List<Proxy> ps = new ArrayList<Proxy>();
+			for (MaxmlMap definition : values) {
+				Proxy proxy = new Proxy();
+				proxy.id = definition.getString("id", "");
+				proxy.active = definition.getBoolean("active", false);
+				proxy.protocol = definition.getString("protocol", "http");
+				proxy.host = definition.getString("host", "");
+				proxy.port = definition.getInt("port", 80);
+				proxy.username = definition.getString("username", "");
+				proxy.password = definition.getString("password", "");
+				proxy.nonProxyHosts = definition.getStrings("nonProxyHosts", new ArrayList<String>());
+				ps.add(proxy);
+			}
+			proxies = ps;
+		}
+	}
 
 	String readString(Map<String, Object> map, Key key, boolean required) {
 		Object o = map.get(key.name());
@@ -179,19 +219,33 @@ public class Config implements Serializable {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	List<String> readStrings(Map<String, Object> map, Key key, List<String> defaultValue) {
+		return readStrings(map, key, defaultValue, false);
+	}
+	
+	@SuppressWarnings("unchecked")
+	List<String> readStrings(Map<String, Object> map, Key key, List<String> defaultValue, boolean toLowerCase) {
 		if (map.containsKey(key.name())) {
 			List<String> strings = new ArrayList<String>();
 			Object o = map.get(key.name());
 			if (o instanceof List) {
 				List<String> values = (List<String>) o;
-				strings.addAll(values);
+				if (toLowerCase) {
+					for (String value : values) {
+						strings.add(value.toLowerCase());
+					}
+				} else {
+					strings.addAll(values);
+				}
 			} else if (o instanceof String) {
 				String list = o.toString();
 				for (String value : StringUtils.breakCSV(list)) {
 					if (!StringUtils.isEmpty(value)) {
-						strings.add(value);
+						if (toLowerCase) {
+							strings.add(value.toLowerCase());
+						} else {
+							strings.add(value);
+						}
 					}
 				}
 			}
@@ -308,5 +362,19 @@ public class Config implements Serializable {
 	
 	public List<SourceFolder> getSourceFolders() {
 		return sourceFolders;
+	}
+	
+	boolean apply(String value) {
+		return apply.contains(value.toLowerCase());
+	}
+	
+	List<Proxy> getActiveProxies() {
+		List<Proxy> activeProxies = new ArrayList<Proxy>();
+		for (Proxy proxy : proxies) {
+			if (proxy.active) {
+				activeProxies.add(proxy);
+			}
+		}
+		return activeProxies;
 	}
 }

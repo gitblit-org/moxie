@@ -86,7 +86,7 @@ public class Docs {
 			}
 		}
 
-		String header = generateHeader(projectName, build.conf, doc);
+		String header = generateHeader(projectName, build.project, doc);
 		String footer = generateFooter(doc);
 
 		build.console.log("Generating HTML from Markdown files in {0} ", doc.sourceFolder.getAbsolutePath());

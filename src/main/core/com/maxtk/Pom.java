@@ -15,6 +15,7 @@
  */
 package com.maxtk;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -59,19 +60,11 @@ public class Pom {
 	private final Map<String, Scope> managedScopes;
 	
 	public Pom() {
+		version = "0.0.0-SNAPSHOT";
 		managedVersions = new TreeMap<String, String>();
 		managedScopes = new TreeMap<String, Scope>();
 		properties = new TreeMap<String, String>();
 		dependencies = new LinkedHashMap<Scope, List<Dependency>>();
-		
-		// Support all Java system properties (case-insensitive)
-		for (String property : System.getProperties().stringPropertyNames()) {
-			setProperty(property, System.getProperty(property));
-		}
-		// Support all environment variables (case-insensitive)
-		for (Map.Entry<String, String> entry : System.getenv().entrySet()) {
-			setProperty(entry.getKey(), entry.getValue());
-		}
 	}
 	
 	public void setProperty(String key, String value) {
@@ -82,7 +75,16 @@ public class Pom {
 	}
 	
 	public String getProperty(String key) {
-		return get(key, properties);
+		String value = get(key, properties);
+		if (StringUtils.isEmpty(value)) {
+			// Support all environment variables
+			value = System.getenv().get(key);
+		}
+		if (StringUtils.isEmpty(value)) {
+			// Support all Java system properties
+			value = System.getProperty(key);
+		}
+		return value;
 	}
 	
 	private String get(String key, Map<String, String> propertyMap) {
@@ -205,5 +207,111 @@ public class Pom {
 	@Override
 	public String toString() {
 		return groupId + ":" + artifactId + ":" + version;
+	}
+	
+	public String toXML() {
+		String pomVersion = "4.0.0";
+		StringBuilder sb = new StringBuilder();
+		sb.append(MessageFormat.format("<project xmlns=\"http://maven.apache.org/POM/{0}\" ", pomVersion));
+		sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
+		sb.append(MessageFormat.format("xsi:schemaLocation=\"http://maven.apache.org/POM/{0} ", pomVersion));
+		sb.append(MessageFormat.format("http://maven.apache.org/maven-v{0}.xsd\">\n", pomVersion.replace('.', '_')));
+		
+		sb.append('\n');
+		sb.append(StringUtils.toXML("modelVersion", pomVersion));
+		sb.append('\n');
+		
+		// parent metadata
+		if (hasParentDependency()) {
+			StringBuilder node = new StringBuilder();
+			node.append("<parent>\n");
+			node.append(StringUtils.toXML("groupId", parentGroupId));
+			node.append(StringUtils.toXML("artifactId", parentArtifactId));
+			node.append(StringUtils.toXML("version", parentVersion));
+			node.append("</parent>\n");
+			sb.append(StringUtils.insertTab(node.toString()));
+			sb.append('\n');
+		}
+
+		// project metadata
+		sb.append("\t<!-- project metadata-->\n");
+		sb.append(StringUtils.toXML("groupId", groupId));
+		sb.append(StringUtils.toXML("artifactId", artifactId));
+		sb.append(StringUtils.toXML("version", version));
+		sb.append(StringUtils.toXML("name", name));
+		sb.append(StringUtils.toXML("description", description));
+		sb.append(StringUtils.toXML("vendor", vendor));
+		sb.append(StringUtils.toXML("url", url));
+		sb.append('\n');
+		
+		// properties
+		if (properties.size() > 0) {
+			Map<String, String> filtered = new LinkedHashMap<String, String>();
+			for (Map.Entry<String, String> entry : properties.entrySet()) {
+				String key = entry.getKey();
+				// strip curly brace notation
+				if (key.startsWith("${")) {
+					key = key.substring(2);
+				}
+				if (key.endsWith("}")) {
+					key = key.substring(0, key.length() - 1);
+				}
+				// skip project.* keys
+				if (!key.toLowerCase().startsWith("project.")) {
+					filtered.put(key, entry.getValue());
+				}
+			}
+			
+			// only output filtered properties
+			if (filtered.size() > 0) {
+				StringBuilder node = new StringBuilder();
+				node.append("<properties>\n");
+				for (Map.Entry<String, String> entry : filtered.entrySet()) {
+					node.append(StringUtils.toXML(entry.getKey(), entry.getValue()));
+				}
+				node.append("</properties>\n");
+				sb.append(StringUtils.insertTab(node.toString()));
+				sb.append('\n');
+			}
+		}
+
+		// managed versions
+		if (managedVersions.size() > 0) {
+			StringBuilder node = new StringBuilder();
+			node.append("<dependencyManagement>\n");
+			node.append("<dependencies>\n");
+			for (Map.Entry<String, String> entry : managedVersions.entrySet()) {
+				String key = entry.getKey();
+				String version = entry.getValue();
+				Scope scope = managedScopes.get(key);
+				Dependency dep = new Dependency(key + ":" + version);
+				node.append(dep.toXML(scope));
+			}
+			node.append("</dependencies>\n");
+			node.append("</dependencyManagement>\n");
+			sb.append(StringUtils.insertTab(node.toString()));
+			sb.append('\n');
+		}
+		
+		// dependencies
+		if (dependencies.size() > 0) {
+			StringBuilder node = new StringBuilder();
+			node.append("<dependencies>\n");
+			for (Map.Entry<Scope, List<Dependency>> entry : dependencies.entrySet()) {
+				node.append(MessageFormat.format("\t<!-- {0} dependencies -->\n", entry.getKey().name()));
+				for (Dependency dependency : entry.getValue()) {
+					StringBuilder depNode = new StringBuilder();
+					depNode.append(dependency.toXML(entry.getKey()));
+					node.append(StringUtils.insertTab(depNode.toString()));
+				}
+			}
+			node.append("</dependencies>\n");
+			sb.append(StringUtils.insertTab(node.toString()));
+			sb.append('\n');
+		}
+		
+		// close project
+		sb.append("</project>");
+		return sb.toString();
 	}
 }

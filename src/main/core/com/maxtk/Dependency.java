@@ -235,5 +235,21 @@ public class Dependency implements Serializable {
 	@Override
 	public String toString() {
 		return (group.replace('/', '.') + ":" + artifact + ":" + version) + " (" + (optional ? ", optional":"") + (resolveDependencies ? "":", @jar") + ")";
-	}		
+	}
+	
+	public String toXML(Scope scope) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<dependency>\n");
+		sb.append(StringUtils.toXML("groupId", group));
+		sb.append(StringUtils.toXML("artifactId", artifact));
+		sb.append(StringUtils.toXML("version", version));
+		sb.append(StringUtils.toXML("scope", scope));
+		if (optional) {
+			sb.append(StringUtils.toXML("optional", true));
+		}
+		sb.append(StringUtils.toXML("type", "jar"));
+		// TODO type/classifier
+		sb.append("</dependency>\n");
+		return sb.toString();
+	}
 }
