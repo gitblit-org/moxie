@@ -31,9 +31,11 @@ public class Constants {
 	
 	public static final String GOOGLECODE = "googlecode";
 	
-	public static final String ECLIPSE_CLASSPATH = "eclipse";
+	public static final String APPLY_ECLIPSE = "eclipse";
 	
-	public static final String POM = "pom";
+	public static final String APPLY_POM = "pom";
+	
+	public static final String APPLY_COLOR = "color";
 	
 	public static enum Key {
 		build, name, description, url, vendor, scope, groupId, artifactId, version,

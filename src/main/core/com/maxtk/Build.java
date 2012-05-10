@@ -84,17 +84,18 @@ public class Build {
 		determineProxies();
 		determineRepositories();
 		
-		// bootstrap
-		loadDependency(new Dependency("org.fusesource.jansi:jansi:1.8"));
+		if (maxilla.apply(Constants.APPLY_COLOR) || project.apply(Constants.APPLY_COLOR)) {
+			// try to replace the console with the JansiConsole
+			loadDependency(new Dependency("org.fusesource.jansi:jansi:1.8"));
 
-		// try to replace the console with the JansiConsole
-		try {
-			Class.forName("org.fusesource.jansi.AnsiConsole");
-			Class<?> jansiConsole = Class.forName("com.maxtk.opt.JansiConsole");
-			console = (Console) jansiConsole.newInstance();
-		} catch (Throwable t) {
+			try {
+				Class.forName("org.fusesource.jansi.AnsiConsole");
+				Class<?> jansiConsole = Class.forName("com.maxtk.opt.JansiConsole");
+				console = (Console) jansiConsole.newInstance();
+			} catch (Throwable t) {
+			}
 		}
-
+		
 		console.header();
 		console.log("{0} v{1}", getPom().name, getPom().version);
 		console.header();
@@ -111,13 +112,13 @@ public class Build {
 			console.separator();
 
 			// create/update Eclipse configuration files
-			if (project.apply(Constants.ECLIPSE_CLASSPATH)) {
+			if (project.apply(Constants.APPLY_ECLIPSE)) {
 				writeEclipseClasspath();			
 				console.log(1, "rebuilt Eclipse .classpath");
 			}
 		
 			// create/update Maven POM
-			if (project.apply(Constants.POM)) {
+			if (project.apply(Constants.APPLY_POM)) {
 				writePOM();
 				console.log(1, "rebuilt pom.xml");
 			}
