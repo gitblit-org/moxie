@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="maxilla" default="compile" >
+	<target name="compile">
+		<echo message="maxilla.compile" />
+	</target>
+</project>

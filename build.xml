@@ -29,8 +29,11 @@
 			<classpath refid="max.compile.classpath" />
 		</javac>
 		
-		<!-- Copy the bundled MaxDoc resources -->
+		
 		<copy todir="${maxilla.bin.classes}">
+			<!-- Copy the bundled main resources -->
+			<fileset dir="${basedir}/src/main/resources" />			
+			<!-- Copy the bundled MaxDoc resources -->
 			<fileset dir="${basedir}/src/main/maxdoc">
 				<include name="*.zip" />
 				<include name="*.html" />
@@ -147,7 +150,7 @@
 
 			<!-- Include the MaxDoc resources -->
 			<resource>
-				<fileset dir="${max.compile.outputpath}" includes="*.zip, *.html, *.js, *.png" />
+				<fileset dir="${max.compile.outputpath}" includes="*.zip, *.html, *.js, *.png, *.xml" />
 			</resource>
 		</maxjar>
 

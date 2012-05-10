@@ -10,8 +10,8 @@ sourceFolders :
 - compile src/main/core, src/main/opt, src/main/maxgit
 - compile src/main/maxjar
 - compile src/main/maxdoc
+- compile src/main/resources
 - { scope: test, folder: src/test/java }
-dependencySources : gitblit, central
 dependencyFolder : ext
 dependencies :
 - provided 'org.fusesource.jansi:jansi:1.8'
