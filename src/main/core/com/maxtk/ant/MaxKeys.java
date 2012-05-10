@@ -28,7 +28,6 @@ import org.apache.tools.ant.Task;
 
 import com.maxtk.Build;
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency.Scope;
 import com.maxtk.utils.StringUtils;
 
 public class MaxKeys extends Task {
@@ -37,6 +36,8 @@ public class MaxKeys extends Task {
 	
 	String className;
 	
+	File outputFolder;
+	
 	public void setPropertiesfile(File file) {
 		this.propertiesFile = file;
 	}
@@ -44,9 +45,28 @@ public class MaxKeys extends Task {
 	public void setOutputclass(String className) {
 		this.className = className;
 	}
-	
+
+	public void setOutputfolder(File outputFolder) {
+		this.outputFolder = outputFolder;
+	}
+
 	public void execute() {
 		Build build = (Build) getProject().getReference(Key.build.maxId());
+		
+		if (outputFolder == null) {
+			build.console.error("Please specify an output folder!");
+			throw new RuntimeException();
+		}
+
+		if (className == null) {
+			build.console.error("Please specify an output classname!");
+			throw new RuntimeException();
+		}
+		
+		if (propertiesFile == null) {
+			build.console.error("Please specify an input properties file!");
+			throw new RuntimeException();
+		}
 
 		// Load all keys
 		Properties properties = new Properties();
@@ -74,14 +94,13 @@ public class MaxKeys extends Task {
 		}
 		
 		// Save Keys class definition
-		File outputFolder = build.getOutputFolder(Scope.compile);
 		try {
 			File file = new File(outputFolder, className.replace('.', '/') + ".java");
 			file.getParentFile().mkdirs();
 			FileWriter fw = new FileWriter(file, false);
 			fw.write(root.generateClass(className));
 			fw.close();			
-			build.console.log("{0} generated from {1}", className, propertiesFile);
+			build.console.log("{0} generated from {1}", file, propertiesFile);
 		} catch (Throwable t) {
 			build.console.error(t);
 		}
