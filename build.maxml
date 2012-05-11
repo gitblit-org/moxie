@@ -12,7 +12,6 @@ sourceFolders :
 - compile src/main/maxdoc
 - compile src/main/resources
 - { scope: test, folder: src/test/java }
-dependencyFolder : ext
 dependencies :
 - provided 'org.fusesource.jansi:jansi:1.8'
 - provided org.apache.ant:ant:1.8.3
