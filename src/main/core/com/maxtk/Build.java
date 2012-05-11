@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -115,7 +116,7 @@ public class Build {
 			if (project.apply(Constants.APPLY_ECLIPSE)) {
 				writeEclipseClasspath();
 				writeEclipseProject();
-				console.log(1, "rebuilt Eclipse .classpath");
+				console.log(1, "rebuilt Eclipse configuration");
 			}
 		
 			// create/update Maven POM
@@ -545,9 +546,29 @@ public class Build {
 	private void writeEclipseProject() {
 		File dotProject = new File(projectFolder, ".project");
 		if (dotProject.exists()) {
+			// don't recreate the project file
 			return;
 		}
-		// TODO .project
+		StringBuilder sb = new StringBuilder();
+		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		sb.append("<projectDescription>\n");
+		sb.append(MessageFormat.format("\t<name>{0}</name>\n", project.pom.name));
+		sb.append(MessageFormat.format("\t<comment>{0}</comment>\n", project.pom.description == null ? "" : project.pom.description));
+		sb.append("\t<projects>\n");
+		sb.append("\t</projects>\n");
+		sb.append("\t<buildSpec>\n");
+		sb.append("\t\t<buildCommand>\n");
+		sb.append("\t\t\t<name>org.eclipse.jdt.core.javabuilder</name>\n");
+		sb.append("\t\t\t<arguments>\n");
+		sb.append("\t\t\t</arguments>\n");
+		sb.append("\t\t</buildCommand>\n");
+		sb.append("\t</buildSpec>\n");
+		sb.append("\t<natures>\n");
+		sb.append("\t\t<nature>org.eclipse.jdt.core.javanature</nature>\n");
+		sb.append("\t</natures>\n");
+		sb.append("</projectDescription>\n");
+		
+		FileUtils.writeContent(dotProject, sb.toString());
 	}
 	
 	private void writePOM() {
