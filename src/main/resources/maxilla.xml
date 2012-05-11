@@ -38,6 +38,13 @@
 	<taskdef resource="tasks.properties" classpath="${maxilla.jar}"/>
 
 	<!--
+	    maxilla.setup
+	-->
+	<target name="setup" description="retrieve dependencies and setup the ant environment">
+		<maxsetup />
+	</target>
+
+	<!--
 	    maxilla.clean
 	-->
 	<target name="clean" description="clean build and target folders">
