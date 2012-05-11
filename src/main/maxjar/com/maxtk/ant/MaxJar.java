@@ -122,11 +122,13 @@ public class MaxJar extends GenJar {
 			if (!StringUtils.isEmpty(getProject().getProperty(Key.version.maxId()))) {
 				name += "-" + getProject().getProperty(Key.version.maxId());
 			}
-			destFile = new File(name + ".jar");
+			destFile = new File(build.getTargetFolder(), name + ".jar");
 		}
 		
 		if (destFile != null) {
-			destFile.getParentFile().mkdirs();
+			if (destFile.getParentFile() != null) {
+				destFile.getParentFile().mkdirs();
+			}
 			build.console.log(1, destFile.getAbsolutePath());
 		} else if (destDir != null) {
 			destDir.mkdirs();
