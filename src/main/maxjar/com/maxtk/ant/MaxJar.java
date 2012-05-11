@@ -20,20 +20,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 
 import com.maxtk.Build;
 import com.maxtk.Constants;
 import com.maxtk.Constants.Key;
+import com.maxtk.Dependency.Scope;
 import com.maxtk.ant.Mft.MftAttr;
 import com.maxtk.utils.StringUtils;
 
 public class MaxJar extends GenJar {
 
 	ClassSpec mainclass;
-
 	boolean fatjar;
+	boolean includeResources;
+	String includes;
+	String excludes;
 
 	/**
 	 * Builds a <mainclass> element.
@@ -52,6 +56,18 @@ public class MaxJar extends GenJar {
 
 	public void setFatjar(boolean value) {
 		this.fatjar = value;
+	}
+	
+	public void setIncluderesources(boolean copy) {
+		this.includeResources = copy;
+	}
+
+	public void setIncludes(String includes) {
+		this.includes = includes;
+	}
+
+	public void setExcludes(String excludes) {
+		this.excludes = excludes;
 	}
 
 	@Override
@@ -133,6 +149,20 @@ public class MaxJar extends GenJar {
 		} else if (destDir != null) {
 			destDir.mkdirs();
 			build.console.log(1, "class structure => " + destDir);
+		}
+		
+		// optionally include resources from the outputfolder
+		if (includeResources) {
+			Resource resources = createResource();			
+			FileSet set = resources.createFileset();
+			set.setDir(build.getOutputFolder(Scope.compile));
+			if (includes != null) {
+				set.setIncludes(includes);
+			}
+			if (excludes == null) {
+				excludes = Constants.DEFAULT_EXCLUDES;
+			}
+			set.setExcludes(excludes);
 		}
 		
 		long start = System.currentTimeMillis();

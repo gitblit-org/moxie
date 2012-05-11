@@ -23,6 +23,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Reference;
 
 import com.maxtk.Build;
+import com.maxtk.Constants;
 import com.maxtk.Constants.Key;
 import com.maxtk.Dependency.Scope;
 import com.maxtk.utils.FileUtils;
@@ -100,7 +101,7 @@ public class MaxJavac extends Javac {
 
 			if (excludes == null) {
 				// default exclusions
-				excludes = "**/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
+				excludes = Constants.DEFAULT_EXCLUDES;
 			}
 			
 			for (String path : getSrcdir().list()) {
