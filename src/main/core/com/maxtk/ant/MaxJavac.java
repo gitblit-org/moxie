@@ -47,8 +47,8 @@ public class MaxJavac extends Javac {
 		this.copyResources = copy;
 	}
 
-	public void setIncludes(String excludes) {
-		this.excludes = excludes;
+	public void setIncludes(String includes) {
+		this.includes = includes;
 	}
 
 	public void setExcludes(String excludes) {
