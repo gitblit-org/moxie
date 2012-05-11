@@ -17,7 +17,9 @@ package com.maxtk.ant;
 
 import java.io.File;
 
+import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Javac;
+import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Reference;
 
 import com.maxtk.Build;
@@ -25,10 +27,13 @@ import com.maxtk.Constants.Key;
 import com.maxtk.Dependency.Scope;
 import com.maxtk.utils.FileUtils;
 
-public class MaxCompile extends Javac {
+public class MaxJavac extends Javac {
 	
 	Scope scope;
 	boolean clean;
+	boolean copyResources;
+	String includes;
+	String excludes;
 	
 	public void setClean(boolean clean) {
 		this.clean = clean;
@@ -36,6 +41,18 @@ public class MaxCompile extends Javac {
 	
 	public void setScope(String scope) {
 		this.scope = Scope.fromString(scope);
+	}
+
+	public void setCopyresources(boolean copy) {
+		this.copyResources = copy;
+	}
+
+	public void setIncludes(String excludes) {
+		this.excludes = excludes;
+	}
+
+	public void setExcludes(String excludes) {
+		this.excludes = excludes;
 	}
 
 	public void execute() {
@@ -48,23 +65,61 @@ public class MaxCompile extends Javac {
 		switch (scope) {
 		case test:
 			// test compile scope
-			setDestdir((File) getProject().getReference(Key.test_outputpath.maxId()));
+			setDestdir(new File(getProject().getProperty(Key.test_outputpath.maxId())));
 			createSrc().setRefid(new Reference(getProject(), Key.test_sourcepath.maxId()));
 			setClasspathRef(new Reference(getProject(), Key.test_classpath.maxId()));
 			break;
 		default:
 			// default compile scope
-			setDestdir((File) getProject().getReference(Key.compile_outputpath.maxId()));
+			setDestdir(new File(getProject().getProperty(Key.compile_outputpath.maxId())));
 			createSrc().setRefid(new Reference(getProject(), Key.compile_sourcepath.maxId()));
 			setClasspathRef(new Reference(getProject(), Key.compile_classpath.maxId()));
 		}
 		
 		if (clean) {
 			// clean the output folder before compiling
-			build.console.log("cleaning {0}", getDestdir());
-			FileUtils.delete(getDestdir());			
+			build.console.log("cleaning {0}", getDestdir().getAbsolutePath());
+			FileUtils.delete(getDestdir());
 		}
 		
+		getDestdir().mkdirs();
+		
 		super.execute();
+		
+		// optionally copy resources from source folders
+		if (copyResources) {
+			Copy copy = new Copy();
+			copy.setTaskName(getTaskName());
+			copy.setProject(getProject());
+			copy.setTodir(getDestdir());
+			copy.setVerbose(getVerbose());
+
+			if (getVerbose()) {
+				build.console.log("copying resources => {0}", getDestdir());
+			}
+
+			if (excludes == null) {
+				// default exclusions
+				excludes = "**/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
+			}
+			
+			for (String path : getSrcdir().list()) {
+				File file = new File(path);
+				if (file.isDirectory()) {
+					FileSet set = new FileSet();
+					set.setDir(file);
+					if (includes != null) {
+						set.setIncludes(includes);
+					}
+					set.setExcludes(excludes);
+					copy.add(set);
+					if (getVerbose()) {
+						build.console.log("adding resource path {0}", path);
+					}
+				}
+			}
+			
+			copy.execute();
+		}
 	}
 }

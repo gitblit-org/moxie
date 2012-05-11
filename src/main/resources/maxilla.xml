@@ -1,6 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="maxilla" default="compile" >
-	<target name="compile">
-		<echo message="maxilla.compile" />
+<!--
+   Copyright 2012 James Moger
+   
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+ 
+      http://www.apache.org/licenses/LICENSE-2.0
+ 
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project name="maxilla">
+	
+	<!-- Determine the source jar for this import/include. -->
+	<!-- This JavaScript sneakery assumes this XML file is -->
+	<!-- located within a Maxilla jar file and it is being -->
+	<!-- imported or included from a project build script. -->
+	<dirname file="${ant.file.maxilla}" property="maxilla.import.url"/>
+	<script language="javascript">
+		<![CDATA[
+			// extract the jar path
+			url = project.getProperty("maxilla.import.url");
+			index = url.lastIndexOf("file:");
+			jar = url.substring(index + 5);
+			if (jar.endsWith("!")) {
+				jar = jar.substring(0, jar.length() - 1);
+			}
+			project.setProperty("maxilla.jar", jar);
+		]]>
+	</script>
+	
+	<!-- Define Maxilla tasks -->
+	<taskdef resource="tasks.properties" classpath="${maxilla.jar}"/>
+
+	<!--
+	    maxilla.clean
+	-->
+	<target name="clean" description="clean build and target folders">
+		<maxclean />
 	</target>
+
+	<!--
+	    maxilla.compile
+	-->
+	<target name="compile" description="compile sources and copy resources">
+		<maxclean scope="compile" />
+		<!-- TODO inject version and compile -->
+		<maxjavac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
+	</target>
+	
+	<!--
+	    maxilla.test
+	-->
+	<target name="test" description="compile and execute tests" depends="compile">
+		<maxclean scope="test" />
+		<maxjavac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
+		<!-- TODO maxtest -->
+	</target>
+
 </project>

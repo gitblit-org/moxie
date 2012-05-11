@@ -140,6 +140,8 @@ public class Console {
 		if (!StringUtils.isEmpty(message)) {
 			err.println(MessageFormat.format(message, args));
 		}
-		t.printStackTrace(err);
+		if (t != null) {
+			t.printStackTrace(err);
+		}
 	}
 }

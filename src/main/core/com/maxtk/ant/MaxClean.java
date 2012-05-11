@@ -34,13 +34,20 @@ public class MaxClean extends MaxTask {
 		if (scope == null) {
 			// clean output folder
 			File dir = new File(getProject().getProperty(Key.outputFolder.maxId()));
-			console.log("cleaning {0}", dir);
+			console.log("cleaning {0}", dir.getAbsolutePath());
 			FileUtils.delete(dir);			
 
 			// clean target folder
 			dir = new File(getProject().getProperty(Key.targetFolder.maxId()));
-			console.log("cleaning {0}", dir);
-			FileUtils.delete(dir);			
+			console.log("cleaning {0}", dir.getAbsolutePath());
+			FileUtils.delete(dir);
+			
+			if (getProject().getProperty(Key.dependencyFolder.maxId()) != null) {
+				// clean project dependency folder
+				dir = new File(getProject().getProperty(Key.dependencyFolder.maxId()));
+				console.log("cleaning {0}", dir.getAbsolutePath());
+				FileUtils.delete(dir);
+			}
 		} else {
 			clean(scope);
 		}
@@ -54,7 +61,7 @@ public class MaxClean extends MaxTask {
 
 		Build build = (Build) getProject().getReference(Key.build.maxId());
 		File dir = build.getOutputFolder(scope);
-		build.console.log("cleaning {0}", dir);
+		build.console.log("cleaning {0}", dir.getAbsolutePath());
 		FileUtils.delete(dir);			
 	}
 }

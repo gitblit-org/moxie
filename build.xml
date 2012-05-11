@@ -20,7 +20,7 @@
 		</javac>
 
 		<!-- Declare MaxSetup and download dependencies -->
-		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpath="${maxilla.bin.classes}" />				
+		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpath="${maxilla.bin.classes}" />
 		<maxsetup verbose="false" />
 
 		<!-- Bootstrap compile all of Maxilla with retrieved dependencies -->
@@ -28,8 +28,7 @@
 			<src refid="max.compile.sourcepath" />
 			<classpath refid="max.compile.classpath" />
 		</javac>
-		
-		
+				
 		<copy todir="${maxilla.bin.classes}">
 			<!-- Copy the bundled main resources -->
 			<fileset dir="${basedir}/src/main/resources" />			
@@ -64,7 +63,7 @@
 
 		<!-- Core -->
 		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
-		<taskdef classname="com.maxtk.ant.MaxCompile" name="maxcompile" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
+		<taskdef classname="com.maxtk.ant.MaxJavac" name="maxjavac" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
 		<taskdef classname="com.maxtk.ant.MaxClean" name="maxclean" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
 		<taskdef classname="com.maxtk.ant.MaxExtract" name="maxextract" classpathref="bootstrap.path" loaderref="bootstrap.path.loader" />
 
@@ -91,12 +90,13 @@
 			</classfilter>
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxClean" />
-			<class name="com.maxtk.ant.MaxCompile" />
+			<class name="com.maxtk.ant.MaxJavac" />
 			<class name="com.maxtk.ant.MaxKeys" />
 			<class name="com.maxtk.ant.MaxExtract" />
 						
 			<class name="com.maxtk.opt.JansiConsole" />
 			
+			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/core/tasks.properties" />
 		</maxjar>
 		
@@ -112,7 +112,7 @@
 			</classfilter>
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxClean" />
-			<class name="com.maxtk.ant.MaxCompile" />
+			<class name="com.maxtk.ant.MaxJavac" />
 			<class name="com.maxtk.ant.MaxKeys" />
 			<class name="com.maxtk.ant.MaxExtract" />
 			<class name="com.maxtk.ant.MaxCommitId" />
@@ -121,6 +121,7 @@
 			
 			<class name="com.maxtk.opt.JansiConsole" />
 			
+			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/pro/tasks.properties" />
 		</maxjar>
 
@@ -136,7 +137,7 @@
 			</classfilter>
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxClean" />
-			<class name="com.maxtk.ant.MaxCompile" />
+			<class name="com.maxtk.ant.MaxJavac" />
 			<class name="com.maxtk.ant.MaxKeys" />
 			<class name="com.maxtk.ant.MaxExtract" />
 			<class name="com.maxtk.ant.MaxCommitId" />
@@ -146,6 +147,7 @@
 			
 			<class name="com.maxtk.opt.JansiConsole" />
 			
+			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/all/tasks.properties" />
 
 			<!-- Include the MaxDoc resources -->

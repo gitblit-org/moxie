@@ -65,6 +65,12 @@ public class MaxSetup extends MaxTask {
 			addReference(Key.build, build, false);
 			
 			Pom pom = build.getPom();
+			
+			if (verbose) {
+				build.console.separator();
+				build.console.log("string properties");
+			}
+			
 			setProperty(Key.name, pom.name);
 			setProperty(Key.description, pom.description);
 			setProperty(Key.groupId, pom.groupId);
@@ -78,6 +84,11 @@ public class MaxSetup extends MaxTask {
 			setProperty(Key.compile_outputpath, build.getOutputFolder(Scope.compile).toString());
 			setProperty(Key.test_outputpath, build.getOutputFolder(Scope.test).toString());
 
+			if (verbose) {
+				build.console.separator();
+				build.console.log("path references");
+			}
+			
 			setSourcepath(Key.compile_sourcepath, build, Scope.compile);
 			setSourcepath(Key.test_sourcepath, build, Scope.test);
 

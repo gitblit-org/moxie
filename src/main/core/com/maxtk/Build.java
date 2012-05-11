@@ -113,7 +113,8 @@ public class Build {
 
 			// create/update Eclipse configuration files
 			if (project.apply(Constants.APPLY_ECLIPSE)) {
-				writeEclipseClasspath();			
+				writeEclipseClasspath();
+				writeEclipseProject();
 				console.log(1, "rebuilt Eclipse .classpath");
 			}
 		
@@ -152,6 +153,11 @@ public class Build {
 				// unidentified repository
 				repositories.add(new Repository(null, url));
 			}
+		}
+
+		// default to central
+		if (repositories.size() == 0) {
+			repositories.add(CENTRAL);
 		}
 	}
 	
@@ -313,6 +319,7 @@ public class Build {
 		if (StringUtils.isEmpty(dependency.version)) {
 			return null;
 		}
+		
 		File pomFile = artifactCache.getFile(dependency, Extension.POM);
 		if (!pomFile.exists()) {
 			// download the POM
@@ -378,7 +385,7 @@ public class Build {
 					cachedFile = repository.download(this, dependency, fileType);
 				}
 
-				if (cachedFile != null && cachedFile.exists()) {
+				if (cachedFile != null && cachedFile.exists() && Extension.LIB.equals(fileType)) {
 					// optionally copy artifact to project-specified folder
 					if (forProject && project.dependencyFolder != null) {
 						File projectFile = new File(project.dependencyFolder, cachedFile.getName());
@@ -500,11 +507,9 @@ public class Build {
 	}
 
 	private void writeEclipseClasspath() {
-		List<File> jars = getClasspath(Scope.test);
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<classpath>\n");
-		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
 		for (SourceFolder sourceFolder : project.sourceFolders) {
 			if (sourceFolder.scope.isDefault()) {
 				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", sourceFolder.folder));
@@ -512,8 +517,12 @@ public class Build {
 				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" output=\"{1}\"/>\n", sourceFolder.folder, getEclipseOutputFolder(sourceFolder.scope)));
 			}
 		}
-		for (File jar : jars) {			
-			File srcJar = new File(jar.getParentFile(), jar.getName().substring(0, jar.getName().lastIndexOf('.')) + "-sources.jar");
+		
+		// always link classpath against Maxilla artifact cache
+		Set<Dependency> dependencies = solve(Scope.test);
+		for (Dependency dependency : dependencies) {
+			File jar = artifactCache.getFile(dependency, Extension.LIB); 
+			File srcJar = artifactCache.getFile(dependency, Extension.SRC);
 			if (srcJar.exists()) {
 				// have sources
 				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" sourcepath=\"{1}\" />\n", jar.getAbsolutePath(), srcJar.getAbsolutePath()));
@@ -527,9 +536,18 @@ public class Build {
 		for (String projectRef : project.projects) {
 			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", projectRef));
 		}
+		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
 		sb.append("</classpath>");
 		
 		FileUtils.writeContent(new File(projectFolder, ".classpath"), sb.toString());
+	}
+	
+	private void writeEclipseProject() {
+		File dotProject = new File(projectFolder, ".project");
+		if (dotProject.exists()) {
+			return;
+		}
+		// TODO .project
 	}
 	
 	private void writePOM() {
@@ -564,6 +582,9 @@ public class Build {
 	
 	void describeSettings() {
 		console.log("dependency sources");
+		if (repositories.size() == 0) {
+			console.error("no dependency sources defined!");
+		}
 		for (Repository repository : repositories) {
 			console.log(1, repository.toString());
 			console.download(repository.getArtifactUrl());
