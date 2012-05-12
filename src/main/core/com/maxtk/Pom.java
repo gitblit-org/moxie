@@ -15,7 +15,6 @@
  */
 package com.maxtk;
 
-import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -150,24 +149,16 @@ public class Pom {
 		if ((dep instanceof SystemDependency)) {
 			// System Dependency
 			SystemDependency sys = (SystemDependency) dep;
-			StringBuffer sb = new StringBuffer(sys.path);
-			Pattern p = Pattern.compile("\\$\\{[a-zA_Z0-9-\\.]+\\}");
-			Matcher m = p.matcher(sys.path);
-			while (m.find()) {
-				String prop = m.group();
-				String value = getProperty(prop);
-				sb.replace(m.start(), m.end(), value);			
-			}
-			// replace dependency object
-			dep = new SystemDependency(sb.toString());			
+			String path = resolveProperties(sys.path);
+			dep = new SystemDependency(path);
 		} else {
 			// Retrievable dependency
 			if (!StringUtils.isEmpty(dep.version)) {
 				// property substitution
 				// managed dependencies are blank
-				dep.version = getProperty(dep.version);
+				dep.version = resolveProperties(dep.version);
 			}
-			dep.group = getProperty(dep.group);
+			dep.group = resolveProperties(dep.group);
 		}
 		
 		if (!dependencies.containsKey(scope)) {
@@ -175,6 +166,21 @@ public class Pom {
 		}
 		
 		dependencies.get(scope).add(dep);
+	}
+	
+	private String resolveProperties(String string) {
+		Pattern p = Pattern.compile("\\$\\{[a-zA_Z0-9-\\.]+\\}");			
+		StringBuffer sb = new StringBuffer(string);
+		while (true) {
+			Matcher m = p.matcher(sb.toString());
+			if (m.find()) {
+				String prop = m.group();
+				String value = getProperty(prop);
+				sb.replace(m.start(), m.end(), value);
+			} else {
+				return sb.toString();
+			}
+		}
 	}
 	
 	public List<Dependency> getDependencies(Scope scope) {
