@@ -15,6 +15,7 @@
  */
 package com.maxtk;
 
+import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.maxtk.Dependency.Scope;
 import com.maxtk.utils.StringUtils;
@@ -71,10 +74,11 @@ public class Pom {
 		if (StringUtils.isEmpty(key) || StringUtils.isEmpty(value)) {
 			return;
 		}
-		properties.put("${" + key.trim().toUpperCase() + "}", value.trim());
+		properties.put(key.trim().toUpperCase(), value);
 	}
 	
 	public String getProperty(String key) {
+		key = stripKeyFormat(key);
 		String value = get(key, properties);
 		if (StringUtils.isEmpty(value)) {
 			// Support all environment variables
@@ -84,7 +88,20 @@ public class Pom {
 			// Support all Java system properties
 			value = System.getProperty(key);
 		}
+		if (StringUtils.isEmpty(value)) {
+			return key;
+		}
 		return value;
+	}
+	
+	private String stripKeyFormat(String key) {
+		if (key.startsWith("${")) {
+			key = key.substring(2);
+		}
+		if (key.charAt(key.length() - 1) == '}') {
+			key = key.substring(0,  key.length() - 1);
+		}
+		return key;
 	}
 	
 	private String get(String key, Map<String, String> propertyMap) {
@@ -96,7 +113,7 @@ public class Pom {
 		if (propertyMap.containsKey(key.toUpperCase())) {
 			return propertyMap.get(key.toUpperCase());
 		}
-		return key;
+		return null;
 	}
 	
 	public void addManagedDependency(Dependency dep, Scope scope) {
@@ -130,16 +147,33 @@ public class Pom {
 	}
 	
 	public void addDependency(Dependency dep, Scope scope) {
-		if (!StringUtils.isEmpty(dep.version)) {
-			// property substitution
-			// managed dependencies are blank
-			dep.version = getProperty(dep.version);
+		if ((dep instanceof SystemDependency)) {
+			// System Dependency
+			SystemDependency sys = (SystemDependency) dep;
+			StringBuffer sb = new StringBuffer(sys.path);
+			Pattern p = Pattern.compile("\\$\\{[a-zA_Z0-9-\\.]+\\}");
+			Matcher m = p.matcher(sys.path);
+			while (m.find()) {
+				String prop = m.group();
+				String value = getProperty(prop);
+				sb.replace(m.start(), m.end(), value);			
+			}
+			// replace dependency object
+			dep = new SystemDependency(sb.toString());			
+		} else {
+			// Retrievable dependency
+			if (!StringUtils.isEmpty(dep.version)) {
+				// property substitution
+				// managed dependencies are blank
+				dep.version = getProperty(dep.version);
+			}
+			dep.group = getProperty(dep.group);
 		}
-		dep.group = getProperty(dep.group);
 		
 		if (!dependencies.containsKey(scope)) {
 			dependencies.put(scope, new ArrayList<Dependency>());
-		}		
+		}
+		
 		dependencies.get(scope).add(dep);
 	}
 	

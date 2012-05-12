@@ -163,6 +163,9 @@ public class Config implements Serializable {
 						// system dependency
 						scope = Scope.system;
 						def = def.substring(Scope.system.name().length()).trim();
+						Dependency dep = new SystemDependency(def);
+						pom.addDependency(dep, scope);
+						continue;
 					} else {
 						// default to compile-time dependency
 						scope = Scope.defaultScope;

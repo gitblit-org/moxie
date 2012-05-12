@@ -454,11 +454,17 @@ public class Build {
 		Set<Dependency> dependencies = solve(scope);
 		List<File> jars = new ArrayList<File>();
 		for (Dependency dependency : dependencies) {
-			File jar = artifactCache.getFile(dependency, Extension.LIB); 
-			if (projectFolder != null) {
-				File pJar = new File(projectFolder, jar.getName());
-				if (pJar.exists()) {
-					jar = pJar;
+			File jar;
+			if (dependency instanceof SystemDependency) {
+				SystemDependency sys = (SystemDependency) dependency;				
+				jar = new File(sys.path);
+			} else {
+				jar = artifactCache.getFile(dependency, Extension.LIB); 
+				if (projectFolder != null) {
+					File pJar = new File(projectFolder, jar.getName());
+					if (pJar.exists()) {
+						jar = pJar;
+					}
 				}
 			}
 			jars.add(jar);
@@ -506,7 +512,7 @@ public class Build {
 	public File getSiteOutputFolder() {
 		return new File(getTargetFolder(), "site");
 	}
-
+	
 	private void writeEclipseClasspath() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -522,14 +528,19 @@ public class Build {
 		// always link classpath against Maxilla artifact cache
 		Set<Dependency> dependencies = solve(Scope.test);
 		for (Dependency dependency : dependencies) {
-			File jar = artifactCache.getFile(dependency, Extension.LIB); 
-			File srcJar = artifactCache.getFile(dependency, Extension.SRC);
-			if (srcJar.exists()) {
-				// have sources
-				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" sourcepath=\"{1}\" />\n", jar.getAbsolutePath(), srcJar.getAbsolutePath()));
+			if (dependency instanceof SystemDependency) {
+				SystemDependency sys = (SystemDependency) dependency;
+				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", sys.path));
 			} else {
-				// no sources
-				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", jar.getAbsolutePath()));
+				File jar = artifactCache.getFile(dependency, Extension.LIB); 
+				File srcJar = artifactCache.getFile(dependency, Extension.SRC);
+				if (srcJar.exists()) {
+					// have sources
+					sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" sourcepath=\"{1}\" />\n", jar.getAbsolutePath(), srcJar.getAbsolutePath()));
+				} else {
+					// no sources
+					sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", jar.getAbsolutePath()));
+				}
 			}
 		}
 		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", getEclipseOutputFolder(Scope.compile)));
