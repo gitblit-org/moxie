@@ -73,19 +73,19 @@ public class Pom {
 		if (StringUtils.isEmpty(key) || StringUtils.isEmpty(value)) {
 			return;
 		}
-		properties.put(key.trim().toUpperCase(), value);
+		properties.put(key.trim(), value);
 	}
 	
 	public String getProperty(String key) {
-		key = stripKeyFormat(key);
+		key = stripKeyFormat(key.trim());
 		String value = get(key, properties);
-		if (StringUtils.isEmpty(value)) {
-			// Support all environment variables
-			value = System.getenv().get(key);
-		}
 		if (StringUtils.isEmpty(value)) {
 			// Support all Java system properties
 			value = System.getProperty(key);
+		}
+		if (StringUtils.isEmpty(value)) {
+			// Support all environment variables
+			value = System.getenv().get(key);
 		}
 		if (StringUtils.isEmpty(value)) {
 			return key;
@@ -109,8 +109,8 @@ public class Pom {
 			// a dependencyManagement definition in a parent pom
 			return null;
 		}
-		if (propertyMap.containsKey(key.toUpperCase())) {
-			return propertyMap.get(key.toUpperCase());
+		if (propertyMap.containsKey(key)) {
+			return propertyMap.get(key);
 		}
 		return null;
 	}
