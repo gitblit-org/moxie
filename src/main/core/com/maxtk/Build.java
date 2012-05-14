@@ -305,8 +305,11 @@ public class Build {
 		List<Dependency> dependencies = pom.getDependencies(scope, dependency.ring + 1);
 		if (dependencies.size() > 0) {			
 			for (Dependency dep : dependencies) {
-				resolved.add(dep);
-				resolved.addAll(solve(scope, dep));
+				if (!dependency.exclusions.contains(dep.getProjectId())
+						&& !dependency.exclusions.contains(dep.group)) {
+					resolved.add(dep);
+					resolved.addAll(solve(scope, dep));
+				}
 			}
 		}
 		return resolved;

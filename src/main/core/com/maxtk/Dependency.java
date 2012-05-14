@@ -16,8 +16,8 @@
 package com.maxtk;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import com.maxtk.utils.StringUtils;
 
@@ -149,17 +149,20 @@ public class Dependency implements Serializable {
 	public String ext;
 	public boolean optional;	
 	public boolean resolveDependencies;
+	public Set<String> exclusions;
 
 	public int ring;
 
 	public Dependency() {
 		ext = EXT_JAR;
-		resolveDependencies = true;		
+		resolveDependencies = true;
+		exclusions = new TreeSet<String>();
 	}
 	
 	public Dependency(String def) {
-		String [] principals = def.split(" ");
-		String coordinates = principals[0];
+		String [] principals = def.trim().split(" ");
+		
+		String coordinates = StringUtils.stripQuotes(principals[0]);
 		if (coordinates.indexOf('@') > -1) {
 			// strip @ext
 			ext = "." + coordinates.substring(coordinates.indexOf('@') + 1);			
@@ -176,10 +179,17 @@ public class Dependency implements Serializable {
 		this.artifact = fields[1];
 		this.version = fields[2];
 		
-		// determine dependency options
-		Set<String> options = new HashSet<String>();
-		for (String string : principals) {
-			options.add(string.toLowerCase());
+		// determine dependency options and transitive dependency exclusions
+		exclusions = new TreeSet<String>();
+		Set<String> options = new TreeSet<String>();
+		for (String option : principals) {
+			if (option.charAt(0) == '-') {
+				// exclusion
+				exclusions.add(option.substring(1));
+			} else {
+				// option
+				options.add(option.toLowerCase());
+			}
 		}
 		optional = options.contains("optional");
 	}
