@@ -17,7 +17,6 @@ package com.maxtk;
 
 import java.io.File;
 
-import com.maxtk.Dependency.Extension;
 import com.maxtk.utils.FileUtils;
 
 public class ArtifactCache {
@@ -35,17 +34,17 @@ public class ArtifactCache {
 		this.pattern = pattern;
 	}
 	
-	public File getFile(Dependency dep, Extension ext) {
-		return new File(root, pattern.replace("${groupId}", dep.group.replace('.', '/')).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext.toString()));
+	public File getFile(Dependency dep, String ext) {
+		return new File(root, pattern.replace("${groupId}", dep.group.replace('.', '/')).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext));
 	}
 	
-	public File writeFile(Dependency dep, Extension ext, String content) {
+	public File writeFile(Dependency dep, String ext, String content) {
 		File file = getFile(dep, ext);
 		FileUtils.writeContent(file, content);
 		return file;
 	}
 	
-	public File writeFile(Dependency dep, Extension ext, byte [] content) {
+	public File writeFile(Dependency dep, String ext, byte [] content) {
 		File file = getFile(dep, ext);
 		FileUtils.writeContent(file, content);
 		return file;

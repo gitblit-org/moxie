@@ -14,7 +14,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 	<url>http://gitblit.github.com/maxilla</url>
 
 	<properties>
-		<JGIT.VERSION>1.3.0.201202151440-r</JGIT.VERSION>
+		<jgit.version>1.3.0.201202151440-r</jgit.version>
 	</properties>
 
 	<dependencies>

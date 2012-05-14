@@ -16,6 +16,8 @@
 package com.maxtk;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.maxtk.utils.StringUtils;
 
@@ -137,74 +139,49 @@ public class Dependency implements Serializable {
 		}
 	}
 	
-	public static enum Extension {
-		POM(".pom"), POM_SHA1(".pom.sha1"), LIB(".jar"), LIB_SHA1(".jar.sha1"), SRC("-sources.jar"), SRC_SHA1("-sources.jar.sha1");
-		
-		final String ext;
-		
-		Extension(String ext) {
-			this.ext = ext;
-		}
-		
-		public Extension sha1() {
-			if (toString().endsWith(".sha1")) {
-				return this;
-			}
-			String wanted = toString() + ".sha1";
-			for (Extension ext : Extension.values()) {
-				if (ext.toString().equals(wanted)) {
-					return ext;
-				}
-			}
-			return null;
-		}
-		
-		@Override
-		public String toString() {
-			return ext;
-		}
-	}
+	public static String EXT_JAR = ".jar";
+	public static String EXT_POM = ".pom";
+	public static String EXT_SRC = "-sources";
 
 	public String group;
 	public String artifact;
 	public String version;
+	public String ext;
 	public boolean optional;	
 	public boolean resolveDependencies;
 
 	public int ring;
 
 	public Dependency() {
-		resolveDependencies = true;
+		ext = EXT_JAR;
+		resolveDependencies = true;		
 	}
 	
 	public Dependency(String def) {
-		this(def.split(":"));
-	}
-	
-	private Dependency(String [] def) {
-		this(def[0], def[1], def[2]);
-	}
-	
-	public Dependency(String group, String artifact, String version) {
-		this.group = group.replace('/', '.');
-		this.artifact = artifact;
-		this.version = stripFetch(version);
-		this.resolveDependencies = true;
-		if (!StringUtils.isEmpty(version) && (version.indexOf('@') > -1)) {
-			// trailing @ on the version disables transitive resolution
-			this.resolveDependencies = false;
-		}
-	}
-	
-	private String stripFetch(String def) {
-		if (!StringUtils.isEmpty(def)) {			
-			if (def.indexOf('@') > -1) {
-				return def.substring(0, def.indexOf('@'));
-			}
-			return def;
+		String [] principals = def.split(" ");
+		String coordinates = principals[0];
+		if (coordinates.indexOf('@') > -1) {
+			// strip @ext
+			ext = "." + coordinates.substring(coordinates.indexOf('@') + 1);			
+			coordinates = coordinates.substring(0, coordinates.indexOf('@'));
+			resolveDependencies = false;
 		} else {
-			return "";
+			ext = EXT_JAR;
+			resolveDependencies = true;
 		}
+		
+		// determine primary Maven coordinates
+		String [] fields = coordinates.split(":");
+		this.group = fields[0].replace('/', '.');
+		this.artifact = fields[1];
+		this.version = fields[2];
+		
+		// determine dependency options
+		Set<String> options = new HashSet<String>();
+		for (String string : principals) {
+			options.add(string.toLowerCase());
+		}
+		optional = options.contains("optional");
 	}
 	
 	public boolean isMavenObject() {
@@ -247,7 +224,7 @@ public class Dependency implements Serializable {
 		if (optional) {
 			sb.append(StringUtils.toXML("optional", true));
 		}
-		sb.append(StringUtils.toXML("type", "jar"));
+		sb.append(StringUtils.toXML("type", ext.substring(1)));
 		// TODO type/classifier
 		sb.append("</dependency>\n");
 		return sb.toString();

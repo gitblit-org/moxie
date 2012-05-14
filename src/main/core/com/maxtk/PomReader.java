@@ -27,7 +27,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency.Extension;
 import com.maxtk.Dependency.Scope;
 import com.maxtk.utils.StringUtils;
 
@@ -43,7 +42,7 @@ public class PomReader {
 	 * @throws Exception
 	 */
 	public static Pom readPom(ArtifactCache cache, Dependency dependency) {
-		File pomFile = cache.getFile(dependency, Extension.POM);
+		File pomFile = cache.getFile(dependency, Dependency.EXT_POM);
 		if (!pomFile.exists()) {
 			return null;
 		}
@@ -114,6 +113,12 @@ public class PomReader {
 							dep.version = readStringTag(node, Key.version);
 							Scope scope = Scope.fromString(readStringTag(node, Key.scope));
 							
+							// artifact extension
+							String type = readStringTag(node, Key.type);
+							if (!StringUtils.isEmpty(type)) {
+								dep.ext = "." + type;
+							}
+							
 							// substitute version property
 							dep.version = pom.getProperty(dep.version);			
 
@@ -157,6 +162,12 @@ public class PomReader {
 									// scope is still undefined, use default
 									scope = Scope.defaultScope;
 								}
+							}
+							
+							// artifact extension
+							String type = readStringTag(node, Key.type);
+							if (!StringUtils.isEmpty(type)) {
+								dep.ext = "." + type;
 							}
 							
 							// add dep object

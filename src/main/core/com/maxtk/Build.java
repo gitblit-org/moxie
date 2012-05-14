@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency.Extension;
 import com.maxtk.Dependency.Scope;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.Base64;
@@ -321,7 +320,7 @@ public class Build {
 			return null;
 		}
 		
-		File pomFile = artifactCache.getFile(dependency, Extension.POM);
+		File pomFile = artifactCache.getFile(dependency, Dependency.EXT_POM);
 		if (!pomFile.exists()) {
 			// download the POM
 			for (Repository repository : repositories) {
@@ -329,7 +328,7 @@ public class Build {
 					// skip non-Maven repositories
 					continue;
 				}
-				File retrievedFile = repository.download(this, dependency, Extension.POM);
+				File retrievedFile = repository.download(this, dependency, Dependency.EXT_POM);
 				if (retrievedFile != null && retrievedFile.exists()) {
 					pomFile = retrievedFile;
 					break;
@@ -378,15 +377,15 @@ public class Build {
 				// dependency incompatible with repository
 				continue;
 			}
-			Extension[] jarTypes = { Extension.LIB, Extension.SRC };
-			for (Extension fileType : jarTypes) {
+			String [] jarTypes = { dependency.ext, Dependency.EXT_SRC + dependency.ext };
+			for (String fileType : jarTypes) {
 				// check to see if we already have the artifact
 				File cachedFile = artifactCache.getFile(dependency, fileType);
 				if (!cachedFile.exists()) {
 					cachedFile = repository.download(this, dependency, fileType);
 				}
 
-				if (cachedFile != null && cachedFile.exists() && Extension.LIB.equals(fileType)) {
+				if (cachedFile != null && cachedFile.exists() && !fileType.contains(Dependency.EXT_SRC)) {
 					// optionally copy artifact to project-specified folder
 					if (forProject && project.dependencyFolder != null) {
 						File projectFile = new File(project.dependencyFolder, cachedFile.getName());
@@ -431,7 +430,7 @@ public class Build {
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
 		for (Dependency dependency : dependencies) {
-			File file = artifactCache.getFile(dependency, Extension.LIB);
+			File file = artifactCache.getFile(dependency, dependency.ext);
 			if (file.exists()) {
 				try {
 					URL u = file.toURI().toURL();
@@ -459,7 +458,7 @@ public class Build {
 				SystemDependency sys = (SystemDependency) dependency;				
 				jar = new File(sys.path);
 			} else {
-				jar = artifactCache.getFile(dependency, Extension.LIB); 
+				jar = artifactCache.getFile(dependency, dependency.ext); 
 				if (projectFolder != null) {
 					File pJar = new File(projectFolder, jar.getName());
 					if (pJar.exists()) {
@@ -531,9 +530,9 @@ public class Build {
 			if (dependency instanceof SystemDependency) {
 				SystemDependency sys = (SystemDependency) dependency;
 				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", sys.path));
-			} else {
-				File jar = artifactCache.getFile(dependency, Extension.LIB); 
-				File srcJar = artifactCache.getFile(dependency, Extension.SRC);
+			} else {				
+				File jar = artifactCache.getFile(dependency, dependency.ext); 
+				File srcJar = artifactCache.getFile(dependency, Dependency.EXT_SRC + dependency.ext);
 				if (srcJar.exists()) {
 					// have sources
 					sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" sourcepath=\"{1}\" />\n", jar.getAbsolutePath(), srcJar.getAbsolutePath()));

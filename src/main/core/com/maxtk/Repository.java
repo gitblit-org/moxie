@@ -25,7 +25,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.maxtk.Dependency.Extension;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
@@ -86,19 +85,20 @@ public class Repository {
 		return repositoryUrl + (repositoryUrl.endsWith("/") ? "":"/") + artifactPattern;
 	}
 
-	protected URL getURL(Dependency dep, Extension ext) throws MalformedURLException {
-		return new URL(getArtifactUrl().replace("${groupId}", dep.group.replace('.', '/')).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext.toString()));
+	protected URL getURL(Dependency dep, String ext) throws MalformedURLException {
+		return new URL(getArtifactUrl().replace("${groupId}", dep.group.replace('.', '/')).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext));
 	}
 
-	protected String getSHA1(Build build, Dependency dep, Extension ext) {
+	protected String getSHA1(Build build, Dependency dep, String ext) {
 		try {
-			File hashFile = build.getArtifactCache().getFile(dep, ext.sha1());
+			String extsha1 = ext + ".sha1";
+			File hashFile = build.getArtifactCache().getFile(dep, extsha1);
 			if (hashFile.exists()) {
 				// read cached sha1
 				return FileUtils.readContent(hashFile, "\n").trim();
 			}
 
-			URL url = getURL(dep, ext.sha1());
+			URL url = getURL(dep, extsha1);
 			ByteArrayOutputStream buff = new ByteArrayOutputStream();
 			InputStream in = new BufferedInputStream(url.openStream());
 			byte[] buffer = new byte[80];
@@ -114,7 +114,7 @@ public class Repository {
 			String hashCode = content.substring(0, 40);
 
 			// cache this sha1 file
-			build.getArtifactCache().writeFile(dep, ext.sha1(), hashCode);			
+			build.getArtifactCache().writeFile(dep, extsha1, hashCode);			
 			return hashCode;
 		} catch (FileNotFoundException t) {
 			// swallow these errors, this is how we tell if Maven does not have
@@ -131,7 +131,7 @@ public class Repository {
 		return null;
 	}
 
-	public File download(Build build, Dependency dep, Extension ext) {
+	public File download(Build build, Dependency dep, String ext) {
 		String expectedSHA1 = "";
 		if (calculateSHA1()) {
 			expectedSHA1 = getSHA1(build, dep, ext);

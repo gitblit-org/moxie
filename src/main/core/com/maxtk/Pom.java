@@ -220,7 +220,7 @@ public class Pom {
 	}
 	
 	public Dependency getParentDependency() {
-		return new Dependency(parentGroupId, parentArtifactId, parentVersion);
+		return new Dependency(parentGroupId + ":" + parentArtifactId + ":" + parentVersion);
 	}
 	
 	public void inherit(Pom pom) {

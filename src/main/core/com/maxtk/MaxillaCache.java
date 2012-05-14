@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import com.maxtk.Dependency.Extension;
 import com.maxtk.utils.FileUtils;
 
 public class MaxillaCache extends ArtifactCache {
@@ -35,9 +34,9 @@ public class MaxillaCache extends ArtifactCache {
 		mavenCache = new ArtifactCache(mavenRoot);
 	}
 	
-	public File getFile(Dependency dep, Extension ext) {
+	public File getFile(Dependency dep, String ext) {
 		File mavenFile = mavenCache.getFile(dep, ext);
-		File maxillaFile = new File(root, pattern.replace("${groupId}", dep.group.replace('/', '.')).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext.toString()));
+		File maxillaFile = new File(root, pattern.replace("${groupId}", dep.group.replace('/', '.')).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext));
 		if (!maxillaFile.exists() && mavenFile.exists()) {
 			// transparently copy from Maven cache to Maxilla cache
 			try {
