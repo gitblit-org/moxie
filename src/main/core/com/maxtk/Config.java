@@ -104,6 +104,28 @@ public class Config implements Serializable {
 		String content = FileUtils.readContent(file, "\n").trim();
 		Map<String, Object> map = Maxml.parse(content);
 
+		// build.maxml inheritance
+		File parentConfig = readFile(map, Key.parent, null);
+		if (parentConfig != null) {
+			Config parent = load(parentConfig, false);
+			pom = parent.pom;
+			
+			proxies = parent.proxies;
+			projects = parent.projects;
+			repositoryUrls = parent.repositoryUrls;
+			
+			dependencyFolder = parent.dependencyFolder;
+			sourceFolders = parent.sourceFolders;
+			outputFolder = parent.outputFolder;
+			targetFolder = parent.targetFolder;
+			apply = parent.apply;
+			
+			// set parent properties
+			pom.setProperty("parent.groupId", pom.groupId);
+			pom.setProperty("parent.artifactId", pom.artifactId);
+			pom.setProperty("parent.version", pom.version);	
+		}
+		
 		// metadata
 		pom.name = readString(map, Key.name, false);
 		pom.version = readString(map, Key.version, false);
@@ -133,6 +155,7 @@ public class Config implements Serializable {
 		repositoryUrls = readStrings(map, Key.dependencySources, repositoryUrls);
 		parseDependencies(map, Key.dependencies);		
 		parseProxies(map, Key.proxies);
+
 		return this;
 	}
 
