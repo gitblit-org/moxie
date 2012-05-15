@@ -29,7 +29,7 @@ public class Dependency implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public static enum Scope {
-		compile, provided, runtime, test, system;
+		compile, provided, runtime, test, system, imprt;
 		
 		public static final Scope defaultScope = compile;
 		
@@ -120,6 +120,9 @@ public class Dependency implements Serializable {
 		}
 		
 		public static Scope fromString(String str) {
+			if ("import".equalsIgnoreCase(str)) {
+				return imprt;
+			}
 			for (Scope value : Scope.values()) {
 				if (value.name().equalsIgnoreCase(str)) {
 					return value;

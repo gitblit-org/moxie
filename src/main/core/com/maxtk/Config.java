@@ -166,6 +166,10 @@ public class Config implements Serializable {
 						Dependency dep = new SystemDependency(def);
 						pom.addDependency(dep, scope);
 						continue;
+					} else if (def.startsWith("import")) {
+						// import dependency
+						scope = Scope.imprt;
+						def = def.substring("import".length()).trim();
 					} else {
 						// default to compile-time dependency
 						scope = Scope.defaultScope;

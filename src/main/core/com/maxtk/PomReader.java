@@ -17,6 +17,10 @@ package com.maxtk;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -176,6 +180,30 @@ public class PomReader {
 					}
 				}
 			}
+		}
+		
+		Map<Scope, List<Dependency>> imports = new LinkedHashMap<Scope, List<Dependency>>();
+		if (pom.getScopes().contains(Scope.imprt)) {
+			// retrieve import dependencies
+			for (Dependency dep : pom.getDependencies(Scope.imprt, 0)) {
+				Pom importPom = PomReader.readPom(cache, dep);
+				for (Scope scope : importPom.getScopes()) {
+					if (!imports.containsKey(scope)) {
+						imports.put(scope,  new ArrayList<Dependency>());
+					}
+					imports.get(scope).addAll(importPom.getDependencies(scope));
+				}
+			}
+
+			// merge imported dependencies into this pom
+			for (Map.Entry<Scope, List<Dependency>> entry : imports.entrySet()) {
+				for (Dependency dep : entry.getValue()) {
+					pom.addDependency(dep, entry.getKey());
+				}
+			}
+			
+			// remove import scope from the pom object, like it never existed
+			pom.removeScope(Scope.imprt);
 		}
 		return pom;
 	}

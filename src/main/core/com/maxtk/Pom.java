@@ -31,18 +31,7 @@ import com.maxtk.Dependency.Scope;
 import com.maxtk.utils.StringUtils;
 
 public class Pom {
-	
-	public static void main(String [] args) {
-		MaxillaCache cache = new MaxillaCache();
-		Dependency dep = new Dependency("org.eclipse.jgit:org.eclipse.jgit:1.3.0.201202151440-r");
-		Pom pom = PomReader.readPom(cache, dep);
-		System.out.println(pom);
-		for (Dependency d : pom.getDependencies(Scope.runtime)) {
-			System.out.println(d);
-		}
-		
-	}
-	
+
 	public String name;
 	public String description;
 	public String url;
@@ -139,6 +128,10 @@ public class Pom {
 	
 	public List<Scope> getScopes() {
 		return new ArrayList<Scope>(dependencies.keySet());
+	}
+	
+	public void removeScope(Scope scope) {
+		dependencies.remove(scope);
 	}
 	
 	public boolean hasDependencies() {

@@ -26,6 +26,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -104,6 +105,7 @@ public class Build {
 		describeSettings();
 		
 		retrievePOMs();
+		importPOMs();
 		retrieveJARs();
 		
 		if (project.apply.size() > 0) {
@@ -256,6 +258,34 @@ public class Build {
 				retrievePOM(dependency);
 			}
 		}
+	}
+
+	public void importPOMs() {
+		Map<Scope, List<Dependency>> imports = new LinkedHashMap<Scope, List<Dependency>>();
+		if (project.pom.getScopes().contains(Scope.imprt)) {
+			// retrieve project import dependencies
+			// this is not the same as pom import dependencies and that is why
+			// this code is repeated here.
+			for (Dependency dependency : project.pom.getDependencies(Scope.imprt, 0)) {
+				Pom pom = PomReader.readPom(artifactCache, dependency);
+				for (Scope scope : pom.getScopes()) {
+					if (!imports.containsKey(scope)) {
+						imports.put(scope,  new ArrayList<Dependency>());
+					}
+					imports.get(scope).addAll(pom.getDependencies(scope));
+				}
+			}
+			
+			// merge imported dependencies into project pom
+			for (Map.Entry<Scope, List<Dependency>> entry : imports.entrySet()) {
+				for (Dependency dependency : entry.getValue()) {
+					project.pom.addDependency(dependency, entry.getKey());
+				}
+			}
+		}
+		
+		// remove import scope from the project pom, like it never existed
+		project.pom.removeScope(Scope.imprt);
 	}
 	
 	public void retrieveJARs() {
