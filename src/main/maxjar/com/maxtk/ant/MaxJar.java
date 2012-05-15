@@ -73,9 +73,6 @@ public class MaxJar extends GenJar {
 	@Override
 	public void execute() throws BuildException {
 		Build build = (Build) getProject().getReference(Key.build.maxId());
-		build.console.header();
-		build.console.log("MaxJar");
-		build.console.header();
 
 		// automatic manifest entries from Maxilla metadata
 		setManifest("Created-By", "Maxilla v" + Constants.VERSION);
@@ -164,6 +161,10 @@ public class MaxJar extends GenJar {
 			}
 			set.setExcludes(excludes);
 		}
+		
+		build.console.header();
+		build.console.log("MaxJar {0}", destFile.getName());
+		build.console.header();
 		
 		long start = System.currentTimeMillis();
 		super.execute();
