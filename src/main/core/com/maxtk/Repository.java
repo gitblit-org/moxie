@@ -35,7 +35,7 @@ public class Repository {
 	final String artifactPattern;
 
 	public Repository(String name, String mavenUrl) {
-		this(name, mavenUrl, "${groupId}/${artifactId}/${version}/${artifactId}-${version}${ext}");
+		this(name, mavenUrl, Constants.MAVEN2_PATTERN);
 	}
 
 	public Repository(String name, String mavenUrl, String pattern) {
@@ -86,7 +86,8 @@ public class Repository {
 	}
 
 	protected URL getURL(Dependency dep, String ext) throws MalformedURLException {
-		return new URL(getArtifactUrl().replace("${groupId}", dep.group.replace('.', '/')).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext));
+		String url = Dependency.getMavenPath(dep, ext, getArtifactUrl());
+		return new URL(url);
 	}
 
 	protected String getSHA1(Build build, Dependency dep, String ext) {

@@ -24,6 +24,8 @@ public class Constants {
 	public static final String SEP = "-------------------------------------------";
 
 	public static final String INDENT = "   ";
+	
+	public static final String MAVEN2_PATTERN = "${groupId}/${artifactId}/${version}/${artifactId}-${version}${classifier}${ext}";
 
 	public static final String MAVENCENTRAL = "central";
 

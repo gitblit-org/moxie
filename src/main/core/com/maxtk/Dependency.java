@@ -150,11 +150,15 @@ public class Dependency implements Serializable {
 	public String artifact;
 	public String version;
 	public String ext;
+	public String classifier;
 	public boolean optional;	
 	public boolean resolveDependencies;
 	public Set<String> exclusions;
 
 	public int ring;
+	
+	private String mediationId;
+	private String coordinates;
 
 	public Dependency() {
 		ext = EXT_JAR;
@@ -176,12 +180,21 @@ public class Dependency implements Serializable {
 			resolveDependencies = true;
 		}
 		
-		// determine primary Maven coordinates
+		// determine Maven artifact coordinates
 		String [] fields = coordinates.split(":");
-		this.group = fields[0].replace('/', '.');
-		this.artifact = fields[1];
-		this.version = fields[2];
+		this.group = fields[0].replace('/', '.').trim();
+		this.artifact = fields[1].trim();
+		this.version = fields[2].trim();
+		this.classifier = fields.length > 3 ? fields[3].trim() : null;
+		this.ext = fields.length > 4 ? fields[4].trim() : ext;
 		
+		if (StringUtils.isEmpty(version)) {
+			version = null;
+		}
+		if (StringUtils.isEmpty(classifier)) {
+			classifier = null;
+		}
+
 		// determine dependency options and transitive dependency exclusions
 		exclusions = new TreeSet<String>();
 		Set<String> options = new TreeSet<String>();
@@ -202,7 +215,10 @@ public class Dependency implements Serializable {
 	}
 
 	public String getMediationId() {
-		return group + ":" + artifact + ":" + ext.substring(1);
+		if (mediationId == null) {
+			mediationId = group + ":" + artifact + ":" + (classifier == null ? "" : (":" + classifier)) + ":" + ext.substring(1);
+		}
+		return mediationId;
 	}
 
 	public String getProjectId() {
@@ -210,12 +226,15 @@ public class Dependency implements Serializable {
 	}
 
 	public String getCoordinates() {
-		return group + ":" + artifact + ":" + version + ":" + ext.substring(1);
+		if (coordinates == null) {
+			coordinates = group + ":" + artifact + ":" + (version == null ? "" : version) + (classifier == null ? "":(":" + classifier)) + ":" + ext.substring(1);
+		}
+		return coordinates;
 	}
 
 	@Override
 	public int hashCode() {
-		return (group + artifact + (version == null ? "":version) + ext).hashCode();
+		return getCoordinates().hashCode();
 	}
 	
 	@Override
@@ -237,13 +256,30 @@ public class Dependency implements Serializable {
 		sb.append(StringUtils.toXML("groupId", group));
 		sb.append(StringUtils.toXML("artifactId", artifact));
 		sb.append(StringUtils.toXML("version", version));
+		sb.append(StringUtils.toXML("type", ext.substring(1)));
+		if (!StringUtils.isEmpty(classifier)) {
+			sb.append(StringUtils.toXML("classifier", classifier));
+		}
 		sb.append(StringUtils.toXML("scope", scope));
 		if (optional) {
 			sb.append(StringUtils.toXML("optional", true));
 		}
-		sb.append(StringUtils.toXML("type", ext.substring(1)));
-		// TODO type/classifier
 		sb.append("</dependency>\n");
 		return sb.toString();
+	}
+	
+	public static String getMavenPath(Dependency dep, String ext, String pattern) {
+		return getPath(dep,  ext, pattern, '.', '/');
+	}
+
+	public static String getMaxillaPath(Dependency dep, String ext, String pattern) {
+		return getPath(dep,  ext, pattern, '/', '.');
+	}
+
+	private static String getPath(Dependency dep, String ext, String pattern, char a, char b) {
+		String url = pattern;
+		url = url.replace("${groupId}", dep.group.replace(a, b)).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext);		
+		url = url.replace("${classifier}", dep.classifier == null ? "":("-" + dep.classifier));
+		return url;
 	}
 }

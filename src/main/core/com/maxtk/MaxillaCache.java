@@ -30,13 +30,16 @@ public class MaxillaCache extends ArtifactCache {
 	}
 	
 	public MaxillaCache(File maxillaRoot, File mavenRoot) {
-		super(maxillaRoot, "${groupId}/${artifactId}/${version}/${artifactId}-${version}${ext}");
+		super(maxillaRoot);
 		mavenCache = new ArtifactCache(mavenRoot);
 	}
 	
 	public File getFile(Dependency dep, String ext) {
+		String path = Dependency.getMaxillaPath(dep,  ext, pattern);
+	
+		File maxillaFile = new File(root, path);
 		File mavenFile = mavenCache.getFile(dep, ext);
-		File maxillaFile = new File(root, pattern.replace("${groupId}", dep.group.replace('/', '.')).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext));
+		
 		if (!maxillaFile.exists() && mavenFile.exists()) {
 			// transparently copy from Maven cache to Maxilla cache
 			try {

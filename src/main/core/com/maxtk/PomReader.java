@@ -146,7 +146,8 @@ public class PomReader {
 							Dependency dep = new Dependency();
 							dep.group = readStringTag(node, Key.groupId);
 							dep.artifact = readStringTag(node, Key.artifactId);
-							dep.version = readStringTag(node, Key.version);							
+							dep.version = readStringTag(node, Key.version);
+							dep.classifier = readStringTag(node, Key.classifier);
 							dep.optional = readBooleanTag(node, Key.optional);
 							
 							// substitute group property

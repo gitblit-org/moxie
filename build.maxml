@@ -16,7 +16,7 @@ properties:
 - jgit.version 1.3.0.201202151440-r
 dependencies :
 - provided 'org.fusesource.jansi:jansi:1.8'
-- provided org.apache.ant:ant:1.8.3
+- provided org.apache.ant:ant:1.8.3::jar
 - provided 'org/eclipse/jgit:org.eclipse.jgit:${jgit.version}'
 - provided 'org/tautua/markdownpapers:markdownpapers-core:1.2.7'
 - test "junit:junit:4.8.2"

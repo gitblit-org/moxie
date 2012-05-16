@@ -25,8 +25,7 @@ public class ArtifactCache {
 	final String pattern;
 	
 	public ArtifactCache(File root) {
-		// default Maven-style folder hierarchy
-		this(root, "${groupId}/${artifactId}/${version}/${artifactId}-${version}${ext}");
+		this(root, Constants.MAVEN2_PATTERN);
 	}
 	
 	public ArtifactCache(File root, String pattern) {
@@ -35,7 +34,8 @@ public class ArtifactCache {
 	}
 	
 	public File getFile(Dependency dep, String ext) {
-		return new File(root, pattern.replace("${groupId}", dep.group.replace('.', '/')).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext));
+		String path = Dependency.getMavenPath(dep,  ext, pattern);
+		return new File(root, path);
 	}
 	
 	public File writeFile(Dependency dep, String ext, String content) {
