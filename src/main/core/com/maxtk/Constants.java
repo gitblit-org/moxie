@@ -46,7 +46,7 @@ public class Constants {
 		dependencyFolder, dependencySources, properties, dependencies, apply,
 		googleAnalyticsId, googlePlusId, runtime_classpath, compile_classpath, test_classpath,
 		compile_dependencypath, runtime_dependencypath, test_dependencypath, commit, targetFolder,
-		proxies, parent;
+		proxies, parent, exclusions;
 		
 		public String maxId() {
 			return "max." + name().replace('_', '.');

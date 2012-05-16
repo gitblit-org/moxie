@@ -156,6 +156,8 @@ public class Config implements Serializable {
 		repositoryUrls = readStrings(map, Key.dependencySources, repositoryUrls);
 		parseDependencies(map, Key.dependencies);		
 		parseProxies(map, Key.proxies);
+		
+		pom.addExclusions(readStrings(map, Key.exclusions, new ArrayList<String>(), true));
 
 		return this;
 	}

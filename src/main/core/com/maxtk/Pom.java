@@ -17,6 +17,7 @@ package com.maxtk;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +51,7 @@ public class Pom {
 	private final Map<Scope, List<Dependency>> dependencies;
 	private final Map<String, String> managedVersions;
 	private final Map<String, Scope> managedScopes;
+	private final Set<String> exclusions;
 	
 	public Pom() {
 		version = "0.0.0-SNAPSHOT";
@@ -56,6 +59,7 @@ public class Pom {
 		managedScopes = new TreeMap<String, Scope>();
 		properties = new TreeMap<String, String>();
 		dependencies = new LinkedHashMap<Scope, List<Dependency>>();
+		exclusions = new TreeSet<String>();
 	}
 	
 	public void setProperty(String key, String value) {
@@ -216,6 +220,43 @@ public class Pom {
 		return new Dependency(parentGroupId + ":" + parentArtifactId + ":" + parentVersion);
 	}
 	
+	public boolean hasDependency(Dependency dependency) {
+		String id = dependency.getProjectId();
+		for (Map.Entry<Scope, List<Dependency>> entry : dependencies.entrySet()) {
+			for (Dependency dep : entry.getValue()) {
+				if (dep.getProjectId().equals(id)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Maven POMs do not have a notion of a pom-level exclusion list. In Maven,
+	 * exclusions must be set within the dependency declaration.  Because Maxilla
+	 * supports direct dependency importing, Maxilla also supports pom-level
+	 * exclusion.  This method only makes sense for Maxilla POMs.
+	 * 
+	 * @param dependency
+	 * @return true of the dependency is excluded
+	 */
+	public boolean excludesDependency(Dependency dependency) {
+		return exclusions.contains(dependency.getProjectId()) || exclusions.contains(dependency.group);
+	}
+
+	/**
+	 * Maven POMs do not have a notion of a pom-level exclusion list. In Maven,
+	 * exclusions must be set within the dependency declaration.  Because Maxilla
+	 * supports direct dependency importing, Maxilla also supports pom-level
+	 * exclusion.  This method only makes sense for Maxilla POMs.
+	 * 
+	 * @param exclusions
+	 */
+	public void addExclusions(Collection<String> exclusions) {
+		exclusions.addAll(exclusions);
+	}
+
 	public void inherit(Pom pom) {
 		nonDestructiveCopy(pom.managedVersions, managedVersions);
 		nonDestructiveCopy(pom.managedScopes, managedScopes);
