@@ -105,7 +105,7 @@ public class Build {
 		describeSettings();
 		
 		retrievePOMs();
-		importPOMs();
+		importDependencies();
 		retrieveJARs();
 		
 		if (project.apply.size() > 0) {
@@ -260,12 +260,12 @@ public class Build {
 		}
 	}
 
-	public void importPOMs() {
+	public void importDependencies() {
 		Map<Scope, List<Dependency>> imports = new LinkedHashMap<Scope, List<Dependency>>();
 		if (project.pom.getScopes().contains(Scope.imprt)) {
-			// retrieve project import dependencies
-			// this is not the same as pom import dependencies and that is why
-			// this code is repeated here.
+			// This Maxilla project imports dependencies from a pom.
+			// Maven supports dependencyManagement import from a reference pom.
+			// Maxilla supports DIRECT dependency import from a reference pom.
 			for (Dependency dependency : project.pom.getDependencies(Scope.imprt, 0)) {
 				Pom pom = PomReader.readPom(artifactCache, dependency);
 				for (Scope scope : pom.getScopes()) {
@@ -276,10 +276,12 @@ public class Build {
 				}
 			}
 			
-			// merge imported dependencies into project pom
+			// merge unique, imported dependencies into the Maxilla project pom
 			for (Map.Entry<Scope, List<Dependency>> entry : imports.entrySet()) {
 				for (Dependency dependency : entry.getValue()) {
-					project.pom.addDependency(dependency, entry.getKey());
+					if (!project.pom.hasDependency(dependency) && !project.pom.excludesDependency(dependency)) {
+						project.pom.addDependency(dependency, entry.getKey());
+					}
 				}
 			}
 		}
