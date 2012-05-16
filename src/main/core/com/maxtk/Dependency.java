@@ -156,7 +156,7 @@ public class Dependency implements Serializable {
 	
 	@Override
 	public String toString() {
-		return getCoordinates() + " " + (optional ? ", optional":"") + (resolveDependencies ? ", transitive":"");
+		return getCoordinates() + (resolveDependencies ? " transitive":"") + (optional ? " optional":"");
 	}
 	
 	public String toXML(Scope scope) {
