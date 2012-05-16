@@ -17,10 +17,9 @@ package com.maxtk;
 
 import java.io.File;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -182,6 +181,9 @@ public class PomReader {
 								dep.ext = "." + type;
 							}
 							
+							// read exclusions
+							dep.exclusions.addAll(readExclusions(node));
+							
 							// add dep object
 							pom.addDependency(dep, scope);
 						}
@@ -214,5 +216,28 @@ public class PomReader {
 			return false;
 		}
 		return Boolean.parseBoolean(content);
+	}
+	
+	private static Collection<String> readExclusions(Node node) {
+		Set<String> exclusions = new LinkedHashSet<String>();
+		Element element = (Element) node;
+		NodeList exclusionList = element.getElementsByTagName("exclusion");
+		if (exclusionList == null || exclusionList.getLength() == 0) {
+			return exclusions;
+		}
+		
+		for (int i = 0; i < exclusionList.getLength(); i++) {
+			Node exclusionNode = exclusionList.item(i);
+			String groupId = readStringTag(exclusionNode, Key.groupId);
+			String artifactId = readStringTag(exclusionNode, Key.artifactId);
+			if (StringUtils.isEmpty(artifactId)) {
+				// group exclusion
+				exclusions.add(groupId);
+			} else {
+				// artifact exclusion
+				exclusions.add(groupId + ":" + artifactId);
+			}
+		}
+		return exclusions;
 	}
 }
