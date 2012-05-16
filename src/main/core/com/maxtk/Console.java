@@ -27,10 +27,16 @@ public class Console {
 	private final PrintStream err;
 	
 	private final Object [] emptyArray = new Object[0];
+	
+	private boolean debug;
 
 	public Console() {
 		out = System.out;
 		err = System.err;
+	}
+	
+	public void setDebug(boolean value) {
+		debug = value;
 	}
 	
 	public void header() {
@@ -87,7 +93,17 @@ public class Console {
 		}
 		out.println(MessageFormat.format(message, args));		
 	}
-	
+
+	public void debug(int indent, String message, Object... args) {
+		if (!debug) {
+			return;
+		}
+		for (int i = 0; i < indent; i++) {
+			out.append(Constants.INDENT);
+		}
+		out.println(MessageFormat.format(message, args));		
+	}
+
 	public void key(String key, String value) {
 		out.append(Constants.INDENT);
 		out.print(key);

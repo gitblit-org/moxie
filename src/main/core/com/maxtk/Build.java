@@ -78,7 +78,11 @@ public class Build {
 		this.repositories = new LinkedHashSet<Repository>();
 		this.artifactCache = new MaxillaCache();
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
-		this.console = new Console();
+		this.console = new Console();		
+	}
+	
+	public boolean isDebug() {
+		return maxilla.debug || project.debug;
 	}
 	
 	public void setup() {
@@ -96,6 +100,8 @@ public class Build {
 			} catch (Throwable t) {
 			}
 		}
+		
+		console.setDebug(isDebug());
 		
 		console.header();
 		console.log("{0} v{1}", getPom().name, getPom().version);
@@ -383,6 +389,7 @@ public class Build {
 					// skip non-Maven repositories
 					continue;
 				}
+				console.debug(1, "getting POM for {0}", dependency);
 				File retrievedFile = repository.download(this, dependency, Constants.DOT_POM);
 				if (retrievedFile != null && retrievedFile.exists()) {
 					pomFile = retrievedFile;
