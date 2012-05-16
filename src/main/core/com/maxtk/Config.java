@@ -61,8 +61,9 @@ public class Config implements Serializable {
 			file.getParentFile().mkdirs();
 			// write default maxilla settings
 			FileWriter writer = new FileWriter(file);
-			writer.append("proxies:\n- { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }");
-			// TODO write repositories
+			writer.append(Key.proxies.name() + ":\n- { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }\n");
+			writer.append(Key.dependencySources.name() + ": central\n");
+			writer.append("#" + Key.apply.name() + ": color\n");
 			writer.close();
 		}
 
