@@ -200,18 +200,22 @@ public class Dependency implements Serializable {
 	public boolean isMavenObject() {
 		return group.charAt(0) != '<';
 	}
-	
+
+	public String getMediationId() {
+		return group + ":" + artifact + ":" + ext.substring(1);
+	}
+
 	public String getProjectId() {
 		return group + ":" + artifact;
 	}
 
 	public String getCoordinates() {
-		return group + ":" + artifact + ":" + version;
+		return group + ":" + artifact + ":" + version + ":" + ext.substring(1);
 	}
 
 	@Override
 	public int hashCode() {
-		return (group + artifact + (version == null ? "":version)).hashCode();
+		return (group + artifact + (version == null ? "":version) + ext).hashCode();
 	}
 	
 	@Override
@@ -224,7 +228,7 @@ public class Dependency implements Serializable {
 	
 	@Override
 	public String toString() {
-		return (group.replace('/', '.') + ":" + artifact + ":" + version) + " (" + (optional ? ", optional":"") + (resolveDependencies ? "":", @jar") + ")";
+		return getCoordinates() + " " + (optional ? ", optional":"") + (resolveDependencies ? ", transitive":"");
 	}
 	
 	public String toXML(Scope scope) {

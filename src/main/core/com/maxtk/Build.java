@@ -312,13 +312,32 @@ public class Build {
 		if (solutions.containsKey(solutionScope)) {
 			return solutions.get(solutionScope);
 		}
-		Set<Dependency> solution = new LinkedHashSet<Dependency>();
+		
+		// assemble the flat, ordered list of dependencies
+		// this list may have duplicates/conflicts
+		List<Dependency> all = new ArrayList<Dependency>();
 		for (Dependency dependency : project.pom.getDependencies(solutionScope, 0)) {
-			solution.add(dependency);
-			solution.addAll(solve(solutionScope, dependency));
+			all.add(dependency);
+			all.addAll(solve(solutionScope, dependency));
 		}
 		
-		// TODO version conflicts, nearness resolution (ring)
+		// dependency mediation based on artifact type and nearness (ring)
+		Map<String, Dependency> uniques = new LinkedHashMap<String, Dependency>();		
+		for (Dependency dependency : all) {
+			if (uniques.containsKey(dependency.getMediationId())) {
+				// we have another registration for this dependency
+				Dependency registered = uniques.get(dependency.getMediationId());
+				if (registered.ring > dependency.ring) {
+					// this dependency is closer, use it instead
+					uniques.put(dependency.getMediationId(), dependency);
+				}
+			} else {
+				// register unique dependency
+				uniques.put(dependency.getMediationId(), dependency);
+			}
+		}
+		
+		Set<Dependency> solution = new LinkedHashSet<Dependency>(uniques.values());
 		solutions.put(solutionScope, solution);
 		return solution;
 	}
@@ -337,7 +356,8 @@ public class Build {
 		List<Dependency> dependencies = pom.getDependencies(scope, dependency.ring + 1);
 		if (dependencies.size() > 0) {			
 			for (Dependency dep : dependencies) {
-				if (!dependency.exclusions.contains(dep.getProjectId())
+				if (!dependency.exclusions.contains(dep.getMediationId())
+						&& !dependency.exclusions.contains(dep.getProjectId())
 						&& !dependency.exclusions.contains(dep.group)) {
 					resolved.add(dep);
 					resolved.addAll(solve(scope, dep));

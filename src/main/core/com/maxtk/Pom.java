@@ -221,10 +221,10 @@ public class Pom {
 	}
 	
 	public boolean hasDependency(Dependency dependency) {
-		String id = dependency.getProjectId();
+		String id = dependency.getMediationId();
 		for (Map.Entry<Scope, List<Dependency>> entry : dependencies.entrySet()) {
 			for (Dependency dep : entry.getValue()) {
-				if (dep.getProjectId().equals(id)) {
+				if (dep.getMediationId().equals(id)) {
 					return true;
 				}
 			}
@@ -242,7 +242,9 @@ public class Pom {
 	 * @return true of the dependency is excluded
 	 */
 	public boolean excludesDependency(Dependency dependency) {
-		return exclusions.contains(dependency.getProjectId()) || exclusions.contains(dependency.group);
+		return exclusions.contains(dependency.getMediationId()) 
+				|| exclusions.contains(dependency.getProjectId())
+				|| exclusions.contains(dependency.group);
 	}
 
 	/**
