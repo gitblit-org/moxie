@@ -375,7 +375,7 @@ public class Build {
 			return null;
 		}
 		
-		File pomFile = artifactCache.getFile(dependency, Dependency.EXT_POM);
+		File pomFile = artifactCache.getFile(dependency, Constants.DOT_POM);
 		if (!pomFile.exists()) {
 			// download the POM
 			for (Repository repository : repositories) {
@@ -383,7 +383,7 @@ public class Build {
 					// skip non-Maven repositories
 					continue;
 				}
-				File retrievedFile = repository.download(this, dependency, Dependency.EXT_POM);
+				File retrievedFile = repository.download(this, dependency, Constants.DOT_POM);
 				if (retrievedFile != null && retrievedFile.exists()) {
 					pomFile = retrievedFile;
 					break;
@@ -432,25 +432,26 @@ public class Build {
 				// dependency incompatible with repository
 				continue;
 			}
-			String [] jarTypes = { dependency.ext, Dependency.EXT_SRC + dependency.ext };
+			String [] jarTypes = { dependency.getExtension(), dependency.getSourceExtension() };
 			for (String fileType : jarTypes) {
 				// check to see if we already have the artifact
 				File cachedFile = artifactCache.getFile(dependency, fileType);
 				if (!cachedFile.exists()) {
 					cachedFile = repository.download(this, dependency, fileType);
 				}
-
-				if (cachedFile != null && cachedFile.exists() && !fileType.contains(Dependency.EXT_SRC)) {
-					// optionally copy artifact to project-specified folder
-					if (forProject && project.dependencyFolder != null) {
-						File projectFile = new File(project.dependencyFolder, cachedFile.getName());
-						if (!projectFile.exists()) {
-							try {
-								projectFile.getParentFile().mkdirs();
-								FileUtils.copy(projectFile.getParentFile(), cachedFile);
-							} catch (IOException e) {
-								throw new RuntimeException("Error writing to file " + projectFile, e);
-							}
+			}
+			
+			File cachedFile = artifactCache.getFile(dependency, dependency.getExtension());
+			if (cachedFile != null && cachedFile.exists()) {
+				// optionally copy artifact to project-specified folder
+				if (forProject && project.dependencyFolder != null) {
+					File projectFile = new File(project.dependencyFolder, cachedFile.getName());
+					if (!projectFile.exists()) {
+						try {
+							projectFile.getParentFile().mkdirs();
+							FileUtils.copy(projectFile.getParentFile(), cachedFile);
+						} catch (IOException e) {
+							throw new RuntimeException("Error writing to file " + projectFile, e);
 						}
 					}
 				}
@@ -485,7 +486,7 @@ public class Build {
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
 		for (Dependency dependency : dependencies) {
-			File file = artifactCache.getFile(dependency, dependency.ext);
+			File file = artifactCache.getFile(dependency, dependency.getExtension());
 			if (file.exists()) {
 				try {
 					URL u = file.toURI().toURL();
@@ -513,7 +514,7 @@ public class Build {
 				SystemDependency sys = (SystemDependency) dependency;				
 				jar = new File(sys.path);
 			} else {
-				jar = artifactCache.getFile(dependency, dependency.ext); 
+				jar = artifactCache.getFile(dependency, dependency.getExtension()); 
 				if (projectFolder != null) {
 					File pJar = new File(projectFolder, jar.getName());
 					if (pJar.exists()) {
@@ -586,8 +587,8 @@ public class Build {
 				SystemDependency sys = (SystemDependency) dependency;
 				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", sys.path));
 			} else {				
-				File jar = artifactCache.getFile(dependency, dependency.ext); 
-				File srcJar = artifactCache.getFile(dependency, Dependency.EXT_SRC + dependency.ext);
+				File jar = artifactCache.getFile(dependency, dependency.getExtension()); 
+				File srcJar = artifactCache.getFile(dependency, dependency.getSourceExtension());
 				if (srcJar.exists()) {
 					// have sources
 					sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" sourcepath=\"{1}\" />\n", jar.getAbsolutePath(), srcJar.getAbsolutePath()));

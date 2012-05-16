@@ -142,10 +142,6 @@ public class Dependency implements Serializable {
 		}
 	}
 	
-	public static String EXT_JAR = ".jar";
-	public static String EXT_POM = ".pom";
-	public static String EXT_SRC = "-sources";
-
 	public String group;
 	public String artifact;
 	public String version;
@@ -161,7 +157,7 @@ public class Dependency implements Serializable {
 	private String coordinates;
 
 	public Dependency() {
-		ext = EXT_JAR;
+		ext = "jar";
 		resolveDependencies = true;
 		exclusions = new TreeSet<String>();
 	}
@@ -172,28 +168,47 @@ public class Dependency implements Serializable {
 		String coordinates = StringUtils.stripQuotes(principals[0]);
 		if (coordinates.indexOf('@') > -1) {
 			// strip @ext
-			ext = "." + coordinates.substring(coordinates.indexOf('@') + 1);			
+			ext = coordinates.substring(coordinates.indexOf('@') + 1);			
 			coordinates = coordinates.substring(0, coordinates.indexOf('@'));
 			resolveDependencies = false;
 		} else {
-			ext = EXT_JAR;
+			ext = "jar";
 			resolveDependencies = true;
 		}
-		
+
 		// determine Maven artifact coordinates
-		String [] fields = coordinates.split(":");
-		this.group = fields[0].replace('/', '.').trim();
-		this.artifact = fields[1].trim();
-		this.version = fields[2].trim();
-		this.classifier = fields.length > 3 ? fields[3].trim() : null;
-		this.ext = fields.length > 4 ? fields[4].trim() : ext;
+		String [] fields = { group, artifact, version, classifier, ext };
 		
-		if (StringUtils.isEmpty(version)) {
-			version = null;
+		// append trailing colon for custom splitting algorithm
+		coordinates = coordinates + ":";
+		
+		// custom string split for performance, blanks are considered null
+		StringBuilder sb = new StringBuilder();
+		int field = 0;
+		for (int i = 0, len = coordinates.length(); i < len; i++) {
+			char c = coordinates.charAt(i);
+			switch(c) {
+			case ' ':
+				break;
+			case ':':
+				fields[field] = sb.toString().trim();
+				if (fields[field].length() == 0) {
+					fields[field] = null;
+				}
+				sb.setLength(0);
+				field++;
+				break;
+			default:
+				sb.append(c);
+				break;
+			}
 		}
-		if (StringUtils.isEmpty(classifier)) {
-			classifier = null;
-		}
+
+		this.group = fields[0].replace('/', '.');
+		this.artifact = fields[1];
+		this.version = fields[2];
+		this.classifier = fields[3];
+		this.ext = fields[4];
 
 		// determine dependency options and transitive dependency exclusions
 		exclusions = new TreeSet<String>();
@@ -213,10 +228,18 @@ public class Dependency implements Serializable {
 	public boolean isMavenObject() {
 		return group.charAt(0) != '<';
 	}
+	
+	public String getExtension() {
+		return "." + ext;
+	}
+	
+	public String getSourceExtension() {
+		return "-sources." + ext;
+	}
 
 	public String getMediationId() {
 		if (mediationId == null) {
-			mediationId = group + ":" + artifact + ":" + (classifier == null ? "" : (":" + classifier)) + ":" + ext.substring(1);
+			mediationId = group + ":" + artifact + ":" + (classifier == null ? "" : (":" + classifier)) + ":" + ext;
 		}
 		return mediationId;
 	}
@@ -227,7 +250,7 @@ public class Dependency implements Serializable {
 
 	public String getCoordinates() {
 		if (coordinates == null) {
-			coordinates = group + ":" + artifact + ":" + (version == null ? "" : version) + (classifier == null ? "":(":" + classifier)) + ":" + ext.substring(1);
+			coordinates = group + ":" + artifact + ":" + (version == null ? "" : version) + (classifier == null ? "":(":" + classifier)) + ":" + ext;
 		}
 		return coordinates;
 	}
@@ -256,7 +279,7 @@ public class Dependency implements Serializable {
 		sb.append(StringUtils.toXML("groupId", group));
 		sb.append(StringUtils.toXML("artifactId", artifact));
 		sb.append(StringUtils.toXML("version", version));
-		sb.append(StringUtils.toXML("type", ext.substring(1)));
+		sb.append(StringUtils.toXML("type", ext));
 		if (!StringUtils.isEmpty(classifier)) {
 			sb.append(StringUtils.toXML("classifier", classifier));
 		}

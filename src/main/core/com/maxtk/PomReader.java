@@ -45,7 +45,7 @@ public class PomReader {
 	 * @throws Exception
 	 */
 	public static Pom readPom(ArtifactCache cache, Dependency dependency) {
-		File pomFile = cache.getFile(dependency, Dependency.EXT_POM);
+		File pomFile = cache.getFile(dependency, Constants.DOT_POM);
 		if (!pomFile.exists()) {
 			return null;
 		}
@@ -119,7 +119,7 @@ public class PomReader {
 							// artifact extension
 							String type = readStringTag(node, Key.type);
 							if (!StringUtils.isEmpty(type)) {
-								dep.ext = "." + type;
+								dep.ext = type;
 							}
 							
 							// substitute version property
@@ -179,7 +179,7 @@ public class PomReader {
 							// artifact extension
 							String type = readStringTag(node, Key.type);
 							if (!StringUtils.isEmpty(type)) {
-								dep.ext = "." + type;
+								dep.ext = type;
 							}
 							
 							// read exclusions

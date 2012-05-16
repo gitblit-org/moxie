@@ -39,7 +39,9 @@ public class Constants {
 	
 	public static final String APPLY_COLOR = "color";
 	
-	public static final String DEFAULT_EXCLUDES = "**/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags"; 
+	public static final String DEFAULT_EXCLUDES = "**/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
+	
+	public static final String DOT_POM = ".pom";
 	
 	public static enum Key {
 		build, name, description, url, vendor, scope, groupId, artifactId, version,
