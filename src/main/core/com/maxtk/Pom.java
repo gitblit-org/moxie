@@ -222,6 +222,11 @@ public class Pom {
 		nonDestructiveCopy(pom.properties, properties);
 	}
 	
+	public void importManagedDependencies(Pom pom) {
+		nonDestructiveCopy(pom.managedVersions, managedVersions);
+		nonDestructiveCopy(pom.managedScopes, managedScopes);		
+	}
+	
 	/**
 	 * Copies values from sourceMap into destinationMap without overriding keys
 	 * already in destinationMap.
