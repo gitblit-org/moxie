@@ -29,7 +29,7 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 import com.maxtk.utils.StringUtils;
 
 public class Pom {

@@ -30,7 +30,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 import com.maxtk.utils.StringUtils;
 
 public class PomReader {

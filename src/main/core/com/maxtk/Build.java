@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.Base64;
 import com.maxtk.utils.FileUtils;

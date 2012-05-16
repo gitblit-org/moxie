@@ -27,7 +27,7 @@ import org.apache.tools.ant.types.Path.PathElement;
 import com.maxtk.Build;
 import com.maxtk.Constants;
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 import com.maxtk.ant.Mft.MftAttr;
 import com.maxtk.utils.StringUtils;
 

@@ -19,7 +19,7 @@ import java.io.File;
 
 import com.maxtk.Build;
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 import com.maxtk.utils.FileUtils;
 
 public class MaxClean extends MaxTask {

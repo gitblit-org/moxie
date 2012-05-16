@@ -26,7 +26,7 @@ import org.apache.tools.ant.types.Path.PathElement;
 
 import com.maxtk.Build;
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 import com.maxtk.Pom;
 import com.maxtk.SourceFolder;
 import com.maxtk.maxml.MaxmlException;

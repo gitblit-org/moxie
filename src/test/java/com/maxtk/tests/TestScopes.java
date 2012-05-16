@@ -18,7 +18,7 @@ package com.maxtk.tests;
 import org.junit.Assert;
 import org.junit.Test;
 
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 
 public class TestScopes extends Assert {
 

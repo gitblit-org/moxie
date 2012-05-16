@@ -18,7 +18,7 @@ package com.maxtk;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 import com.maxtk.utils.StringUtils;
 
 public class Console {

@@ -27,7 +27,7 @@ import com.maxtk.Console;
 import com.maxtk.Constants;
 import com.maxtk.Dependency;
 import com.maxtk.SourceFolder;
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 import com.maxtk.utils.StringUtils;
 
 public class JansiConsole extends Console {

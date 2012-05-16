@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 import com.maxtk.maxml.Maxml;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.maxml.MaxmlMap;

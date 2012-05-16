@@ -18,7 +18,7 @@ package com.maxtk;
 import java.io.File;
 import java.io.Serializable;
 
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 
 /**
  * SourceFolder represents a scoped source folder.

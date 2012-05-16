@@ -25,7 +25,7 @@ import org.apache.tools.ant.types.Reference;
 import com.maxtk.Build;
 import com.maxtk.Constants;
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency.Scope;
+import com.maxtk.Scope;
 import com.maxtk.utils.FileUtils;
 
 public class MaxJavac extends Javac {
