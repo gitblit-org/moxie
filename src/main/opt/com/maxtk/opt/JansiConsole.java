@@ -80,6 +80,17 @@ public class JansiConsole extends Console {
 	}
 
 	@Override
+	public void debug(int indent, String message, Object... args) {
+		if (!debug) {
+			return;
+		}
+		for (int i = 0; i < indent; i++) {
+			out.append(Constants.INDENT);
+		}
+		out.println(ansi().fg(Color.BLUE).a(MessageFormat.format(message, args)).reset());		
+	}
+	
+	@Override
 	public void key(String key, String value) {
 		out.append(Constants.INDENT);
 		out.print(ansi().fg(Color.DEFAULT).a(key).reset());

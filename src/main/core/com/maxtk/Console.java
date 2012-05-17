@@ -23,13 +23,13 @@ import com.maxtk.utils.StringUtils;
 
 public class Console {
 
+	protected boolean debug;
+
 	private final PrintStream out;
 	private final PrintStream err;
 	
 	private final Object [] emptyArray = new Object[0];
 	
-	private boolean debug;
-
 	public Console() {
 		out = System.out;
 		err = System.err;
