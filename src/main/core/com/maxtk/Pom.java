@@ -52,7 +52,8 @@ public class Pom {
 	private final Map<Scope, List<Dependency>> dependencies;
 	private final Map<String, String> managedVersions;
 	private final Map<String, Scope> managedScopes;
-	private final Set<String> exclusions;
+	private final Set<String> exclusions;	
+	private final Map<String, String> antProperties;
 	
 	public Pom() {
 		version = "0.0.0-SNAPSHOT";
@@ -61,6 +62,11 @@ public class Pom {
 		properties = new TreeMap<String, String>();
 		dependencies = new LinkedHashMap<Scope, List<Dependency>>();
 		exclusions = new TreeSet<String>();
+		antProperties = new TreeMap<String, String>();
+	}
+	
+	public void setAntProperties(Map<String, String> antProperties) {
+		this.antProperties.putAll(antProperties);
 	}
 	
 	public void setProperty(String key, String value) {
@@ -88,6 +94,11 @@ public class Pom {
 			if (!StringUtils.isEmpty(value)) {
 				// cache reflected value
 				setProperty(key, value);
+			}
+		}
+		if (StringUtils.isEmpty(value)) {
+			if (antProperties.containsKey(key)) {
+				value = antProperties.get(key);
 			}
 		}
 		if (StringUtils.isEmpty(value)) {

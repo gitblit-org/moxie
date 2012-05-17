@@ -19,6 +19,7 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
@@ -26,8 +27,8 @@ import org.apache.tools.ant.types.Path.PathElement;
 
 import com.maxtk.Build;
 import com.maxtk.Constants.Key;
-import com.maxtk.Scope;
 import com.maxtk.Pom;
+import com.maxtk.Scope;
 import com.maxtk.SourceFolder;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.StringUtils;
@@ -52,6 +53,8 @@ public class MaxSetup extends MaxTask {
 				// specified configuration
 				build = new Build(config, projectName);
 			}
+			Map<String,String> antProperties = getProject().getProperties();
+			build.getPom().setAntProperties(antProperties);
 			build.setup();
 			
 			console = build.console;
