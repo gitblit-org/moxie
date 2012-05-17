@@ -42,6 +42,7 @@ public class Pom {
 	public String groupId;
 	public String artifactId;
 	public String version;
+	public String classifier;
 		
 	public String parentGroupId;
 	public String parentArtifactId;

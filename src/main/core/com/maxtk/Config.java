@@ -135,6 +135,7 @@ public class Config implements Serializable {
 		pom.version = readString(map, Key.version, false);
 		pom.groupId = readString(map, Key.groupId, false);
 		pom.artifactId = readString(map, Key.artifactId, false);
+		pom.classifier = readString(map, Key.classifier, false);
 		pom.description = readString(map, Key.description, false);
 		pom.url = readString(map, Key.url, false);
 		pom.vendor = readString(map, Key.vendor, false);

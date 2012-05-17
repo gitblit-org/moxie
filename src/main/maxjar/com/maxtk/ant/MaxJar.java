@@ -27,6 +27,7 @@ import org.apache.tools.ant.types.Path.PathElement;
 import com.maxtk.Build;
 import com.maxtk.Constants;
 import com.maxtk.Constants.Key;
+import com.maxtk.Pom;
 import com.maxtk.Scope;
 import com.maxtk.ant.Mft.MftAttr;
 import com.maxtk.utils.StringUtils;
@@ -131,9 +132,13 @@ public class MaxJar extends GenJar {
 		
 		if (destFile == null) {
 			// default output jar if file unspecified
-			String name = getProject().getProperty(Key.artifactId.maxId());
-			if (!StringUtils.isEmpty(getProject().getProperty(Key.version.maxId()))) {
-				name += "-" + getProject().getProperty(Key.version.maxId());
+			Pom pom = build.getPom();
+			String name = pom.artifactId;
+			if (!StringUtils.isEmpty(pom.version)) {
+				name += "-" + pom.version;
+			}
+			if (!StringUtils.isEmpty(pom.classifier)) {
+				name += "-" + pom.classifier;
 			}
 			destFile = new File(build.getTargetFolder(), name + ".jar");
 		}
@@ -163,7 +168,7 @@ public class MaxJar extends GenJar {
 		}
 		
 		build.console.header();
-		build.console.log("MaxJar {0}", destFile.getName());
+		build.console.log("MaxJar  ({0})", destFile.getName());
 		build.console.header();
 		
 		long start = System.currentTimeMillis();
