@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.MessageFormat;
 
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
@@ -100,22 +101,13 @@ public class Repository {
 			}
 
 			URL url = getURL(dep, extsha1);
-			ByteArrayOutputStream buff = new ByteArrayOutputStream();
-			InputStream in = new BufferedInputStream(url.openStream());
-			byte[] buffer = new byte[80];
-			while (true) {
-				int len = in.read(buffer);
-				if (len < 0) {
-					break;
-				}
-				buff.write(buffer, 0, len);
-			}
-			in.close();
-			String content = buff.toString("UTF-8").trim();
+			DownloadData data = download(build, url);
+			String content = new String(data.content, "UTF-8").trim();
 			String hashCode = content.substring(0, 40);
 
 			// cache this sha1 file
-			build.getArtifactCache().writeFile(dep, extsha1, hashCode);			
+			File file = build.getArtifactCache().writeFile(dep, extsha1, hashCode);
+			file.setLastModified(data.lastModified);
 			return hashCode;
 		} catch (FileNotFoundException t) {
 			// swallow these errors, this is how we tell if Maven does not have
@@ -124,10 +116,10 @@ public class Repository {
 			if (t.getMessage().contains("400") || t.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				t.printStackTrace();
+				build.console.error(t, "Error retrieving SHA1 for {0}", dep);
 			}
 		} catch (Throwable t) {
-			t.printStackTrace();
+			build.console.error(t, "Error retrieving SHA1 for {0}", dep);
 		}
 		return null;
 	}
@@ -140,50 +132,66 @@ public class Repository {
 				return null;
 			}
 		}
-
+		
 		try {
-			URL url = getURL(dep, ext);			
+			URL url = getURL(dep, ext);
 			build.console.download(url.toString());
-			
-			ByteArrayOutputStream buff = new ByteArrayOutputStream();
-			try {			
-				java.net.Proxy proxy = build.getProxy(repositoryUrl);
-				URLConnection conn = url.openConnection(proxy);
-				if (java.net.Proxy.Type.DIRECT != proxy.type()) {
-					String auth = build.getProxyAuthorization(repositoryUrl);
-					conn.setRequestProperty("Proxy-Authorization", auth);
-				}
-				InputStream in = new BufferedInputStream(conn.getInputStream());
-				byte[] buffer = new byte[32767];
-
-				while (true) {
-					int len = in.read(buffer);
-					if (len < 0) {
-						break;
-					}
-					buff.write(buffer, 0, len);
-				}
-				in.close();
-			} catch (IOException e) {
-				throw new RuntimeException("Error downloading " + url
-						+ "\nDo you need to specify a proxy server in "
-						+ build.maxilla.file.getAbsolutePath() + "?", e);
-			}
-			byte[] data = buff.toByteArray();
-			
+			DownloadData data = download(build, url);
 			if (calculateSHA1()) {
-				String calculatedSHA1 = StringUtils.getSHA1(data);
+				String calculatedSHA1 = StringUtils.getSHA1(data.content);
 				if (!StringUtils.isEmpty(expectedSHA1) && !calculatedSHA1.equals(expectedSHA1)) {
 					throw new RuntimeException("SHA1 checksum mismatch; got: " + calculatedSHA1);
 				}
 			}
 
 			// save to the artifact cache
-			File file = build.getArtifactCache().writeFile(dep, ext, data);
+			File file = build.getArtifactCache().writeFile(dep, ext, data.content);
+			file.setLastModified(data.lastModified);
 			return file;
 		} catch (MalformedURLException m) {
 			m.printStackTrace();
+		} catch (IOException e) {
+			throw new RuntimeException(MessageFormat.format("Error downloading! Do you need to specify a proxy server in {0}?", build.maxilla.file.getAbsolutePath()), e);
 		}
 		return null;
+	}
+	
+	private DownloadData download(Build build, URL url) throws IOException {
+		long lastModified = System.currentTimeMillis();
+		ByteArrayOutputStream buff = new ByteArrayOutputStream();
+
+		java.net.Proxy proxy = build.getProxy(repositoryUrl);
+		URLConnection conn = url.openConnection(proxy);
+		if (java.net.Proxy.Type.DIRECT != proxy.type()) {
+			String auth = build.getProxyAuthorization(repositoryUrl);
+			conn.setRequestProperty("Proxy-Authorization", auth);
+		}
+		// try to get the server-specified last-modified date of this artifact
+		lastModified = conn.getHeaderFieldDate("Last-Modified", lastModified);
+		
+		InputStream in = new BufferedInputStream(conn.getInputStream());
+		byte[] buffer = new byte[32767];
+
+		while (true) {
+			int len = in.read(buffer);
+			if (len < 0) {
+				break;
+			}
+			buff.write(buffer, 0, len);
+		}
+		in.close();
+
+		byte[] data = buff.toByteArray();
+		return new DownloadData(data, lastModified);
+	}
+	
+	private class DownloadData {
+		final byte [] content;
+		final long lastModified;
+		
+		DownloadData(byte [] content, long lastModified) {
+			this.content = content;
+			this.lastModified = lastModified;
+		}
 	}
 }
