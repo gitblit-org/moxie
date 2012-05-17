@@ -16,7 +16,6 @@
 package com.maxtk;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -30,7 +29,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.maxtk.Constants.Key;
-import com.maxtk.Scope;
 import com.maxtk.utils.StringUtils;
 
 public class PomReader {
@@ -51,8 +49,8 @@ public class PomReader {
 		}
 		
 		Pom pom = new Pom();
-		pom.groupId = dependency.group;
-		pom.artifactId = dependency.artifact;
+		pom.groupId = dependency.groupId;
+		pom.artifactId = dependency.artifactId;
 		pom.version = dependency.version;
 		
 		Document doc = null;
@@ -70,10 +68,6 @@ public class PomReader {
 		pom.description = readStringTag(docElement, Key.description);
 		pom.url = readStringTag(docElement, Key.url);
 		pom.vendor = readStringTag(docElement, Key.vendor);
-		
-		pom.setProperty("project.groupId", pom.groupId);
-		pom.setProperty("project.artifactId", pom.artifactId);
-		pom.setProperty("project.version", pom.version);
 		
 		NodeList projectNodes = docElement.getChildNodes();
 		for (int i = 0; i < projectNodes.getLength(); i++) {
@@ -110,23 +104,12 @@ public class PomReader {
 					for (int j = 0, jlen = dependencies.getLength(); j < jlen; j++) {
 						Node node = dependencies.item(j);
 						if (node.getNodeType() == Node.ELEMENT_NODE) {
-							Dependency dep = new Dependency();
-							dep.group = readStringTag(node, Key.groupId);
-							dep.artifact = readStringTag(node, Key.artifactId);
-							dep.version = readStringTag(node, Key.version);
+							// dependencyManagement.dependency
+							Dependency dep = readDependency(node);
 							Scope scope = Scope.fromString(readStringTag(node, Key.scope));
 							
-							// artifact extension
-							String type = readStringTag(node, Key.type);
-							if (!StringUtils.isEmpty(type)) {
-								dep.ext = type;
-							}
-							
-							// substitute version property
-							dep.version = pom.getProperty(dep.version);
-							
-							// dependencyManagement import 
 							if (Scope.imprt.equals(scope)) {
+								// dependencyManagement import 
 								Pom importPom = readPom(cache, dep);
 								if (importPom != null) {
 									pom.importManagedDependencies(importPom);
@@ -143,49 +126,9 @@ public class PomReader {
 					for (int j = 0; j < dependencies.getLength(); j++) {
 						Node node = dependencies.item(j);
 						if (node.getNodeType() == Node.ELEMENT_NODE) {
-							Dependency dep = new Dependency();
-							dep.group = readStringTag(node, Key.groupId);
-							dep.artifact = readStringTag(node, Key.artifactId);
-							dep.version = readStringTag(node, Key.version);
-							dep.classifier = readStringTag(node, Key.classifier);
-							dep.optional = readBooleanTag(node, Key.optional);
-							
-							// substitute group property
-							dep.group = pom.getProperty(dep.group);
-							
-							if (StringUtils.isEmpty(dep.version)) {
-								// try retrieving version from parent pom
-								dep.version = pom.getManagedVersion(dep);
-								if (StringUtils.isEmpty(dep.version) && !pom.hasParentDependency()) {
-									System.err.println(MessageFormat.format("{0} dependency {1} does not specify a version!", pom, dep.getProjectId()));
-								}
-							}
-
-							// substitute version property
-							dep.version = pom.getProperty(dep.version);
-
-							// determine scope
+							// dependencies.dependency
+							Dependency dep = readDependency(node);							
 							Scope scope = Scope.fromString(readStringTag(node, Key.scope));
-							if (scope == null) {
-								// try retrieving scope from parent pom
-								scope = pom.getManagedScope(dep);
-								
-								if (scope == null) {
-									// scope is still undefined, use default
-									scope = Scope.defaultScope;
-								}
-							}
-							
-							// artifact extension
-							String type = readStringTag(node, Key.type);
-							if (!StringUtils.isEmpty(type)) {
-								dep.ext = type;
-							}
-							
-							// read exclusions
-							dep.exclusions.addAll(readExclusions(node));
-							
-							// add dep object
 							pom.addDependency(dep, scope);
 						}
 					}
@@ -193,6 +136,18 @@ public class PomReader {
 			}
 		}
 		return pom;
+	}
+	
+	private static Dependency readDependency(Node node) {
+		Dependency dep = new Dependency();
+		dep.groupId = readStringTag(node, Key.groupId);
+		dep.artifactId = readStringTag(node, Key.artifactId);
+		dep.version = readStringTag(node, Key.version);
+		dep.classifier = readStringTag(node, Key.classifier);
+		dep.ext = readStringTag(node, Key.type);
+		dep.optional = readBooleanTag(node, Key.optional);
+		dep.exclusions.addAll(readExclusions(node));
+		return dep;
 	}
 	
 	private static String readStringTag(Node node, Key tag) {

@@ -23,11 +23,22 @@ public class SystemDependency extends Dependency {
 	
 	public SystemDependency(String path) {
 		this.path = path;
+		this.groupId = "system";
 	}
 	
 	@Override
 	public boolean isMavenObject() {
 		return false;
+	}
+
+	@Override
+	public String getMediationId() {
+		return path;
+	}
+
+	@Override
+	public String getManagementId() {
+		return path;
 	}
 
 	@Override

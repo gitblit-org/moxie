@@ -16,7 +16,7 @@
 package com.maxtk;
 
 public enum Scope {
-	compile, provided, runtime, test, system, imprt;
+	compile, provided, runtime, test, system, imprt, assimilate;
 	
 	public static final Scope defaultScope = compile;
 	

@@ -25,8 +25,8 @@ public class TestDependencies extends Assert {
 	@Test
 	public void testParsing1() {
 		Dependency dep = new Dependency("com.maxtk:maxilla:1.0.0");
-		assertEquals("com.maxtk", dep.group);
-		assertEquals("maxilla", dep.artifact);
+		assertEquals("com.maxtk", dep.groupId);
+		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertNull(dep.classifier);
 		assertEquals("jar", dep.ext);
@@ -37,8 +37,8 @@ public class TestDependencies extends Assert {
 	@Test
 	public void testParsing2() {
 		Dependency dep = new Dependency("'com.maxtk:maxilla:1.0.0:jdk15'");
-		assertEquals("com.maxtk", dep.group);
-		assertEquals("maxilla", dep.artifact);
+		assertEquals("com.maxtk", dep.groupId);
+		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertEquals("jdk15", dep.classifier);
 		assertEquals("jar", dep.ext);
@@ -49,8 +49,8 @@ public class TestDependencies extends Assert {
 	@Test
 	public void testParsing3() {
 		Dependency dep = new Dependency("\"com.maxtk:maxilla:1.0.0:jdk15:jar\"");
-		assertEquals("com.maxtk", dep.group);
-		assertEquals("maxilla", dep.artifact);
+		assertEquals("com.maxtk", dep.groupId);
+		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertEquals("jdk15", dep.classifier);
 		assertEquals("jar", dep.ext);
@@ -61,8 +61,8 @@ public class TestDependencies extends Assert {
 	@Test
 	public void testParsing4() {
 		Dependency dep = new Dependency("com.maxtk:maxilla:1.0.0@zip");
-		assertEquals("com.maxtk", dep.group);
-		assertEquals("maxilla", dep.artifact);
+		assertEquals("com.maxtk", dep.groupId);
+		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertNull(dep.classifier);
 		assertEquals("zip", dep.ext);
@@ -73,8 +73,8 @@ public class TestDependencies extends Assert {
 	@Test
 	public void testParsing5() {
 		Dependency dep = new Dependency("com.maxtk:maxilla:1.0.0:jdk15@exe");
-		assertEquals("com.maxtk", dep.group);
-		assertEquals("maxilla", dep.artifact);
+		assertEquals("com.maxtk", dep.groupId);
+		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertEquals("jdk15", dep.classifier);
 		assertEquals("exe", dep.ext);
@@ -85,8 +85,8 @@ public class TestDependencies extends Assert {
 	@Test
 	public void testParsing6() {
 		Dependency dep = new Dependency("com/maxtk:maxilla:1.0.0::doc optional -com.maxtk.ignore:ignore1 -com.maxtk.ignore:ignore2");
-		assertEquals("com.maxtk", dep.group);
-		assertEquals("maxilla", dep.artifact);
+		assertEquals("com.maxtk", dep.groupId);
+		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertNull(dep.classifier);
 		assertEquals("doc", dep.ext);

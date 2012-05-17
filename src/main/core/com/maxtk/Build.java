@@ -86,6 +86,7 @@ public class Build {
 	}
 	
 	public void setup() {
+		console.debug(1, "determining proxies and repositories");
 		determineProxies();
 		determineRepositories();
 		
@@ -110,9 +111,7 @@ public class Build {
 		describeConfig();
 		describeSettings();
 		
-		retrievePOMs();
-		importDependencies();
-		retrieveJARs();
+		solve();
 		
 		if (project.apply.size() > 0) {
 			console.separator();
@@ -257,7 +256,15 @@ public class Build {
 		return "";
 	}
 	
-	public void retrievePOMs() {
+	public void solve() {		
+		retrievePOMs();
+		importDependencyManagement();
+		assimilateDependencies();
+		retrieveDependencies();
+	}
+	
+	private void retrievePOMs() {
+		console.debug(1, "locating POMs");
 		// retrieve POMs for all dependencies in all scopes
 		for (Scope scope : project.pom.getScopes()) {
 			for (Dependency dependency : project.pom.getDependencies(scope, 0)) {
@@ -266,37 +273,48 @@ public class Build {
 		}
 	}
 
-	public void importDependencies() {
-		Map<Scope, List<Dependency>> imports = new LinkedHashMap<Scope, List<Dependency>>();
+	private void importDependencyManagement() {
 		if (project.pom.getScopes().contains(Scope.imprt)) {
-			// This Maxilla project imports dependencies from a pom.
-			// Maven supports dependencyManagement import from a reference pom.
-			// Maxilla supports DIRECT dependency import from a reference pom.
+			console.debug(1, "importing dependency management");
+
+			// This Maxilla project imports a pom's dependencyManagement list.
 			for (Dependency dependency : project.pom.getDependencies(Scope.imprt, 0)) {
 				Pom pom = PomReader.readPom(artifactCache, dependency);
+				project.pom.importManagedDependencies(pom);
+			}
+		}
+	}
+	
+	private void assimilateDependencies() {
+		Map<Scope, List<Dependency>> assimilate = new LinkedHashMap<Scope, List<Dependency>>();
+		if (project.pom.getScopes().contains(Scope.assimilate)) {
+			console.debug(1, "assimilating dependencies");
+			
+			// This Maxilla project integrates a pom's dependency list.
+			for (Dependency dependency : project.pom.getDependencies(Scope.assimilate, 0)) {
+				Pom pom = PomReader.readPom(artifactCache, dependency);
 				for (Scope scope : pom.getScopes()) {
-					if (!imports.containsKey(scope)) {
-						imports.put(scope,  new ArrayList<Dependency>());
+					if (!assimilate.containsKey(scope)) {
+						assimilate.put(scope,  new ArrayList<Dependency>());
 					}
-					imports.get(scope).addAll(pom.getDependencies(scope));
+					assimilate.get(scope).addAll(pom.getDependencies(scope));
 				}
 			}
 			
-			// merge unique, imported dependencies into the Maxilla project pom
-			for (Map.Entry<Scope, List<Dependency>> entry : imports.entrySet()) {
+			// merge unique, assimilated dependencies into the Maxilla project pom
+			for (Map.Entry<Scope, List<Dependency>> entry : assimilate.entrySet()) {
 				for (Dependency dependency : entry.getValue()) {
-					if (!project.pom.hasDependency(dependency) && !project.pom.excludesDependency(dependency)) {
-						project.pom.addDependency(dependency, entry.getKey());
-					}
+					project.pom.addDependency(dependency, entry.getKey());
 				}
 			}
 		}
 		
-		// remove import scope from the project pom, like it never existed
-		project.pom.removeScope(Scope.imprt);
+		// remove assimilate scope from the project pom, like it never existed
+		project.pom.removeScope(Scope.assimilate);
 	}
 	
-	public void retrieveJARs() {
+	private void retrieveDependencies() {
+		console.debug(1, "retrieving artifacts");
 		// solve dependencies for compile, runtime, and test scopes
 		for (Scope scope : new Scope [] { Scope.compile, Scope.runtime, Scope.test }) {
 			console.separator();
@@ -362,9 +380,7 @@ public class Build {
 		List<Dependency> dependencies = pom.getDependencies(scope, dependency.ring + 1);
 		if (dependencies.size() > 0) {			
 			for (Dependency dep : dependencies) {
-				if (!dependency.exclusions.contains(dep.getMediationId())
-						&& !dependency.exclusions.contains(dep.getProjectId())
-						&& !dependency.exclusions.contains(dep.group)) {
+				if (!dependency.excludes(dep)) {
 					resolved.add(dep);
 					resolved.addAll(solve(scope, dep));
 				}
@@ -389,7 +405,7 @@ public class Build {
 					// skip non-Maven repositories
 					continue;
 				}
-				console.debug(1, "getting POM for {0}", dependency);
+				console.debug(1, "locating POM for {0}", dependency);
 				File retrievedFile = repository.download(this, dependency, Constants.DOT_POM);
 				if (retrievedFile != null && retrievedFile.exists()) {
 					pomFile = retrievedFile;
@@ -454,6 +470,7 @@ public class Build {
 				if (forProject && project.dependencyFolder != null) {
 					File projectFile = new File(project.dependencyFolder, cachedFile.getName());
 					if (!projectFile.exists()) {
+						console.debug(1, "copying {0} to {1}", cachedFile.getName(), projectFile.getParent());
 						try {
 							projectFile.getParentFile().mkdirs();
 							FileUtils.copy(projectFile.getParentFile(), cachedFile);
@@ -472,7 +489,7 @@ public class Build {
 	 * 
 	 * @param dependencies
 	 */
-	public void loadDependency(Dependency... dependencies) {
+	public void loadDependency(Dependency... dependencies) {		
 		// solve the classpath solution for the Maxilla runtime dependencies
 		Pom pom = new Pom();
 		for (Dependency dependency : dependencies) {

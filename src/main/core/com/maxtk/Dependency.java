@@ -28,8 +28,8 @@ public class Dependency implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public String group;
-	public String artifact;
+	public String groupId;
+	public String artifactId;
 	public String version;
 	public String ext;
 	public String classifier;
@@ -63,7 +63,7 @@ public class Dependency implements Serializable {
 		}
 
 		// determine Maven artifact coordinates
-		String [] fields = { group, artifact, version, classifier, ext };
+		String [] fields = { groupId, artifactId, version, classifier, ext };
 		
 		// append trailing colon for custom splitting algorithm
 		coordinates = coordinates + ":";
@@ -90,8 +90,8 @@ public class Dependency implements Serializable {
 			}
 		}
 
-		this.group = fields[0].replace('/', '.');
-		this.artifact = fields[1];
+		this.groupId = fields[0].replace('/', '.');
+		this.artifactId = fields[1];
 		this.version = fields[2];
 		this.classifier = fields[3];
 		this.ext = fields[4];
@@ -112,7 +112,7 @@ public class Dependency implements Serializable {
 	}
 	
 	public boolean isMavenObject() {
-		return group.charAt(0) != '<';
+		return groupId.charAt(0) != '<';
 	}
 	
 	public String getExtension() {
@@ -125,20 +125,26 @@ public class Dependency implements Serializable {
 
 	public String getMediationId() {
 		if (mediationId == null) {
-			mediationId = group + ":" + artifact + ":" + (classifier == null ? "" : (":" + classifier)) + ":" + ext;
+			mediationId = groupId + ":" + artifactId + ":" + (classifier == null ? "" : (":" + classifier)) + ":" + ext;
 		}
 		return mediationId;
 	}
 
-	public String getProjectId() {
-		return group + ":" + artifact;
+	public String getManagementId() {
+		return groupId + ":" + artifactId;
 	}
 
 	public String getCoordinates() {
 		if (coordinates == null) {
-			coordinates = group + ":" + artifact + ":" + (version == null ? "" : version) + (classifier == null ? "":(":" + classifier)) + ":" + ext;
+			coordinates = groupId + ":" + artifactId + ":" + (version == null ? "" : version) + (classifier == null ? "":(":" + classifier)) + ":" + ext;
 		}
 		return coordinates;
+	}
+	
+	public boolean excludes(Dependency dependency) {
+		return exclusions.contains(dependency.getMediationId()) 
+				|| exclusions.contains(dependency.getManagementId())
+				|| exclusions.contains(dependency.groupId);
 	}
 
 	@Override
@@ -162,8 +168,8 @@ public class Dependency implements Serializable {
 	public String toXML(Scope scope) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<dependency>\n");
-		sb.append(StringUtils.toXML("groupId", group));
-		sb.append(StringUtils.toXML("artifactId", artifact));
+		sb.append(StringUtils.toXML("groupId", groupId));
+		sb.append(StringUtils.toXML("artifactId", artifactId));
 		sb.append(StringUtils.toXML("version", version));
 		sb.append(StringUtils.toXML("type", ext));
 		if (!StringUtils.isEmpty(classifier)) {
@@ -187,7 +193,7 @@ public class Dependency implements Serializable {
 
 	private static String getPath(Dependency dep, String ext, String pattern, char a, char b) {
 		String url = pattern;
-		url = url.replace("${groupId}", dep.group.replace(a, b)).replace("${artifactId}", dep.artifact).replace("${version}", dep.version).replace("${ext}", ext);		
+		url = url.replace("${groupId}", dep.groupId.replace(a, b)).replace("${artifactId}", dep.artifactId).replace("${version}", dep.version).replace("${ext}", ext);		
 		url = url.replace("${classifier}", dep.classifier == null ? "":("-" + dep.classifier));
 		return url;
 	}

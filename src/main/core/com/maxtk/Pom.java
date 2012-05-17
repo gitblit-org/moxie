@@ -15,6 +15,7 @@
  */
 package com.maxtk;
 
+import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +30,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.maxtk.Scope;
 import com.maxtk.utils.StringUtils;
 
 public class Pom {
@@ -69,9 +69,26 @@ public class Pom {
 		properties.put(key.trim(), value);
 	}
 	
-	public String getProperty(String key) {
-		key = stripKeyFormat(key.trim());
-		String value = get(key, properties);
+	private String getProperty(String key) {
+		String value = null;
+		if (properties.containsKey(key)) {
+			value = properties.get(key);
+		}
+		if (StringUtils.isEmpty(value)) {
+			if (key.startsWith("project.")) {
+				// try reflection on project fields 
+				String fieldName = key.substring(key.indexOf('.') + 1);
+				value = getFieldValue(fieldName);
+			} else if (key.startsWith("parent.")) {
+				// try reflection on project fields 
+				String fieldName = key.substring(key.indexOf('.') + 1);
+				value = getFieldValue("parent" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1));
+			}
+			if (!StringUtils.isEmpty(value)) {
+				// cache reflected value
+				setProperty(key, value);
+			}
+		}
 		if (StringUtils.isEmpty(value)) {
 			// Support all Java system properties
 			value = System.getProperty(key);
@@ -81,51 +98,49 @@ public class Pom {
 			value = System.getenv().get(key);
 		}
 		if (StringUtils.isEmpty(value)) {
+			System.out.println(MessageFormat.format("WARNING: property {0} not found", key));
 			return key;
 		}
 		return value;
 	}
 	
-	private String stripKeyFormat(String key) {
-		if (key.startsWith("${")) {
-			key = key.substring(2);
-		}
-		if (key.charAt(key.length() - 1) == '}') {
-			key = key.substring(0,  key.length() - 1);
-		}
-		return key;
-	}
-	
-	private String get(String key, Map<String, String> propertyMap) {
-		if (key == null) {
-			// can happen on dependency version of child pom which relies on
-			// a dependencyManagement definition in a parent pom
-			return null;
-		}
-		if (propertyMap.containsKey(key)) {
-			return propertyMap.get(key);
+	private String getFieldValue(String fieldName) {
+		try {
+			Field field = getClass().getField(fieldName);
+			if (field == null) {
+				return null;
+			}
+			field.setAccessible(true);
+			Object o = field.get(this);
+			if (o != null) {
+				return o.toString();
+			}
+		} catch (Exception e) {					
 		}
 		return null;
 	}
 	
 	public void addManagedDependency(Dependency dep, Scope scope) {
-		dep.version = getProperty(dep.version);		
-		managedVersions.put(dep.getProjectId().toUpperCase(), dep.version);
+		dep.version = resolveProperties(dep.version);
+		if (!StringUtils.isEmpty(dep.ext)) {
+			dep.ext = "jar";
+		}
+		managedVersions.put(dep.getManagementId(), dep.version);
 		if (scope != null) {
-			managedScopes.put(dep.getProjectId().toUpperCase(), scope);
+			managedScopes.put(dep.getManagementId(), scope);
 		}
 	}
 	
-	public String getManagedVersion(Dependency dep) {
-		if (managedVersions.containsKey(dep.getProjectId().toUpperCase())) {
-			return managedVersions.get(dep.getProjectId().toUpperCase());
+	private String getManagedVersion(Dependency dep) {
+		if (managedVersions.containsKey(dep.getManagementId())) {
+			return managedVersions.get(dep.getManagementId());
 		}
 		return dep.version;
 	}
 	
-	public Scope getManagedScope(Dependency dep) {
-		if (managedScopes.containsKey(dep.getProjectId().toUpperCase())) {
-			return managedScopes.get(dep.getProjectId().toUpperCase());
+	private Scope getManagedScope(Dependency dep) {
+		if (managedScopes.containsKey(dep.getManagementId())) {
+			return managedScopes.get(dep.getManagementId());
 		}
 		return null;
 	}
@@ -142,20 +157,39 @@ public class Pom {
 		return dependencies.size() > 0;
 	}
 	
-	public void addDependency(Dependency dep, Scope scope) {
-		if ((dep instanceof SystemDependency)) {
+	public boolean addDependency(Dependency dep, Scope scope) {
+		if (dep.isMavenObject()) {
+			// determine group
+			dep.groupId = resolveProperties(dep.groupId);
+			
+			// determine version
+			if (StringUtils.isEmpty(dep.version)) {
+				dep.version = getManagedVersion(dep);
+			}			
+			dep.version = resolveProperties(dep.version);
+
+			// set default extension, if unspecified
+			if (StringUtils.isEmpty(dep.ext)) {
+				dep.ext = "jar";
+			}
+		} else if ((dep instanceof SystemDependency)) {
 			// System Dependency
 			SystemDependency sys = (SystemDependency) dep;
 			String path = resolveProperties(sys.path);
 			dep = new SystemDependency(path);
-		} else {
-			// Retrievable dependency
-			if (!StringUtils.isEmpty(dep.version)) {
-				// property substitution
-				// managed dependencies are blank
-				dep.version = resolveProperties(dep.version);
+		}
+		
+		// POM-level dependency exclusion is a Maxilla feature
+		if (hasDependency(dep) || excludes(dep)) {
+			return false;
+		}
+		
+		if (scope == null) {
+			scope = getManagedScope(dep);
+			// use default scope if completely unspecified
+			if (scope == null) {
+				scope = Scope.defaultScope;
 			}
-			dep.group = resolveProperties(dep.group);
 		}
 		
 		if (!dependencies.containsKey(scope)) {
@@ -163,21 +197,23 @@ public class Pom {
 		}
 		
 		dependencies.get(scope).add(dep);
+		return true;
 	}
 	
 	private String resolveProperties(String string) {
-		Pattern p = Pattern.compile("\\$\\{[a-zA_Z0-9-\\.]+\\}");			
+		Pattern p = Pattern.compile("\\$\\{[a-zA-Z0-9-_\\.]+\\}");			
 		StringBuffer sb = new StringBuffer(string);
 		while (true) {
 			Matcher m = p.matcher(sb.toString());
 			if (m.find()) {
 				String prop = m.group();
+				prop = prop.substring(2, prop.length() - 1);
 				String value = getProperty(prop);
 				sb.replace(m.start(), m.end(), value);
 			} else {
 				return sb.toString();
 			}
-		}
+		}		
 	}
 	
 	public List<Dependency> getDependencies(Scope scope) {
@@ -241,10 +277,10 @@ public class Pom {
 	 * @param dependency
 	 * @return true of the dependency is excluded
 	 */
-	public boolean excludesDependency(Dependency dependency) {
+	public boolean excludes(Dependency dependency) {
 		return exclusions.contains(dependency.getMediationId()) 
-				|| exclusions.contains(dependency.getProjectId())
-				|| exclusions.contains(dependency.group);
+				|| exclusions.contains(dependency.getManagementId())
+				|| exclusions.contains(dependency.groupId);
 	}
 
 	/**
@@ -361,13 +397,15 @@ public class Pom {
 			StringBuilder node = new StringBuilder();
 			node.append("<dependencyManagement>\n");
 			node.append("<dependencies>\n");
+			StringBuilder subnode = new StringBuilder();
 			for (Map.Entry<String, String> entry : managedVersions.entrySet()) {
 				String key = entry.getKey();
 				String version = entry.getValue();
 				Scope scope = managedScopes.get(key);
 				Dependency dep = new Dependency(key + ":" + version);
-				node.append(dep.toXML(scope));
+				subnode.append(dep.toXML(scope));
 			}
+			node.append(StringUtils.insertTab(subnode.toString()));
 			node.append("</dependencies>\n");
 			node.append("</dependencyManagement>\n");
 			sb.append(StringUtils.insertTab(node.toString()));

@@ -125,9 +125,9 @@ public class Config implements Serializable {
 			apply = parent.apply;
 			
 			// set parent properties
-			pom.setProperty("parent.groupId", pom.groupId);
-			pom.setProperty("parent.artifactId", pom.artifactId);
-			pom.setProperty("parent.version", pom.version);	
+			pom.parentGroupId = pom.groupId;
+			pom.parentArtifactId = pom.artifactId;
+			pom.parentVersion = pom.version;	
 		}
 		
 		// metadata
@@ -152,10 +152,7 @@ public class Config implements Serializable {
 			String [] values = prop.split(" ");
 			pom.setProperty(values[0], values[1]);
 		}
-		pom.setProperty("project.groupId", pom.groupId);
-		pom.setProperty("project.artifactId", pom.artifactId);
-		pom.setProperty("project.version", pom.version);	
-		
+				
 		repositoryUrls = readStrings(map, Key.dependencySources, repositoryUrls);
 		parseDependencies(map, Key.dependencies);		
 		parseProxies(map, Key.proxies);
@@ -199,6 +196,10 @@ public class Config implements Serializable {
 						// import dependency
 						scope = Scope.imprt;
 						def = def.substring("import".length()).trim();
+					} else if (def.startsWith("assimilate")) {
+						// assimilate dependency
+						scope = Scope.assimilate;
+						def = def.substring(Scope.assimilate.name().length()).trim();
 					} else {
 						// default to compile-time dependency
 						scope = Scope.defaultScope;
