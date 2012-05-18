@@ -209,6 +209,9 @@ public class Pom {
 	}
 	
 	private String resolveProperties(String string) {
+		if (string == null) {
+			return null;
+		}
 		Pattern p = Pattern.compile("\\$\\{[a-zA-Z0-9-_\\.]+\\}");			
 		StringBuffer sb = new StringBuffer(string);
 		while (true) {
@@ -328,10 +331,14 @@ public class Pom {
 			destinationMap.put(key, sourceMap.get(key));
 		}
 	}
+		
+	public String getCoordinates() {
+		return groupId + ":" + artifactId + ":" + version + (classifier == null ? "" : (":" + classifier));
+	}
 	
 	@Override
 	public String toString() {
-		return groupId + ":" + artifactId + ":" + version;
+		return getCoordinates();
 	}
 	
 	public String toXML() {
