@@ -39,9 +39,6 @@ public class Dependency implements Serializable {
 
 	public int ring;
 	
-	private String mediationId;
-	private String coordinates;
-
 	public Dependency() {
 		type = "jar";
 		resolveDependencies = true;
@@ -128,10 +125,7 @@ public class Dependency implements Serializable {
 	}
 	
 	public String getMediationId() {
-		if (mediationId == null) {
-			mediationId = groupId + ":" + artifactId + ":" + (classifier == null ? "" : (":" + classifier)) + ":" + type;
-		}
-		return mediationId;
+		return groupId + ":" + artifactId + (classifier == null ? "" : (":" + classifier)) + ":" + type;
 	}
 
 	public String getManagementId() {
@@ -139,10 +133,7 @@ public class Dependency implements Serializable {
 	}
 
 	public String getCoordinates() {
-		if (coordinates == null) {
-			coordinates = groupId + ":" + artifactId + ":" + (version == null ? "" : version) + (classifier == null ? "":(":" + classifier)) + ":" + type;
-		}
-		return coordinates;
+		return groupId + ":" + artifactId + ":" + version + ":" + (classifier == null ? "" : classifier) + ":" + type;
 	}
 	
 	public boolean excludes(Dependency dependency) {
@@ -200,8 +191,8 @@ public class Dependency implements Serializable {
 		url = url.replace("${groupId}", dep.groupId.replace(a, b));
 		url = url.replace("${artifactId}", dep.artifactId);
 		url = url.replace("${version}", dep.version);
-		url = url.replace("${ext}", ext);		
 		url = url.replace("${classifier}", dep.classifier == null ? "":("-" + dep.classifier));
+		url = url.replace("${ext}", ext);		
 		return url;
 	}
 }

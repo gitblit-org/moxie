@@ -220,4 +220,17 @@ public class FileUtils {
 		success |= fileOrFolder.delete();
 		return success;
 	}
+	
+	/**
+	 * Java on Linux may only have second resolution
+	 * 
+	 * @param file
+	 * @return lastModified rounded to seconds 
+	 */
+	public static long getLastModified(File file) {
+		if (file.exists()) {
+			return (file.lastModified()/1000L)*1000L;
+		}
+		return System.currentTimeMillis();
+	}
 }

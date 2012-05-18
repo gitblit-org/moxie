@@ -24,18 +24,21 @@ import com.maxtk.utils.FileUtils;
 public class MaxillaCache extends ArtifactCache {
 
 	final ArtifactCache mavenCache;
+	final File dataRoot;
 	
 	public MaxillaCache() {
-		this(new File(System.getProperty("user.home") + "/.maxilla/repository"), new File(System.getProperty("user.home") + "/.m2/repository"));
+		this(new File(System.getProperty("user.home") + "/.maxilla"), new File(System.getProperty("user.home") + "/.m2/repository"));
 	}
 	
 	public MaxillaCache(File maxillaRoot, File mavenRoot) {
-		super(maxillaRoot);
+		super(new File(maxillaRoot, "repository"));
 		mavenCache = new ArtifactCache(mavenRoot);
+		dataRoot = new File(maxillaRoot, "data");
 	}
 	
+	@Override
 	public File getFile(Dependency dep, String ext) {
-		String path = Dependency.getMaxillaPath(dep,  ext, pattern);
+		String path = Dependency.getMaxillaPath(dep, ext, pattern);
 	
 		File maxillaFile = new File(root, path);
 		File mavenFile = mavenCache.getFile(dep, ext);
@@ -50,6 +53,17 @@ public class MaxillaCache extends ArtifactCache {
 				e.printStackTrace();
 			}
 		}
+		return maxillaFile;
+	}
+	
+	@Override
+	public File getSolution(Dependency dep) {
+		if (!dep.isMavenObject()) {
+			return null;
+		}
+
+		String path = Dependency.getMaxillaPath(dep, "maxml", pattern);
+		File maxillaFile = new File(dataRoot, path);
 		return maxillaFile;
 	}
 }

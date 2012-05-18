@@ -56,7 +56,7 @@ public class Docs {
 	public static void execute(Build build, Doc doc, boolean verbose) {
 		build.console.header();
 		build.console.log("MaxDoc for {0}", build.getPom().name);
-		build.console.header();
+		build.console.subheader();
 		if (verbose) {
 			doc.describe(build.console);
 		}

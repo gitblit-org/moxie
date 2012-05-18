@@ -48,5 +48,15 @@ public class ArtifactCache {
 		File file = getFile(dep, ext);
 		FileUtils.writeContent(file, content);
 		return file;
-	}	
+	}
+	
+	public File getSolution(Dependency dep) {
+		return null;
+	}
+	
+	public File writeSolution(Dependency dep, String content) {
+		File file = getSolution(dep);
+		FileUtils.writeContent(file, content);
+		return file;
+	}
 }

@@ -44,6 +44,7 @@ public class Config implements Serializable {
 
 	File file;
 	Pom pom;
+	long lastModified;
 	
 	List<Proxy> proxies;
 	List<String> projects;
@@ -54,7 +55,6 @@ public class Config implements Serializable {
 	File outputFolder;
 	File targetFolder;
 	Set<String> apply;
-	boolean debug;
 
 	public static Config load(File file, boolean create) throws IOException, MaxmlException {
 		if (!file.exists()) {
@@ -63,8 +63,7 @@ public class Config implements Serializable {
 			FileWriter writer = new FileWriter(file);
 			writer.append(Key.proxies.name() + ":\n- { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }\n");
 			writer.append(Key.dependencySources.name() + ": central\n");
-			writer.append("#" + Key.apply.name() + ": color\n");
-			writer.append(Key.debug.name() + " : false\n");
+			writer.append("#" + Key.apply.name() + ": color, debug\n");			
 			writer.close();
 		}
 
@@ -102,17 +101,17 @@ public class Config implements Serializable {
 		}
 		
 		this.file = file;
+		this.lastModified = FileUtils.getLastModified(file);
 		
 		String content = FileUtils.readContent(file, "\n").trim();
 		Map<String, Object> map = Maxml.parse(content);
 
-		debug = readBoolean(map, Key.debug, false);
-		
 		// build.maxml inheritance
 		File parentConfig = readFile(map, Key.parent, null);
 		if (parentConfig != null) {
 			Config parent = load(parentConfig, false);
 			pom = parent.pom;
+			lastModified = Math.max(lastModified, parent.lastModified);
 			
 			proxies = parent.proxies;
 			projects = parent.projects;

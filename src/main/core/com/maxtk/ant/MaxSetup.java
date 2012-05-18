@@ -54,8 +54,8 @@ public class MaxSetup extends MaxTask {
 				build = new Build(config, projectName);
 			}
 			Map<String,String> antProperties = getProject().getProperties();
-			build.getPom().setAntProperties(antProperties);
-			build.setup();
+			build.getPom().setAntProperties(antProperties);			
+			build.setup(verbose);
 			
 			console = build.console;
 			if (verbose) {

@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.maxtk.Constants.Key;
-import com.maxtk.Scope;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.Base64;
 import com.maxtk.utils.FileUtils;
@@ -56,11 +55,15 @@ public class Build {
 	public final Config project;
 	public final ArtifactCache artifactCache;
 	public Console console;
-
-	private final Map<Scope, Set<Dependency>> solutions;
+	
+	private final Map<Scope, Set<Dependency>> solutions;	
+	private final Map<Scope, List<File>> classpaths;
 	
 	private final File configFile;
 	private final File projectFolder;
+	
+	private boolean verbose;
+	private boolean solutionBuilt;
 	
 	public Build(String filename, String projectName) throws MaxmlException, IOException {
 		this.configFile = new File(filename);
@@ -78,14 +81,20 @@ public class Build {
 		this.repositories = new LinkedHashSet<Repository>();
 		this.artifactCache = new MaxillaCache();
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
+		this.classpaths = new HashMap<Scope, List<File>>();
 		this.console = new Console();		
 	}
 	
 	public boolean isDebug() {
-		return maxilla.debug || project.debug;
+		return maxilla.apply(Constants.APPLY_DEBUG) || project.apply(Constants.APPLY_DEBUG);
 	}
 	
-	public void setup() {
+	private boolean nocache() {
+		return maxilla.apply(Constants.APPLY_NOCACHE) || project.apply(Constants.APPLY_NOCACHE);
+	}
+	
+	public void setup(boolean verbose) {
+		this.verbose = verbose;
 		console.debug(1, "determining proxies and repositories");
 		determineProxies();
 		determineRepositories();
@@ -106,7 +115,7 @@ public class Build {
 		
 		console.header();
 		console.log("{0} v{1}", getPom().name, getPom().version);
-		console.header();
+		console.subheader();
 
 		describeConfig();
 		describeSettings();
@@ -116,19 +125,25 @@ public class Build {
 		if (project.apply.size() > 0) {
 			console.separator();
 			console.log("apply");
-			console.separator();
-
+			boolean applied = false;
+			
 			// create/update Eclipse configuration files
-			if (project.apply(Constants.APPLY_ECLIPSE)) {
+			if (solutionBuilt && project.apply(Constants.APPLY_ECLIPSE)) {
 				writeEclipseClasspath();
 				writeEclipseProject();
-				console.log(1, "rebuilt Eclipse configuration");
+				console.warn(1, "rebuilt Eclipse configuration");
+				applied = true;
 			}
 		
 			// create/update Maven POM
-			if (project.apply(Constants.APPLY_POM)) {
+			if (solutionBuilt && project.apply(Constants.APPLY_POM)) {
 				writePOM();
-				console.log(1, "rebuilt pom.xml");
+				console.warn(1, "rebuilt pom.xml");
+				applied = true;
+			}
+			
+			if (!applied) {
+				console.log(1, "nothing applied");
 			}
 		}
 	}
@@ -256,11 +271,21 @@ public class Build {
 		return "";
 	}
 	
-	public void solve() {		
-		retrievePOMs();
-		importDependencyManagement();
-		assimilateDependencies();
-		retrieveDependencies();
+	public void solve() {
+		readProjectSolution();
+		if (solutions.size() == 0) {
+			// build solution
+			retrievePOMs();
+			importDependencyManagement();
+			assimilateDependencies();
+			retrieveDependencies();
+			
+			// cache built solution
+			cacheProjectSolution();
+			
+			// flag new solution
+			solutionBuilt = true;
+		}
 	}
 	
 	private void retrievePOMs() {
@@ -322,7 +347,7 @@ public class Build {
 			console.separator();
 			Set<Dependency> solution = solve(scope);
 			if (solution.size() == 0) {
-				console.log(" none");
+				console.log(1, "none");
 			} else {
 				for (Dependency dependency : solution) {
 					console.dependency(dependency);
@@ -332,10 +357,12 @@ public class Build {
 		}
 	}
 	
-	public Set<Dependency> solve(Scope solutionScope) {
+	private Set<Dependency> solve(Scope solutionScope) {
 		if (solutions.containsKey(solutionScope)) {
 			return solutions.get(solutionScope);
 		}
+		
+		console.debug("solving {0} dependency solution", solutionScope);
 		
 		// assemble the flat, ordered list of dependencies
 		// this list may have duplicates/conflicts
@@ -361,7 +388,7 @@ public class Build {
 			}
 		}
 		
-		Set<Dependency> solution = new LinkedHashSet<Dependency>(uniques.values());
+		Set<Dependency> solution = new LinkedHashSet<Dependency>(uniques.values());		
 		solutions.put(solutionScope, solution);
 		return solution;
 	}
@@ -376,17 +403,120 @@ public class Build {
 			return resolved;
 		}
 
-		Pom pom = PomReader.readPom(artifactCache, dependency);
-		List<Dependency> dependencies = pom.getDependencies(scope, dependency.ring + 1);
+		// try pre-resolved solution for this scope
+		List<Dependency> dependencies = readSolution(scope, dependency);
+		
+		if (dependencies == null) {
+			// solve the transitive dependencies for this scope
+			Pom pom = PomReader.readPom(artifactCache, dependency);
+			dependencies = pom.getDependencies(scope, dependency.ring + 1);
+
+			// cache the scope's transitive dependency solution
+			cacheSolution(scope, dependency, dependencies);
+		}
+
 		if (dependencies.size() > 0) {			
 			for (Dependency dep : dependencies) {
 				if (!dependency.excludes(dep)) {
 					resolved.add(dep);
 					resolved.addAll(solve(scope, dep));
 				}
+			}			
+		}
+
+		return resolved;
+	}
+	
+	private List<Dependency> readSolution(Scope scope, Dependency dependency) {
+		if (nocache() || !dependency.isMavenObject()) {
+			// caching forbidden 
+			return null;
+		}
+		File file = artifactCache.getSolution(dependency);
+		if (file == null || !file.exists()) {
+			return null;
+		}
+		if (file.lastModified() == FileUtils.getLastModified(artifactCache.getFile(dependency, Constants.POM))) {
+			// solution lastModified date must equal pom lastModified date
+			try {
+				console.debug(1, "=> reusing solution {0}", dependency.getCoordinates());
+				Solution solution = new Solution(file);
+				if (solution.hasScope(scope)) {
+					return new ArrayList<Dependency>(solution.getDependencies(scope));
+				}
+			} catch (Exception e) {
+				console.error(e, "Failed to read dependency solution {0}", dependency.getCoordinates());
 			}
 		}
-		return resolved;
+		return null;
+	}
+	
+	private void cacheSolution(Scope scope, Dependency dependency, List<Dependency> transitiveDependencies) {
+		if (transitiveDependencies.size() == 0) {
+			return;
+		}
+		File file = artifactCache.getSolution(dependency);
+		if (file == null) {
+			return;
+		}
+		try {
+			console.debug(1, "=> caching solution {0}", scope);
+			Solution solution = new Solution(file);
+			solution.setDependencies(scope, transitiveDependencies);
+			String content = solution.toMaxML();
+			file = artifactCache.writeSolution(dependency, content);
+			// set solution lastModified date to pom lastModified date
+			file.setLastModified(FileUtils.getLastModified(artifactCache.getFile(dependency, Constants.POM)));
+		} catch (Exception e) {
+			console.error(e, "Failed to cache {0} solution {1}", scope, dependency.getCoordinates());
+		}
+	}
+	
+	private void readProjectSolution() {
+		if (nocache()) {
+			// caching forbidden 
+			return;
+		}
+		String coordinates = project.pom.getCoordinates();
+		Dependency projectAsDep = new Dependency(coordinates);
+		File file = artifactCache.getSolution(projectAsDep);
+		if (file == null) {
+			return;
+		}
+		long lastModified = FileUtils.getLastModified(file);
+		if (lastModified == project.lastModified) {
+			try {
+				console.debug("reusing project solution {0}", getPom());
+				Solution solution = new Solution(file);
+				for (Scope scope : solution.getScopes()) {
+					Set<Dependency> dependencies = new LinkedHashSet<Dependency>(solution.getDependencies(scope));
+					console.debug(1, "{0} {1} dependencies", dependencies.size(), scope);
+					solutions.put(scope, dependencies);
+				}
+			} catch (Exception e) {
+				console.error(e, "Failed to cache project solution {0}", projectAsDep.getCoordinates());
+			}
+		}
+	}
+	
+	private void cacheProjectSolution() {
+		Dependency projectAsDep = new Dependency(getPom().toString());
+		File file = artifactCache.getSolution(projectAsDep);
+		if (file == null) {
+			return;
+		}
+		try {
+			console.debug("caching project solution {0}", getPom());
+			Solution solution = new Solution(file);
+			for (Map.Entry<Scope, Set<Dependency>> entry : solutions.entrySet()) {
+				solution.setDependencies(entry.getKey(), entry.getValue());
+			}
+			String content = solution.toMaxML();
+			file = artifactCache.writeSolution(projectAsDep, content);
+			file.setLastModified(project.lastModified);
+		} catch (Exception e) {
+			console.error(e, "Failed to cache project solution {0}", projectAsDep.getCoordinates());
+		}
 	}
 	
 	private File retrievePOM(Dependency dependency) {
@@ -405,7 +535,7 @@ public class Build {
 					// skip non-Maven repositories
 					continue;
 				}
-				console.debug(1, "locating POM for {0}", dependency);
+				console.debug(1, "locating POM for {0}", dependency.getCoordinates());
 				File retrievedFile = repository.download(this, dependency, Constants.POM);
 				if (retrievedFile != null && retrievedFile.exists()) {
 					pomFile = retrievedFile;
@@ -526,11 +656,15 @@ public class Build {
 	}
 	
 	public List<File> getClasspath(Scope scope) {
+		if (classpaths.containsKey(scope)) {
+			return classpaths.get(scope);
+		}
+		
 		File projectFolder = null;
 		if (project.dependencyFolder != null && project.dependencyFolder.exists()) {
 			projectFolder = project.dependencyFolder;
 		}
-		
+		console.debug("solving {0} classpath", scope);
 		Set<Dependency> dependencies = solve(scope);
 		List<File> jars = new ArrayList<File>();
 		for (Dependency dependency : dependencies) {
@@ -549,6 +683,7 @@ public class Build {
 			}
 			jars.add(jar);
 		}
+		classpaths.put(scope, jars);
 		return jars;
 	}
 	
@@ -680,39 +815,43 @@ public class Build {
 		describe(Key.version, pom.version);
 		describe(Key.vendor, pom.vendor);
 		describe(Key.url, pom.url);
-		console.separator();
 
-		console.log("source folders");
-		for (SourceFolder folder : project.sourceFolders) {
-			console.sourceFolder(folder);
+		if (verbose) {
+			console.separator();
+			console.log("source folders");
+			for (SourceFolder folder : project.sourceFolders) {
+				console.sourceFolder(folder);
+			}
+			console.separator();
+
+			console.log("output folder");
+			console.log(1, project.outputFolder.toString());
+			console.separator();
 		}
-		console.separator();
-
-		console.log("output folder");
-		console.log(1, project.outputFolder.toString());
-		console.separator();
 	}
 	
 	void describeSettings() {
-		console.log("dependency sources");
-		if (repositories.size() == 0) {
-			console.error("no dependency sources defined!");
-		}
-		for (Repository repository : repositories) {
-			console.log(1, repository.toString());
-			console.download(repository.getArtifactUrl());
-			console.log();
-		}
-
-		List<Proxy> actives = maxilla.getActiveProxies();
-		if (actives.size() > 0) {
-			console.log("proxy settings");
-			for (Proxy proxy : actives) {
-				if (proxy.active) {
-					describe("proxy", proxy.host + ":" + proxy.port);
-				}
+		if (verbose) {
+			console.log("dependency sources");
+			if (repositories.size() == 0) {
+				console.error("no dependency sources defined!");
 			}
-			console.separator();
+			for (Repository repository : repositories) {
+				console.log(1, repository.toString());
+				console.download(repository.getArtifactUrl());
+				console.log();
+			}
+
+			List<Proxy> actives = maxilla.getActiveProxies();
+			if (actives.size() > 0) {
+				console.log("proxy settings");
+				for (Proxy proxy : actives) {
+					if (proxy.active) {
+						describe("proxy", proxy.host + ":" + proxy.port);
+					}
+				}
+				console.separator();
+			}
 		}
 	}
 
