@@ -110,8 +110,7 @@ public class Repository {
 			file.setLastModified(data.lastModified);
 			return hashCode;
 		} catch (FileNotFoundException t) {
-			// swallow these errors, this is how we tell if Maven does not have
-			// the requested artifact
+			// this repository does not have the requested artifact
 		} catch (IOException t) {
 			if (t.getMessage().contains("400") || t.getMessage().contains("404")) {
 				// disregard bad request and not found responses
@@ -129,7 +128,16 @@ public class Repository {
 		if (calculateSHA1()) {
 			expectedSHA1 = getSHA1(build, dep, ext);
 			if (expectedSHA1 == null) {
-				return null;
+				// there is no SHA1 for this artifact
+				// check for the artifact just-in-case we can download w/o
+				// checksum verification
+				try {
+					URL url = getURL(dep, ext);
+					URLConnection conn = url.openConnection();
+					conn.connect();
+				} catch (Throwable t) {
+					return null;
+				}
 			}
 		}
 		
@@ -150,8 +158,14 @@ public class Repository {
 			return file;
 		} catch (MalformedURLException m) {
 			m.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// this repository does not have the requested artifact
 		} catch (IOException e) {
-			throw new RuntimeException(MessageFormat.format("Error downloading! Do you need to specify a proxy server in {0}?", build.maxilla.file.getAbsolutePath()), e);
+			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
+				// disregard bad request and not found responses
+			} else {
+				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", build.maxilla.file.getAbsolutePath()), e);
+			}
 		}
 		return null;
 	}
