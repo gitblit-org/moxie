@@ -43,7 +43,7 @@ public class PomReader {
 	 * @throws Exception
 	 */
 	public static Pom readPom(ArtifactCache cache, Dependency dependency) {
-		File pomFile = cache.getFile(dependency, Constants.DOT_POM);
+		File pomFile = cache.getFile(dependency, Constants.POM);
 		if (!pomFile.exists()) {
 			return null;
 		}
@@ -144,7 +144,7 @@ public class PomReader {
 		dep.artifactId = readStringTag(node, Key.artifactId);
 		dep.version = readStringTag(node, Key.version);
 		dep.classifier = readStringTag(node, Key.classifier);
-		dep.ext = readStringTag(node, Key.type);
+		dep.type = readStringTag(node, Key.type);
 		dep.optional = readBooleanTag(node, Key.optional);
 		dep.exclusions.addAll(readExclusions(node));
 		return dep;

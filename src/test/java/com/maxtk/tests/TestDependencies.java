@@ -29,7 +29,7 @@ public class TestDependencies extends Assert {
 		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertNull(dep.classifier);
-		assertEquals("jar", dep.ext);
+		assertEquals("jar", dep.type);
 		assertTrue(dep.resolveDependencies);
 		assertFalse(dep.optional);
 	}
@@ -41,7 +41,7 @@ public class TestDependencies extends Assert {
 		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertEquals("jdk15", dep.classifier);
-		assertEquals("jar", dep.ext);
+		assertEquals("jar", dep.type);
 		assertTrue(dep.resolveDependencies);
 		assertFalse(dep.optional);
 	}
@@ -53,7 +53,7 @@ public class TestDependencies extends Assert {
 		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertEquals("jdk15", dep.classifier);
-		assertEquals("jar", dep.ext);
+		assertEquals("jar", dep.type);
 		assertTrue(dep.resolveDependencies);
 		assertFalse(dep.optional);
 	}
@@ -65,7 +65,7 @@ public class TestDependencies extends Assert {
 		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertNull(dep.classifier);
-		assertEquals("zip", dep.ext);
+		assertEquals("zip", dep.type);
 		assertFalse(dep.resolveDependencies);
 		assertFalse(dep.optional);
 	}
@@ -77,7 +77,7 @@ public class TestDependencies extends Assert {
 		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertEquals("jdk15", dep.classifier);
-		assertEquals("exe", dep.ext);
+		assertEquals("exe", dep.type);
 		assertFalse(dep.resolveDependencies);
 		assertFalse(dep.optional);
 	}
@@ -89,7 +89,7 @@ public class TestDependencies extends Assert {
 		assertEquals("maxilla", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertNull(dep.classifier);
-		assertEquals("doc", dep.ext);
+		assertEquals("doc", dep.type);
 		assertTrue(dep.resolveDependencies);
 		assertTrue(dep.optional);
 		

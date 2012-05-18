@@ -31,7 +31,7 @@ public class Dependency implements Serializable {
 	public String groupId;
 	public String artifactId;
 	public String version;
-	public String ext;
+	public String type;
 	public String classifier;
 	public boolean optional;	
 	public boolean resolveDependencies;
@@ -43,7 +43,7 @@ public class Dependency implements Serializable {
 	private String coordinates;
 
 	public Dependency() {
-		ext = "jar";
+		type = "jar";
 		resolveDependencies = true;
 		exclusions = new TreeSet<String>();
 	}
@@ -54,16 +54,16 @@ public class Dependency implements Serializable {
 		String coordinates = StringUtils.stripQuotes(principals[0]);
 		if (coordinates.indexOf('@') > -1) {
 			// strip @ext
-			ext = coordinates.substring(coordinates.indexOf('@') + 1);			
+			type = coordinates.substring(coordinates.indexOf('@') + 1);			
 			coordinates = coordinates.substring(0, coordinates.indexOf('@'));
 			resolveDependencies = false;
 		} else {
-			ext = "jar";
+			type = "jar";
 			resolveDependencies = true;
 		}
 
 		// determine Maven artifact coordinates
-		String [] fields = { groupId, artifactId, version, classifier, ext };
+		String [] fields = { groupId, artifactId, version, classifier, type };
 		
 		// append trailing colon for custom splitting algorithm
 		coordinates = coordinates + ":";
@@ -94,7 +94,7 @@ public class Dependency implements Serializable {
 		this.artifactId = fields[1];
 		this.version = fields[2];
 		this.classifier = fields[3];
-		this.ext = fields[4];
+		this.type = fields[4];
 
 		// determine dependency options and transitive dependency exclusions
 		exclusions = new TreeSet<String>();
@@ -115,17 +115,21 @@ public class Dependency implements Serializable {
 		return groupId.charAt(0) != '<';
 	}
 	
-	public String getExtension() {
-		return "." + ext;
-	}
-	
-	public String getSourceExtension() {
-		return "-sources." + ext;
+	public Dependency getSourcesArtifact() {
+		Dependency sources = new Dependency(getCoordinates());
+		sources.classifier = "sources";
+		return sources;
 	}
 
+	public Dependency getJavadocArtifact() {
+		Dependency sources = new Dependency(getCoordinates());
+		sources.classifier = "javadoc";
+		return sources;
+	}
+	
 	public String getMediationId() {
 		if (mediationId == null) {
-			mediationId = groupId + ":" + artifactId + ":" + (classifier == null ? "" : (":" + classifier)) + ":" + ext;
+			mediationId = groupId + ":" + artifactId + ":" + (classifier == null ? "" : (":" + classifier)) + ":" + type;
 		}
 		return mediationId;
 	}
@@ -136,7 +140,7 @@ public class Dependency implements Serializable {
 
 	public String getCoordinates() {
 		if (coordinates == null) {
-			coordinates = groupId + ":" + artifactId + ":" + (version == null ? "" : version) + (classifier == null ? "":(":" + classifier)) + ":" + ext;
+			coordinates = groupId + ":" + artifactId + ":" + (version == null ? "" : version) + (classifier == null ? "":(":" + classifier)) + ":" + type;
 		}
 		return coordinates;
 	}
@@ -171,7 +175,7 @@ public class Dependency implements Serializable {
 		sb.append(StringUtils.toXML("groupId", groupId));
 		sb.append(StringUtils.toXML("artifactId", artifactId));
 		sb.append(StringUtils.toXML("version", version));
-		sb.append(StringUtils.toXML("type", ext));
+		sb.append(StringUtils.toXML("type", type));
 		if (!StringUtils.isEmpty(classifier)) {
 			sb.append(StringUtils.toXML("classifier", classifier));
 		}
@@ -193,7 +197,10 @@ public class Dependency implements Serializable {
 
 	private static String getPath(Dependency dep, String ext, String pattern, char a, char b) {
 		String url = pattern;
-		url = url.replace("${groupId}", dep.groupId.replace(a, b)).replace("${artifactId}", dep.artifactId).replace("${version}", dep.version).replace("${ext}", ext);		
+		url = url.replace("${groupId}", dep.groupId.replace(a, b));
+		url = url.replace("${artifactId}", dep.artifactId);
+		url = url.replace("${version}", dep.version);
+		url = url.replace("${ext}", ext);		
 		url = url.replace("${classifier}", dep.classifier == null ? "":("-" + dep.classifier));
 		return url;
 	}

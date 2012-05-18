@@ -130,8 +130,8 @@ public class Pom {
 	
 	public void addManagedDependency(Dependency dep, Scope scope) {
 		dep.version = resolveProperties(dep.version);
-		if (!StringUtils.isEmpty(dep.ext)) {
-			dep.ext = "jar";
+		if (!StringUtils.isEmpty(dep.type)) {
+			dep.type = "jar";
 		}
 		managedVersions.put(dep.getManagementId(), dep.version);
 		if (scope != null) {
@@ -177,8 +177,8 @@ public class Pom {
 			dep.version = resolveProperties(dep.version);
 
 			// set default extension, if unspecified
-			if (StringUtils.isEmpty(dep.ext)) {
-				dep.ext = "jar";
+			if (StringUtils.isEmpty(dep.type)) {
+				dep.type = "jar";
 			}
 		} else if ((dep instanceof SystemDependency)) {
 			// System Dependency

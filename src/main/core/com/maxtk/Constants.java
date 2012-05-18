@@ -25,7 +25,7 @@ public class Constants {
 
 	public static final String INDENT = "   ";
 	
-	public static final String MAVEN2_PATTERN = "${groupId}/${artifactId}/${version}/${artifactId}-${version}${classifier}${ext}";
+	public static final String MAVEN2_PATTERN = "${groupId}/${artifactId}/${version}/${artifactId}-${version}${classifier}.${ext}";
 
 	public static final String MAVENCENTRAL = "central";
 
@@ -41,7 +41,7 @@ public class Constants {
 	
 	public static final String DEFAULT_EXCLUDES = "**/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
 	
-	public static final String DOT_POM = ".pom";
+	public static final String POM = "pom";
 	
 	public static enum Key {
 		build, name, description, url, vendor, scope, groupId, artifactId, version,
