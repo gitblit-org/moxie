@@ -91,10 +91,6 @@ public class Pom {
 				String fieldName = key.substring(key.indexOf('.') + 1);
 				value = getFieldValue("parent" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1));
 			}
-			if (!StringUtils.isEmpty(value)) {
-				// cache reflected value
-				setProperty(key, value);
-			}
 		}
 		if (StringUtils.isEmpty(value)) {
 			if (antProperties.containsKey(key)) {
