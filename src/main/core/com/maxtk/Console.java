@@ -94,6 +94,14 @@ public class Console {
 		out.println(MessageFormat.format(message, args));		
 	}
 
+	public void debug(String message) {
+		debug(0, message, emptyArray);
+	}
+
+	public void debug(String message, Object... args) {
+		debug(0, message, args);
+	}
+	
 	public void debug(int indent, String message, Object... args) {
 		if (!debug) {
 			return;

@@ -264,7 +264,7 @@ public class Build {
 	}
 	
 	private void retrievePOMs() {
-		console.debug(1, "locating POMs");
+		console.debug("locating POMs");
 		// retrieve POMs for all dependencies in all scopes
 		for (Scope scope : project.pom.getScopes()) {
 			for (Dependency dependency : project.pom.getDependencies(scope, 0)) {
@@ -275,7 +275,7 @@ public class Build {
 
 	private void importDependencyManagement() {
 		if (project.pom.getScopes().contains(Scope.imprt)) {
-			console.debug(1, "importing dependency management");
+			console.debug("importing dependency management");
 
 			// This Maxilla project imports a pom's dependencyManagement list.
 			for (Dependency dependency : project.pom.getDependencies(Scope.imprt, 0)) {
@@ -288,7 +288,7 @@ public class Build {
 	private void assimilateDependencies() {
 		Map<Scope, List<Dependency>> assimilate = new LinkedHashMap<Scope, List<Dependency>>();
 		if (project.pom.getScopes().contains(Scope.assimilate)) {
-			console.debug(1, "assimilating dependencies");
+			console.debug("assimilating dependencies");
 			
 			// This Maxilla project integrates a pom's dependency list.
 			for (Dependency dependency : project.pom.getDependencies(Scope.assimilate, 0)) {
@@ -314,7 +314,7 @@ public class Build {
 	}
 	
 	private void retrieveDependencies() {
-		console.debug(1, "retrieving artifacts");
+		console.debug("retrieving artifacts");
 		// solve dependencies for compile, runtime, and test scopes
 		for (Scope scope : new Scope [] { Scope.compile, Scope.runtime, Scope.test }) {
 			console.separator();
