@@ -35,7 +35,7 @@ public class MaxCommitId extends MaxGitTask {
 		Build build = (Build) getProject().getReference(Key.build.maxId());
 		build.console.header();
 		build.console.log("MaxCommitId");
-		build.console.header();
+		build.console.subheader();
 		loadDependency(build);
 
 		if (repositoryFolder == null || !repositoryFolder.exists()) {

@@ -85,6 +85,10 @@ public class MaxJavac extends Javac {
 		
 		getDestdir().mkdirs();
 		
+		build.console.header();
+		build.console.title("MaxJavac", scope.name());
+		build.console.subheader();
+
 		super.execute();
 		
 		// optionally copy resources from source folders

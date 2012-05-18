@@ -30,6 +30,7 @@ import com.maxtk.Constants.Key;
 import com.maxtk.Pom;
 import com.maxtk.Scope;
 import com.maxtk.ant.Mft.MftAttr;
+import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
 public class MaxJar extends GenJar {
@@ -147,10 +148,8 @@ public class MaxJar extends GenJar {
 			if (destFile.getParentFile() != null) {
 				destFile.getParentFile().mkdirs();
 			}
-			build.console.log(1, destFile.getAbsolutePath());
 		} else if (destDir != null) {
 			destDir.mkdirs();
-			build.console.log(1, "class structure => " + destDir);
 		}
 		
 		// optionally include resources from the outputfolder
@@ -168,14 +167,18 @@ public class MaxJar extends GenJar {
 		}
 		
 		build.console.header();
-		build.console.log("MaxJar  ({0})", destFile.getName());
-		build.console.header();
+		build.console.title("MaxJar", destFile.getName());
+		build.console.subheader();
 		
 		long start = System.currentTimeMillis();
 		super.execute();
 
 		if (destFile != null) {
+			build.console.log(1, destFile.getAbsolutePath());
 			build.console.log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
+		} else {
+			build.console.log(1, "class structure => " + destDir);
+			build.console.log(1, "{0} KB, generated in {1} ms", (FileUtils.folderSize(destDir)/1024), System.currentTimeMillis() - start);
 		}
 	}
 

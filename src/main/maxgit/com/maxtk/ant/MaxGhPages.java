@@ -48,7 +48,7 @@ public class MaxGhPages extends MaxGitTask {
 		Build build = (Build) getProject().getReference(Key.build.maxId());
 		build.console.header();
 		build.console.log("MaxGhPages");
-		build.console.header();
+		build.console.subheader();
 		loadDependency(build);
 
 		if (sourceFolder == null) {
