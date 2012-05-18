@@ -43,10 +43,22 @@ public class Console {
 		out.println(Constants.HDR);
 	}
 
+	public void subheader() {
+		out.println(Constants.SEP);
+	}
+
 	public void separator() {
 		out.println(Constants.SEP);
 	}
-	
+
+	public void title(String name, String paranthesis) {
+		if (StringUtils.isEmpty(paranthesis)) {
+			out.println(name);
+		} else {
+			out.append(name).append("  (").append(paranthesis).println(")");
+		}
+	}
+
 	public void sourceFolder(SourceFolder sourceFolder) {
 		out.append(Constants.INDENT);
 		out.print(sourceFolder.folder.getName());
@@ -128,11 +140,18 @@ public class Console {
 	}
 	
 	public final void warn(String message) {
-		warn(null, message, emptyArray);
+		warn(0, message, emptyArray);
 	}
 	
 	public final void warn(String message, Object... args) {
-		warn(null, message, args);
+		warn(0, message, args);
+	}
+	
+	public void warn(int indent, String message, Object... args) {
+		for (int i = 0; i < indent; i++) {
+			out.append(Constants.INDENT);
+		}
+		out.println(MessageFormat.format(message, args));		
 	}
 
 	public void warn(Throwable t, String message, Object... args) {

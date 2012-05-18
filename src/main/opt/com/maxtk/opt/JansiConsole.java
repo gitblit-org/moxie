@@ -45,6 +45,11 @@ public class JansiConsole extends Console {
 	public void header() {		
 		out.println(ansi().fg(Color.CYAN).a(Constants.HDR).reset());
 	}
+	
+	@Override
+	public void subheader() {		
+		out.println(ansi().fg(Color.CYAN).a(Constants.SUB).reset());
+	}
 
 	@Override
 	public void sourceFolder(SourceFolder sourceFolder) {
@@ -58,6 +63,17 @@ public class JansiConsole extends Console {
 	@Override
 	public void separator() {
 		out.println(ansi().fg(Color.RED).a(Constants.SEP).reset());
+	}
+	
+	@Override
+	public void title(String name, String paranthesis) {
+		if (StringUtils.isEmpty(paranthesis)) {
+			out.println(name);
+		} else {
+			out.append(name).append("  (");
+			out.print(ansi().fg(Color.MAGENTA).a(paranthesis).reset());
+			out.println(")");
+		}
 	}
 
 	@Override
@@ -100,6 +116,14 @@ public class JansiConsole extends Console {
 			out.print("  ");
 		}
 		out.println(ansi().fg(Color.YELLOW).a(value).reset());
+	}
+
+	@Override
+	public void warn(int indent, String message, Object... args) {
+		for (int i = 0; i < indent; i++) {
+			out.append(Constants.INDENT);
+		}
+		out.println(ansi().fg(Color.YELLOW).a(MessageFormat.format(message, args)).reset());
 	}
 
 	@Override
