@@ -7,7 +7,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 	<!-- project metadata-->
 	<groupId>com.maxtk</groupId>
 	<artifactId>maxilla</artifactId>
-	<version>0.2.0</version>
+	<version>0.3.0-SNAPSHOT</version>
 	<name>Maxilla</name>
 	<description>Project Build Toolkit</description>
 	<vendor>James Moger</vendor>

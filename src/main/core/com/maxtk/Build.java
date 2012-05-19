@@ -434,6 +434,10 @@ public class Build {
 			// caching forbidden 
 			return null;
 		}
+		if (dependency.isSnapshot()) {
+			// do not use cached solution for snapshots
+			return null;
+		}
 		File file = artifactCache.getSolution(dependency);
 		if (file == null || !file.exists()) {
 			return null;
@@ -481,6 +485,10 @@ public class Build {
 		}
 		String coordinates = project.pom.getCoordinates();
 		Dependency projectAsDep = new Dependency(coordinates);
+		if (projectAsDep.isSnapshot()) {
+			// do not use cached solution for snapshots
+			return;
+		}
 		File file = artifactCache.getSolution(projectAsDep);
 		if (file == null) {
 			return;

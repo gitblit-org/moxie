@@ -112,6 +112,10 @@ public class Dependency implements Serializable {
 		return groupId.charAt(0) != '<';
 	}
 	
+	public boolean isSnapshot() {
+		return version.contains("-SNAPSHOT");
+	}
+	
 	public Dependency getSourcesArtifact() {
 		Dependency sources = new Dependency(getCoordinates());
 		sources.classifier = "sources";
