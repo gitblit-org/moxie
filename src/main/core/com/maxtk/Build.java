@@ -93,8 +93,8 @@ public class Build {
 		return verbose;
 	}
 
-	private boolean nocache() {
-		return maxilla.apply(Constants.APPLY_NOCACHE) || project.apply(Constants.APPLY_NOCACHE);
+	private boolean cache() {
+		return maxilla.apply(Constants.APPLY_CACHE) || project.apply(Constants.APPLY_CACHE);
 	}
 	
 	public void setup(boolean verbose) {
@@ -430,7 +430,7 @@ public class Build {
 	}
 	
 	private List<Dependency> readSolution(Scope scope, Dependency dependency) {
-		if (nocache() || !dependency.isMavenObject()) {
+		if (!cache() || !dependency.isMavenObject()) {
 			// caching forbidden 
 			return null;
 		}
@@ -475,7 +475,7 @@ public class Build {
 	}
 	
 	private void readProjectSolution() {
-		if (nocache()) {
+		if (!cache()) {
 			// caching forbidden 
 			return;
 		}
