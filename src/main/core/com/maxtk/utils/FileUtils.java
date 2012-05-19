@@ -18,6 +18,7 @@ package com.maxtk.utils;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -25,7 +26,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +38,31 @@ import java.util.List;
  */
 public class FileUtils {
 
+	/**
+	 * Returns the byte content of the specified file.
+	 * 
+	 * @param file
+	 * @return the byte content of the file
+	 */
+	public static byte [] readContent(File file) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream((int) file.length());
+		try {
+			
+			FileInputStream fis = new FileInputStream(file);
+			int len = 0;
+			byte [] buffer = new byte[32767];
+			while ((len = fis.read(buffer)) > -1) {
+				bos.write(buffer, 0, len);
+			}
+			fis.close();
+		} catch (Throwable t) {
+			System.err.println("Failed to read content of "
+					+ file.getAbsolutePath());
+			t.printStackTrace();
+		}
+		return bos.toByteArray();
+	}
+	
 	/**
 	 * Returns the string content of the specified file.
 	 * 
@@ -122,10 +147,9 @@ public class FileUtils {
 	public static void writeContent(File file, byte [] data) {
 		try {
 			file.getAbsoluteFile().getParentFile().mkdirs();
-			RandomAccessFile ra = new RandomAccessFile(file, "rw");
-			ra.write(data);
-			ra.setLength(data.length);
-			ra.close();			
+			FileOutputStream os = new FileOutputStream(file);
+			os.write(data);			
+			os.close();			
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing to file " + file, e);
 		}

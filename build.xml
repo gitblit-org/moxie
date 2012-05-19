@@ -51,6 +51,7 @@
 		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
 		<taskdef classname="com.maxtk.ant.MaxJavac" name="maxjavac" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
 		<taskdef classname="com.maxtk.ant.MaxClean" name="maxclean" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
+		<taskdef classname="com.maxtk.ant.MaxInstall" name="maxinstall" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
 
 		<!-- Pro -->
 		<taskdef classname="com.maxtk.ant.MaxJar" name="maxjar" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
@@ -71,7 +72,7 @@
 		<delete dir="${max.targetFolder}" />
 		
 		<!-- Maxilla-Core -->
-		<maxjar destfile="${max.targetFolder}/maxilla-core.jar">
+		<maxjar classifier="core">
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
@@ -81,6 +82,7 @@
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxClean" />
 			<class name="com.maxtk.ant.MaxJavac" />
+			<class name="com.maxtk.ant.MaxInstall" />
 						
 			<class name="com.maxtk.opt.JansiConsole" />
 			
@@ -90,7 +92,7 @@
 		
 		
 		<!-- Maxilla-Pro -->
-		<maxjar destfile="${max.targetFolder}/maxilla-pro.jar">
+		<maxjar classifier="pro">
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
@@ -101,7 +103,8 @@
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxClean" />
 			<class name="com.maxtk.ant.MaxJavac" />
-
+			<class name="com.maxtk.ant.MaxInstall" />
+			
 			<class name="com.maxtk.ant.MaxJar" />
 			<class name="com.maxtk.ant.MaxZip" />
 
@@ -113,7 +116,7 @@
 
 		
 		<!-- Maxilla-All -->
-		<maxjar destfile="${max.targetFolder}/maxilla-all.jar" includeresources="true">
+		<maxjar classifier="all" includeresources="true">
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
@@ -124,6 +127,7 @@
 			<class name="com.maxtk.ant.MaxSetup" />
 			<class name="com.maxtk.ant.MaxClean" />
 			<class name="com.maxtk.ant.MaxJavac" />
+			<class name="com.maxtk.ant.MaxInstall" />
 				
 			<class name="com.maxtk.ant.MaxJar" />
 			<class name="com.maxtk.ant.MaxZip" />
@@ -142,13 +146,16 @@
 		</maxjar>
 
 		<!-- Maxml -->
-		<maxjar destfile="${max.targetFolder}/maxml.jar">
+		<maxjar destfile="${max.targetFolder}/maxml-${max.version}.jar">
 			<class name="com.maxtk.maxml.Maxml" />
 		</maxjar>
 
-		<jar destfile="${max.targetFolder}/maxml-sources.jar">
+		<jar destfile="${max.targetFolder}/maxml-${max.version}-sources.jar">
 			<fileset dir="${basedir}/src/main/core/com/maxtk/maxml" />
 		</jar>
+		
+		<!-- Install the build to our Maxilla cache -->
+		<maxinstall />
 
 		<!-- Build the site documentation -->
 		<maxdoc googlePlusOne="true" injectPrettify="true">

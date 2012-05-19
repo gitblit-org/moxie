@@ -610,7 +610,7 @@ public class Build {
 				// optionally copy artifact to project-specified folder
 				if (forProject && project.dependencyFolder != null) {
 					File projectFile = new File(project.dependencyFolder, cachedFile.getName());
-					if (!projectFile.exists()) {
+					if (dependency.isSnapshot() || !projectFile.exists()) {
 						console.debug(1, "copying {0} to {1}", cachedFile.getName(), projectFile.getParent());
 						try {
 							projectFile.getParentFile().mkdirs();
@@ -720,6 +720,12 @@ public class Build {
 		default:
 			return new File(baseFolder, "classes");
 		}
+	}
+	
+	public File getTargetFile() {
+		Pom pom = project.pom;
+		String name = pom.groupId + "/" + pom.artifactId + "/" + pom.version + (pom.classifier == null ? "" : ("-" + pom.classifier));
+		return new File(project.targetFolder, name + ".jar");
 	}
 	
 	public File getTargetFolder() {

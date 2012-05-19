@@ -40,6 +40,8 @@ public class MaxJar extends GenJar {
 	boolean includeResources;
 	String includes;
 	String excludes;
+	
+	String classifier;
 
 	/**
 	 * Builds a <mainclass> element.
@@ -70,6 +72,10 @@ public class MaxJar extends GenJar {
 
 	public void setExcludes(String excludes) {
 		this.excludes = excludes;
+	}
+
+	public void setClassifier(String classifier) {
+		this.classifier = classifier;
 	}
 
 	@Override
@@ -138,8 +144,11 @@ public class MaxJar extends GenJar {
 			if (!StringUtils.isEmpty(pom.version)) {
 				name += "-" + pom.version;
 			}
-			if (!StringUtils.isEmpty(pom.classifier)) {
-				name += "-" + pom.classifier;
+			if (StringUtils.isEmpty(classifier)) {
+				classifier = pom.classifier;
+			}
+			if (!StringUtils.isEmpty(classifier)) {
+				name += "-" + classifier;
 			}
 			destFile = new File(build.getTargetFolder(), name + ".jar");
 		}
