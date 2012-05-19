@@ -58,14 +58,14 @@
 		
 		<!-- All -->
 		<taskdef classname="com.maxtk.ant.MaxExtract" name="maxextract" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
-		<taskdef classname="com.maxtk.ant.MaxCommitId" name="maxcommitid" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
+		<taskdef classname="com.maxtk.ant.MaxGitId" name="maxgitid" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
 		<taskdef classname="com.maxtk.ant.MaxGhPages" name="maxghpages" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
 		<taskdef classname="com.maxtk.ant.MaxDoc" name="maxdoc" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
 
 		<!-- Run Maxilla setup -->
 		<maxsetup />
 		
-		<maxcommitid verbose="true" />
+		<maxgitid verbose="true" />
 		
 		<!-- Delete the target folder -->
 		<delete dir="${max.targetFolder}" />
@@ -130,7 +130,7 @@
 				
 			<class name="com.maxtk.ant.MaxKeys" />
 			<class name="com.maxtk.ant.MaxExtract" />
-			<class name="com.maxtk.ant.MaxCommitId" />
+			<class name="com.maxtk.ant.MaxGitId" />
 			<class name="com.maxtk.ant.MaxGhPages" />				
 			<class name="com.maxtk.ant.MaxDoc" />
 			
@@ -151,7 +151,7 @@
 		</jar>
 
 		<!-- Build the site documentation -->
-		<maxdoc verbose="true" googlePlusOne="true" injectPrettify="true">
+		<maxdoc googlePlusOne="true" injectPrettify="true">
 			<structure>
 				<page name="overview" src="index.mkd" />
 				<menu name="tasks">

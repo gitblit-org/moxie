@@ -100,9 +100,7 @@ public class MaxKeys extends Task {
 			FileWriter fw = new FileWriter(file, false);
 			fw.write(root.generateClass(className));
 			fw.close();
-			build.console.header();
-			build.console.title("MaxKeys", className);
-			build.console.subheader();
+			build.console.title(getClass().getSimpleName(), className);
 			build.console.log("{0} generated from {1}", file, propertiesFile);
 		} catch (Throwable t) {
 			build.console.error(t);

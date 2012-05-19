@@ -88,7 +88,11 @@ public class Build {
 	public boolean isDebug() {
 		return maxilla.apply(Constants.APPLY_DEBUG) || project.apply(Constants.APPLY_DEBUG);
 	}
-	
+
+	public boolean isVerbose() {
+		return verbose;
+	}
+
 	private boolean nocache() {
 		return maxilla.apply(Constants.APPLY_NOCACHE) || project.apply(Constants.APPLY_NOCACHE);
 	}
@@ -113,9 +117,7 @@ public class Build {
 		
 		console.setDebug(isDebug());
 		
-		console.header();
-		console.log("{0} v{1}", getPom().name, getPom().version);
-		console.subheader();
+		console.title(getPom().name, getPom().version);
 
 		describeConfig();
 		describeSettings();

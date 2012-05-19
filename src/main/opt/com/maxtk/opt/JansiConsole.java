@@ -67,6 +67,7 @@ public class JansiConsole extends Console {
 	
 	@Override
 	public void title(String name, String paranthesis) {
+		header();
 		if (StringUtils.isEmpty(paranthesis)) {
 			out.println(name);
 		} else {
@@ -74,6 +75,7 @@ public class JansiConsole extends Console {
 			out.print(ansi().fg(Color.MAGENTA).a(paranthesis).reset());
 			out.println(")");
 		}
+		subheader();
 	}
 
 	@Override

@@ -22,7 +22,7 @@ import com.maxtk.Constants.Key;
 import com.maxtk.utils.JGitUtils;
 import com.maxtk.utils.StringUtils;
 
-public class MaxCommitId extends MaxGitTask {
+public class MaxGitId extends MaxGitTask {
 
 	private String property;
 
@@ -33,15 +33,14 @@ public class MaxCommitId extends MaxGitTask {
 	@Override
 	public void execute() throws org.apache.tools.ant.BuildException {
 		Build build = (Build) getProject().getReference(Key.build.maxId());
-		build.console.header();
-		build.console.log("MaxCommitId");
-		build.console.subheader();
 		loadDependency(build);
 
 		if (repositoryFolder == null || !repositoryFolder.exists()) {
 			repositoryFolder = new File(getProject().getProperty("basedir"));			
 		}
 		String hashid = JGitUtils.getCommitId(repositoryFolder);
+
+		build.console.title(getClass().getSimpleName(), repositoryFolder.getAbsolutePath());
 
 		verbose = false;
 		if (StringUtils.isEmpty(property)) {

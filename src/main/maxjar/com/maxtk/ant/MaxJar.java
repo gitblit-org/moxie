@@ -166,9 +166,7 @@ public class MaxJar extends GenJar {
 			set.setExcludes(excludes);
 		}
 		
-		build.console.header();
-		build.console.title("MaxJar", destFile.getName());
-		build.console.subheader();
+		build.console.title(getClass().getSimpleName(), destFile.getName());
 		
 		long start = System.currentTimeMillis();
 		super.execute();

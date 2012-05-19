@@ -53,10 +53,7 @@ public class Docs {
 
 	private static PrintStream out = System.out;
 	
-	public static void execute(Build build, Doc doc, boolean verbose) {
-		build.console.header();
-		build.console.log("MaxDoc for {0}", build.getPom().name);
-		build.console.subheader();
+	public static void execute(Build build, Doc doc, boolean verbose) {		
 		if (verbose) {
 			doc.describe(build.console);
 		}
@@ -68,7 +65,9 @@ public class Docs {
 		injectBootstrap(doc, true, verbose);
 		injectPrettify(doc, doc.injectPrettify, verbose);
 		injectFancybox(doc, doc.injectFancybox, verbose);
-		build.console.separator();
+		if (verbose) {
+			build.console.separator();
+		}
 		
 		generatePages(build, doc, verbose);
 	}

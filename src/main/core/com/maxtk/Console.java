@@ -50,13 +50,19 @@ public class Console {
 	public void separator() {
 		out.println(Constants.SEP);
 	}
+	
+	public void title(String name) {
+		title(name, null);
+	}
 
 	public void title(String name, String paranthesis) {
+		header();
 		if (StringUtils.isEmpty(paranthesis)) {
 			out.println(name);
 		} else {
 			out.append(name).append("  (").append(paranthesis).println(")");
 		}
+		subheader();
 	}
 
 	public void sourceFolder(SourceFolder sourceFolder) {

@@ -39,7 +39,7 @@ import com.maxtk.utils.FileUtils;
 
 public class MaxDoc extends Task {
 
-	boolean verbose;
+	Boolean verbose;
 
 	Doc doc = new Doc();
 
@@ -135,7 +135,11 @@ public class MaxDoc extends Task {
 		if (doc.outputFolder == null) {
 			doc.outputFolder = build.getSiteOutputFolder();
 		}
+		if (verbose == null) {
+			verbose = build.isVerbose();
+		}
 		
+		build.console.title(getClass().getSimpleName(), build.getPom().name);
 		Docs.execute(build, doc, verbose);
 
 		for (com.maxtk.Resource resource : resources) {

@@ -46,9 +46,7 @@ public class MaxGhPages extends MaxGitTask {
 	@Override
 	public void execute() throws org.apache.tools.ant.BuildException {
 		Build build = (Build) getProject().getReference(Key.build.maxId());
-		build.console.header();
-		build.console.log("MaxGhPages");
-		build.console.subheader();
+		build.console.title(getClass().getSimpleName());
 		loadDependency(build);
 
 		if (sourceFolder == null) {
