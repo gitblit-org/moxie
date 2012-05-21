@@ -16,8 +16,6 @@
 package com.maxtk.opt;
 
 import static org.fusesource.jansi.Ansi.ansi;
-import static org.fusesource.jansi.internal.CLibrary.STDOUT_FILENO;
-import static org.fusesource.jansi.internal.CLibrary.isatty;
 
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -46,31 +44,6 @@ public class JansiConsole extends Console {
 	}
 	
 	private static OutputStream wrapOutputStream(final OutputStream stream) {
-		String os = System.getProperty("os.name");
-		if( os.startsWith("Windows") ) {
-			// return the stream and let Windows deal with the ANSI sequences
-			// recommended to use ANSICON https://github.com/adoxa/ansicon
-			// or in Eclipse http://www.mihai-nita.net/eclipse
-			return stream;
-		}
-		
-		// We must be on some unix variant..
-		try {
-			// If we can detect that stdout is not a tty.. then setup
-			// to strip the ANSI sequences..
-			int rc = isatty(STDOUT_FILENO);
-			if( rc==0 ) {
-				return new AnsiOutputStream(stream);
-			}
-			
-        // These erros happen if the JNI lib is not available for your platform.
-        } catch (NoClassDefFoundError ignore) {
-		} catch (UnsatisfiedLinkError ignore) {
-		}
-
-		// By default we assume your Unix tty can handle ANSI codes.
-		// Just wrap it up so that when we get closed, we reset the 
-		// attributes.
 		return new FilterOutputStream(stream) {
 		    @Override
 		    public void close() throws IOException {
