@@ -35,6 +35,7 @@ import java.util.Set;
 import com.maxtk.Constants.Key;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.Base64;
+import com.maxtk.utils.DeepCopier;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
@@ -448,7 +449,12 @@ public class Build {
 				console.debug(1, "=> reusing solution {0}", dependency.getCoordinates());
 				Solution solution = new Solution(file);
 				if (solution.hasScope(scope)) {
-					return new ArrayList<Dependency>(solution.getDependencies(scope));
+					List<Dependency> list = new ArrayList<Dependency>(solution.getDependencies(scope));
+					for (Dependency dep : list) {
+						// reset ring to be relative to the dependency
+						dep.ring += dependency.ring + 1;
+					}
+					return list;
 				}
 			} catch (Exception e) {
 				console.error(e, "Failed to read dependency solution {0}", dependency.getCoordinates());
@@ -465,10 +471,17 @@ public class Build {
 		if (file == null) {
 			return;
 		}
+		// copy transitives and reset the ring level relative to the dependency		
+		List<Dependency> dependencies = new ArrayList<Dependency>();
+		for (Dependency dep : transitiveDependencies) {
+			dep = DeepCopier.copy(dep);
+			dep.ring -= (dependency.ring + 1);
+			dependencies.add(dep);
+		}
 		try {
 			console.debug(1, "=> caching solution {0}", scope);
 			Solution solution = new Solution(file);
-			solution.setDependencies(scope, transitiveDependencies);
+			solution.setDependencies(scope, dependencies);
 			String content = solution.toMaxML();
 			file = artifactCache.writeSolution(dependency, content);
 			// set solution lastModified date to pom lastModified date

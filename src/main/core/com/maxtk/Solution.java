@@ -32,7 +32,6 @@ import com.maxtk.Constants.Key;
 import com.maxtk.maxml.Maxml;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.FileUtils;
-import com.maxtk.utils.StringUtils;
 
 /**
  * Reads a cached transitive dependency solution. 
@@ -110,8 +109,10 @@ public class Solution implements Serializable {
 						scope = Scope.defaultScope;
 					}
 					
-					def = StringUtils.stripQuotes(def);										
-					Dependency dep = new Dependency(def);
+					// pull ring from solution
+					int ringIdx = def.indexOf(' ');
+					Dependency dep = new Dependency(def.substring(ringIdx).trim());
+					dep.ring = Integer.parseInt(def.substring(0, ringIdx));
 					
 					addDependency(dep, scope);
 				} else {
@@ -154,7 +155,8 @@ public class Solution implements Serializable {
 		sb.append(MessageFormat.format("{0} :\n", Key.dependencies.name()));
 		for (Map.Entry<Scope, Set<Dependency>> entry : dependencies.entrySet()) {
 			for (Dependency dep : entry.getValue()) {
-				sb.append(MessageFormat.format("- {0} {1}\n", entry.getKey(), dep.getCoordinates()));
+				// - scope ring coordinates
+				sb.append(MessageFormat.format("- {0} {1,number,0} {2}\n", entry.getKey(), dep.ring, dep.getCoordinates()));
 			}
 		}
 		return sb.toString();
