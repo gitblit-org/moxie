@@ -37,7 +37,7 @@ import com.maxtk.Regex;
 import com.maxtk.Substitute;
 import com.maxtk.utils.FileUtils;
 
-public class MaxDoc extends Task {
+public class MxDoc extends Task {
 
 	Boolean verbose;
 
@@ -139,7 +139,7 @@ public class MaxDoc extends Task {
 			verbose = build.isVerbose();
 		}
 		
-		build.console.title(getClass().getSimpleName(), build.getPom().name);
+		build.console.title(getClass(), build.getPom().name);
 		Docs.execute(build, doc, verbose);
 
 		for (com.maxtk.Resource resource : resources) {

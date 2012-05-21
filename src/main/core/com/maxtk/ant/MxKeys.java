@@ -30,7 +30,7 @@ import com.maxtk.Build;
 import com.maxtk.Constants.Key;
 import com.maxtk.utils.StringUtils;
 
-public class MaxKeys extends Task {
+public class MxKeys extends Task {
 	
 	File propertiesFile;
 	
@@ -100,7 +100,7 @@ public class MaxKeys extends Task {
 			FileWriter fw = new FileWriter(file, false);
 			fw.write(root.generateClass(className));
 			fw.close();
-			build.console.title(getClass().getSimpleName(), className);
+			build.console.title(getClass(), className);
 			build.console.log("{0} generated from {1}", file, propertiesFile);
 		} catch (Throwable t) {
 			build.console.error(t);

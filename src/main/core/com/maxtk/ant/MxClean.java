@@ -22,7 +22,7 @@ import com.maxtk.Constants.Key;
 import com.maxtk.Scope;
 import com.maxtk.utils.FileUtils;
 
-public class MaxClean extends MaxTask {
+public class MxClean extends MxTask {
 	
 	Scope scope;
 	

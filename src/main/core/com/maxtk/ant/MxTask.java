@@ -23,7 +23,7 @@ import com.maxtk.Console;
 import com.maxtk.Constants.Key;
 import com.maxtk.utils.StringUtils;
 
-public abstract class MaxTask extends Task {
+public abstract class MxTask extends Task {
 
 	protected Console console = new Console();
 

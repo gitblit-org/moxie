@@ -14,7 +14,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project name="maxilla">
+<project name="maxilla" xmlns:mx="antlib:com.maxtk">
 	
 	<!-- Determine the source jar for this import/include. -->
 	<!-- This JavaScript sneakery assumes this XML file is -->
@@ -35,37 +35,37 @@
 	</script>
 	
 	<!-- Define Maxilla tasks -->
-	<taskdef resource="tasks.properties" classpath="${maxilla.jar}"/>
+	<taskdef resource="tasks.properties" classpath="${maxilla.jar}" uri="antlib:com.maxtk"/>
 
 	<!--
 	    maxilla.setup
 	-->
 	<target name="setup" description="retrieve dependencies and setup the ant environment">
-		<maxsetup />
+		<mx:setup />
 	</target>
 
 	<!--
 	    maxilla.clean
 	-->
 	<target name="clean" description="clean build and target folders">
-		<maxclean />
+		<mx:clean />
 	</target>
 
 	<!--
 	    maxilla.compile
 	-->
 	<target name="compile" description="compile sources and copy resources">
-		<maxclean scope="compile" />
+		<mx:clean scope="compile" />
 		<!-- TODO inject version and compile -->
-		<maxjavac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
+		<mx:javac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
 	</target>
 	
 	<!--
 	    maxilla.test
 	-->
 	<target name="test" description="compile and execute tests" depends="compile">
-		<maxclean scope="test" />
-		<maxjavac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
+		<mx:clean scope="test" />
+		<mx:javac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
 		<!-- TODO maxtest -->
 	</target>
 

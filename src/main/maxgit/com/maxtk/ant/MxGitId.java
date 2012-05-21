@@ -17,50 +17,38 @@ package com.maxtk.ant;
 
 import java.io.File;
 
-import org.apache.tools.ant.BuildException;
-
 import com.maxtk.Build;
 import com.maxtk.Constants.Key;
 import com.maxtk.utils.JGitUtils;
+import com.maxtk.utils.StringUtils;
 
-public class MaxGhPages extends MaxGitTask {
+public class MxGitId extends MxGitTask {
 
-	private File sourceFolder;
+	private String property;
 
-	private File repositoryFolder;
-
-	private boolean obliterate;
-
-	public void setSourceFolder(String path) {
-		this.sourceFolder = new File(path);
-	}
-
-	public void setRepositoryFolder(String path) {
-		this.repositoryFolder = new File(path);
-	}
-
-	public void setObliterate(boolean value) {
-		this.obliterate = value;
+	public void setProperty(String property) {
+		this.property = property;
 	}
 
 	@Override
 	public void execute() throws org.apache.tools.ant.BuildException {
 		Build build = (Build) getProject().getReference(Key.build.maxId());
-		build.console.title(getClass().getSimpleName());
 		loadDependency(build);
 
-		if (sourceFolder == null) {
-			throw new BuildException("You did not specify a sourceFolder!");
-		}
-
-		if (!sourceFolder.exists()) {
-			throw new BuildException("Source folder does not exist!");
-		}
-
 		if (repositoryFolder == null || !repositoryFolder.exists()) {
-			repositoryFolder = new File(getProject().getProperty("basedir"));
+			repositoryFolder = new File(getProject().getProperty("basedir"));			
 		}
+		String hashid = JGitUtils.getCommitId(repositoryFolder);
 
-		JGitUtils.updateGhPages(repositoryFolder, sourceFolder, obliterate);
+		build.console.title(getClass(), repositoryFolder.getAbsolutePath());
+
+		verbose = false;
+		if (StringUtils.isEmpty(property)) {
+			setProperty(Key.commit, hashid);
+			build.console.key(Key.commit.maxId(), hashid);
+		} else {
+			setProperty(property, hashid);
+			build.console.key(property, hashid);
+		}		
 	}
 }

@@ -24,7 +24,7 @@ import org.apache.tools.ant.BuildException;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
-public class MaxExtract extends MaxTask {
+public class MxExtract extends MxTask {
 
 	String srcfile;
 

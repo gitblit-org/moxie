@@ -20,7 +20,7 @@ import java.io.File;
 import com.maxtk.Build;
 import com.maxtk.Dependency;
 
-public class MaxGitTask extends MaxTask {
+public class MxGitTask extends MxTask {
 
 	protected File repositoryFolder;
 

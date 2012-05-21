@@ -33,7 +33,7 @@ import com.maxtk.SourceFolder;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.StringUtils;
 
-public class MaxSetup extends MaxTask {
+public class MxSetup extends MxTask {
 
 	private String config;
 	

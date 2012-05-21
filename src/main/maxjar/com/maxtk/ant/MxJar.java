@@ -33,7 +33,7 @@ import com.maxtk.ant.Mft.MftAttr;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
-public class MaxJar extends GenJar {
+public class MxJar extends GenJar {
 
 	ClassSpec mainclass;
 	boolean fatjar;
@@ -175,7 +175,7 @@ public class MaxJar extends GenJar {
 			set.setExcludes(excludes);
 		}
 		
-		build.console.title(getClass().getSimpleName(), destFile.getName());
+		build.console.title(getClass(), destFile.getName());
 		
 		long start = System.currentTimeMillis();
 		super.execute();

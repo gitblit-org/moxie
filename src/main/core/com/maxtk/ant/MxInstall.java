@@ -29,7 +29,7 @@ import com.maxtk.Pom;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
-public class MaxInstall extends MaxTask {
+public class MxInstall extends MxTask {
 	
 	Boolean verbose;
 	
@@ -54,7 +54,7 @@ public class MaxInstall extends MaxTask {
 		File maxillaFile = build.getArtifactCache().getFile(asDependency, asDependency.type);
 		File destinationFolder = maxillaFile.getParentFile();
 		
-		build.console.title(getClass().getSimpleName(), artifact);
+		build.console.title(getClass(), artifact);
 
 		FileSet sourceFileset = new FileSet();
 		sourceFileset.setProject(getProject());

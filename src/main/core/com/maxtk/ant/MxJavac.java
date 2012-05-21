@@ -28,7 +28,7 @@ import com.maxtk.Constants.Key;
 import com.maxtk.Scope;
 import com.maxtk.utils.FileUtils;
 
-public class MaxJavac extends Javac {
+public class MxJavac extends Javac {
 	
 	Scope scope;
 	boolean clean;
@@ -85,7 +85,7 @@ public class MaxJavac extends Javac {
 		
 		getDestdir().mkdirs();
 		
-		build.console.title(getClass().getSimpleName(), scope.name());
+		build.console.title(getClass(), scope.name());
 
 		super.execute();
 		

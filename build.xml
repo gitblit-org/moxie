@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="maxilla" default="main" basedir=".">
+<project name="maxilla" default="main" basedir="." xmlns:mx="antlib:com.maxtk">
 
 	<!-- These are the default Maxilla locations -->
 	<property name="maxilla.bin" value="${basedir}/build" />
@@ -20,12 +20,12 @@
 		</javac>
 
 		<!-- Declare MaxSetup and download dependencies -->
-		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" />
-		<maxsetup verbose="false" />
+		<taskdef classname="com.maxtk.ant.MxSetup" name="setup" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<mx:setup verbose="false" />
 
 		<!-- Compile all of Maxilla with maxjavac and retrieved dependencies -->
-		<taskdef classname="com.maxtk.ant.MaxJavac" name="maxjavac" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" />
-		<maxjavac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
+		<taskdef classname="com.maxtk.ant.MxJavac" name="javac" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<mx:javac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
 		
 	</target>
 
@@ -48,51 +48,51 @@
 		</path>
 
 		<!-- Core -->
-		<taskdef classname="com.maxtk.ant.MaxSetup" name="maxsetup" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
-		<taskdef classname="com.maxtk.ant.MaxJavac" name="maxjavac" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
-		<taskdef classname="com.maxtk.ant.MaxClean" name="maxclean" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
-		<taskdef classname="com.maxtk.ant.MaxInstall" name="maxinstall" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
+		<taskdef classname="com.maxtk.ant.MxSetup" name="setup" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="com.maxtk.ant.MxJavac" name="javac" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="com.maxtk.ant.MxClean" name="clean" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="com.maxtk.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 
 		<!-- Pro -->
-		<taskdef classname="com.maxtk.ant.MaxJar" name="maxjar" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
-		<taskdef classname="com.maxtk.ant.MaxZip" name="maxzip" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
+		<taskdef classname="com.maxtk.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="com.maxtk.ant.MxZip" name="zip" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 		
 		<!-- All -->
-		<taskdef classname="com.maxtk.ant.MaxExtract" name="maxextract" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
-		<taskdef classname="com.maxtk.ant.MaxGitId" name="maxgitid" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
-		<taskdef classname="com.maxtk.ant.MaxGhPages" name="maxghpages" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
-		<taskdef classname="com.maxtk.ant.MaxDoc" name="maxdoc" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" />
+		<taskdef classname="com.maxtk.ant.MxExtract" name="extract" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="com.maxtk.ant.MxGitId" name="gitid" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="com.maxtk.ant.MxGhPages" name="ghpages" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="com.maxtk.ant.MxDoc" name="doc" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 
 		<!-- Run Maxilla setup -->
-		<maxsetup />
+		<mx:setup />
 		
-		<maxgitid verbose="true" />
+		<mx:gitid verbose="true" />
 		
 		<!-- Delete the target folder -->
 		<delete dir="${max.targetFolder}" />
 		
 		<!-- Maxilla-Core -->
-		<maxjar classifier="core">
+		<mx:jar classifier="core">
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
 				<exclude name="org.fusesource." />
 				<exclude name="org.w3c." />
 			</classfilter>
-			<class name="com.maxtk.ant.MaxSetup" />
-			<class name="com.maxtk.ant.MaxClean" />
-			<class name="com.maxtk.ant.MaxJavac" />
-			<class name="com.maxtk.ant.MaxInstall" />
+			<class name="com.maxtk.ant.MxSetup" />
+			<class name="com.maxtk.ant.MxClean" />
+			<class name="com.maxtk.ant.MxJavac" />
+			<class name="com.maxtk.ant.MxInstall" />
 						
 			<class name="com.maxtk.opt.JansiConsole" />
 			
 			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/core/tasks.properties" />
-		</maxjar>
+		</mx:jar>
 		
 		
 		<!-- Maxilla-Pro -->
-		<maxjar classifier="pro">
+		<mx:jar classifier="pro">
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
@@ -100,23 +100,23 @@
 				<exclude name="org.w3c." />
 			</classfilter>
 				
-			<class name="com.maxtk.ant.MaxSetup" />
-			<class name="com.maxtk.ant.MaxClean" />
-			<class name="com.maxtk.ant.MaxJavac" />
-			<class name="com.maxtk.ant.MaxInstall" />
+			<class name="com.maxtk.ant.MxSetup" />
+			<class name="com.maxtk.ant.MxClean" />
+			<class name="com.maxtk.ant.MxJavac" />
+			<class name="com.maxtk.ant.MxInstall" />
 			
-			<class name="com.maxtk.ant.MaxJar" />
-			<class name="com.maxtk.ant.MaxZip" />
+			<class name="com.maxtk.ant.MxJar" />
+			<class name="com.maxtk.ant.MxZip" />
 
 			<class name="com.maxtk.opt.JansiConsole" />
 			
 			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/pro/tasks.properties" />
-		</maxjar>
+		</mx:jar>
 
 		
 		<!-- Maxilla-All -->
-		<maxjar classifier="all" includeresources="true">
+		<mx:jar classifier="all" includeresources="true">
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
@@ -124,52 +124,52 @@
 				<exclude name="org.tautua." />
 				<exclude name="org.w3c." />				
 			</classfilter>
-			<class name="com.maxtk.ant.MaxSetup" />
-			<class name="com.maxtk.ant.MaxClean" />
-			<class name="com.maxtk.ant.MaxJavac" />
-			<class name="com.maxtk.ant.MaxInstall" />
+			<class name="com.maxtk.ant.MxSetup" />
+			<class name="com.maxtk.ant.MxClean" />
+			<class name="com.maxtk.ant.MxJavac" />
+			<class name="com.maxtk.ant.MxInstall" />
 				
-			<class name="com.maxtk.ant.MaxJar" />
-			<class name="com.maxtk.ant.MaxZip" />
+			<class name="com.maxtk.ant.MxJar" />
+			<class name="com.maxtk.ant.MxZip" />
 				
-			<class name="com.maxtk.ant.MaxKeys" />
-			<class name="com.maxtk.ant.MaxExtract" />
-			<class name="com.maxtk.ant.MaxGitId" />
-			<class name="com.maxtk.ant.MaxGhPages" />				
-			<class name="com.maxtk.ant.MaxDoc" />
+			<class name="com.maxtk.ant.MxKeys" />
+			<class name="com.maxtk.ant.MxExtract" />
+			<class name="com.maxtk.ant.MxGitId" />
+			<class name="com.maxtk.ant.MxGhPages" />				
+			<class name="com.maxtk.ant.MxDoc" />
 			
 			<class name="com.maxtk.opt.JansiConsole" />
 			
 			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/all/tasks.properties" />
 
-		</maxjar>
+		</mx:jar>
 
 		<!-- Maxml -->
-		<maxjar destfile="${max.targetFolder}/maxml-${max.version}.jar">
+		<mx:jar destfile="${max.targetFolder}/maxml-${max.version}.jar">
 			<class name="com.maxtk.maxml.Maxml" />
-		</maxjar>
+		</mx:jar>
 
 		<jar destfile="${max.targetFolder}/maxml-${max.version}-sources.jar">
 			<fileset dir="${basedir}/src/main/core/com/maxtk/maxml" />
 		</jar>
 		
 		<!-- Install the build to our Maxilla cache -->
-		<maxinstall />
+		<mx:install />
 
 		<!-- Build the site documentation -->
-		<maxdoc googlePlusOne="true" injectPrettify="true">
+		<mx:doc googlePlusOne="true" injectPrettify="true">
 			<structure>
 				<page name="overview" src="index.mkd" />
 				<menu name="tasks">
-					<page name="MaxSetup" src="maxsetup.mkd" />
-					<page name="MaxExtract" src="maxextract.mkd" />
+					<page name="mx:Setup" src="mxsetup.mkd" />
+					<page name="mx:Extract" src="mxextract.mkd" />
 					<divider />
-					<page name="MaxCommitId" src="maxcommitid.mkd" />
-					<page name="MaxGhPages" src="maxghpages.mkd" />					
-					<page name="MaxJar" src="maxjar.mkd" />
+					<page name="mx:GitId" src="mxgitid.mkd" />
+					<page name="mx:GhPages" src="mxghpages.mkd" />					
+					<page name="mx:Jar" src="mxjar.mkd" />
 					<divider />
-					<page name="MaxDoc" src="maxdoc.mkd" />
+					<page name="mx:Doc" src="mxdoc.mkd" />
 				</menu>
 				<page name="maxml" src="maxml.mkd" sidebar="true" />
 				<page name="design" src="design.mkd" />
@@ -185,20 +185,20 @@
 				<link name="GitHub" src="http://github.com/gitblit/maxilla" />
 				<divider />
 			</structure>
-			<substitute token="%VERSION%" value="${max-version}" />
+			<substitute token="%VERSION%" value="${max.version}" />
 			<nomarkdown startToken="%BEGINMAXML%" endToken="%ENDMAXML%" prettify="true" lang="lang-yaml" />
 			<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />
 			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />
 			<resource>
 				<fileset dir="${max.targetFolder}/" includes="*.jar" />
 			</resource>
-		</maxdoc>
+		</mx:doc>
 	</target>
 
 	<!--
 	Build the Maxilla gh-pages branch
 	-->
 	<target name="ghpages" depends="main">
-		<maxghpages sourceFolder="${max.targetFolder}/site" obliterate="true" />
+		<mx:ghpages sourceFolder="${max.targetFolder}/site" obliterate="true" />
 	</target>
 </project>

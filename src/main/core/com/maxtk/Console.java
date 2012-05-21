@@ -54,7 +54,16 @@ public class Console {
 	public void title(String name) {
 		title(name, null);
 	}
-
+	
+	public void title(Class<?> clazz) {
+		title(clazz, null);
+	}
+	
+	public void title(Class<?> clazz, String paranthesis) {
+		String name = clazz.getSimpleName();
+		title("mx:" + name.substring(2), paranthesis);
+	}
+	
 	public void title(String name, String paranthesis) {
 		header();
 		if (StringUtils.isEmpty(paranthesis)) {

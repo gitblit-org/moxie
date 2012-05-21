@@ -23,7 +23,7 @@ import com.maxtk.Build;
 import com.maxtk.Constants.Key;
 import com.maxtk.utils.StringUtils;
 
-public class MaxZip extends Zip {
+public class MxZip extends Zip {
 	
 	public void execute() {
 		Build build = (Build) getProject().getReference(Key.build.maxId());
