@@ -82,14 +82,23 @@ public class MxInstall extends MxTask {
 		repoSet.setProject(getProject());
 		repoSet.setDir(destinationFolder);
 		repoSet.setIncludes(pattern);
+		repoSet.setExcludes("*.sha1, *.md5, *.sig, *.asc");
 		Iterator<?> itr = repoSet.iterator();
 		while (itr.hasNext()) {
 			FileResource file = (FileResource) itr.next();
 			byte [] bytes = FileUtils.readContent(file.getFile());
+			
+			// calculate the SHA1 hash of the content and save result
 			String sha1 = StringUtils.getSHA1(bytes);
-			File hashFile = new File(destinationFolder, file.getFile().getName() + ".sha1");
-			FileUtils.writeContent(hashFile, sha1);
-			build.console.debug(1, "wrote {0}", hashFile);
+			File sha1File = new File(destinationFolder, file.getFile().getName() + ".sha1");
+			FileUtils.writeContent(sha1File, sha1);
+			build.console.debug(1, "wrote {0}", sha1File);
+
+			// calculate the MD5 hash of the content and save result
+			String md5 = StringUtils.getMD5(bytes);
+			File md5File = new File(destinationFolder, file.getFile().getName() + ".md5");
+			FileUtils.writeContent(md5File, md5);
+			build.console.debug(1, "wrote {0}", md5File);
 		}
 	}
 }

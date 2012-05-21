@@ -153,17 +153,31 @@ public class StringUtils {
 	 */
 	public static String getMD5(String string) {
 		try {
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			md.reset();
-			md.update(string.getBytes("iso-8859-1"));
-			byte[] digest = md.digest();
-			return toHex(digest);
+			byte [] bytes = string.getBytes("iso-8859-1");
+			return getMD5(bytes);
 		} catch (UnsupportedEncodingException u) {
 			throw new RuntimeException(u);
+		}
+	}
+	
+	/**
+	 * Calculates the MD5 of the bytes.
+	 * 
+	 * @param string
+	 * @return md5 of the string
+	 */
+	public static String getMD5(byte [] bytes) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("MD5");
+			md.reset();
+			md.update(bytes);
+			byte[] digest = md.digest();
+			return toHex(digest);
 		} catch (NoSuchAlgorithmException t) {
 			throw new RuntimeException(t);
 		}
 	}
+
 
 	/**
 	 * Returns the hex representation of the byte array.
