@@ -20,13 +20,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 	<dependencies>
 		<!-- provided dependencies -->
 		<dependency>
-			<groupId>org.fusesource.jansi</groupId>
-			<artifactId>jansi</artifactId>
-			<version>1.8</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
 			<version>1.8.3</version>

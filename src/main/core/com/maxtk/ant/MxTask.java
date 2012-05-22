@@ -19,8 +19,8 @@ import java.io.File;
 
 import org.apache.tools.ant.Task;
 
-import com.maxtk.Console;
 import com.maxtk.Constants.Key;
+import com.maxtk.console.Console;
 import com.maxtk.utils.StringUtils;
 
 public abstract class MxTask extends Task {

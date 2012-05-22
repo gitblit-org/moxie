@@ -84,8 +84,6 @@
 			<class name="com.maxtk.ant.MxJavac" />
 			<class name="com.maxtk.ant.MxInstall" />
 						
-			<class name="com.maxtk.opt.JansiConsole" />
-			
 			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/core/tasks.properties" />
 		</mx:jar>
@@ -108,8 +106,6 @@
 			<class name="com.maxtk.ant.MxJar" />
 			<class name="com.maxtk.ant.MxZip" />
 
-			<class name="com.maxtk.opt.JansiConsole" />
-			
 			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/pro/tasks.properties" />
 		</mx:jar>
@@ -137,8 +133,6 @@
 			<class name="com.maxtk.ant.MxGitId" />
 			<class name="com.maxtk.ant.MxGhPages" />				
 			<class name="com.maxtk.ant.MxDoc" />
-			
-			<class name="com.maxtk.opt.JansiConsole" />
 			
 			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/all/tasks.properties" />

@@ -13,12 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.maxtk;
+package com.maxtk.console;
 
+import static com.maxtk.console.Ansi.ansi;
+
+import java.io.FilterOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 
+import com.maxtk.Constants;
+import com.maxtk.Dependency;
 import com.maxtk.Scope;
+import com.maxtk.SourceFolder;
+import com.maxtk.console.Ansi.Color;
 import com.maxtk.utils.StringUtils;
 
 public class Console {
@@ -31,24 +40,57 @@ public class Console {
 	private final Object [] emptyArray = new Object[0];
 	
 	public Console() {
-		out = System.out;
-		err = System.err;
+		this(false);
+	}
+	
+	public Console(boolean isColor) {
+		out = new PrintStream(wrapOutputStream(System.out, isColor));
+		err = new PrintStream(wrapOutputStream(System.err, isColor));
+	}
+	
+	private static OutputStream wrapOutputStream(final OutputStream stream, boolean isColor) {
+		boolean useColor;
+		String mxColor = System.getProperty("mxcolor", null);
+		if (StringUtils.isEmpty(mxColor)) {
+			mxColor = System.getenv("mxcolor");
+		}
+		if (StringUtils.isEmpty(mxColor)) {
+			// use maxml preference
+			useColor = isColor;
+		} else {
+			// use system or environment property to determine color
+			useColor = Boolean.parseBoolean(mxColor);
+		}
+		
+		if (useColor) {
+			// pass-through ANSI sequences
+			return new FilterOutputStream(stream) {
+				@Override
+				public void close() throws IOException {
+					write(AnsiOutputStream.REST_CODE);
+					flush();
+					super.close();
+				}
+			};
+		}
+		// strip ANSI sequences
+		return new AnsiOutputStream(stream);
 	}
 	
 	public void setDebug(boolean value) {
 		debug = value;
 	}
 	
-	public void header() {
-		out.println(Constants.HDR);
+	public void header() {		
+		out.println(ansi().fg(Color.CYAN).a(Constants.HDR).reset());
 	}
-
-	public void subheader() {
-		out.println(Constants.SEP);
+	
+	public void subheader() {		
+		out.println(ansi().fg(Color.CYAN).a(Constants.SUB).reset());
 	}
 
 	public void separator() {
-		out.println(Constants.SEP);
+		out.println(ansi().fg(Color.RED).a(Constants.SEP).reset());
 	}
 	
 	public void title(String name) {
@@ -61,7 +103,11 @@ public class Console {
 	
 	public void title(Class<?> clazz, String paranthesis) {
 		String name = clazz.getSimpleName();
-		title("mx:" + name.substring(2), paranthesis);
+		if (name.toLowerCase().startsWith("mx")) {
+			title("mx:" + name.substring(2), paranthesis);
+		} else {
+			title(name, paranthesis);
+		}
 	}
 	
 	public void title(String name, String paranthesis) {
@@ -69,33 +115,35 @@ public class Console {
 		if (StringUtils.isEmpty(paranthesis)) {
 			out.println(name);
 		} else {
-			out.append(name).append("  (").append(paranthesis).println(")");
+			out.append(name).append("  (");
+			out.print(ansi().fgBright(Color.MAGENTA).a(paranthesis).reset());
+			out.println(")");
 		}
 		subheader();
 	}
-
+	
 	public void sourceFolder(SourceFolder sourceFolder) {
 		out.append(Constants.INDENT);
-		out.print(sourceFolder.folder.getName());
+		out.print(ansi().fg(Color.GREEN).a(sourceFolder.folder.getName()).reset());
 		out.print(" (");
-		out.print(sourceFolder.scope);
+		out.print(ansi().fgBright(Color.MAGENTA).a(sourceFolder.scope).reset());
 		out.println(")");
 	}
-
+	
 	public void scope(Scope scope) {
-		out.print(scope);
+		out.print(ansi().fgBright(Color.MAGENTA).a(scope).reset());
 		out.println(" dependencies");
 	}
 
 	public void dependency(Dependency dependency) {
 		out.append(Constants.INDENT);
-		out.println(dependency.getCoordinates());
+		out.println(ansi().fg(Color.GREEN).a(dependency.getCoordinates()).reset());
 	}
 	
 	public void download(String url) {
 		out.append(Constants.INDENT);
 		out.append("<= ");
-		out.println(url);
+		out.println(ansi().fg(Color.CYAN).a(url).reset());
 	}
 	
 	public void log() {
@@ -136,18 +184,18 @@ public class Console {
 		for (int i = 0; i < indent; i++) {
 			out.append(Constants.INDENT);
 		}
-		out.println(MessageFormat.format(message, args));		
+		out.println(ansi().fg(Color.BLUE).a(MessageFormat.format(message, args)).reset());		
 	}
 
 	public void key(String key, String value) {
 		out.append(Constants.INDENT);
-		out.print(key);
+		out.print(ansi().fg(Color.DEFAULT).a(key).reset());
 		if (key.trim().length() > 0) {
 			out.print(": ");
 		} else {
 			out.print("  ");
 		}
-		out.println(value);
+		out.println(ansi().fg(Color.YELLOW).a(value).reset());
 	}
 	
 	public final void warn(Throwable t) {
@@ -166,12 +214,12 @@ public class Console {
 		for (int i = 0; i < indent; i++) {
 			out.append(Constants.INDENT);
 		}
-		out.println(MessageFormat.format(message, args));		
+		out.println(ansi().fg(Color.YELLOW).a(MessageFormat.format(message, args)).reset());
 	}
 
 	public void warn(Throwable t, String message, Object... args) {
 		if (!StringUtils.isEmpty(message)) {
-			out.println(MessageFormat.format(message, args));
+			out.println(ansi().fg(Color.YELLOW).a(MessageFormat.format(message, args)).reset());
 		}
 		if (t != null) {
 			t.printStackTrace(out);
@@ -196,7 +244,7 @@ public class Console {
 
 	public void error(Throwable t, String message, Object... args) {
 		if (!StringUtils.isEmpty(message)) {
-			err.println(MessageFormat.format(message, args));
+			err.println(ansi().fgBright(Color.RED).a(MessageFormat.format(message, args)).reset());
 		}
 		if (t != null) {
 			t.printStackTrace(err);

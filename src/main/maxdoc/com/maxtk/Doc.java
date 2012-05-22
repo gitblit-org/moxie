@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.maxtk.Constants.Key;
+import com.maxtk.console.Console;
 import com.maxtk.utils.StringUtils;
 
 public class Doc implements Serializable {

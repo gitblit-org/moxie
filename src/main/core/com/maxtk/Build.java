@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.maxtk.Constants.Key;
+import com.maxtk.console.Console;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.Base64;
 import com.maxtk.utils.DeepCopier;
@@ -83,7 +84,11 @@ public class Build {
 		this.artifactCache = new MaxillaCache();
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
 		this.classpaths = new HashMap<Scope, List<File>>();
-		this.console = new Console();		
+		this.console = new Console(isColor());		
+	}
+	
+	public boolean isColor() {
+		return maxilla.apply(Constants.APPLY_COLOR) || project.apply(Constants.APPLY_COLOR);
 	}
 	
 	public boolean isDebug() {
@@ -103,18 +108,6 @@ public class Build {
 		console.debug(1, "determining proxies and repositories");
 		determineProxies();
 		determineRepositories();
-		
-		if (maxilla.apply(Constants.APPLY_COLOR) || project.apply(Constants.APPLY_COLOR)) {
-			// try to replace the console with the JansiConsole
-			loadDependency(new Dependency("org.fusesource.jansi:jansi:1.8"));
-
-			try {
-				Class.forName("org.fusesource.jansi.AnsiConsole");
-				Class<?> jansiConsole = Class.forName("com.maxtk.opt.JansiConsole");
-				console = (Console) jansiConsole.newInstance();
-			} catch (Throwable t) {
-			}
-		}
 		
 		console.setDebug(isDebug());
 		
