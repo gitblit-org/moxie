@@ -116,7 +116,7 @@ public class Console {
 			out.println(name);
 		} else {
 			out.append(name).append("  (");
-			out.print(ansi().fgBright(Color.MAGENTA).a(paranthesis).reset());
+			out.print(ansi().fg(Color.MAGENTA).a(paranthesis).reset());
 			out.println(")");
 		}
 		subheader();
@@ -126,12 +126,12 @@ public class Console {
 		out.append(Constants.INDENT);
 		out.print(ansi().fg(Color.GREEN).a(sourceFolder.folder.getName()).reset());
 		out.print(" (");
-		out.print(ansi().fgBright(Color.MAGENTA).a(sourceFolder.scope).reset());
+		out.print(ansi().bold().fg(Color.MAGENTA).a(sourceFolder.scope).boldOff().reset());
 		out.println(")");
 	}
 	
 	public void scope(Scope scope) {
-		out.print(ansi().fgBright(Color.MAGENTA).a(scope).reset());
+		out.print(ansi().bold().fg(Color.MAGENTA).a(scope).boldOff().reset());
 		out.println(" dependencies");
 	}
 
