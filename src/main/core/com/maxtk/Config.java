@@ -28,7 +28,12 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.maxtk.Constants.Key;
+import com.maxtk.Dependency;
+import com.maxtk.Pom;
+import com.maxtk.Proxy;
 import com.maxtk.Scope;
+import com.maxtk.SourceFolder;
+import com.maxtk.SystemDependency;
 import com.maxtk.maxml.Maxml;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.maxml.MaxmlMap;
@@ -43,11 +48,12 @@ public class Config implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	File file;
+	File baseFolder;
 	Pom pom;
 	long lastModified;
 	
 	List<Proxy> proxies;
-	List<String> projects;
+	List<LinkedProject> linkedProjects;
 	List<String> repositoryUrls;	
 	
 	File dependencyFolder;
@@ -73,12 +79,14 @@ public class Config implements Serializable {
 	public Config() {
 		// default configuration
 		sourceFolders = Arrays.asList(
-				new SourceFolder(new File("src/main/java"), Scope.compile), 
-				new SourceFolder(new File("src/main/resources"), Scope.compile),
-				new SourceFolder(new File("src/test/java"), Scope.test));
+				new SourceFolder("src/main/java", Scope.compile),
+				new SourceFolder("src/main/webapp", Scope.compile),
+				new SourceFolder("src/main/resources", Scope.compile),
+				new SourceFolder("src/test/java", Scope.test),
+				new SourceFolder("src/test/resources", Scope.test));
 		outputFolder = new File("build");
 		targetFolder = new File("target");
-		projects = new ArrayList<String>();
+		linkedProjects = new ArrayList<LinkedProject>();
 		repositoryUrls = new ArrayList<String>();		
 		pom = new Pom();
 		dependencyFolder = null;
@@ -101,6 +109,7 @@ public class Config implements Serializable {
 		}
 		
 		this.file = file;
+		this.baseFolder = file.getAbsoluteFile().getParentFile();
 		this.lastModified = FileUtils.getLastModified(file);
 		
 		String content = FileUtils.readContent(file, "\n").trim();
@@ -114,7 +123,7 @@ public class Config implements Serializable {
 			lastModified = Math.max(lastModified, parent.lastModified);
 			
 			proxies = parent.proxies;
-			projects = parent.projects;
+			linkedProjects = parent.linkedProjects;
 			repositoryUrls = parent.repositoryUrls;
 			
 			dependencyFolder = parent.dependencyFolder;
@@ -141,10 +150,10 @@ public class Config implements Serializable {
 
 		// build parameters
 		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(), true));
-		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);
-		outputFolder = readFile(map, Key.outputFolder, outputFolder);
-		targetFolder = readFile(map, Key.targetFolder, targetFolder);
-		projects = readStrings(map, Key.projects, projects);
+		outputFolder = readFile(map, Key.outputFolder, new File(baseFolder, "build"));
+		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);		
+		targetFolder = readFile(map, Key.targetFolder, new File(baseFolder, "target"));
+		linkedProjects = readLinkedProjects(map, Key.linkedProjects);
 		dependencyFolder = readFile(map, Key.dependencyFolder, null);
 		
 		List<String> props = readStrings(map, Key.properties, new ArrayList<String>());
@@ -317,7 +326,11 @@ public class Config implements Serializable {
 				if (StringUtils.isEmpty(dir)) {
 					keyError(key);
 				} else {
-					return new File(dir);
+					File aFile = new File(dir);
+					if (aFile.getParentFile() == null) {
+						return new File(baseFolder, dir);
+					}
+					return aFile;
 				}
 			}
 		}
@@ -326,11 +339,11 @@ public class Config implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	List<SourceFolder> readSourceFolders(Map<String, Object> map, Key key, List<SourceFolder> defaultValue) {
+		List<SourceFolder> values = new ArrayList<SourceFolder>();
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());
 			if (o instanceof List) {
 				// list
-				List<SourceFolder> values = new ArrayList<SourceFolder>();
 				List<Object> list = (List<Object>) o;
 				for (Object value : list) {
 					if (value == null) {
@@ -350,7 +363,7 @@ public class Config implements Serializable {
 						def = def.substring(scopeString.length()).trim();
 						for (String dir : StringUtils.breakCSV(def)) {
 							if (!StringUtils.isEmpty(dir)) {
-								values.add(new SourceFolder(new File(dir), scope));
+								values.add(new SourceFolder(dir, scope));
 							}
 						}
 					} else if (value instanceof Map) {
@@ -365,32 +378,42 @@ public class Config implements Serializable {
 							}
 						}
 						if (!StringUtils.isEmpty(dir)) {
-							values.add(new SourceFolder(new File(dir), scope));
+							values.add(new SourceFolder(dir, scope));
 						}
 					}
-				}
-				if (values.size() == 0) {
-					keyError(key);
-				} else {
-					return values;
-				}
+				}				
 			} else {
-				// string definition - all source folders are compile
-				List<SourceFolder> values = new ArrayList<SourceFolder>();
+				// string definition - all source folders are compile				
 				String list = o.toString();
 				for (String value : StringUtils.breakCSV(list)) {
 					if (!StringUtils.isEmpty(value)) {
-						values.add(new SourceFolder(new File(value)));
+						values.add(new SourceFolder(value, Scope.compile));
 					}
-				}
-				if (values.size() == 0) {
-					keyError(key);
-				} else {
-					return values;
-				}
+				}				
 			}
 		}
-		return defaultValue;
+		
+		if (values.size() == 0) {
+			values.addAll(defaultValue);
+		}
+
+		// resolve source folders
+		List<SourceFolder> resolved = new ArrayList<SourceFolder>();
+		for (SourceFolder sf : values) {
+			if (sf.resolve(baseFolder, outputFolder)) {
+				resolved.add(sf);
+			}			
+		}
+		return resolved;
+	}
+	
+	List<LinkedProject> readLinkedProjects(Map<String, Object> map, Key key) {
+		List<LinkedProject> list = new ArrayList<LinkedProject>();
+		for (String def : readStrings(map, key, new ArrayList<String>())) {
+			LinkedProject project = new LinkedProject(def);
+			list.add(project);
+		}
+		return list;
 	}
 	
 	void keyError(Key key) {

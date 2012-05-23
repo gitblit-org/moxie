@@ -19,6 +19,7 @@ import java.io.File;
 
 import org.apache.tools.ant.Task;
 
+import com.maxtk.Build;
 import com.maxtk.Constants.Key;
 import com.maxtk.console.Console;
 import com.maxtk.utils.StringUtils;
@@ -31,6 +32,11 @@ public abstract class MxTask extends Task {
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
+	}
+	
+	protected Build getBuild() {
+		Build build = (Build) getProject().getReference(Key.build.maxId());
+		return build;
 	}
 
 	protected void setProperty(Key prop, String value) {

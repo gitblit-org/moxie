@@ -19,11 +19,11 @@
 			<src path="${basedir}/src/main/core" />
 		</javac>
 
-		<!-- Declare MaxSetup and download dependencies -->
-		<taskdef classname="com.maxtk.ant.MxSetup" name="setup" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<mx:setup verbose="false" />
+		<!-- Declare mx:init and read configuration -->
+		<taskdef classname="com.maxtk.ant.MxInit" name="init" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<mx:init verbose="false" />
 
-		<!-- Compile all of Maxilla with maxjavac and retrieved dependencies -->
+		<!-- Compile all of Maxilla with mx:javac and retrieved dependencies -->
 		<taskdef classname="com.maxtk.ant.MxJavac" name="javac" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 		<mx:javac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
 		
@@ -48,7 +48,7 @@
 		</path>
 
 		<!-- Core -->
-		<taskdef classname="com.maxtk.ant.MxSetup" name="setup" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="com.maxtk.ant.MxInit" name="init" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 		<taskdef classname="com.maxtk.ant.MxJavac" name="javac" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 		<taskdef classname="com.maxtk.ant.MxClean" name="clean" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 		<taskdef classname="com.maxtk.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
@@ -63,8 +63,8 @@
 		<taskdef classname="com.maxtk.ant.MxGhPages" name="ghpages" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 		<taskdef classname="com.maxtk.ant.MxDoc" name="doc" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 
-		<!-- Run Maxilla setup -->
-		<mx:setup />
+		<!-- Prepare the project -->
+		<mx:init />
 		
 		<mx:gitid verbose="true" />
 		
@@ -76,10 +76,9 @@
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
-				<exclude name="org.fusesource." />
 				<exclude name="org.w3c." />
 			</classfilter>
-			<class name="com.maxtk.ant.MxSetup" />
+			<class name="com.maxtk.ant.MxInit" />
 			<class name="com.maxtk.ant.MxClean" />
 			<class name="com.maxtk.ant.MxJavac" />
 			<class name="com.maxtk.ant.MxInstall" />
@@ -94,11 +93,10 @@
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
-				<exclude name="org.fusesource." />
 				<exclude name="org.w3c." />
 			</classfilter>
 				
-			<class name="com.maxtk.ant.MxSetup" />
+			<class name="com.maxtk.ant.MxInit" />
 			<class name="com.maxtk.ant.MxClean" />
 			<class name="com.maxtk.ant.MxJavac" />
 			<class name="com.maxtk.ant.MxInstall" />
@@ -116,11 +114,10 @@
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
-				<exclude name="org.fusesource." />
 				<exclude name="org.tautua." />
 				<exclude name="org.w3c." />				
 			</classfilter>
-			<class name="com.maxtk.ant.MxSetup" />
+			<class name="com.maxtk.ant.MxInit" />
 			<class name="com.maxtk.ant.MxClean" />
 			<class name="com.maxtk.ant.MxJavac" />
 			<class name="com.maxtk.ant.MxInstall" />

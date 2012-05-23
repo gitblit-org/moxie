@@ -23,7 +23,6 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.FileResource;
 
 import com.maxtk.Build;
-import com.maxtk.Constants.Key;
 import com.maxtk.Dependency;
 import com.maxtk.Pom;
 import com.maxtk.utils.FileUtils;
@@ -38,7 +37,7 @@ public class MxInstall extends MxTask {
 	}
 	
 	public void execute() {
-		Build build = (Build) getProject().getReference(Key.build.maxId());
+		Build build = getBuild();
 		
 		if (verbose == null) {
 			verbose = build.isVerbose();
@@ -76,8 +75,8 @@ public class MxInstall extends MxTask {
 		FileUtils.writeContent(pomFile, pom.toXML());
 		build.console.debug(1, "wrote {0}", pomFile);
 		
-		// calculate SHA1 values for each file
-		build.console.log("calculating SHA1 hashes for installed artifacts");
+		// calculate checksums for each file
+		build.console.log("calculating checksums for installed artifacts");
 		FileSet repoSet = new FileSet();
 		repoSet.setProject(getProject());
 		repoSet.setDir(destinationFolder);

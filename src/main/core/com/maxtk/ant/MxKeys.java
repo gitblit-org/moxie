@@ -24,13 +24,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.tools.ant.Task;
-
 import com.maxtk.Build;
-import com.maxtk.Constants.Key;
 import com.maxtk.utils.StringUtils;
 
-public class MxKeys extends Task {
+public class MxKeys extends MxTask {
 	
 	File propertiesFile;
 	
@@ -51,7 +48,7 @@ public class MxKeys extends Task {
 	}
 
 	public void execute() {
-		Build build = (Build) getProject().getReference(Key.build.maxId());
+		Build build = getBuild();
 		
 		if (outputFolder == null) {
 			build.console.error("Please specify an output folder!");

@@ -17,10 +17,13 @@ package com.maxtk.ant;
 
 import java.io.File;
 
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Javac;
 import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.Reference;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Path.PathElement;
 
 import com.maxtk.Build;
 import com.maxtk.Constants;
@@ -32,6 +35,7 @@ public class MxJavac extends Javac {
 	
 	Scope scope;
 	boolean clean;
+	boolean compileLinkedProjects;
 	boolean copyResources;
 	String includes;
 	String excludes;
@@ -39,7 +43,11 @@ public class MxJavac extends Javac {
 	public void setClean(boolean clean) {
 		this.clean = clean;
 	}
-	
+
+	public void setCompilelinkedprojects(boolean compileLinkedProjects) {
+		this.compileLinkedProjects = compileLinkedProjects;
+	}
+
 	public void setScope(String scope) {
 		this.scope = Scope.fromString(scope);
 	}
@@ -63,31 +71,72 @@ public class MxJavac extends Javac {
 			scope = Scope.defaultScope;
 		}
 		
-		switch (scope) {
-		case test:
-			// test compile scope
-			setDestdir(new File(getProject().getProperty(Key.test_outputpath.maxId())));
-			createSrc().setRefid(new Reference(getProject(), Key.test_sourcepath.maxId()));
-			setClasspathRef(new Reference(getProject(), Key.test_classpath.maxId()));
-			break;
-		default:
-			// default compile scope
-			setDestdir(new File(getProject().getProperty(Key.compile_outputpath.maxId())));
-			createSrc().setRefid(new Reference(getProject(), Key.compile_sourcepath.maxId()));
-			setClasspathRef(new Reference(getProject(), Key.compile_classpath.maxId()));
+		if (compileLinkedProjects) {
+			for (Build linkedProject: build.getLinkedProjects()) {			
+				try {
+					// clone this MxJavac instance to preserve settings
+					MxJavac subCompile = (MxJavac) this.clone();
+					subCompile.setFork(false);
+
+					// override the Maxilla project reference
+					Project project = new Project();
+					project.setBaseDir(linkedProject.getProjectFolder());
+					project.addReference(Key.build.maxId(), linkedProject);
+					subCompile.setProject(project);
+
+					// compile
+					subCompile.perform();
+				} catch (Exception e) {
+					build.console.error(e);
+					throw new BuildException(e);
+				}
+			}
 		}
+
+		build.console.title(getClass(), build.getPom().getManagementId() + ", " + scope.name());
 		
+		// project folder
+		build.console.debug(1, "projectdir = {0}", build.getProjectFolder());
+
+		// create sourcepath
+		Path sources = createSrc();
+		for (File file : build.getSourceFolders(scope)) {
+			PathElement element = sources.createPathElement();
+			element.setLocation(file);
+		}
+		build.console.debug(1, "sources = {0}", sources);
+
+		// set output folder
+		setDestdir(build.getOutputFolder(scope));
+		build.console.debug(1, "destdir = {0}", getDestdir());
+		
+		// create classpath
+		Path classpath = createClasspath();
+		for (File file : build.getClasspath(scope)) {
+			PathElement element = classpath.createPathElement();
+			element.setLocation(file);
+		}
+		for (Build subbuild : build.getLinkedProjects()) {
+			PathElement element = classpath.createPathElement();
+			element.setLocation(subbuild.getOutputFolder(scope));
+		}
+		build.console.debug(1, "classpath = {0}", classpath);
+				
 		if (clean) {
 			// clean the output folder before compiling
-			build.console.log("cleaning {0}", getDestdir().getAbsolutePath());
+			build.console.log("Cleaning {0}", getDestdir().getAbsolutePath());
 			FileUtils.delete(getDestdir());
 		}
 		
 		getDestdir().mkdirs();
 		
-		build.console.title(getClass(), scope.name());
-
+		// set the update property name so we know if nothing compiled
+		String prop = build.getPom().getCoordinates().replace(':', '.') + ".compiled";
+		setUpdatedProperty(prop);
 		super.execute();
+		if (getProject().getProperty(prop) == null) {
+			build.console.log(1, "compiled classes are up-to-date");
+		}
 		
 		// optionally copy resources from source folders
 		if (copyResources) {

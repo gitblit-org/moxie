@@ -16,7 +16,6 @@
 package com.maxtk.ant;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,11 +28,9 @@ import com.maxtk.Build;
 import com.maxtk.Constants.Key;
 import com.maxtk.Pom;
 import com.maxtk.Scope;
-import com.maxtk.SourceFolder;
-import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.StringUtils;
 
-public class MxSetup extends MxTask {
+public class MxInit extends MxTask {
 
 	private String config;
 	
@@ -43,18 +40,30 @@ public class MxSetup extends MxTask {
 
 	@Override
 	public void execute() throws BuildException {
+		Build build = getBuild();
+		if (build != null) {
+			// already initialized
+			return;
+		}
 		try {
-			String projectName = getProject().getProperty("project.name");
-			Build build;
 			if (StringUtils.isEmpty(config)) {
 				// default configuration
-				build = new Build("build.maxml", projectName);
+				build = new Build(new File("build.maxml"));
 			} else {
 				// specified configuration
-				build = new Build(config, projectName);
+				build = new Build(new File(config));
 			}
 			Map<String,String> antProperties = getProject().getProperties();
 			build.getPom().setAntProperties(antProperties);			
+
+			// add a reference to the full build object
+			addReference(Key.build, build, false);
+			
+			//setProperty("project.name", build.getPom().name);
+			
+			// output the build info
+			build.describe();
+			
 			build.setup(verbose);
 			
 			console = build.console;
@@ -64,9 +73,6 @@ public class MxSetup extends MxTask {
 				build.console.log("Maxilla ant properties", getProject().getProperty("ant.version"));
 			}
 
-			// add a reference to the full build object
-			addReference(Key.build, build, false);
-			
 			Pom pom = build.getPom();
 			
 			if (verbose) {
@@ -101,23 +107,17 @@ public class MxSetup extends MxTask {
 
 			setDependencypath(Key.compile_dependencypath, build, Scope.compile);
 			setDependencypath(Key.runtime_dependencypath, build, Scope.runtime);
-			setDependencypath(Key.test_dependencypath, build, Scope.test);
-		} catch (MaxmlException e) {
-			console.error(e, "Maxilla failed to parse your configuration file!");
-			throw new BuildException(e);
+			setDependencypath(Key.test_dependencypath, build, Scope.test);	
 		} catch (Exception e) {
-			console.error(e, "Maxilla failed to setup your project!");
 			throw new BuildException(e);
-		}
+		}		
 	}
 	
 	private void setSourcepath(Key key, Build build, Scope scope) {
 		Path sources = new Path(getProject());
-		for (SourceFolder sourceFolder : build.getSourceFolders()) {
-			if (sourceFolder.scope.isDefault() || sourceFolder.scope.equals(scope)) {
-				PathElement element = sources.createPathElement();
-				element.setLocation(sourceFolder.folder);
-			}
+		for (File file : build.getSourceFolders(scope)) {
+			PathElement element = sources.createPathElement();
+			element.setLocation(file);
 		}
 		addReference(key, sources, true);
 	}
@@ -159,66 +159,11 @@ public class MxSetup extends MxTask {
 	
 	private List<File> buildDependentProjectsClasspath(Build build) {
 		List<File> folders = new ArrayList<File>();
-		File basedir = getProject().getBaseDir();
-		String workspace = getProject().getProperty("eclipse.workspace");
-		for (String project : build.getProjects()) {
-			File projectDir = new File(basedir, "/../" + project);
-			if (projectDir.exists()) {
-				// project dependency is relative to this project
-				File outputFolder = getProjectOutputFolder(build, project, projectDir);
-				if (outputFolder != null && outputFolder.exists()) {
-					folders.add(outputFolder);
-				}
-			} else {
-				if (StringUtils.isEmpty(workspace)) {
-					// workspace is undefined, done looking
-					build.console.warn(MessageFormat.format("Failed to find project \"{0}\".  (FYI $'{'eclipse.workspace'}' is not set.)", project));
-				} else {
-					// check workspace
-					File wsDir = new File(workspace);
-					projectDir = new File(wsDir, project);
-					if (projectDir.exists()) {
-						File outputFolder = getProjectOutputFolder(build, project, projectDir);
-						if (outputFolder != null && outputFolder.exists()) {
-							folders.add(outputFolder);
-						}
-					} else {
-						build.console.error(MessageFormat.format("Failed to find project \"{0}\".", project));
-					}
-				}
-			}
-		}
+		List<Build> libraryProjects = build.getLinkedProjects();
+		for (Build project : libraryProjects) {
+			File outputFolder = project.getOutputFolder(Scope.compile);
+			folders.add(outputFolder);
+		}		
 		return folders;
-	}
-	
-	/**
-	 * Get the output folder for the dependent project
-	 * @param project
-	 * @param projectDir
-	 * @return
-	 */
-	private File getProjectOutputFolder(Build build, String project, File projectDir) {
-		File projectMax = new File(projectDir, "build.maxml");
-		if (projectMax.exists()) {
-			// dependent project has a build.maxml descriptor
-			try {
-				// TODO subproject dependencies?
-				Build subbuild = new Build(projectMax.getAbsolutePath(), null);
-				File projectOutputFolder = subbuild.getOutputFolder(Scope.compile);
-				return projectOutputFolder;
-			} catch (Exception e) {
-				console.error(e);
-			}
-		}
-		String [] tryThese = { "bin/java", "bin/classes", "bin", "build/classes", "build/java" };
-		for (String tryThis : tryThese) {
-		File projectOutputFolder = new File(projectDir, tryThis);
-			if (projectOutputFolder.exists() && projectOutputFolder.isDirectory()) {
-				build.console.warn(MessageFormat.format("Project {0} does not have a build.maxml descriptor but does have a \"{1}\" folder.", project, tryThis));
-				return projectOutputFolder;
-			}
-		}
-		build.console.error(MessageFormat.format("Could not find an output folder for project \"{0}\"!", project));
-		return null;
 	}
 }

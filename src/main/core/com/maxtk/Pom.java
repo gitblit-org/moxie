@@ -76,6 +76,13 @@ public class Pom {
 		properties.put(key.trim(), value);
 	}
 	
+	public String getAntProperty(String key) {
+		if (antProperties.containsKey(key)) {
+			return antProperties.get(key);
+		}
+		return null;
+	}
+	
 	private String getProperty(String key) {
 		String value = null;
 		if (properties.containsKey(key)) {
@@ -208,7 +215,7 @@ public class Pom {
 		return true;
 	}
 	
-	private String resolveProperties(String string) {
+	String resolveProperties(String string) {
 		if (string == null) {
 			return null;
 		}
@@ -331,7 +338,11 @@ public class Pom {
 			destinationMap.put(key, sourceMap.get(key));
 		}
 	}
-		
+
+	public String getManagementId() {
+		return groupId + ":" + artifactId;
+	}
+
 	public String getCoordinates() {
 		return groupId + ":" + artifactId + ":" + version + (classifier == null ? "" : (":" + classifier));
 	}

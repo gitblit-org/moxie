@@ -38,35 +38,56 @@
 	<taskdef resource="tasks.properties" classpath="${maxilla.jar}" uri="antlib:com.maxtk"/>
 
 	<!--
-	    maxilla.setup
+	
+	The targets in this script are designed to provide similar functionality to
+	the Maven build lifecycle phases.
+	
+	http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+	
 	-->
-	<target name="setup" description="retrieve dependencies and setup the ant environment">
-		<mx:setup />
-	</target>
 
 	<!--
-	    maxilla.clean
+	    maxilla.init
 	-->
-	<target name="clean" description="clean build and target folders">
-		<mx:clean />
+	<target name="init" description="validates project configuration, retrieves depdendencies, and configures ANT properties">
+		<mx:init />
 	</target>
 
 	<!--
 	    maxilla.compile
 	-->
-	<target name="compile" description="compile sources and copy resources">
-		<mx:clean scope="compile" />
+	<target name="compile" depends="init" description="compile the source code of the project">
 		<!-- TODO inject version and compile -->
-		<mx:javac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
+		<mx:javac compileLinkedProjects="true" copyResources="true" debug="true" includeantruntime="true" failonerror="true" />
 	</target>
-	
+
 	<!--
 	    maxilla.test
 	-->
-	<target name="test" description="compile and execute tests" depends="compile">
+	<target name="test" depends="compile" description="test the compiled source code using a suitable unit testing framework">
+		<!-- TODO test here -->
+	</target>
+
+	<!--
+	    maxilla.package
+	-->
+	<target name="package" depends="test" description="take the compiled code and package it in its distributable format, such as a JAR">
 		<mx:clean scope="test" />
-		<mx:javac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
-		<!-- TODO maxtest -->
+		<mx:jar includeResources="true" />
+	</target>
+
+	<!--
+	    maxilla.install
+	-->
+	<target name="install" depends="package" description="install the package into the local repository, for use as a dependency in other projects locally">
+		<mx:install />
+	</target>
+		
+	<!--
+	    maxilla.clean
+	-->
+	<target name="clean" depends="init" description="clean build and target folders">
+		<mx:clean />
 	</target>
 
 </project>

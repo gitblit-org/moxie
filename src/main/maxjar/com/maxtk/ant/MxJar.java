@@ -36,6 +36,7 @@ import com.maxtk.utils.StringUtils;
 public class MxJar extends GenJar {
 
 	ClassSpec mainclass;
+	boolean classResolution;
 	boolean fatjar;
 	boolean includeResources;
 	String includes;

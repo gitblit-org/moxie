@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 
 import com.maxtk.Build;
@@ -37,7 +36,7 @@ import com.maxtk.Regex;
 import com.maxtk.Substitute;
 import com.maxtk.utils.FileUtils;
 
-public class MxDoc extends Task {
+public class MxDoc extends MxTask {
 
 	Boolean verbose;
 
@@ -125,7 +124,7 @@ public class MxDoc extends Task {
 
 	@Override
 	public void execute() throws BuildException {
-		Build build = (Build) getProject().getReference(Key.build.maxId());
+		Build build = getBuild();
 		build.loadDependency(new Dependency("org.tautua.markdownpapers:markdownpapers-core:1.2.7"));
 
 		if (doc.sourceFolder == null) {

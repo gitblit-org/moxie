@@ -143,20 +143,26 @@ public class Solution implements Serializable {
 	}
 	
 	public void setDependencies(Scope scope, Collection<Dependency> dependencies) {
-		this.dependencies.put(scope, new LinkedHashSet<Dependency>(dependencies));
+		if (dependencies.size() > 0) {
+			this.dependencies.put(scope, new LinkedHashSet<Dependency>(dependencies));
+		} else {
+			this.dependencies.remove(scope);
+		}
 	}
 	
 	void keyError(Key key) {
 		System.err.println(MessageFormat.format("{0} is improperly specified, using default", key.name()));
 	}
 	
-	public String toMaxML() {
+	public String toMaxML() {		
 		StringBuilder sb = new StringBuilder();
-		sb.append(MessageFormat.format("{0} :\n", Key.dependencies.name()));
-		for (Map.Entry<Scope, Set<Dependency>> entry : dependencies.entrySet()) {
-			for (Dependency dep : entry.getValue()) {
-				// - scope ring coordinates
-				sb.append(MessageFormat.format("- {0} {1,number,0} {2}\n", entry.getKey(), dep.ring, dep.getCoordinates()));
+		if (dependencies.size() > 0) {
+			sb.append(MessageFormat.format("{0} :\n", Key.dependencies.name()));
+			for (Map.Entry<Scope, Set<Dependency>> entry : dependencies.entrySet()) {
+				for (Dependency dep : entry.getValue()) {
+					// - scope ring coordinates
+					sb.append(MessageFormat.format("- {0} {1,number,0} {2}\n", entry.getKey(), dep.ring, dep.getCoordinates()));
+				}
 			}
 		}
 		return sb.toString();

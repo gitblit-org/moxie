@@ -17,6 +17,7 @@ package com.maxtk;
 
 import java.io.File;
 import java.io.Serializable;
+import java.text.MessageFormat;
 
 import com.maxtk.Scope;
 
@@ -27,25 +28,42 @@ public class SourceFolder implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	public final File folder;
+	public final String name;
 	public final Scope scope;
+	private File sources;
+	private File classes;
 
-	public SourceFolder(File folder) {
-		this(folder, Scope.compile);
-	}
-	
-	public SourceFolder(File folder, Scope scope) {
-		this.folder = folder;
+	SourceFolder(String name, Scope scope) {
+		this.name = name;
 		this.scope = scope;
 	}
 	
-	public File getOutputFolder(File baseFolder) {
-		return new File(baseFolder, scope.equals(Scope.compile) ? "classes":"test");
+	boolean resolve(File projectFolder, File outputFolder) {
+		sources = new File(projectFolder, name);
+		if (sources.exists()) {
+			classes = new File(outputFolder, scope.equals(Scope.compile) ? "classes":"test");
+			return true;
+		}
+		return false;
+	}
+	
+	public File getSources() {
+		if (sources == null) {
+			throw new RuntimeException(MessageFormat.format("SourceFolder {0} has not been resolved!", name));
+		}
+		return sources;
+	}
+	
+	public File getOutputFolder() {
+		if (classes == null) {
+			throw new RuntimeException(MessageFormat.format("SourceFolder {0} has not been resolved!", name));
+		}
+		return classes;
 	}
 	
 	@Override
 	public int hashCode() {
-		return folder.hashCode();
+		return getSources().hashCode();
 	}
 	
 	@Override
@@ -58,6 +76,6 @@ public class SourceFolder implements Serializable {
 	
 	@Override
 	public String toString() {
-		return folder + " (" + scope + ")";
+		return getSources() + " (" + scope + ")";
 	}		
 }

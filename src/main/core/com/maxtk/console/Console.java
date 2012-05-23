@@ -124,7 +124,7 @@ public class Console {
 	
 	public void sourceFolder(SourceFolder sourceFolder) {
 		out.append(Constants.INDENT);
-		out.print(ansi().fg(Color.GREEN).a(sourceFolder.folder.getName()).reset());
+		out.print(ansi().fg(Color.GREEN).a(sourceFolder.name).reset());
 		out.print(" (");
 		out.print(ansi().bold().fg(Color.MAGENTA).a(sourceFolder.scope).boldOff().reset());
 		out.println(")");
@@ -184,7 +184,7 @@ public class Console {
 		for (int i = 0; i < indent; i++) {
 			out.append(Constants.INDENT);
 		}
-		out.println(ansi().fg(Color.BLUE).a(MessageFormat.format(message, args)).reset());		
+		out.println(ansi().bold().fg(Color.BLUE).a(MessageFormat.format(message, args)).boldOff().reset());		
 	}
 
 	public void key(String key, String value) {

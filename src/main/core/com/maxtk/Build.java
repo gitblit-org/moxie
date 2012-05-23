@@ -32,6 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.tools.ant.BuildException;
+
 import com.maxtk.Constants.Key;
 import com.maxtk.console.Console;
 import com.maxtk.maxml.MaxmlException;
@@ -56,35 +58,39 @@ public class Build {
 	public final Config maxilla;
 	public final Config project;
 	public final ArtifactCache artifactCache;
-	public Console console;
+	public final Console console;
 	
 	private final Map<Scope, Set<Dependency>> solutions;	
 	private final Map<Scope, List<File>> classpaths;
 	
+	@SuppressWarnings("unused")
 	private final File configFile;
 	private final File projectFolder;
 	
+	private List<Build> linkedProjects;
+	
+	private boolean silent;
 	private boolean verbose;
 	private boolean solutionBuilt;
 	
-	public Build(String filename, String projectName) throws MaxmlException, IOException {
-		this.configFile = new File(filename);
-		this.projectFolder = configFile.getParentFile();
+	public Build(File configFile) throws MaxmlException, IOException {
+		this.configFile = configFile;
+		this.projectFolder = configFile.getAbsoluteFile().getParentFile();
 		
 		this.maxilla = Config.load(SETTINGS, true);
 		this.project = Config.load(configFile, false);
-		
-		if (StringUtils.isEmpty(project.getPom().name)) {
-			// use Ant project name if not set in build.maxml
-			project.getPom().name = projectName;
-		}
 		
 		this.proxies = new LinkedHashSet<Proxy>();
 		this.repositories = new LinkedHashSet<Repository>();
 		this.artifactCache = new MaxillaCache();
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
 		this.classpaths = new HashMap<Scope, List<File>>();
-		this.console = new Console(isColor());		
+		this.console = new Console(isColor());
+		this.console.setDebug(isDebug());
+
+		console.debug("determining proxies and repositories");
+		determineProxies();
+		determineRepositories();
 	}
 	
 	public boolean isColor() {
@@ -98,6 +104,10 @@ public class Build {
 	public boolean isVerbose() {
 		return verbose;
 	}
+	
+	public void setVerbose(boolean verbose) {
+		this.verbose = verbose;
+	}
 
 	private boolean cache() {
 		return maxilla.apply(Constants.APPLY_CACHE) || project.apply(Constants.APPLY_CACHE);
@@ -105,17 +115,7 @@ public class Build {
 	
 	public void setup(boolean verbose) {
 		this.verbose = verbose;
-		console.debug(1, "determining proxies and repositories");
-		determineProxies();
-		determineRepositories();
-		
-		console.setDebug(isDebug());
-		
-		console.title(getPom().name, getPom().version);
-
-		describeConfig();
-		describeSettings();
-		
+				
 		solve();
 		
 		if (project.apply.size() > 0) {
@@ -161,12 +161,6 @@ public class Build {
 			} else if (Constants.GOOGLECODE.equalsIgnoreCase(url)) {
 					// GoogleCode
 				repositories.add(GOOGLECODE);
-			} else if ("gitblit".equalsIgnoreCase(url)) {
-				// Gitblit Maven Proxy
-				String gitblit = getGitblitUrl();
-				if (!StringUtils.isEmpty(gitblit)) {
-					repositories.add(new Repository("Gitblit", gitblit));	
-				}
 			} else {
 				// unidentified repository
 				repositories.add(new Repository(null, url));
@@ -182,62 +176,21 @@ public class Build {
 	public Pom getPom() {
 		return project.pom;
 	}
-	
-	public List<SourceFolder> getSourceFolders() {
-		return project.sourceFolders;
-	}
-
-	public List<String> getProjects() {
-		return project.projects;
-	}
-	
-	/**
-	 * Attempts to return a Gitblit Maven proxy url.  This requires that the
-	 * project be version-controlled with Git and that the "origin" is an http
-	 * or https uri which "looks" like a Gitblit repository url.
-	 * 
-	 * @return
-	 */
-	private String getGitblitUrl() {
-		File folder = new File("").getAbsoluteFile();
-		File configFile = null;
-		if (hasGitRepo(folder)) {
-			configFile = new File(folder, ".git/config");
-		} else if (hasGitRepo(folder.getParentFile())) {
-			configFile = new File(folder.getParentFile(), ".git/config");
-		}
-		if (configFile == null) {
-			return null;
-		}
-		String content = FileUtils.readContent(configFile,"\n");
-		String [] lines = content.split("\n");
-		for (int i = 0; i < lines.length; i++) {
-			if (lines[i].startsWith("[remote \"origin\"")) {
-				for (int j = i + 1; j < lines.length; j++) {
-					if (lines[j].contains("[remote \"")) {
-						// didn't find url :(
-						break;
-					} else if (lines[j].trim().startsWith("url")) {
-						String url = lines[j].substring(lines[j].indexOf('=') + 1).trim();
-						if (url.toLowerCase().startsWith("http://") 
-								|| url.toLowerCase().startsWith("https://")) {
-							if (url.indexOf("/git/") > -1) {
-								// this looks like a Gitblit url
-								url = url.substring(0, url.indexOf("/git/"));
-								return url += "/maven2";
-							}
-						}
-					}
-				}
+		
+	public List<File> getSourceFolders(Scope scope) {
+		List<File> folders = new ArrayList<File>();
+		for (SourceFolder sourceFolder : project.sourceFolders) {
+			if (sourceFolder.scope.isDefault() || sourceFolder.scope.equals(scope)) {				
+				folders.add(sourceFolder.getSources());
 			}
 		}
-		return null;
+		return folders;
 	}
 	
-	private boolean hasGitRepo(File folder) {
-		return new File(folder, ".git/config").exists();
+	public List<Build> getLinkedProjects() {
+		return linkedProjects;
 	}
-	
+
 	public ArtifactCache getArtifactCache() {
 		return artifactCache;
 	}
@@ -270,6 +223,9 @@ public class Build {
 	public void solve() {
 		readProjectSolution();
 		if (solutions.size() == 0) {
+			// solve linked projects
+			solveLinkedProjects();
+			
 			// build solution
 			retrievePOMs();
 			importDependencyManagement();
@@ -281,6 +237,41 @@ public class Build {
 			
 			// flag new solution
 			solutionBuilt = true;
+		}
+	}
+	
+	private void solveLinkedProjects() {
+		linkedProjects = new ArrayList<Build>();
+		for (LinkedProject linkedProject : project.linkedProjects) {
+			console.debug(Constants.SEP);
+			String resolvedName = getPom().resolveProperties(linkedProject.name);
+			if (resolvedName.equals(linkedProject.name)) {
+				console.debug("locating linked project {0}", linkedProject.name);
+			} else {
+				console.debug("locating linked project {0} ({1})", linkedProject.name, resolvedName);
+			}
+			File projectDir = new File(resolvedName);
+			if (!projectDir.exists()) {
+				console.error("failed to find linked project \"{0}\".", linkedProject.name);
+				continue;
+			}
+			try {
+				File file = new File(projectDir, linkedProject.descriptor);
+				if (file.exists()) {
+					// use Maxilla config
+					console.debug("located linked project {0} ({1})", linkedProject.name, file.getAbsolutePath());
+					Build subProject = new Build(file.getAbsoluteFile());
+					subProject.silent = true;
+					console.debug("initializing linked project {0}", subProject.getPom().getCoordinates());
+					subProject.solve();
+					linkedProjects.add(subProject);
+				} else {
+					console.error("linked project {0} does not have a {1} descriptor!", linkedProject.name, linkedProject.descriptor);
+				}
+			} catch (Exception e) {
+				console.error(e, "failed to parse linked project {0}", linkedProject.name);
+				throw new BuildException(e);
+			}
 		}
 	}
 	
@@ -338,15 +329,21 @@ public class Build {
 		console.debug("retrieving artifacts");
 		// solve dependencies for compile, runtime, and test scopes
 		for (Scope scope : new Scope [] { Scope.compile, Scope.runtime, Scope.test }) {
-			console.separator();
-			console.scope(scope);
-			console.separator();
+			if (!silent) {
+				console.separator();
+				console.scope(scope);
+				console.separator();
+			}
 			Set<Dependency> solution = solve(scope);
 			if (solution.size() == 0) {
-				console.log(1, "none");
+				if (!silent) {
+					console.log(1, "none");
+				}
 			} else {
 				for (Dependency dependency : solution) {
-					console.dependency(dependency);
+					if (!silent) {
+						console.dependency(dependency);
+					}
 					retrieveArtifact(dependency, true);
 				}
 			}
@@ -756,9 +753,9 @@ public class Build {
 		sb.append("<classpath>\n");
 		for (SourceFolder sourceFolder : project.sourceFolders) {
 			if (sourceFolder.scope.isDefault()) {
-				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", sourceFolder.folder));
+				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources())));
 			} else {
-				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" output=\"{1}\"/>\n", sourceFolder.folder, getEclipseOutputFolder(sourceFolder.scope)));
+				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" output=\"{1}\"/>\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources()), FileUtils.getRelativePath(projectFolder, getEclipseOutputFolder(sourceFolder.scope))));
 			}
 		}
 		
@@ -767,7 +764,7 @@ public class Build {
 		for (Dependency dependency : dependencies) {
 			if (dependency instanceof SystemDependency) {
 				SystemDependency sys = (SystemDependency) dependency;
-				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", sys.path));
+				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, new File(sys.path))));
 			} else {				
 				File jar = artifactCache.getFile(dependency, dependency.type);
 				Dependency sources = dependency.getSourcesArtifact();
@@ -781,10 +778,11 @@ public class Build {
 				}
 			}
 		}
-		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", getEclipseOutputFolder(Scope.compile)));
+		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", FileUtils.getRelativePath(projectFolder, getEclipseOutputFolder(Scope.compile))));
 				
-		for (String projectRef : project.projects) {
-			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", projectRef));
+		for (LinkedProject linkedProject : project.linkedProjects) {
+			String relativeProject = linkedProject.name.substring(linkedProject.name.replace('\\', '/').lastIndexOf('/'));
+			sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", relativeProject));
 		}
 		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
 		sb.append("</classpath>");
@@ -825,6 +823,13 @@ public class Build {
 		sb.append("<!-- This file is automatically generated by Maxilla. DO NOT HAND EDIT! -->\n");
 		sb.append(project.pom.toXML());
 		FileUtils.writeContent(new File(projectFolder, "pom.xml"), sb.toString());
+	}
+	
+	public void describe() {
+		console.title(getPom().name, getPom().version);
+
+		describeConfig();
+		describeSettings();
 	}
 	
 	void describeConfig() {
