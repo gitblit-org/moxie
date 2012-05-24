@@ -35,14 +35,14 @@ public abstract class MxTask extends Task {
 	}
 	
 	protected Build getBuild() {
-		Build build = (Build) getProject().getReference(Key.build.maxId());
+		Build build = (Build) getProject().getReference(Key.build.refId());
 		return build;
 	}
 
 	protected void setProperty(Key prop, String value) {
 		if (!StringUtils.isEmpty(value)) {
-			getProject().setProperty(prop.maxId(), value);
-			log(prop.maxId(), value, false);
+			getProject().setProperty(prop.propId(), value);
+			log(prop.propId(), value, false);
 		}
 	}
 
@@ -54,8 +54,8 @@ public abstract class MxTask extends Task {
 	}
 
 	protected void addReference(Key prop, Object obj, boolean split) {
-		getProject().addReference(prop.maxId(), obj);
-		log(prop.maxId(), obj.toString(), split);
+		getProject().addReference(prop.refId(), obj);
+		log(prop.refId(), obj.toString(), split);
 	}
 	
 	protected void log(String key, String value, boolean split) {

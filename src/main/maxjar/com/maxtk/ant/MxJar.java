@@ -81,7 +81,7 @@ public class MxJar extends GenJar {
 
 	@Override
 	public void execute() throws BuildException {
-		Build build = (Build) getProject().getReference(Key.build.maxId());
+		Build build = (Build) getProject().getReference(Key.build.refId());
 
 		// automatic manifest entries from Maxilla metadata
 		setManifest("Created-By", "Maxilla v" + Constants.VERSION);
@@ -116,7 +116,7 @@ public class MxJar extends GenJar {
 		
 		// automatic classpath resolution, if not manually specified
 		if (classpath == null) {
-			Object o = getProject().getReference(Key.compile_classpath.maxId());
+			Object o = getProject().getReference(Key.compile_classpath.refId());
 			if (o != null && o instanceof Path) {
 				Path cp = (Path) o;
 				if (fatjar) {
@@ -204,7 +204,7 @@ public class MxJar extends GenJar {
 	}
 
 	void setManifest(String key, Key prop) {
-		String value = getProject().getProperty(prop.maxId());
+		String value = getProject().getProperty(prop.propId());
 		if (!StringUtils.isEmpty(value)) {
 			setManifest(key, value);
 		}

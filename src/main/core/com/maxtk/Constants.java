@@ -58,8 +58,13 @@ public class Constants {
 		compile_dependencypath, runtime_dependencypath, test_dependencypath, commit, targetFolder,
 		proxies, parent, exclusions;
 		
-		public String maxId() {
-			return "max." + name().replace('_', '.');
+		public String propId() {
+			return "mxp." + name().replace('_', '.');
 		}
+		
+		public String refId() {
+			return "mxr." + name().replace('_', '.');
+		}
+
 	}
 }

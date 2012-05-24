@@ -65,7 +65,7 @@ public class MxJavac extends Javac {
 	}
 
 	public void execute() {
-		Build build = (Build) getProject().getReference(Key.build.maxId());
+		Build build = (Build) getProject().getReference(Key.build.refId());
 		
 		if (scope == null) {
 			scope = Scope.defaultScope;
@@ -81,7 +81,7 @@ public class MxJavac extends Javac {
 					// override the Maxilla project reference
 					Project project = new Project();
 					project.setBaseDir(linkedProject.getProjectFolder());
-					project.addReference(Key.build.maxId(), linkedProject);
+					project.addReference(Key.build.refId(), linkedProject);
 					subCompile.setProject(project);
 
 					// compile

@@ -33,18 +33,18 @@ public class MxClean extends MxTask {
 	public void execute() {
 		if (scope == null) {
 			// clean output folder
-			File dir = new File(getProject().getProperty(Key.outputFolder.maxId()));
+			File dir = new File(getProject().getProperty(Key.outputFolder.propId()));
 			console.log("cleaning {0}", dir.getAbsolutePath());
 			FileUtils.delete(dir);			
 
 			// clean target folder
-			dir = new File(getProject().getProperty(Key.targetFolder.maxId()));
+			dir = new File(getProject().getProperty(Key.targetFolder.propId()));
 			console.log("cleaning {0}", dir.getAbsolutePath());
 			FileUtils.delete(dir);
 			
-			if (getProject().getProperty(Key.dependencyFolder.maxId()) != null) {
+			if (getProject().getProperty(Key.dependencyFolder.propId()) != null) {
 				// clean project dependency folder
-				dir = new File(getProject().getProperty(Key.dependencyFolder.maxId()));
+				dir = new File(getProject().getProperty(Key.dependencyFolder.propId()));
 				console.log("cleaning {0}", dir.getAbsolutePath());
 				FileUtils.delete(dir);
 			}

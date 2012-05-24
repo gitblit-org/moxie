@@ -32,7 +32,7 @@ public class MxGitId extends MxGitTask {
 
 	@Override
 	public void execute() throws org.apache.tools.ant.BuildException {
-		Build build = (Build) getProject().getReference(Key.build.maxId());
+		Build build = (Build) getProject().getReference(Key.build.refId());
 		loadDependency(build);
 
 		if (repositoryFolder == null || !repositoryFolder.exists()) {
@@ -45,7 +45,7 @@ public class MxGitId extends MxGitTask {
 		verbose = false;
 		if (StringUtils.isEmpty(property)) {
 			setProperty(Key.commit, hashid);
-			build.console.key(Key.commit.maxId(), hashid);
+			build.console.key(Key.commit.propId(), hashid);
 		} else {
 			setProperty(property, hashid);
 			build.console.key(property, hashid);

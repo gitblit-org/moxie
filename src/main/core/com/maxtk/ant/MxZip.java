@@ -26,12 +26,12 @@ import com.maxtk.utils.StringUtils;
 public class MxZip extends Zip {
 	
 	public void execute() {
-		Build build = (Build) getProject().getReference(Key.build.maxId());
+		Build build = (Build) getProject().getReference(Key.build.refId());
 		if (zipFile == null) {
 			// default output jar if file unspecified
-			String name = getProject().getProperty(Key.artifactId.maxId());
-			if (!StringUtils.isEmpty(getProject().getProperty(Key.version.maxId()))) {
-				name += "-" + getProject().getProperty(Key.version.maxId());
+			String name = getProject().getProperty(Key.artifactId.propId());
+			if (!StringUtils.isEmpty(getProject().getProperty(Key.version.propId()))) {
+				name += "-" + getProject().getProperty(Key.version.propId());
 			}
 			zipFile = new File(build.getTargetFolder(), name + ".zip");
 		}

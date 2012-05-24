@@ -69,7 +69,7 @@
 		<mx:gitid verbose="true" />
 		
 		<!-- Delete the target folder -->
-		<delete dir="${max.targetFolder}" />
+		<delete dir="${mxp.targetFolder}" />
 		
 		<!-- Maxilla-Core -->
 		<mx:jar classifier="core">
@@ -137,11 +137,11 @@
 		</mx:jar>
 
 		<!-- Maxml -->
-		<mx:jar destfile="${max.targetFolder}/maxml-${max.version}.jar">
+		<mx:jar destfile="${mxp.targetFolder}/maxml-${mxp.version}.jar">
 			<class name="com.maxtk.maxml.Maxml" />
 		</mx:jar>
 
-		<jar destfile="${max.targetFolder}/maxml-${max.version}-sources.jar">
+		<jar destfile="${mxp.targetFolder}/maxml-${mxp.version}-sources.jar">
 			<fileset dir="${basedir}/src/main/core/com/maxtk/maxml" />
 		</jar>
 		
@@ -176,12 +176,12 @@
 				<link name="GitHub" src="http://github.com/gitblit/maxilla" />
 				<divider />
 			</structure>
-			<substitute token="%VERSION%" value="${max.version}" />
+			<substitute token="%VERSION%" value="${mxp.version}" />
 			<nomarkdown startToken="%BEGINMAXML%" endToken="%ENDMAXML%" prettify="true" lang="lang-yaml" />
 			<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />
 			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />
 			<resource>
-				<fileset dir="${max.targetFolder}/" includes="*.jar" />
+				<fileset dir="${mxp.targetFolder}/" includes="*.jar" />
 			</resource>
 		</mx:doc>
 	</target>
@@ -190,6 +190,6 @@
 	Build the Maxilla gh-pages branch
 	-->
 	<target name="ghpages" depends="main">
-		<mx:ghpages sourceFolder="${max.targetFolder}/site" obliterate="true" />
+		<mx:ghpages sourceFolder="${mxp.targetFolder}/site" obliterate="true" />
 	</target>
 </project>
