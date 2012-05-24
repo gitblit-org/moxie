@@ -24,3 +24,21 @@ outputFolder: build
 
 # The base folder within the project for build artifacts.
 targetFolder: target
+
+# mx:Javac compiler attributes
+# http://ant.apache.org/manual/Tasks/javac.html
+mxjavac: {
+   clean: true
+   compileLinkedProjects: true
+   copyResources: true
+   debug: true
+   fork: false
+   failOnError: true
+   includeAntRuntime: true
+   excludes: **/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
+}
+
+# mx:Jar attributes
+mxjar: {
+   excludes: **/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
+}

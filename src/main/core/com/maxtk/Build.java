@@ -40,6 +40,7 @@ import org.apache.tools.ant.BuildException;
 import com.maxtk.Constants.Key;
 import com.maxtk.console.Console;
 import com.maxtk.maxml.MaxmlException;
+import com.maxtk.maxml.MaxmlMap;
 import com.maxtk.utils.Base64;
 import com.maxtk.utils.DeepCopier;
 import com.maxtk.utils.FileUtils;
@@ -54,7 +55,6 @@ public class Build {
 	public static final File DEFAULTS = new File(System.getProperty("user.home") + "/.maxilla/defaults.maxml");
 
 	public static final Repository CENTRAL = new Repository("MavenCentral", Constants.MAVENCENTRAL_URL);
-
 	public static final Repository GOOGLECODE = new GoogleCode();
 	
 	public final Set<Proxy> proxies;
@@ -154,14 +154,14 @@ public class Build {
 			if (solutionBuilt && project.apply(Constants.APPLY_ECLIPSE)) {
 				writeEclipseClasspath();
 				writeEclipseProject();
-				console.warn(1, "rebuilt Eclipse configuration");
+				console.notice(1, "rebuilt Eclipse configuration");
 				applied = true;
 			}
 		
 			// create/update Maven POM
 			if (solutionBuilt && project.apply(Constants.APPLY_POM)) {
 				writePOM();
-				console.warn(1, "rebuilt pom.xml");
+				console.notice(1, "rebuilt pom.xml");
 				applied = true;
 			}
 			
@@ -203,7 +203,15 @@ public class Build {
 	public Pom getPom() {
 		return project.pom;
 	}
-		
+	
+	public MaxmlMap getMxJavacAttributes() {
+		return project.mxjavac;
+	}
+
+	public MaxmlMap getMxJarAttributes() {
+		return project.mxjar;
+	}
+
 	public List<File> getSourceFolders(Scope scope) {
 		List<File> folders = new ArrayList<File>();
 		for (SourceFolder sourceFolder : project.sourceFolders) {

@@ -54,6 +54,8 @@ public class Config implements Serializable {
 	File outputFolder;
 	File targetFolder;
 	Set<String> apply;
+	MaxmlMap mxjavac;
+	MaxmlMap mxjar;
 
 	public Config() {
 		// default configuration
@@ -153,6 +155,12 @@ public class Config implements Serializable {
 		
 		pom.addExclusions(readStrings(map, Key.exclusions, new ArrayList<String>(), true));
 
+		if (map.containsKey(Key.mxjavac.name())) {
+			mxjavac = (MaxmlMap) map.get(Key.mxjavac.name());
+		}
+		if (map.containsKey(Key.mxjar.name())) {
+			mxjar = (MaxmlMap) map.get(Key.mxjar.name());
+		}
 		return this;
 	}
 
@@ -436,5 +444,7 @@ public class Config implements Serializable {
 		outputFolder = parent.outputFolder;
 		targetFolder = parent.targetFolder;
 		apply = parent.apply;
+		mxjavac = parent.mxjavac;
+		mxjar = parent.mxjar;
 	}
 }

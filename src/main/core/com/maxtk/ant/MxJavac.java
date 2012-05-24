@@ -16,6 +16,11 @@
 package com.maxtk.ant;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -29,6 +34,7 @@ import com.maxtk.Build;
 import com.maxtk.Constants;
 import com.maxtk.Constants.Key;
 import com.maxtk.Scope;
+import com.maxtk.maxml.MaxmlMap;
 import com.maxtk.utils.FileUtils;
 
 public class MxJavac extends Javac {
@@ -40,33 +46,124 @@ public class MxJavac extends Javac {
 	String includes;
 	String excludes;
 	
+	public boolean getClean() {
+		return clean;
+	}
+	
 	public void setClean(boolean clean) {
 		this.clean = clean;
+	}
+	
+	public boolean getCompilelinkedprojects() {
+		return compileLinkedProjects;
 	}
 
 	public void setCompilelinkedprojects(boolean compileLinkedProjects) {
 		this.compileLinkedProjects = compileLinkedProjects;
 	}
+	
+	public String getScope() {
+		return scope.name();
+	}
 
 	public void setScope(String scope) {
 		this.scope = Scope.fromString(scope);
+	}
+	
+	public boolean getCopyresources() {
+		return copyResources;
 	}
 
 	public void setCopyresources(boolean copy) {
 		this.copyResources = copy;
 	}
+	
+	public String getIncludes() {
+		return includes;
+	}
 
 	public void setIncludes(String includes) {
 		this.includes = includes;
+	}
+	
+	public String getExcludes() {
+		return excludes;
 	}
 
 	public void setExcludes(String excludes) {
 		this.excludes = excludes;
 	}
+	
+	@Override
+	public void setProject(Project project) {
+		super.setProject(project);
+		Build build = (Build) getProject().getReference(Key.build.refId());
+		configure(build);
+	}
+	
+	/**
+	 * Configure the javac task from the mxjavac attributes
+	 * @param build
+	 */
+	private void configure(Build build) {
+		MaxmlMap attributes = build.getMxJavacAttributes();
+		if (attributes == null) {
+			build.console.error("mx:Javac attributes are null!");
+			return;
+		}
+		if (attributes.containsKey(Key.excludes.name())) {
+			excludes = attributes.getString(Key.excludes.name(), null);
+		}
+		if (attributes.containsKey(Key.includes.name())) {
+			includes = attributes.getString(Key.includes.name(), null);
+		}
+		try {
+			Map<String, Method> methods = new HashMap<String, Method>();
+			for (Class<?> javacClass : new Class<?>[] { Javac.class, MxJavac.class }) {
+				for (Method method: javacClass.getDeclaredMethods()) {
+					if (method.getName().startsWith("set")) {
+						methods.put(method.getName().toLowerCase(), method);
+					}
+				}
+			}
+			for (String key : attributes.keySet()) {
+				if (key.equalsIgnoreCase(Key.compilerArgs.name())) {
+					// compiler args are special
+					List<String> args = (List<String>) attributes.getStrings(key,new ArrayList<String>());
+					for (String arg : args) {
+						createCompilerArg().setValue(arg);
+					}
+					continue;
+				}
+				// attributes
+				Method method = methods.get("set" + key.toLowerCase());
+				if (method == null) {					
+					build.console.error("unknown mx:Javac attribute {0}", key);
+					continue;
+				}
+				method.setAccessible(true);
+				Object value = null;
+				Class<?> parameterClass = method.getParameterTypes()[0];
+				if (String.class.isAssignableFrom(parameterClass)) {
+					value = attributes.getString(key, "");
+				} else if (boolean.class.isAssignableFrom(parameterClass)
+						|| Boolean.class.isAssignableFrom(parameterClass)) {
+					value = attributes.getBoolean(key, false);
+				} else if (int.class.isAssignableFrom(parameterClass)
+						|| Integer.class.isAssignableFrom(parameterClass)) {
+					value = attributes.getInt(key, 0);
+				}
+				method.invoke(this, value);
+			}			
+		} catch (Exception e) {
+			build.console.error(e);
+			throw new BuildException("failed to set mx:Javac attributes!", e);
+		}
+	}
 
 	public void execute() {
 		Build build = (Build) getProject().getReference(Key.build.refId());
-		
+				
 		if (scope == null) {
 			scope = Scope.defaultScope;
 		}
@@ -74,17 +171,13 @@ public class MxJavac extends Javac {
 		if (compileLinkedProjects) {
 			for (Build linkedProject: build.getLinkedProjects()) {			
 				try {
-					// clone this MxJavac instance to preserve settings
-					MxJavac subCompile = (MxJavac) this.clone();
-					subCompile.setFork(false);
-
-					// override the Maxilla project reference
+					// compile the linked project
 					Project project = new Project();
 					project.setBaseDir(linkedProject.getProjectFolder());
 					project.addReference(Key.build.refId(), linkedProject);
-					subCompile.setProject(project);
 
-					// compile
+					MxJavac subCompile = new MxJavac();
+					subCompile.setProject(project);
 					subCompile.perform();
 				} catch (Exception e) {
 					build.console.error(e);
@@ -94,6 +187,35 @@ public class MxJavac extends Javac {
 		}
 
 		build.console.title(getClass(), build.getPom().getManagementId() + ", " + scope.name());
+
+		build.console.debug("mxjavac configuration");
+
+		// display specified mxjavac attributes
+		MaxmlMap attributes = build.getMxJavacAttributes();
+		if (attributes != null) {
+			try {
+				Map<String, Method> methods = new HashMap<String, Method>();
+				for (Class<?> javacClass : new Class<?>[] { Javac.class, MxJavac.class }) {
+					for (Method method: javacClass.getDeclaredMethods()) {
+						if (method.getName().startsWith("get")) {
+							methods.put(method.getName().toLowerCase(), method);
+						}
+					}
+				}
+				for (String attrib : attributes.keySet()) {
+					Method method = methods.get("get" + attrib.toLowerCase());
+					if (method == null) {
+						continue;
+					}
+					method.setAccessible(true);
+					Object value = method.invoke(this, (Object[]) null);
+					build.console.debug(1, "{0} = {1}", attrib, value);
+				}			
+			} catch (Exception e) {
+				build.console.error(e);
+				throw new BuildException("failed to get mx:Javac attributes!", e);
+			}
+		}
 		
 		// project folder
 		build.console.debug(1, "projectdir = {0}", build.getProjectFolder());
@@ -163,7 +285,9 @@ public class MxJavac extends Javac {
 					if (includes != null) {
 						set.setIncludes(includes);
 					}
-					set.setExcludes(excludes);
+					if (excludes != null) {
+						set.setExcludes(excludes);
+					}
 					copy.add(set);
 					if (getVerbose()) {
 						build.console.log("adding resource path {0}", path);

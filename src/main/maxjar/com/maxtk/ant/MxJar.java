@@ -16,10 +16,14 @@
 package com.maxtk.ant;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
@@ -30,6 +34,7 @@ import com.maxtk.Constants.Key;
 import com.maxtk.Pom;
 import com.maxtk.Scope;
 import com.maxtk.ant.Mft.MftAttr;
+import com.maxtk.maxml.MaxmlMap;
 import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
@@ -58,25 +63,63 @@ public class MxJar extends GenJar {
 		}
 		throw new BuildException("Can only specify one main class");
 	}
+	
+	public boolean getFatjar() {
+		return fatjar;
+	}
 
 	public void setFatjar(boolean value) {
 		this.fatjar = value;
 	}
 	
+	public boolean getIncludesresources() {
+		return includeResources;
+	}
+	
 	public void setIncluderesources(boolean copy) {
 		this.includeResources = copy;
+	}
+	
+	public String getIncludes() {
+		return includes;
 	}
 
 	public void setIncludes(String includes) {
 		this.includes = includes;
+	}
+	
+	public String getExcludes() {
+		return excludes;
 	}
 
 	public void setExcludes(String excludes) {
 		this.excludes = excludes;
 	}
 
+	public String getClassifier() {
+		return classifier;
+	}
+	
 	public void setClassifier(String classifier) {
 		this.classifier = classifier;
+	}
+	
+	@Override
+	public void setProject(Project project) {
+		super.setProject(project);
+		Build build = (Build) getProject().getReference(Key.build.refId());
+		configure(build);
+	}
+
+	private void configure(Build build) {
+		MaxmlMap attributes = build.getMxJarAttributes();
+		if (attributes == null) {
+			build.console.error("mx:Jar attributes are null!");
+			return;
+		}
+		if (attributes.containsKey(Key.excludes.name())) {
+			excludes = attributes.getString(Key.excludes.name(), null);
+		}
 	}
 
 	@Override
@@ -177,6 +220,35 @@ public class MxJar extends GenJar {
 		}
 		
 		build.console.title(getClass(), destFile.getName());
+		
+		build.console.debug("mxjar configuration");
+
+		// display specified mxjar attributes
+		MaxmlMap attributes = build.getMxJarAttributes();
+		if (attributes != null) {
+			try {
+				Map<String, Method> methods = new HashMap<String, Method>();
+				for (Class<?> javacClass : new Class<?>[] { MxJar.class }) {
+					for (Method method: javacClass.getDeclaredMethods()) {
+						if (method.getName().startsWith("get")) {
+							methods.put(method.getName().toLowerCase(), method);
+						}
+					}
+				}
+				for (String attrib : attributes.keySet()) {
+					Method method = methods.get("get" + attrib.toLowerCase());
+					if (method == null) {
+						continue;
+					}
+					method.setAccessible(true);
+					Object value = method.invoke(this, (Object[]) null);
+					build.console.debug(1, "{0} = {1}", attrib, value);
+				}			
+			} catch (Exception e) {
+				build.console.error(e);
+				throw new BuildException("failed to get mx:Jar attributes!", e);
+			}
+		}
 		
 		long start = System.currentTimeMillis();
 		super.execute();

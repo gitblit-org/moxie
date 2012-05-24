@@ -198,6 +198,17 @@ public class Console {
 		out.println(ansi().fg(Color.YELLOW).a(value).reset());
 	}
 	
+	public final void notice(String message) {
+		notice(0, message, emptyArray);
+	}
+
+	public void notice(int indent, String message, Object... args) {
+		for (int i = 0; i < indent; i++) {
+			out.append(Constants.INDENT);
+		}
+		out.println(ansi().fg(Color.YELLOW).a(MessageFormat.format(message, args)).reset());
+	}
+	
 	public final void warn(Throwable t) {
 		warn(t, null, emptyArray);
 	}
@@ -214,12 +225,12 @@ public class Console {
 		for (int i = 0; i < indent; i++) {
 			out.append(Constants.INDENT);
 		}
-		out.println(ansi().fg(Color.YELLOW).a(MessageFormat.format(message, args)).reset());
+		out.println(ansi().bold().fg(Color.YELLOW).a(MessageFormat.format(message, args)).boldOff().reset());
 	}
 
 	public void warn(Throwable t, String message, Object... args) {
 		if (!StringUtils.isEmpty(message)) {
-			out.println(ansi().fg(Color.YELLOW).a(MessageFormat.format(message, args)).reset());
+			out.println(ansi().bold().fg(Color.YELLOW).a(MessageFormat.format(message, args)).boldOff().reset());
 		}
 		if (t != null) {
 			t.printStackTrace(out);
@@ -244,7 +255,7 @@ public class Console {
 
 	public void error(Throwable t, String message, Object... args) {
 		if (!StringUtils.isEmpty(message)) {
-			err.println(ansi().fgBright(Color.RED).a(MessageFormat.format(message, args)).reset());
+			err.println(ansi().bold().fg(Color.RED).a(MessageFormat.format(message, args)).boldOff().reset());
 		}
 		if (t != null) {
 			t.printStackTrace(err);

@@ -30,7 +30,7 @@
 
 		<!-- Compile all of Maxilla with mx:javac and retrieved dependencies -->
 		<taskdef classname="com.maxtk.ant.MxJavac" name="javac" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<mx:javac debug="true" includeantruntime="true" failonerror="true" copyResources="true" />
+		<mx:javac />
 		
 	</target>
 

@@ -58,7 +58,7 @@
 	-->
 	<target name="compile" depends="init" description="compile the source code of the project">
 		<!-- TODO inject version and compile -->
-		<mx:javac compileLinkedProjects="true" copyResources="true" debug="true" includeantruntime="true" failonerror="true" />
+		<mx:javac />
 	</target>
 
 	<!--
