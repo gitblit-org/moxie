@@ -143,12 +143,19 @@ public class Config implements Serializable {
 		linkedProjects = readLinkedProjects(map, Key.linkedProjects);
 		dependencyFolder = readFile(map, Key.dependencyFolder, null);
 		
-		List<String> props = readStrings(map, Key.properties, new ArrayList<String>());
-		for (String prop : props) {
-			String [] values = prop.split(" ");
-			pom.setProperty(values[0], values[1]);
+		if (map.containsKey(Key.properties.name())) {
+			MaxmlMap props = (MaxmlMap) map.get(Key.properties);
+			for (String key : props.keySet()) {				
+				pom.setProperty(key, props.getString(key, null));
+			}
 		}
-				
+
+		List<String> managedDependencies = readStrings(map, Key.dependencyManagement, new ArrayList<String>());
+		for (String dependency : managedDependencies) {
+			Dependency dep = new Dependency(dependency);
+			pom.addManagedDependency(dep, null);
+		}
+
 		repositoryUrls = readStrings(map, Key.dependencySources, repositoryUrls);
 		parseDependencies(map, Key.dependencies);		
 		parseProxies(map, Key.proxies);
