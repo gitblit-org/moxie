@@ -16,7 +16,6 @@
 package com.maxtk;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -28,12 +27,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.maxtk.Constants.Key;
-import com.maxtk.Dependency;
-import com.maxtk.Pom;
-import com.maxtk.Proxy;
-import com.maxtk.Scope;
-import com.maxtk.SourceFolder;
-import com.maxtk.SystemDependency;
 import com.maxtk.maxml.Maxml;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.maxml.MaxmlMap;
@@ -62,20 +55,6 @@ public class Config implements Serializable {
 	File targetFolder;
 	Set<String> apply;
 
-	public static Config load(File file, boolean create) throws IOException, MaxmlException {
-		if (!file.exists()) {
-			file.getParentFile().mkdirs();
-			// write default maxilla settings
-			FileWriter writer = new FileWriter(file);
-			writer.append(Key.proxies.name() + ":\n- { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }\n");
-			writer.append(Key.dependencySources.name() + ": central\n");
-			writer.append("#" + Key.apply.name() + ": color, debug\n");			
-			writer.close();
-		}
-
-		return new Config().parse(file);
-	}
-
 	public Config() {
 		// default configuration
 		sourceFolders = Arrays.asList(
@@ -94,6 +73,16 @@ public class Config implements Serializable {
 		proxies = new ArrayList<Proxy>();
 	}
 	
+	public Config(File file) throws IOException, MaxmlException {
+		this();
+		parse(file, true);
+	}
+	
+	public Config(File file, boolean inherit) throws IOException, MaxmlException {
+		this();
+		parse(file, inherit);
+	}
+	
 	public Pom getPom() {
 		return pom;
 	}
@@ -103,7 +92,7 @@ public class Config implements Serializable {
 		return "Config (" + pom + ")";
 	}
 
-	Config parse(File file) throws IOException, MaxmlException {
+	Config parse(File file, boolean inherit) throws IOException, MaxmlException {
 		if (!file.exists()) {
 			throw new MaxmlException(MessageFormat.format("{0} does not exist!", file));			
 		}
@@ -115,27 +104,23 @@ public class Config implements Serializable {
 		String content = FileUtils.readContent(file, "\n").trim();
 		Map<String, Object> map = Maxml.parse(content);
 
-		// build.maxml inheritance
-		File parentConfig = readFile(map, Key.parent, null);
-		if (parentConfig != null) {
-			Config parent = load(parentConfig, false);
-			pom = parent.pom;
-			lastModified = Math.max(lastModified, parent.lastModified);
-			
-			proxies = parent.proxies;
-			linkedProjects = parent.linkedProjects;
-			repositoryUrls = parent.repositoryUrls;
-			
-			dependencyFolder = parent.dependencyFolder;
-			sourceFolders = parent.sourceFolders;
-			outputFolder = parent.outputFolder;
-			targetFolder = parent.targetFolder;
-			apply = parent.apply;
-			
-			// set parent properties
-			pom.parentGroupId = pom.groupId;
-			pom.parentArtifactId = pom.artifactId;
-			pom.parentVersion = pom.version;	
+		if (inherit) {
+			// build.maxml inheritance
+			File parentConfig = readFile(map, Key.parent, null);
+			if (parentConfig == null) {
+				// use system defaults
+				Config parent = new Config(Build.DEFAULTS, false);
+				setDefaultsFrom(parent);
+			} else {
+				// parent has been specified
+				Config parent = new Config(parentConfig, true);
+				setDefaultsFrom(parent);
+
+				// set parent properties
+				pom.parentGroupId = pom.groupId;
+				pom.parentArtifactId = pom.artifactId;
+				pom.parentVersion = pom.version;
+			}
 		}
 		
 		// metadata
@@ -436,5 +421,20 @@ public class Config implements Serializable {
 			}
 		}
 		return activeProxies;
+	}
+	
+	void setDefaultsFrom(Config parent) {
+		pom = parent.pom;
+		lastModified = Math.max(lastModified, parent.lastModified);
+
+		proxies = parent.proxies;
+		linkedProjects = parent.linkedProjects;
+		repositoryUrls = parent.repositoryUrls;
+
+		dependencyFolder = parent.dependencyFolder;
+		sourceFolders = parent.sourceFolders;
+		outputFolder = parent.outputFolder;
+		targetFolder = parent.targetFolder;
+		apply = parent.apply;
 	}
 }

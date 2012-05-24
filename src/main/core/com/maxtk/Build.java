@@ -17,8 +17,11 @@ package com.maxtk;
 
 import static java.text.MessageFormat.format;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -48,6 +51,7 @@ import com.maxtk.utils.StringUtils;
 public class Build {
 
 	public static final File SETTINGS = new File(System.getProperty("user.home") + "/.maxilla/settings.maxml");
+	public static final File DEFAULTS = new File(System.getProperty("user.home") + "/.maxilla/defaults.maxml");
 
 	public static final Repository CENTRAL = new Repository("MavenCentral", Constants.MAVENCENTRAL_URL);
 
@@ -73,12 +77,35 @@ public class Build {
 	private boolean verbose;
 	private boolean solutionBuilt;
 	
+	static {
+		writeDefault(SETTINGS, "settings.maxml");
+		writeDefault(DEFAULTS, "defaults.maxml");
+	}
+	
+	private static void writeDefault(File file, String resource) {
+		if (file.exists()) {
+			return;
+		}
+		try {
+			file.getParentFile().mkdirs();
+			FileWriter writer = new FileWriter(file);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(Config.class.getResourceAsStream("/" + resource)));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				writer.append(line).append('\n');
+			}
+			writer.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public Build(File configFile) throws MaxmlException, IOException {
 		this.configFile = configFile;
 		this.projectFolder = configFile.getAbsoluteFile().getParentFile();
 		
-		this.maxilla = Config.load(SETTINGS, true);
-		this.project = Config.load(configFile, false);
+		this.maxilla = new Config(SETTINGS, false);
+		this.project = new Config(configFile, true);
 		
 		this.proxies = new LinkedHashSet<Proxy>();
 		this.repositories = new LinkedHashSet<Repository>();

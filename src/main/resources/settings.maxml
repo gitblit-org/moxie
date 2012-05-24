@@ -1,0 +1,7 @@
+# settings.maxml
+#
+# This file contains settings for controlling Maxilla's behavior.
+proxies:
+- { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }
+dependencySources : central
+#apply: color, debug

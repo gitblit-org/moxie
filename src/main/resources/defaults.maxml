@@ -1,0 +1,26 @@
+# defaults.maxml
+#
+# This file defines the default values for all Maxilla projects.
+
+# Managed dependencies are used to specify versions of dependencies
+# if those versions are not specified in the project's build.maxml.
+dependencyManagement:
+- junit:junit:4.8.2
+
+# Source folders are verified during initialization.
+# Defined folders that do not exist are excluded.
+# Defined order is preserved.
+sourceFolders:
+- compile src/main/java
+- compile src/main/webapp
+- compile src/main/resources
+- test src/test/java
+- test src/test/resources
+
+# Default base folder within the project for compiled classes.
+# Consider NOT sharing the output folder with your IDE.
+# The default (build) is separate from the Eclipse default (bin).
+outputFolder: build
+
+# The base folder within the project for build artifacts.
+targetFolder: target

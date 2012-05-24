@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="maxilla" default="main" basedir="." xmlns:mx="antlib:com.maxtk">
+<project default="main" xmlns:mx="antlib:com.maxtk">
 
 	<!-- These are the default Maxilla locations -->
 	<property name="maxilla.bin" value="${basedir}/build" />
@@ -18,6 +18,11 @@
 		<javac debug="true" destdir="${maxilla.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
 			<src path="${basedir}/src/main/core" />
 		</javac>
+		
+		<!-- Copy Maxilla resources -->
+		<copy todir="${maxilla.bin.classes}" overwrite="false">
+			<fileset dir="${basedir}/src/main/resources" />
+		</copy>
 
 		<!-- Declare mx:init and read configuration -->
 		<taskdef classname="com.maxtk.ant.MxInit" name="init" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
