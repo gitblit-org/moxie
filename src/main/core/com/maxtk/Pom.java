@@ -100,9 +100,14 @@ public class Pom {
 				// try reflection on project fields 
 				String fieldName = key.substring(key.indexOf('.') + 1);
 				value = getFieldValue("parent" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1));
+			} else if (key.startsWith("env.")) {
+				// Support all environment variables
+				String env = key.substring(4);
+				value = System.getenv().get(env);
 			}
 		}
 		if (StringUtils.isEmpty(value)) {
+			// Support all Ant properties
 			if (antProperties.containsKey(key)) {
 				value = antProperties.get(key);
 			}
@@ -110,10 +115,6 @@ public class Pom {
 		if (StringUtils.isEmpty(value)) {
 			// Support all Java system properties
 			value = System.getProperty(key);
-		}
-		if (StringUtils.isEmpty(value)) {
-			// Support all environment variables
-			value = System.getenv().get(key);
 		}
 		if (StringUtils.isEmpty(value)) {
 			System.out.println(MessageFormat.format("WARNING: property {0} not found", key));

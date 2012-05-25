@@ -761,7 +761,7 @@ public class Build {
 		}
 		switch (scope) {
 		case test:
-			return new File(project.outputFolder, "tests");
+			return new File(project.outputFolder, "test-classes");
 		default:
 			return new File(project.outputFolder, "classes");
 		}
@@ -774,7 +774,7 @@ public class Build {
 		}
 		switch (scope) {
 		case test:
-			return new File(baseFolder, "tests");
+			return new File(baseFolder, "test-classes");
 		default:
 			return new File(baseFolder, "classes");
 		}

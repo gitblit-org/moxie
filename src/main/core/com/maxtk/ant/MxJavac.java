@@ -186,7 +186,7 @@ public class MxJavac extends Javac {
 			}
 		}
 
-		build.console.title(getClass(), build.getPom().getManagementId() + ", " + scope.name());
+		build.console.title(getClass(), build.getPom().getCoordinates() + ", " + scope.name());
 
 		build.console.debug("mxjavac configuration");
 
