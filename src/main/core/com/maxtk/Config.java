@@ -156,7 +156,7 @@ public class Config implements Serializable {
 			pom.addManagedDependency(dep, null);
 		}
 
-		repositoryUrls = readStrings(map, Key.dependencySources, repositoryUrls);
+		repositoryUrls = readStrings(map, Key.repositories, repositoryUrls);
 		parseDependencies(map, Key.dependencies);		
 		parseProxies(map, Key.proxies);
 		
