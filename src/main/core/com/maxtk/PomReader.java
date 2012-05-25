@@ -132,6 +132,24 @@ public class PomReader {
 							pom.addDependency(dep, scope);
 						}
 					}
+				} else if ("licenses".equalsIgnoreCase(element.getTagName())) {
+					// read licenses
+					// do not inherit licenses as this pom defines them
+					pom.clearLicenses();
+					NodeList licenses = (NodeList) element;
+					for (int j = 0; j < licenses.getLength(); j++) {
+						Node node = licenses.item(j);
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							// licenses.license
+							String name = readStringTag(node, Key.name);
+							String url = readStringTag(node, Key.url);
+							License license = new License(name, url);
+							pom.addLicense(license);
+						}
+					}
+				} else if ("issueManagement".equalsIgnoreCase(element.getTagName())) {
+					// extract the issue tracker url
+					pom.issuesUrl = readStringTag(element, Key.url);
 				}
 			}
 		}

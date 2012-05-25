@@ -212,10 +212,18 @@ public class Build {
 		return project.mxjar;
 	}
 
+	public MaxmlMap getMxReportAttributes() {
+		return project.mxreport;
+	}
+	
+	public List<SourceFolder> getSourceFolders() {
+		return project.sourceFolders;
+	}
+
 	public List<File> getSourceFolders(Scope scope) {
 		List<File> folders = new ArrayList<File>();
 		for (SourceFolder sourceFolder : project.sourceFolders) {
-			if (sourceFolder.scope.isDefault() || sourceFolder.scope.equals(scope)) {				
+			if (scope == null || sourceFolder.scope.isDefault() || sourceFolder.scope.equals(scope)) {				
 				folders.add(sourceFolder.getSources());
 			}
 		}
@@ -253,6 +261,18 @@ public class Build {
 			}
 		}
 		return "";
+	}
+	
+	public Pom getPom(Dependency dependency) {
+		return PomReader.readPom(artifactCache, dependency);
+	}
+
+	public File getArtifact(Dependency dependency) {
+		return artifactCache.getFile(dependency, dependency.type);
+	}
+
+	public Set<Dependency> getDependencies(Scope scope) {
+		return solve(scope);
 	}
 	
 	public void solve() {
@@ -366,7 +386,7 @@ public class Build {
 		for (Scope scope : new Scope [] { Scope.compile, Scope.runtime, Scope.test }) {
 			if (!silent) {
 				console.separator();
-				console.scope(scope);
+				console.scope(scope, 0);
 				console.separator();
 			}
 			Set<Dependency> solution = solve(scope);

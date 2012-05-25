@@ -57,6 +57,7 @@
 		<taskdef classname="com.maxtk.ant.MxJavac" name="javac" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 		<taskdef classname="com.maxtk.ant.MxClean" name="clean" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 		<taskdef classname="com.maxtk.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="com.maxtk.ant.MxReport" name="report" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 
 		<!-- Pro -->
 		<taskdef classname="com.maxtk.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
@@ -72,10 +73,12 @@
 		<mx:init />
 		
 		<mx:gitid verbose="true" />
-		
+				
 		<!-- Delete the target folder -->
 		<delete dir="${mxp.targetFolder}" />
 		
+		<mx:report />
+
 		<!-- Maxilla-Core -->
 		<mx:jar classifier="core">
 			<classfilter>

@@ -90,4 +90,11 @@
 		<mx:clean />
 	</target>
 
+	<!--
+	    maxilla.report
+	-->
+	<target name="report" depends="init" description="generates a dependency report">
+		<mx:report />
+	</target>
+
 </project>

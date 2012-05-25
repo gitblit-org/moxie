@@ -25,6 +25,8 @@ import java.text.MessageFormat;
 
 import com.maxtk.Constants;
 import com.maxtk.Dependency;
+import com.maxtk.License;
+import com.maxtk.Pom;
 import com.maxtk.Scope;
 import com.maxtk.SourceFolder;
 import com.maxtk.console.Ansi.Color;
@@ -130,14 +132,33 @@ public class Console {
 		out.println(")");
 	}
 	
-	public void scope(Scope scope) {
+	public void scope(Scope scope, int count) {
 		out.print(ansi().bold().fg(Color.MAGENTA).a(scope).boldOff().reset());
-		out.println(" dependencies");
+		out.println(" dependencies" + (count > 0 ? (" (" + count + ")"):""));
 	}
 
 	public void dependency(Dependency dependency) {
 		out.append(Constants.INDENT);
 		out.println(ansi().fg(Color.GREEN).a(dependency.getCoordinates()).reset());
+	}
+	
+	public void license(Dependency dependency, Pom pom) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < (dependency.ring + 1); i++) {
+			sb.append(Constants.INDENT);
+		}
+		String dd = sb.toString();
+		String md = dd + Constants.INDENT;
+		out.append(dd).append(ansi().fg(Color.YELLOW).a(dependency.ring + ":").toString()).println(ansi().fg(Color.GREEN).a(dependency.getCoordinates()).reset());
+		if (pom.getLicenses().size() == 0) {
+			out.append(md).println(ansi().bold().fg(Color.YELLOW).a("unknown!").boldOff().reset());
+		}
+		for (License license : pom.getLicenses()) {
+			out.append(md).println(ansi().fg(Color.WHITE).a(license.name).reset());
+			if (!StringUtils.isEmpty(license.url)) {
+				out.append(md).println(ansi().fg(Color.CYAN).a(license.url).reset());
+			}
+		}
 	}
 	
 	public void download(String url) {

@@ -37,6 +37,7 @@ public class Pom {
 	public String name;
 	public String description;
 	public String url;
+	public String issuesUrl;
 	public String vendor;
 	
 	public String groupId;
@@ -54,6 +55,7 @@ public class Pom {
 	private final Map<String, Scope> managedScopes;
 	private final Set<String> exclusions;	
 	private final Map<String, String> antProperties;
+	private final List<License> licenses;
 	
 	public Pom() {
 		version = "0.0.0-SNAPSHOT";
@@ -63,6 +65,7 @@ public class Pom {
 		dependencies = new LinkedHashMap<Scope, List<Dependency>>();
 		exclusions = new TreeSet<String>();
 		antProperties = new TreeMap<String, String>();
+		licenses = new ArrayList<License>();
 	}
 	
 	public void setAntProperties(Map<String, String> antProperties) {
@@ -133,6 +136,18 @@ public class Pom {
 		} catch (Exception e) {					
 		}
 		return null;
+	}
+	
+	public void addLicense(License license) {
+		licenses.add(license);
+	}
+	
+	public List<License> getLicenses() {
+		return licenses;
+	}
+	
+	public void clearLicenses() {
+		licenses.clear();
 	}
 	
 	public void addManagedDependency(Dependency dep, Scope scope) {
@@ -317,6 +332,18 @@ public class Pom {
 		nonDestructiveCopy(pom.managedVersions, managedVersions);
 		nonDestructiveCopy(pom.managedScopes, managedScopes);
 		nonDestructiveCopy(pom.properties, properties);
+		if (pom.licenses != null) {
+			licenses.addAll(pom.licenses);
+		}
+		if (StringUtils.isEmpty(vendor)) {
+			vendor = pom.vendor;
+		}
+		if (StringUtils.isEmpty(url)) {
+			url = pom.url;
+		}
+		if (StringUtils.isEmpty(issuesUrl)) {
+			issuesUrl = pom.issuesUrl;
+		}
 	}
 	
 	public void importManagedDependencies(Pom pom) {

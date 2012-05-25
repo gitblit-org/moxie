@@ -56,6 +56,7 @@ public class Config implements Serializable {
 	Set<String> apply;
 	MaxmlMap mxjavac;
 	MaxmlMap mxjar;
+	MaxmlMap mxreport;
 
 	public Config() {
 		// default configuration
@@ -167,6 +168,9 @@ public class Config implements Serializable {
 		}
 		if (map.containsKey(Key.mxjar.name())) {
 			mxjar = (MaxmlMap) map.get(Key.mxjar.name());
+		}
+		if (map.containsKey(Key.mxreport.name())) {
+			mxreport = (MaxmlMap) map.get(Key.mxreport.name());
 		}
 		return this;
 	}
@@ -453,5 +457,6 @@ public class Config implements Serializable {
 		apply = parent.apply;
 		mxjavac = parent.mxjavac;
 		mxjar = parent.mxjar;
+		mxreport = parent.mxreport;
 	}
 }
