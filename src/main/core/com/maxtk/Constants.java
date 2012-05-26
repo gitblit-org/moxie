@@ -19,11 +19,11 @@ public class Constants {
 
 	public static final String VERSION = "0.3.0";
 
-	public static final String HDR = "============================================";
+	public static final String HDR = "=========================================================";
 
-	public static final String SUB = "--------------------------------------------";
+	public static final String SUB = "---------------------------------------------------------";
 	
-	public static final String SEP = "--------------------------------------------";
+	public static final String SEP = "---------------------------------------------------------";
 
 	public static final String INDENT = "   ";
 	
