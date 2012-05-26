@@ -68,7 +68,39 @@
 	    maxilla.test
 	-->
 	<target name="test" depends="compile" description="test the compiled source code using a suitable unit testing framework">
-		<!-- TODO test here -->
+		<!-- generate unit test info into build/tests -->
+		<property name="unit.test.build" value="${mxp.outputFolder}/tests" />
+		<!-- generate unit test info into build/tests -->
+		<property name="unit.test.report" value="${mxp.targetFolder}/tests" />
+		
+		<!-- run the unit tests and generate xml output -->
+		<delete dir="${unit.test.build}" />
+		<mkdir dir="${unit.test.build}"/>
+		<junit printsummary="yes" haltonfailure="no" showoutput="false">
+			 <classpath>
+			 	  <path refid="mxr.test.classpath" />
+			      <pathelement location="${mxp.test.outputpath}"/>
+			      <pathelement path="${java.class.path}"/>
+			   </classpath>
+
+			<batchtest fork="no" todir="${unit.test.build}">
+			   <fileset dir="${mxp.test.outputpath}">			      
+			      <include name="**/*Test.class"/>
+			    </fileset>
+			</batchtest>
+			
+			<formatter type="xml"/>
+		</junit>
+
+		<!-- aggregate test results and generate an html report -->
+		<delete dir="${unit.test.report}" />
+		<mkdir dir="${unit.test.report}"/>
+		<junitreport todir="${unit.test.report}">
+			<fileset dir="${unit.test.build}">
+			    <include name="TEST-*.xml"/>
+			 </fileset>
+			<report format="frames" todir="${unit.test.report}"/>
+		</junitreport>
 	</target>
 
 	<!--
