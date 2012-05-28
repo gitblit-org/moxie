@@ -70,37 +70,61 @@
 	<target name="test" depends="compile" description="test the compiled source code using a suitable unit testing framework">
 		<!-- generate unit test info into build/tests -->
 		<property name="unit.test.build" value="${mxp.outputFolder}/tests" />
-		<!-- generate unit test info into build/tests -->
-		<property name="unit.test.report" value="${mxp.targetFolder}/tests" />
-		
-		<!-- run the unit tests and generate xml output -->
 		<delete dir="${unit.test.build}" />
 		<mkdir dir="${unit.test.build}"/>
-		<junit printsummary="yes" haltonfailure="no" showoutput="false">
-			 <classpath>
-			 	  <path refid="mxr.test.classpath" />
-			      <pathelement location="${mxp.test.outputpath}"/>
-			      <pathelement path="${java.class.path}"/>
-			   </classpath>
-
-			<batchtest fork="no" todir="${unit.test.build}">
-			   <fileset dir="${mxp.test.outputpath}">			      
-			      <include name="**/*Test.class"/>
-			    </fileset>
-			</batchtest>
-			
-			<formatter type="xml"/>
-		</junit>
-
-		<!-- aggregate test results and generate an html report -->
+		
+		<!-- generate unit test info into build/tests -->
+		<property name="unit.test.report" value="${mxp.targetFolder}/tests" />
 		<delete dir="${unit.test.report}" />
 		<mkdir dir="${unit.test.report}"/>
+
+		<!-- fileset for test classes -->
+		<fileset id="mixed.tests" dir="${mxp.test.outputpath}">			      
+			<include name="**/*Test.class"/>
+		</fileset>
+		
+		<!-- classpath for tests -->
+		<path id="unit.test.classpath">
+			<path refid="mxr.test.classpath" />
+			<pathelement location="${mxp.test.outputpath}"/>
+			<pathelement path="${java.class.path}"/>
+		</path>
+
+		<!-- determine which ant task to use for testing -->
+	    <condition property="hasTestNG">
+	    	<available classpathref="unit.test.classpath" classname="org.testng.TestNGAntTask"/>
+	    </condition>
+
+		<!-- Execute the unit tests -->
+		<antcall target="test.junit" inheritrefs="true" inheritall="true" />
+		<antcall target="test.testng" inheritrefs="true" inheritall="true" />
+	</target>
+	
+	<!-- Execute unit tests with JUnit -->
+	<target name="test.junit" unless="hasTestNG">
+		<junit printsummary="yes" haltonfailure="no" showoutput="false">
+			<classpath refid="unit.test.classpath" />
+			
+			<batchtest fork="true" todir="${unit.test.build}">
+			   <fileset refid="mixed.tests" />			      
+			</batchtest>			
+			<formatter type="xml"/>
+		</junit>
+		
 		<junitreport todir="${unit.test.report}">
 			<fileset dir="${unit.test.build}">
 			    <include name="TEST-*.xml"/>
 			 </fileset>
 			<report format="frames" todir="${unit.test.report}"/>
 		</junitreport>
+	</target>
+
+	<!-- Execute unit tests with TestNG -->
+	<target name="test.testng" if="hasTestNG">
+		<taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="mxr.test.classpath" />
+		<testng mode="mixed" classfilesetref="mixed.tests" workingDir="${basedir}" outputdir="${unit.test.report}">
+			<classpath refid="unit.test.classpath" />
+		</testng>
 	</target>
 
 	<!--
