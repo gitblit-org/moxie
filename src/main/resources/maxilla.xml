@@ -68,6 +68,9 @@
 	    maxilla.test
 	-->
 	<target name="test" depends="compile" description="test the compiled source code using a suitable unit testing framework">
+		<!-- compile the test sources -->
+		<mx:javac scope="test" />
+		
 		<!-- generate unit test info into build/tests -->
 		<property name="unit.test.build" value="${mxp.outputFolder}/tests" />
 		<delete dir="${unit.test.build}" />
@@ -90,43 +93,43 @@
 			<pathelement path="${java.class.path}"/>
 		</path>
 
-		<!-- determine which ant task to use for testing -->
-	    <condition property="hasTestNG">
-	    	<available classpathref="unit.test.classpath" classname="org.testng.TestNGAntTask"/>
-	    </condition>
-
-		<!-- Execute the unit tests -->
-		<antcall target="test.junit" inheritrefs="true" inheritall="true" />
-		<antcall target="test.testng" inheritrefs="true" inheritall="true" />
+		<!-- execute the tests -->
+	    <mx:if>
+	    	<available classpathref="unit.test.classpath" classname="org.testng.TestNGAntTask" />
+			<then>
+				<!-- Execute unit tests with TestNG -->
+				<taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="mxr.test.classpath" />
+				<testng mode="mixed" classfilesetref="mixed.tests" workingDir="${basedir}" outputdir="${unit.test.report}">
+					<classpath refid="unit.test.classpath" />
+				</testng>
+			</then>
+		<elseif>
+			<available classpathref="unit.test.classpath" classname="junit.framework.Assert" />
+			<then>
+				<!-- Execute unit tests with JUnit -->
+				<junit printsummary="yes" haltonfailure="no" showoutput="false">
+					<classpath refid="unit.test.classpath" />
+				
+					<batchtest fork="true" todir="${unit.test.build}">
+				   		<fileset refid="mixed.tests" />			      
+					</batchtest>			
+					<formatter type="xml"/>
+				</junit>
+				
+				<junitreport todir="${unit.test.report}">
+					<fileset dir="${unit.test.build}">
+				    	<include name="TEST-*.xml"/>
+				 	</fileset>
+					<report format="frames" todir="${unit.test.report}"/>
+				</junitreport>
+			</then>
+		</elseif>
+		<else>
+			<echo message="skipping unit tests" />
+		</else>
+		</mx:if>
 	</target>
-	
-	<!-- Execute unit tests with JUnit -->
-	<target name="test.junit" unless="hasTestNG">
-		<junit printsummary="yes" haltonfailure="no" showoutput="false">
-			<classpath refid="unit.test.classpath" />
-			
-			<batchtest fork="true" todir="${unit.test.build}">
-			   <fileset refid="mixed.tests" />			      
-			</batchtest>			
-			<formatter type="xml"/>
-		</junit>
 		
-		<junitreport todir="${unit.test.report}">
-			<fileset dir="${unit.test.build}">
-			    <include name="TEST-*.xml"/>
-			 </fileset>
-			<report format="frames" todir="${unit.test.report}"/>
-		</junitreport>
-	</target>
-
-	<!-- Execute unit tests with TestNG -->
-	<target name="test.testng" if="hasTestNG">
-		<taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="mxr.test.classpath" />
-		<testng mode="mixed" classfilesetref="mixed.tests" workingDir="${basedir}" outputdir="${unit.test.report}">
-			<classpath refid="unit.test.classpath" />
-		</testng>
-	</target>
-
 	<!--
 	    maxilla.package
 	-->

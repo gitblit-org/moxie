@@ -58,6 +58,7 @@
 		<taskdef classname="com.maxtk.ant.MxClean" name="clean" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 		<taskdef classname="com.maxtk.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 		<taskdef classname="com.maxtk.ant.MxReport" name="report" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="com.maxtk.antcontrib.IfTask" name="if" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
 
 		<!-- Pro -->
 		<taskdef classname="com.maxtk.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
@@ -90,6 +91,8 @@
 			<class name="com.maxtk.ant.MxClean" />
 			<class name="com.maxtk.ant.MxJavac" />
 			<class name="com.maxtk.ant.MxInstall" />
+			<class name="com.maxtk.ant.MxReport" />
+			<class name="com.maxtk.antcontrib.IfTask" />
 						
 			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/core/tasks.properties" />
@@ -108,6 +111,8 @@
 			<class name="com.maxtk.ant.MxClean" />
 			<class name="com.maxtk.ant.MxJavac" />
 			<class name="com.maxtk.ant.MxInstall" />
+			<class name="com.maxtk.ant.MxReport" />
+			<class name="com.maxtk.antcontrib.IfTask" />
 			
 			<class name="com.maxtk.ant.MxJar" />
 			<class name="com.maxtk.ant.MxZip" />
@@ -129,6 +134,8 @@
 			<class name="com.maxtk.ant.MxClean" />
 			<class name="com.maxtk.ant.MxJavac" />
 			<class name="com.maxtk.ant.MxInstall" />
+			<class name="com.maxtk.ant.MxReport" />
+			<class name="com.maxtk.antcontrib.IfTask" />
 				
 			<class name="com.maxtk.ant.MxJar" />
 			<class name="com.maxtk.ant.MxZip" />
