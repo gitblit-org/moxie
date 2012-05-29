@@ -234,6 +234,11 @@ public class MxJavac extends Javac {
 		
 		// create classpath
 		Path classpath = createClasspath();
+		if (Scope.test.equals(scope)) {
+			// add the compile output folder
+			PathElement element = classpath.createPathElement();
+			element.setLocation(build.getOutputFolder(Scope.compile));
+		}
 		for (File file : build.getClasspath(scope)) {
 			PathElement element = classpath.createPathElement();
 			element.setLocation(file);
@@ -274,7 +279,7 @@ public class MxJavac extends Javac {
 
 			if (excludes == null) {
 				// default exclusions
-				excludes = Constants.DEFAULT_EXCLUDES;
+				excludes = Constants.DEFAULT_BIN_EXCLUDES;
 			}
 			
 			for (String path : getSrcdir().list()) {

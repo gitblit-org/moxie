@@ -223,7 +223,7 @@ public class Build {
 	public List<File> getSourceFolders(Scope scope) {
 		List<File> folders = new ArrayList<File>();
 		for (SourceFolder sourceFolder : project.sourceFolders) {
-			if (scope == null || sourceFolder.scope.isDefault() || sourceFolder.scope.equals(scope)) {				
+			if (scope == null || sourceFolder.scope.equals(scope)) {				
 				folders.add(sourceFolder.getSources());
 			}
 		}

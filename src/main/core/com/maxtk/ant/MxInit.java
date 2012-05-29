@@ -17,8 +17,10 @@ package com.maxtk.ant;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Path;
@@ -114,8 +116,12 @@ public class MxInit extends MxTask {
 	}
 	
 	private void setSourcepath(Key key, Build build, Scope scope) {
+		Set<File> folders = new LinkedHashSet<File>();
+		folders.addAll(build.getSourceFolders(scope));
+		folders.addAll(build.getSourceFolders(Scope.defaultScope));
+		
 		Path sources = new Path(getProject());
-		for (File file : build.getSourceFolders(scope)) {
+		for (File file : folders) {
 			PathElement element = sources.createPathElement();
 			element.setLocation(file);
 		}

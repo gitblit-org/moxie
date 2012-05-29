@@ -145,10 +145,10 @@ public class Console {
 	public void license(Dependency dependency, Pom pom) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < (dependency.ring + 1); i++) {
-			sb.append(Constants.INDENT);
+			sb.append("  ");
 		}
 		String dd = sb.toString();
-		String md = dd + Constants.INDENT;
+		String md = dd + Constants.INDENT + " ";
 		out.append(dd).append(ansi().fg(Color.YELLOW).a(dependency.ring + ":").toString()).println(ansi().fg(Color.GREEN).a(dependency.getCoordinates()).reset());
 		if (pom.getLicenses().size() == 0) {
 			out.append(md).println(ansi().bold().fg(Color.YELLOW).a("unknown!").boldOff().reset());

@@ -45,8 +45,10 @@ public class Constants {
 	
 	public static final String APPLY_CACHE = "cache";
 	
-	public static final String DEFAULT_EXCLUDES = "**/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
-	
+	public static final String DEFAULT_SRC_EXCLUDES = "**/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
+
+	public static final String DEFAULT_BIN_EXCLUDES = "**/*.java, " + DEFAULT_SRC_EXCLUDES;
+		
 	public static final String POM = "pom";
 	
 	public static enum Key {

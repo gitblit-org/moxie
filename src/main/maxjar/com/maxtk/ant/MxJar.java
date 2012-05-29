@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Jar;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
@@ -48,6 +49,8 @@ public class MxJar extends GenJar {
 	String excludes;
 	
 	String classifier;
+	
+	boolean packageSources;
 
 	/**
 	 * Builds a <mainclass> element.
@@ -103,6 +106,15 @@ public class MxJar extends GenJar {
 	public void setClassifier(String classifier) {
 		this.classifier = classifier;
 	}
+	
+	public boolean getPackagesources() {
+		return packageSources;
+	}
+	
+	public void setPackagesources(boolean sources) {
+		this.packageSources = sources;
+	}
+
 	
 	@Override
 	public void setProject(Project project) {
@@ -214,7 +226,7 @@ public class MxJar extends GenJar {
 				set.setIncludes(includes);
 			}
 			if (excludes == null) {
-				excludes = Constants.DEFAULT_EXCLUDES;
+				excludes = Constants.DEFAULT_BIN_EXCLUDES;
 			}
 			set.setExcludes(excludes);
 		}
@@ -259,6 +271,42 @@ public class MxJar extends GenJar {
 		} else {
 			build.console.log(1, "class structure => " + destDir);
 			build.console.log(1, "{0} KB, generated in {1} ms", (FileUtils.folderSize(destDir)/1024), System.currentTimeMillis() - start);
+		}
+		
+		if (packageSources && destFile != null) {
+			String name = destFile.getName();
+			if (!StringUtils.isEmpty(classifier)) {
+				// replace the classifier with "sources"
+				name = name.replace(classifier, "sources");
+			} else {
+				// append -sources to the filename before the extension
+				name = name.substring(0, name.lastIndexOf('.')) + "-sources" + name.substring(name.lastIndexOf('.'));
+			}
+			File sourcesFile = new File(destFile.getParentFile(), name);
+			if (sourcesFile.exists()) {
+				sourcesFile.delete();
+			}
+			
+			Jar jar = new Jar();
+			jar.setTaskName(getTaskName());
+			jar.setProject(getProject());
+			
+			// set the destination file
+			jar.setDestFile(sourcesFile);
+			
+			// add the source folders
+			for (File dir : build.getSourceFolders(Scope.compile)) {
+				FileSet set = new FileSet();				
+				set.setDir(dir);
+				set.setExcludes(Constants.DEFAULT_SRC_EXCLUDES);
+				jar.add(set);
+			}
+			
+			start = System.currentTimeMillis();			
+			jar.execute();
+						
+			build.console.log(1, sourcesFile.getAbsolutePath());
+			build.console.log(1, "{0} KB, generated in {1} ms", (sourcesFile.length()/1024), System.currentTimeMillis() - start);
 		}
 	}
 
