@@ -416,6 +416,7 @@ public class Build {
 		// this list may have duplicates/conflicts
 		List<Dependency> all = new ArrayList<Dependency>();
 		for (Dependency dependency : project.pom.getDependencies(solutionScope, 0)) {
+			console.debug(dependency.getCoordinates());
 			all.add(dependency);
 			all.addAll(solve(solutionScope, dependency));
 		}
@@ -658,7 +659,10 @@ public class Build {
 			for (Dependency dep : dependencies) {
 				// check to see if we already have the artifact
 				File cachedFile = artifactCache.getFile(dep, dep.type);
-				if (!cachedFile.exists()) {
+				if (cachedFile.exists()) {
+					// assume we already have subsequent classifiers
+					break;
+				} else {
 					cachedFile = repository.download(this, dep, dep.type);
 				}
 			}
