@@ -213,6 +213,10 @@ public class Config implements Serializable {
 						// assimilate dependency
 						scope = Scope.assimilate;
 						def = def.substring(Scope.assimilate.name().length()).trim();
+					} else if (def.startsWith("build")) {
+						// build dependency
+						scope = Scope.build;
+						def = def.substring(Scope.build.name().length()).trim();
 					} else {
 						// default to compile-time dependency
 						scope = Scope.defaultScope;

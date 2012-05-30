@@ -118,7 +118,7 @@ public class MxReport extends MxTask {
 		// dependencies
 		sb.append("<p />\n");
 		sb.append(format(h2Pattern,"dependency report"));
-		for (Scope scope : new Scope[] { Scope.compile, Scope.runtime, Scope.test }) {
+		for (Scope scope : new Scope[] { Scope.compile, Scope.runtime, Scope.test, Scope.build }) {
 			Set<Dependency> dependencies = build.getDependencies(scope);
 			if (dependencies.size() == 0) {
 				continue;

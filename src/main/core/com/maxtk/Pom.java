@@ -472,7 +472,12 @@ public class Pom {
 			StringBuilder node = new StringBuilder();
 			node.append("<dependencies>\n");
 			for (Map.Entry<Scope, List<Dependency>> entry : dependencies.entrySet()) {
-				node.append(MessageFormat.format("\t<!-- {0} dependencies -->\n", entry.getKey().name()));
+				Scope scope = entry.getKey();
+				if (!scope.isMavenScope()) {
+					// skip non-Maven scopes
+					continue;
+				}
+				node.append(MessageFormat.format("\t<!-- {0} dependencies -->\n", scope.name()));
 				for (Dependency dependency : entry.getValue()) {
 					StringBuilder depNode = new StringBuilder();
 					depNode.append(dependency.toXML(entry.getKey()));

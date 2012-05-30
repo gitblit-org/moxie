@@ -382,8 +382,8 @@ public class Build {
 	
 	private void retrieveDependencies() {
 		console.debug("retrieving artifacts");
-		// solve dependencies for compile, runtime, and test scopes
-		for (Scope scope : new Scope [] { Scope.compile, Scope.runtime, Scope.test }) {
+		// solve dependencies for compile, runtime, test, and build scopes
+		for (Scope scope : new Scope [] { Scope.compile, Scope.runtime, Scope.test, Scope.build }) {
 			if (!silent) {
 				console.separator();
 				console.scope(scope, 0);

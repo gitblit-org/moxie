@@ -16,7 +16,7 @@
 package com.maxtk;
 
 public enum Scope {
-	compile, provided, runtime, test, system, imprt, assimilate;
+	compile, provided, runtime, test, system, imprt, assimilate, build;
 	
 	public static final Scope defaultScope = compile;
 	
@@ -28,6 +28,10 @@ public enum Scope {
 	public boolean includeOnClasspath(Scope dependencyScope) {
 		if (dependencyScope == null) {
 			return false;
+		}
+		if (build.equals(this)) {
+			// build classpath
+			return build.equals(dependencyScope);
 		}
 		if (compile.equals(dependencyScope)) {
 			// compile dependency is on all classpaths
@@ -60,6 +64,10 @@ public enum Scope {
 			break;
 		case test:
 			// test classpath
+			switch (dependencyScope) {
+			case build:
+				return false;
+			}
 			return true;
 		}
 		return false;
@@ -102,6 +110,14 @@ public enum Scope {
 				return test;
 			}
 			break;
+		case build:
+			// build dependency
+			switch (transitiveDependency) {
+			case compile:
+			case runtime:
+				return build;
+			}
+			break;
 		}
 		return null;
 	}
@@ -126,5 +142,9 @@ public enum Scope {
 		default:
 			return false;
 		}
+	}
+	
+	public boolean isMavenScope() {
+		return !this.equals(assimilate) && !this.equals(build);
 	}
 }

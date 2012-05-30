@@ -106,6 +106,7 @@ public class MxInit extends MxTask {
 			setClasspath(Key.compile_classpath, build, Scope.compile);
 			setClasspath(Key.runtime_classpath, build, Scope.runtime);
 			setClasspath(Key.test_classpath, build, Scope.test);
+			setClasspath(Key.build_classpath, build, Scope.build);
 
 			setDependencypath(Key.compile_dependencypath, build, Scope.compile);
 			setDependencypath(Key.runtime_dependencypath, build, Scope.runtime);
