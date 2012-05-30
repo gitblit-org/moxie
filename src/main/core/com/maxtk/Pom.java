@@ -152,6 +152,7 @@ public class Pom {
 	}
 	
 	public void addManagedDependency(Dependency dep, Scope scope) {
+		dep.groupId = resolveProperties(dep.groupId);
 		dep.version = resolveProperties(dep.version);
 		if (!StringUtils.isEmpty(dep.type)) {
 			dep.type = "jar";
