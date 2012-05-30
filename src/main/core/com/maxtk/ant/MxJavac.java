@@ -245,7 +245,7 @@ public class MxJavac extends Javac {
 		}
 		for (Build subbuild : build.getLinkedProjects()) {
 			PathElement element = classpath.createPathElement();
-			element.setLocation(subbuild.getOutputFolder(scope));
+			element.setLocation(subbuild.getOutputFolder(Scope.compile));
 		}
 		build.console.debug(1, "classpath = {0}", classpath);
 				
