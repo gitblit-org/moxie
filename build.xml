@@ -93,7 +93,8 @@
 			<class name="com.maxtk.ant.MxInstall" />
 			<class name="com.maxtk.ant.MxReport" />
 			<class name="com.maxtk.antcontrib.IfTask" />
-						
+			<class name="com.maxtk.cobertura.ReportTask" />
+			
 			<resource file="${basedir}/src/main/resources/maxilla.xml" />
 			<resource file="${basedir}/src/main/config/core/tasks.properties" />
 		</mx:jar>
@@ -113,6 +114,7 @@
 			<class name="com.maxtk.ant.MxInstall" />
 			<class name="com.maxtk.ant.MxReport" />
 			<class name="com.maxtk.antcontrib.IfTask" />
+			<class name="com.maxtk.cobertura.ReportTask" />
 			
 			<class name="com.maxtk.ant.MxJar" />
 			<class name="com.maxtk.ant.MxZip" />
@@ -136,6 +138,7 @@
 			<class name="com.maxtk.ant.MxInstall" />
 			<class name="com.maxtk.ant.MxReport" />
 			<class name="com.maxtk.antcontrib.IfTask" />
+			<class name="com.maxtk.cobertura.ReportTask" />
 				
 			<class name="com.maxtk.ant.MxJar" />
 			<class name="com.maxtk.ant.MxZip" />

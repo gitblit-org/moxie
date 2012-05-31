@@ -10,6 +10,7 @@ sourceFolders :
 - compile src/main/core, src/main/maxgit
 - compile src/main/maxjar
 - compile src/main/maxdoc
+- compile src/main/cobertura
 - compile src/main/resources
 - { scope: test, folder: src/test/java }
 properties: {
@@ -19,7 +20,7 @@ dependencies :
 - provided org.apache.ant:ant:1.8.3
 - provided org.eclipse.jgit:org.eclipse.jgit:${jgit.version}
 - provided org.tautua.markdownpapers:markdownpapers-core:1.2.7
-- test org.testng:testng:6.5.2
+- provided net.sourceforge.cobertura:cobertura:1.9.4.1
 - test junit:junit
 mxreport: {
   quiet : true
