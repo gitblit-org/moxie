@@ -4,4 +4,41 @@
 proxies:
 - { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }
 dependencySources : central
-#apply: color, debug
+apply: #color, #debug
+
+# Dependency overrides are used to redefine the dependencies of released/published
+# POMs from other projects.  The most common use case would be to add undeclared
+# dependencies for old POMs or to purposefully exclude dependencies from specific scopes.
+#
+# You must declare the full coordinates of the dependency to tweak.
+# You may specify the scopes for which the override applies.  If no scope is specified,
+# ALL scopes are assumed.
+#
+# Be careful when using dependency overrides!
+dependencyOverrides: {
+# cobertura: drop ant dependency from build scope
+	"net.sourceforge.cobertura:cobertura:1.9.4.1" : {
+		scope: build
+		dependencies:
+		- compile oro:oro:2.0.8
+		- compile asm:asm:3.0
+		- compile asm:asm-tree:3.0
+		- compile log4j:log4j:1.2.9
+#		- compile org.apache.ant:ant:1.7.0
+	}
+
+# reportng: drop testng dependency from build scope
+	"org.uncommons:reportng:1.1.2" : {
+		scope: build
+		dependencies:
+#		- compile org.testng:testng:5:jdk15
+		- compile velocity:velocity:1.4
+	}
+
+# velocity: add undeclared guice dependency for build scope
+    "velocity:velocity:1.4" : {
+		scope: build
+		dependencies:
+		- compile com.google.code.guice:guice:1.0
+	}
+}

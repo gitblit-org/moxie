@@ -117,7 +117,7 @@ public class Pom {
 			value = System.getProperty(key);
 		}
 		if (StringUtils.isEmpty(value)) {
-			System.out.println(MessageFormat.format("WARNING: property {0} not found", key));
+			System.out.println(MessageFormat.format("WARNING: property \"{0}\" not found for {1}", key, getCoordinates()));
 			return key;
 		}
 		return value;
@@ -154,9 +154,16 @@ public class Pom {
 	public void addManagedDependency(Dependency dep, Scope scope) {
 		dep.groupId = resolveProperties(dep.groupId);
 		dep.version = resolveProperties(dep.version);
+
+		if (dep.getManagementId().equals(getManagementId())) {
+			System.out.println(MessageFormat.format("WARNING: ignoring circular managedDependency {0}", dep.getManagementId()));
+			return;
+		}
+
 		if (!StringUtils.isEmpty(dep.type)) {
 			dep.type = "jar";
 		}
+		
 		managedVersions.put(dep.getManagementId(), dep.version);
 		if (scope != null) {
 			managedScopes.put(dep.getManagementId(), scope);
@@ -203,6 +210,11 @@ public class Pom {
 			// set default extension, if unspecified
 			if (StringUtils.isEmpty(dep.type)) {
 				dep.type = "jar";
+			}
+			
+			if (dep.getManagementId().equals(getManagementId())) {
+				System.out.println(MessageFormat.format("WARNING: ignoring circular dependency {0}", dep.getManagementId()));
+				return false;
 			}
 		} else if ((dep instanceof SystemDependency)) {
 			// System Dependency

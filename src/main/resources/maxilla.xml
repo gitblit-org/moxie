@@ -78,7 +78,7 @@
 		<mkdir dir="${unit.test.build}" />
 		
 		<!-- generate unit test info into target/tests -->
-		<property name="unit.test.report" value="${mxp.targetFolder}/tests" />
+		<property name="unit.test.report" value="${mxp.reportsFolder}/tests" />
 		<delete dir="${unit.test.report}" quiet="true" />
 		<mkdir dir="${unit.test.report}" />
 
@@ -88,7 +88,7 @@
 		<mkdir dir="${unit.test.instrumented}" />
 
 		<!-- generate code coverage report into target/coverage -->
-		<property name="code.coverage.report" value="${mxp.targetFolder}/coverage" />
+		<property name="code.coverage.report" value="${mxp.reportsFolder}/coverage" />
 		<delete dir="${code.coverage.report}" />
 		<mkdir dir="${code.coverage.report}" />
 
@@ -156,9 +156,31 @@
 	    	<available classpathref="execution.test.classpath" classname="org.testng.TestNGAntTask" />
 			<then>
 				<!-- Execute unit tests with TestNG -->
+			    <mx:if>
+			    	<available classpathref="execution.test.classpath" classname="org.uncommons.reportng.HTMLReporter" />
+					<then>
+						<!-- ReportNG -->
+						<property name="testng.useDefaultListeners" value="false" />
+						<property name="testng.listeners" value="org.uncommons.reportng.HTMLReporter,org.uncommons.reportng.JUnitXMLReporter" />
+					</then>
+			    	<else>
+						<!-- Standard TestNG output -->
+						<property name="testng.useDefaultListeners" value="true" />
+						<property name="testng.listeners" value="" />
+					</else>
+				</mx:if>
+			    		
+				<!-- Execute TestNG -->
 				<taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="execution.test.classpath" />
-				<testng mode="mixed" classfilesetref="mixed.tests" workingDir="${basedir}" outputdir="${unit.test.report}">
+				<testng mode="mixed" classfilesetref="mixed.tests" workingDir="${basedir}" outputdir="${unit.test.report}"
+					suitename="${mxp.name} Test Suite" useDefaultListeners="${testng.useDefaultListeners}"
+					listeners="${testng.listeners}" failureProperty="unit.test.failed">
+					
 					<classpath refid="unit.test.classpath" />
+
+					<!-- ReportNG properties -->
+		          	<sysproperty key="org.uncommons.reportng.title" value="${mxp.name} Test Report"/>
+					<sysproperty key="org.uncommons.reportng.coverage-report" value="../coverage/index.html"/>
 
 					<!-- Cobertura system properties -->
 					<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data}" />
@@ -172,7 +194,8 @@
 			<available classpathref="execution.test.classpath" classname="junit.framework.Assert" />
 			<then>
 				<!-- Execute unit tests with JUnit -->
-				<junit fork="true" printsummary="yes" haltonfailure="no" showoutput="false">
+				<junit fork="true" printsummary="yes" failureProperty="unit.test.failed" showoutput="false">
+					
 					<classpath refid="unit.test.classpath" />
 
 					<!-- Cobertura system properties -->

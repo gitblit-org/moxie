@@ -297,6 +297,11 @@ public class Build {
 	
 	private void solveLinkedProjects() {
 		linkedProjects = new ArrayList<Build>();
+		if (project.linkedProjects.size() > 0) {
+			console.separator();
+			console.log("solving linked projects");
+			console.separator();
+		}
 		for (LinkedProject linkedProject : project.linkedProjects) {
 			console.debug(Constants.SEP);
 			String resolvedName = getPom().resolveProperties(linkedProject.name);
@@ -317,7 +322,7 @@ public class Build {
 					console.debug("located linked project {0} ({1})", linkedProject.name, file.getAbsolutePath());
 					Build subProject = new Build(file.getAbsoluteFile());
 					subProject.silent = true;
-					console.debug("initializing linked project {0}", subProject.getPom().getCoordinates());
+					console.log(1, "=> project {0}", subProject.getPom().getCoordinates());
 					subProject.solve();
 					linkedProjects.add(subProject);
 				} else {
@@ -416,7 +421,7 @@ public class Build {
 		// this list may have duplicates/conflicts
 		List<Dependency> all = new ArrayList<Dependency>();
 		for (Dependency dependency : project.pom.getDependencies(solutionScope, 0)) {
-			console.debug(dependency.getCoordinates());
+			console.debug(dependency.getDetailedCoordinates());
 			all.add(dependency);
 			all.addAll(solve(solutionScope, dependency));
 		}
@@ -451,9 +456,23 @@ public class Build {
 		if (pomFile == null || !pomFile.exists()) {
 			return resolved;
 		}
-
-		// try pre-resolved solution for this scope
-		List<Dependency> dependencies = readSolution(scope, dependency);
+		
+		List<Dependency> dependencies = null;
+		
+		// check to see if we have overridden the POM dependencies
+		Pom override = project.getDependencyOverrides(scope, dependency.getCoordinates());
+		if (override == null) {
+			override = maxilla.getDependencyOverrides(scope, dependency.getCoordinates());
+		}
+		if (override != null) {
+			console.notice("OVERRIDE: {0} {1} dependency {2}", project.getPom().getCoordinates(), scope.name().toUpperCase(), dependency.getCoordinates());
+			dependencies = override.getDependencies(scope, dependency.ring + 1);
+		}
+		
+		if (dependencies == null) {
+			// try pre-resolved solution for this scope
+			dependencies = readSolution(scope, dependency);
+		}
 		
 		if (dependencies == null) {
 			// solve the transitive dependencies for this scope
@@ -492,7 +511,7 @@ public class Build {
 		if (file.lastModified() == FileUtils.getLastModified(artifactCache.getFile(dependency, Constants.POM))) {
 			// solution lastModified date must equal pom lastModified date
 			try {
-				console.debug(1, "=> reusing solution {0}", dependency.getCoordinates());
+				console.debug(1, "=> reusing solution {0}", dependency.getDetailedCoordinates());
 				Solution solution = new Solution(file);
 				if (solution.hasScope(scope)) {
 					List<Dependency> list = new ArrayList<Dependency>(solution.getDependencies(scope));
@@ -503,7 +522,7 @@ public class Build {
 					return list;
 				}
 			} catch (Exception e) {
-				console.error(e, "Failed to read dependency solution {0}", dependency.getCoordinates());
+				console.error(e, "Failed to read dependency solution {0}", dependency.getDetailedCoordinates());
 			}
 		}
 		return null;
@@ -533,7 +552,7 @@ public class Build {
 			// set solution lastModified date to pom lastModified date
 			file.setLastModified(FileUtils.getLastModified(artifactCache.getFile(dependency, Constants.POM)));
 		} catch (Exception e) {
-			console.error(e, "Failed to cache {0} solution {1}", scope, dependency.getCoordinates());
+			console.error(e, "Failed to cache {0} solution {1}", scope, dependency.getDetailedCoordinates());
 		}
 	}
 	
@@ -563,7 +582,7 @@ public class Build {
 					solutions.put(scope, dependencies);
 				}
 			} catch (Exception e) {
-				console.error(e, "Failed to cache project solution {0}", projectAsDep.getCoordinates());
+				console.error(e, "Failed to cache project solution {0}", projectAsDep.getDetailedCoordinates());
 			}
 		}
 	}
@@ -584,7 +603,7 @@ public class Build {
 			file = artifactCache.writeSolution(projectAsDep, content);
 			file.setLastModified(project.lastModified);
 		} catch (Exception e) {
-			console.error(e, "Failed to cache project solution {0}", projectAsDep.getCoordinates());
+			console.error(e, "Failed to cache project solution {0}", projectAsDep.getDetailedCoordinates());
 		}
 	}
 	
@@ -604,7 +623,7 @@ public class Build {
 					// skip non-Maven repositories
 					continue;
 				}
-				console.debug(1, "locating POM for {0}", dependency.getCoordinates());
+				console.debug(1, "locating POM for {0}", dependency.getDetailedCoordinates());
 				File retrievedFile = repository.download(this, dependency, Constants.POM);
 				if (retrievedFile != null && retrievedFile.exists()) {
 					pomFile = retrievedFile;
@@ -789,7 +808,11 @@ public class Build {
 		String name = pom.groupId + "/" + pom.artifactId + "/" + pom.version + (pom.classifier == null ? "" : ("-" + pom.classifier));
 		return new File(project.targetFolder, name + ".jar");
 	}
-	
+
+	public File getReportsFolder() {
+		return new File(project.targetFolder, "reports");
+	}
+
 	public File getTargetFolder() {
 		return project.targetFolder;
 	}

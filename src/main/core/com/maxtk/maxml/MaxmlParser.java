@@ -113,9 +113,23 @@ public class MaxmlParser {
 				array.add(value);
 			} else {
 				// field:value
-				int colon = line.indexOf(':');
-				String key = line.substring(0, colon).trim();
-				String value = line.substring(colon + 1).trim();
+				String key;
+				String value;
+				if (line.charAt(0) == '\"') {
+					// "key" : value
+					// quoted key because of colons
+					int quote = line.indexOf('\"', 1);
+					key = line.substring(1, quote).trim();
+					
+					value = line.substring(quote + 1).trim();
+					int colon = value.indexOf(':');
+					value = value.substring(colon + 1).trim();
+				} else {
+					// key : value
+					int colon = line.indexOf(':');
+					key = line.substring(0, colon).trim();
+					value = line.substring(colon + 1).trim();
+				}
 				Object o;
 				if (value.length() == 0) {
 					// empty string

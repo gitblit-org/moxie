@@ -42,7 +42,7 @@ public class SystemDependency extends Dependency {
 	}
 
 	@Override
-	public String getCoordinates() {
+	public String getDetailedCoordinates() {
 		return path;
 	}
 	

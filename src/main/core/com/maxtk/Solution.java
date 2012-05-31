@@ -32,6 +32,7 @@ import com.maxtk.Constants.Key;
 import com.maxtk.maxml.Maxml;
 import com.maxtk.maxml.MaxmlException;
 import com.maxtk.utils.FileUtils;
+import com.maxtk.utils.StringUtils;
 
 /**
  * Reads a cached transitive dependency solution. 
@@ -68,55 +69,32 @@ public class Solution implements Serializable {
 
 	void parseDependencies(Map<String, Object> map, Key key) {
 		if (map.containsKey(key.name())) {
-			List<?> values = (List<?>) map.get(key.name());
-			Scope scope;
+			List<?> values = (List<?>) map.get(key.name());			
 			for (Object definition : values) {
 				if (definition instanceof String) {
 					String def = definition.toString();
-					if (def.startsWith("compile")) {
-						// compile-time dependency
-						scope = Scope.compile;
-						def = def.substring(Scope.compile.name().length()).trim();
-					} else if (def.startsWith("provided")) {
-						// provided dependency
-						scope = Scope.provided;
-						def = def.substring(Scope.provided.name().length()).trim();
-					} else if (def.startsWith("runtime")) {
-						// runtime dependency
-						scope = Scope.runtime;
-						def = def.substring(Scope.runtime.name().length()).trim();
-					} else if (def.startsWith("test")) {
-						// test dependency
-						scope = Scope.test;
-						def = def.substring(Scope.test.name().length()).trim();
-					} else if (def.startsWith("system")) {
-						// system dependency
-						scope = Scope.system;
-						def = def.substring(Scope.system.name().length()).trim();
-						Dependency dep = new SystemDependency(def);
-						addDependency(dep, scope);
-						continue;
-					} else if (def.startsWith("import")) {
-						// import dependency
-						scope = Scope.imprt;
-						def = def.substring("import".length()).trim();
-					} else if (def.startsWith("assimilate")) {
-						// assimilate dependency
-						scope = Scope.assimilate;
-						def = def.substring(Scope.assimilate.name().length()).trim();
-					} else if (def.startsWith("build")) {
-						// build dependency
-						scope = Scope.build;
-						def = def.substring(Scope.build.name().length()).trim();
-					} else {
-						// default to compile-time dependency
+					Scope scope = Scope.fromString(def.substring(0, def.indexOf(' ')));
+					if (scope == null) {
+						// default scope
 						scope = Scope.defaultScope;
-					}
+					} else {
+						// trim out scope
+						def = def.substring(scope.name().length()).trim();
+					}					
 					
 					// pull ring from solution
 					int ringIdx = def.indexOf(' ');
-					Dependency dep = new Dependency(def.substring(ringIdx).trim());
-					dep.ring = Integer.parseInt(def.substring(0, ringIdx));
+					int ring = Integer.parseInt(def.substring(0, ringIdx));
+					
+					def = StringUtils.stripQuotes(def.substring(ringIdx).trim());
+					
+					Dependency dep;
+					if (Scope.system.equals(scope)) {
+						dep = new SystemDependency(def);
+					} else {
+						dep = new Dependency(def);
+					}
+					dep.ring = ring;
 					
 					addDependency(dep, scope);
 				} else {
@@ -165,7 +143,7 @@ public class Solution implements Serializable {
 			for (Map.Entry<Scope, Set<Dependency>> entry : dependencies.entrySet()) {
 				for (Dependency dep : entry.getValue()) {
 					// - scope ring coordinates
-					sb.append(MessageFormat.format("- {0} {1,number,0} {2}\n", entry.getKey(), dep.ring, dep.getCoordinates()));
+					sb.append(MessageFormat.format("- {0} {1,number,0} {2}\n", entry.getKey(), dep.ring, dep.getDetailedCoordinates()));
 				}
 			}
 		}

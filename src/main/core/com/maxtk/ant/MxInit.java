@@ -90,6 +90,7 @@ public class MxInit extends MxTask {
 			setProperty(Key.vendor, pom.vendor);
 			setProperty(Key.url, pom.url);
 
+			setProperty(Key.reportsFolder, build.getReportsFolder().toString());
 			setProperty(Key.targetFolder, build.getTargetFolder().toString());
 			setProperty(Key.outputFolder, build.getOutputFolder(null).toString());
 			setProperty(Key.compile_outputpath, build.getOutputFolder(Scope.compile).toString());

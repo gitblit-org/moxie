@@ -117,13 +117,13 @@ public class Dependency implements Serializable {
 	}
 	
 	public Dependency getSourcesArtifact() {
-		Dependency sources = new Dependency(getCoordinates());
+		Dependency sources = new Dependency(getDetailedCoordinates());
 		sources.classifier = "sources";
 		return sources;
 	}
 
 	public Dependency getJavadocArtifact() {
-		Dependency sources = new Dependency(getCoordinates());
+		Dependency sources = new Dependency(getDetailedCoordinates());
 		sources.classifier = "javadoc";
 		return sources;
 	}
@@ -135,8 +135,12 @@ public class Dependency implements Serializable {
 	public String getManagementId() {
 		return groupId + ":" + artifactId;
 	}
-
+	
 	public String getCoordinates() {
+		return groupId + ":" + artifactId + ":" + version;
+	}
+
+	public String getDetailedCoordinates() {
 		return groupId + ":" + artifactId + ":" + version + ":" + (classifier == null ? "" : classifier) + ":" + type;
 	}
 	
@@ -148,7 +152,7 @@ public class Dependency implements Serializable {
 
 	@Override
 	public int hashCode() {
-		return getCoordinates().hashCode();
+		return getDetailedCoordinates().hashCode();
 	}
 	
 	@Override
@@ -161,7 +165,7 @@ public class Dependency implements Serializable {
 	
 	@Override
 	public String toString() {
-		return getCoordinates() + (resolveDependencies ? " transitive":"") + (optional ? " optional":"");
+		return getDetailedCoordinates() + (resolveDependencies ? " transitive":"") + (optional ? " optional":"");
 	}
 	
 	public String toXML(Scope scope) {

@@ -139,7 +139,7 @@ public class Console {
 
 	public void dependency(Dependency dependency) {
 		out.append(Constants.INDENT);
-		out.println(ansi().fg(Color.GREEN).a(dependency.getCoordinates()).reset());
+		out.println(ansi().fg(Color.GREEN).a(dependency.getDetailedCoordinates()).reset());
 	}
 	
 	public void license(Dependency dependency, Pom pom) {
@@ -149,7 +149,7 @@ public class Console {
 		}
 		String dd = sb.toString();
 		String md = dd + Constants.INDENT + " ";
-		out.append(dd).append(ansi().fg(Color.YELLOW).a(dependency.ring + ":").toString()).println(ansi().fg(Color.GREEN).a(dependency.getCoordinates()).reset());
+		out.append(dd).append(ansi().fg(Color.YELLOW).a(dependency.ring + ":").toString()).println(ansi().fg(Color.GREEN).a(dependency.getDetailedCoordinates()).reset());
 		if (pom.getLicenses().size() == 0) {
 			out.append(md).println(ansi().bold().fg(Color.YELLOW).a("unknown!").boldOff().reset());
 		}
@@ -221,6 +221,10 @@ public class Console {
 	
 	public final void notice(String message) {
 		notice(0, message, emptyArray);
+	}
+
+	public final void notice(String message, Object... args) {
+		notice(0, message, args);
 	}
 
 	public void notice(int indent, String message, Object... args) {

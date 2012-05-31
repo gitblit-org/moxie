@@ -179,7 +179,7 @@ public class MxReport extends MxTask {
 		sb.append("</div></body></html>");
 		// write report
 		if (outputFile == null) {
-			outputFile = new File(build.getTargetFolder(), "report.html");
+			outputFile = new File(build.getReportsFolder(), "report.html");
 		}
 		FileUtils.writeContent(outputFile, sb.toString());
 		build.console.log("report {0} generated", outputFile.getAbsolutePath());

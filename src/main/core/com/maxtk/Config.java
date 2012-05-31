@@ -21,9 +21,11 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import com.maxtk.Constants.Key;
@@ -54,6 +56,7 @@ public class Config implements Serializable {
 	File outputFolder;
 	File targetFolder;
 	Set<String> apply;
+	Map<Scope, Map<String, Pom>> dependencyOverrides;
 	MaxmlMap mxjavac;
 	MaxmlMap mxjar;
 	MaxmlMap mxreport;
@@ -74,6 +77,7 @@ public class Config implements Serializable {
 		dependencyFolder = null;
 		apply = new TreeSet<String>();
 		proxies = new ArrayList<Proxy>();
+		dependencyOverrides = new HashMap<Scope, Map<String, Pom>>();
 	}
 	
 	public Config(File file) throws IOException, MaxmlException {
@@ -158,7 +162,8 @@ public class Config implements Serializable {
 		}
 
 		repositoryUrls = readStrings(map, Key.repositories, repositoryUrls);
-		parseDependencies(map, Key.dependencies);		
+		parseDependencies(map, Key.dependencies);
+		parsePomOverrides(map, Key.dependencyOverrides);
 		parseProxies(map, Key.proxies);
 		
 		pom.addExclusions(readStrings(map, Key.exclusions, new ArrayList<String>(), true));
@@ -178,58 +183,86 @@ public class Config implements Serializable {
 	void parseDependencies(Map<String, Object> map, Key key) {
 		if (map.containsKey(key.name())) {
 			List<?> values = (List<?>) map.get(key.name());
-			Scope scope;
 			for (Object definition : values) {
 				if (definition instanceof String) {
-					String def = definition.toString();
-					if (def.startsWith("compile")) {
-						// compile-time dependency
-						scope = Scope.compile;
-						def = def.substring(Scope.compile.name().length()).trim();
-					} else if (def.startsWith("provided")) {
-						// provided dependency
-						scope = Scope.provided;
-						def = def.substring(Scope.provided.name().length()).trim();
-					} else if (def.startsWith("runtime")) {
-						// runtime dependency
-						scope = Scope.runtime;
-						def = def.substring(Scope.runtime.name().length()).trim();
-					} else if (def.startsWith("test")) {
-						// test dependency
-						scope = Scope.test;
-						def = def.substring(Scope.test.name().length()).trim();
-					} else if (def.startsWith("system")) {
-						// system dependency
-						scope = Scope.system;
-						def = def.substring(Scope.system.name().length()).trim();
-						Dependency dep = new SystemDependency(def);
-						pom.addDependency(dep, scope);
-						continue;
-					} else if (def.startsWith("import")) {
-						// import dependency
-						scope = Scope.imprt;
-						def = def.substring("import".length()).trim();
-					} else if (def.startsWith("assimilate")) {
-						// assimilate dependency
-						scope = Scope.assimilate;
-						def = def.substring(Scope.assimilate.name().length()).trim();
-					} else if (def.startsWith("build")) {
-						// build dependency
-						scope = Scope.build;
-						def = def.substring(Scope.build.name().length()).trim();
-					} else {
-						// default to compile-time dependency
-						scope = Scope.defaultScope;
-					}
-					
-					def = StringUtils.stripQuotes(def);										
-					Dependency dep = new Dependency(def);					
-					pom.addDependency(dep, scope);
+					processDependency(definition.toString(), pom);
 				} else {
 					throw new RuntimeException("Illegal dependency " + definition);
 				}
 			}
 		}		
+	}
+	
+	void parsePomOverrides(Map<String, Object> map, Key key) {
+		if (map.containsKey(key.name())) {
+			Map<Scope, Map<String, Pom>> overrides = new HashMap<Scope, Map<String, Pom>>();
+			MaxmlMap poms = (MaxmlMap) map.get(key.name());
+			for (Map.Entry<String, Object> entry: poms.entrySet()) {
+				String definition = entry.getKey();
+				if (entry.getValue() instanceof MaxmlMap) {
+					Dependency dep = new Dependency(definition);
+					Pom override = new Pom();					
+					override.groupId = dep.groupId;
+					override.artifactId = dep.artifactId;
+					override.version = dep.version;
+					
+					if (StringUtils.isEmpty(override.version)) {
+						throw new RuntimeException(MessageFormat.format("{0} setting for {1} must specify a version!", Key.dependencyOverrides.name(), definition));
+					}
+					
+					MaxmlMap depMap = (MaxmlMap) entry.getValue();
+					for (String def : depMap.getStrings(Key.dependencies.name(), new ArrayList<String>())) {
+						processDependency(def, override);
+					}
+					
+					if (depMap.containsKey(Key.scope.name())) {
+						// scopes specified
+						for (String value : depMap.getStrings(Key.scope.name(), new ArrayList<String>())) {
+							Scope scope = Scope.fromString(value);
+							if (scope == null) {
+								scope = Scope.defaultScope;
+							}
+							if (!overrides.containsKey(scope)) {
+								overrides.put(scope, new TreeMap<String, Pom>());
+							}
+							overrides.get(scope).put(override.getCoordinates(), override);
+						}
+					} else {
+						// all scopes
+						for (Scope scope : Scope.values()) {
+							if (!overrides.containsKey(scope)) {
+								overrides.put(scope, new TreeMap<String, Pom>());
+							}
+							overrides.get(scope).put(override.getCoordinates(), override);
+						}
+					}
+				} else {
+					throw new RuntimeException(MessageFormat.format("Illegal {0} value {1} : {2}", Key.dependencyOverrides.name(), definition, entry.getValue()));
+				}
+			}
+			// only redefine overrides is specified in this config
+			dependencyOverrides = overrides;
+		}
+	}
+	
+	void processDependency(String def, Pom pom) {
+		Scope scope = Scope.fromString(def.substring(0, def.indexOf(' ')));
+		if (scope == null) {
+			// default scope
+			scope = Scope.defaultScope;
+		} else {
+			// trim out scope
+			def = def.substring(scope.name().length()).trim();
+		}					
+		def = StringUtils.stripQuotes(def);
+		
+		Dependency dep;
+		if (Scope.system.equals(scope)) {
+			dep = new SystemDependency(def);
+		} else {
+			dep = new Dependency(def);
+		}
+		pom.addDependency(dep, scope);
 	}
 	
 	void parseProxies(Map<String, Object> map, Key key) {
@@ -446,6 +479,13 @@ public class Config implements Serializable {
 		return activeProxies;
 	}
 	
+	Pom getDependencyOverrides(Scope scope, String coordinates) {
+		if (dependencyOverrides.containsKey(scope)) {
+			return dependencyOverrides.get(scope).get(coordinates);
+		}
+		return null;
+	}
+	
 	void setDefaultsFrom(Config parent) {
 		pom = parent.pom;
 		lastModified = Math.max(lastModified, parent.lastModified);
@@ -462,5 +502,6 @@ public class Config implements Serializable {
 		mxjavac = parent.mxjavac;
 		mxjar = parent.mxjar;
 		mxreport = parent.mxreport;
+		dependencyOverrides = parent.dependencyOverrides;
 	}
 }

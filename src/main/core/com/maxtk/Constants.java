@@ -59,7 +59,8 @@ public class Constants {
 		googleAnalyticsId, googlePlusId, runtime_classpath, compile_classpath, test_classpath,
 		compile_dependencypath, runtime_dependencypath, test_dependencypath, commit, targetFolder,
 		proxies, parent, exclusions, mxjar, mxjavac, compilerArgs, excludes, includes,
-		dependencyManagement, mxreport, outputFile, quiet, build_classpath;
+		dependencyManagement, mxreport, outputFile, quiet, build_classpath, reportsFolder,
+		dependencyOverrides;
 		
 		public String propId() {
 			return "mxp." + name().replace('_', '.');
