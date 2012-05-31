@@ -20,7 +20,6 @@ import java.io.File;
 import org.apache.tools.ant.BuildException;
 
 import com.maxtk.Build;
-import com.maxtk.Constants.Key;
 import com.maxtk.utils.JGitUtils;
 
 public class MxGhPages extends MxGitTask {

@@ -66,10 +66,10 @@ public class MxInit extends MxTask {
 			// output the build info
 			build.describe();
 			
-			build.setup(verbose);
+			build.setup(isVerbose());
 			
 			console = build.console;
-			if (verbose) {
+			if (isVerbose()) {
 				build.console.separator();
 				build.console.log(getProject().getProperty("ant.version"));
 				build.console.log("Maxilla ant properties", getProject().getProperty("ant.version"));
@@ -77,7 +77,7 @@ public class MxInit extends MxTask {
 
 			Pom pom = build.getPom();
 			
-			if (verbose) {
+			if (isVerbose()) {
 				build.console.separator();
 				build.console.log("string properties");
 			}
@@ -96,7 +96,7 @@ public class MxInit extends MxTask {
 			setProperty(Key.compile_outputpath, build.getOutputFolder(Scope.compile).toString());
 			setProperty(Key.test_outputpath, build.getOutputFolder(Scope.test).toString());
 
-			if (verbose) {
+			if (isVerbose()) {
 				build.console.separator();
 				build.console.log("path references");
 			}

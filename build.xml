@@ -26,7 +26,7 @@
 
 		<!-- Declare mx:init and read configuration -->
 		<taskdef classname="com.maxtk.ant.MxInit" name="init" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<mx:init verbose="false" />
+		<mx:init />
 
 		<!-- Compile all of Maxilla with mx:javac and retrieved dependencies -->
 		<taskdef classname="com.maxtk.ant.MxJavac" name="javac" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />

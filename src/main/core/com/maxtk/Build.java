@@ -389,19 +389,19 @@ public class Build {
 		console.debug("retrieving artifacts");
 		// solve dependencies for compile, runtime, test, and build scopes
 		for (Scope scope : new Scope [] { Scope.compile, Scope.runtime, Scope.test, Scope.build }) {
-			if (!silent) {
+			if (!silent && verbose) {
 				console.separator();
 				console.scope(scope, 0);
 				console.separator();
 			}
 			Set<Dependency> solution = solve(scope);
 			if (solution.size() == 0) {
-				if (!silent) {
+				if (!silent && verbose) {
 					console.log(1, "none");
 				}
 			} else {
 				for (Dependency dependency : solution) {
-					if (!silent) {
+					if (!silent && verbose) {
 						console.dependency(dependency);
 					}
 					retrieveArtifact(dependency, true);

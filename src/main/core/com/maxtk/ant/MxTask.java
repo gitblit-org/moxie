@@ -28,10 +28,27 @@ public abstract class MxTask extends Task {
 
 	protected Console console = new Console();
 
-	protected boolean verbose = false;
+	private Boolean verbose;
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
+	}
+	
+	public boolean isVerbose() {
+		if (verbose == null) {
+			String mxvb = getProject().getProperty("mx.verbose");
+			if (StringUtils.isEmpty(mxvb)) {
+				Build build = getBuild();
+				if (build == null) {
+					return false;
+				} else {
+					return build.isVerbose();
+				}
+			} else {
+				verbose = Boolean.parseBoolean(mxvb);
+			}
+		}
+		return verbose;
 	}
 	
 	protected Build getBuild() {
@@ -59,7 +76,7 @@ public abstract class MxTask extends Task {
 	}
 	
 	protected void log(String key, String value, boolean split) {
-		if (verbose) {
+		if (isVerbose()) {
 			int indent = 22;
 			if (split) {
 				String [] paths = value.split(File.pathSeparator);

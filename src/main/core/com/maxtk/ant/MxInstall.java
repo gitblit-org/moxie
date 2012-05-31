@@ -30,18 +30,8 @@ import com.maxtk.utils.StringUtils;
 
 public class MxInstall extends MxTask {
 	
-	Boolean verbose;
-	
-	public void setVerbose(boolean verbose) {
-		this.verbose = verbose;
-	}
-	
 	public void execute() {
 		Build build = getBuild();
-		
-		if (verbose == null) {
-			verbose = build.isVerbose();
-		}
 		
 		File sourceFolder = build.getTargetFolder();
 		
@@ -65,7 +55,7 @@ public class MxInstall extends MxTask {
 		copy.setTaskName(getTaskName());
 		copy.setProject(getProject());
 		copy.setTodir(destinationFolder);
-		copy.setVerbose(verbose);
+		copy.setVerbose(isVerbose());
 		copy.add(sourceFileset);
 		copy.execute();
 

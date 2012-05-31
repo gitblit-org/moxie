@@ -42,7 +42,7 @@ public class MxGitId extends MxGitTask {
 
 		build.console.title(getClass(), repositoryFolder.getAbsolutePath());
 
-		verbose = false;
+		setVerbose(false);
 		if (StringUtils.isEmpty(property)) {
 			setProperty(Key.commit, hashid);
 			build.console.key(Key.commit.propId(), hashid);

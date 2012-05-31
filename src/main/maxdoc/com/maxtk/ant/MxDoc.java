@@ -24,7 +24,6 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.types.FileSet;
 
 import com.maxtk.Build;
-import com.maxtk.Constants.Key;
 import com.maxtk.Dependency;
 import com.maxtk.Doc;
 import com.maxtk.Docs;
@@ -37,8 +36,6 @@ import com.maxtk.Substitute;
 import com.maxtk.utils.FileUtils;
 
 public class MxDoc extends MxTask {
-
-	Boolean verbose;
 
 	Doc doc = new Doc();
 
@@ -98,10 +95,6 @@ public class MxDoc extends MxTask {
 		doc.outputFolder = folder;
 	}
 
-	public void setVerbose(boolean verbose) {
-		this.verbose = verbose;
-	}
-
 	public void setInjectprettify(boolean value) {
 		doc.injectPrettify = value;
 	}
@@ -134,12 +127,9 @@ public class MxDoc extends MxTask {
 		if (doc.outputFolder == null) {
 			doc.outputFolder = build.getSiteOutputFolder();
 		}
-		if (verbose == null) {
-			verbose = build.isVerbose();
-		}
 		
 		build.console.title(getClass(), build.getPom().name);
-		Docs.execute(build, doc, verbose);
+		Docs.execute(build, doc, isVerbose());
 
 		for (com.maxtk.Resource resource : resources) {
 			try {
