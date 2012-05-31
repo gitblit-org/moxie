@@ -14,7 +14,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<project name="maxilla" xmlns:mx="antlib:com.maxtk">
+<project name="maxilla" xmlns:mx="antlib:com.maxtk" xmlns:cobertura="antlib:net.sourceforge.cobertura"
+	xmlns:emma="antlib:com.vladium.emma">
 	
 	<!-- Determine the source jar for this import/include. -->
 	<!-- This JavaScript sneakery assumes this XML file is -->
@@ -94,14 +95,18 @@
 		<!-- delete Corbertura metadata -->
 		<property name="cobertura.data" value="${mxp.outputFolder}/cobertura.ser" />
 		<delete file="${cobertura.data}" quiet="true" />
-		
+
+		<!-- delete EMMA metadata -->
+		<property name="emma.data" value="${mxp.outputFolder}/metadata.emma" />
+		<delete file="${emma.data}" quiet="true" />
+
 		<!-- fileset for test classes -->
 		<fileset id="mixed.tests" dir="${mxp.test.outputpath}">			      
 			<include name="**/*Test.class"/>
 		</fileset>
 		
 		<!-- classpath for tests -->
-		<!-- instrumented classes, build libraries (Corbertura, etc), -->
+		<!-- instrumented classes, build libraries (Corbertura, Emma, etc) -->
 		<!-- and project compile/test classes -->
 		<path id="unit.test.classpath">
 			<pathelement path="${unit.test.instrumented}" />
@@ -117,20 +122,36 @@
 			<pathelement location="${maxilla.jar}"/>
 		</path>
 		
-		<!-- instrument for Cobertura code coverage -->
+		<!-- Automatic instrumentation for Code Coverage -->
 		<mx:if>
 			<available classpathref="mxr.build.classpath" classname="net.sourceforge.cobertura.ant.InstrumentTask" />
 			<then>
-				<taskdef name="cobertura-instrument" classname="net.sourceforge.cobertura.ant.InstrumentTask" classpathref="mxr.build.classpath" />
-				<cobertura-instrument datafile="${cobertura.data}" todir="${unit.test.instrumented}">
+				<!-- instrument for Cobertura code coverage -->
+				<taskdef name="instrument" classname="net.sourceforge.cobertura.ant.InstrumentTask" classpathref="mxr.build.classpath" uri="antlib:net.sourceforge.cobertura" />
+				<cobertura:instrument datafile="${cobertura.data}" todir="${unit.test.instrumented}">
 		    		<fileset dir="${mxp.compile.outputpath}">
 		        		<include name="**/*.class"/>
 		    		</fileset>
-				</cobertura-instrument>
+				</cobertura:instrument>
 			</then>
+		<elseif>
+			<available classpathref="mxr.build.classpath" classname="com.vladium.emma.emmaTask" />
+			<then>
+				<!-- instrument for EMMA code coverage -->
+				<taskdef name="emma" classname="com.vladium.emma.emmaTask" classpathref="mxr.build.classpath" uri="antlib:com.vladium.emma" />
+				<taskdef name="instr" classname="com.vladium.emma.instr.instrTask" classpathref="mxr.build.classpath" uri="antlib:com.vladium.emma" />
+				<emma:emma>
+					<emma:instr metadatafile="${emma.data}" merge="true" destdir="${unit.test.instrumented}" >
+					 	<instrpath>
+							<pathelement location="${mxp.compile.outputpath}"/>
+						</instrpath>
+					</emma:instr>
+				</emma:emma>
+			</then>
+		</elseif>
 		</mx:if>
 
-		<!-- execute the tests -->
+		<!-- Execute unit tests -->
 	    <mx:if>
 	    	<available classpathref="execution.test.classpath" classname="org.testng.TestNGAntTask" />
 			<then>
@@ -138,7 +159,13 @@
 				<taskdef name="testng" classname="org.testng.TestNGAntTask" classpathref="execution.test.classpath" />
 				<testng mode="mixed" classfilesetref="mixed.tests" workingDir="${basedir}" outputdir="${unit.test.report}">
 					<classpath refid="unit.test.classpath" />
+
+					<!-- Cobertura system properties -->
 					<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data}" />
+
+					<!-- EMMA system properties -->
+					<sysproperty key="emma.coverage.out.file" file="${emma.data}" />
+					<sysproperty key="emma.coverage.out.merge" value="true" />
 				</testng>
 			</then>
 		<elseif>
@@ -147,7 +174,13 @@
 				<!-- Execute unit tests with JUnit -->
 				<junit fork="true" printsummary="yes" haltonfailure="no" showoutput="false">
 					<classpath refid="unit.test.classpath" />
+
+					<!-- Cobertura system properties -->
 					<sysproperty key="net.sourceforge.cobertura.datafile" file="${cobertura.data}" />
+
+					<!-- EMMA system properties -->
+					<sysproperty key="emma.coverage.out.file" file="${emma.data}" />
+					<sysproperty key="emma.coverage.out.merge" value="true" />
 						
 					<batchtest fork="true" todir="${unit.test.build}">
 				   		<fileset refid="mixed.tests" />			      
@@ -168,16 +201,32 @@
 		</else>
 		</mx:if>
 			
-		<!-- report Cobertura code coverage -->
+		<!-- Generate Code Coverage report -->
 		<mx:if>
 			<available classpathref="execution.test.classpath" classname="net.sourceforge.cobertura.ant.ReportTask" />
 			<then>
-				<!-- Custom Maxilla cobertura-report task for path reference support -->
-				<taskdef name="cobertura-report" classname="com.maxtk.cobertura.ReportTask" classpathref="execution.test.classpath" />
-				<cobertura-report datafile="${cobertura.data}" format="html" destdir="${code.coverage.report}">
+				<!-- report Cobertura code coverage -->
+				<taskdef name="report" classname="com.maxtk.cobertura.ReportTask" classpathref="execution.test.classpath" uri="antlib:net.sourceforge.cobertura" />
+				<cobertura:report datafile="${cobertura.data}" format="html" destdir="${code.coverage.report}">
 					<path refid="mxr.compile.sourcepath" />
-				</cobertura-report>
+				</cobertura:report>
 			</then>
+		<elseif>
+			<available classpathref="execution.test.classpath" classname="com.vladium.emma.report.reportTask" />
+			<then>
+				<!-- report EMMA code coverage -->
+				<taskdef name="report" classname="com.vladium.emma.report.reportTask" classpathref="execution.test.classpath" uri="antlib:com.vladium.emma" />
+				<emma:emma>
+					<emma:report sourcepathref="mxr.compile.sourcepath" >
+						<fileset dir="${mxp.outputFolder}" >
+							<include name="*.emma" />
+						</fileset>
+						<txt outfile="${code.coverage.report}/coverage.txt" />
+						<html outfile="${code.coverage.report}/coverage.html" />
+					</emma:report>
+				</emma:emma>
+			</then>
+		</elseif>
 		</mx:if>
 
 	</target>

@@ -5,7 +5,11 @@
 # Managed dependencies are used to specify versions of dependencies
 # if those versions are not specified in the project's build.maxml.
 dependencyManagement:
-- junit:junit:4.8.2
+- junit:junit:4.10
+- org.testng:testng:6.5.2
+- net.sourceforge.cobertura:cobertura:1.9.4.1
+- emma:emma:2.1.5320
+- emma:emma_ant:2.1.5320
 
 # Source folders are verified during initialization.
 # Defined folders that do not exist are excluded.
@@ -31,7 +35,9 @@ mxjavac: {
    clean: true
    compileLinkedProjects: true
    copyResources: true
+   compiler: modern
    debug: true
+   debugLevel: vars,lines,source
    fork: false
    failOnError: true
    includeAntRuntime: true
