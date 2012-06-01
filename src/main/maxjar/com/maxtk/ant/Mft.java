@@ -56,13 +56,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 
@@ -86,11 +84,11 @@ public class Mft {
 
 	File file = null;
 
-	List attrs = new ArrayList();
+	List<MftAttr> attrs = new ArrayList<MftAttr>();
 
-	List mimes = new ArrayList();
+	List<Mime> mimes = new ArrayList<Mime>();
 
-	java.util.Map mimeMap = null;
+	Map<String, String> mimeMap = null;
 
 	boolean genEntryAtts = true;
 
@@ -136,8 +134,7 @@ public class Mft {
 		// rip over our attribute values and
 		// insert them into the manifest
 		//
-		for (Iterator it = attrs.iterator(); it.hasNext();) {
-			MftAttr attr = (MftAttr) it.next();
+		for (MftAttr attr : attrs) {
 			logger.verbose("Attribute:" + attr);
 			attr.add(man);
 		}
@@ -150,9 +147,8 @@ public class Mft {
 		// transfer all the mime type definitions to
 		// a map for quick lookup
 		//
-		mimeMap = new HashMap();
-		for (Iterator it = mimes.iterator(); it.hasNext();) {
-			Mime m = (Mime) it.next();
+		mimeMap = new HashMap<String, String>();
+		for (Mime m : mimes) {
 			mimeMap.put(m.getExt(), m.getType());
 		}
 		mimes = null;
@@ -184,7 +180,6 @@ public class Mft {
 		if (!file.isAbsolute()) {
 			file = new File(baseDir, f);
 		}
-		// file = new File( baseDir, f );
 	}
 
 	/**
@@ -261,9 +256,8 @@ public class Mft {
 			retVal = out.toString();
 		} catch (IOException ioe) {
 			retVal = "IO Exception writing manifest";
-		} finally {
-			return retVal;
 		}
+		return retVal;
 	}
 
 	/**

@@ -50,7 +50,6 @@ package com.maxtk.ant;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
@@ -98,9 +97,9 @@ public class ClassSpec extends DataType implements JarSpec {
 	private boolean bean = false;
 
 	/** list of all dependant classes */
-	private List jarEntries = new ArrayList();
+	private List<JarEntrySpec> jarEntries = new ArrayList<JarEntrySpec>();
 
-	private List filesets = new ArrayList(3);
+	private List<FileSet> filesets = new ArrayList<FileSet>();
 
 	private Project project;
 
@@ -120,7 +119,7 @@ public class ClassSpec extends DataType implements JarSpec {
 	 * 
 	 * @return the list of all dependant classes
 	 */
-	public List getJarEntries() {
+	public List<JarEntrySpec> getJarEntries() {
 		return jarEntries;
 	}
 
@@ -154,11 +153,8 @@ public class ClassSpec extends DataType implements JarSpec {
 		// attribute then we've gotta dig the
 		// jarEntrySpec outta the collection
 		//
-		if (jarEntries.size() > 0) {
-			for (Iterator it = jarEntries.iterator(); it.hasNext();) {
-				((JarEntrySpec) it.next()).setAttribute("Java-Bean",
-						bean ? "true" : "false");
-			}
+		for (JarEntrySpec entry : jarEntries) {
+			entry.setAttribute("Java-Bean",	bean ? "true" : "false");
 		}
 	}
 
@@ -190,13 +186,11 @@ public class ClassSpec extends DataType implements JarSpec {
 		//
 		// handle any filesets
 		//
-		for (Iterator it = filesets.iterator(); it.hasNext();) {
-			FileSet set = (FileSet) it.next();
+		for (FileSet set : filesets) {
 			DirectoryScanner ds = set.getDirectoryScanner(project);
-			String[] files = ds.getIncludedFiles();
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].endsWith(".class")) {
-					jarEntries.add(new JarEntrySpec(files[i], null));
+			for (String file : ds.getIncludedFiles()) {
+				if (file.endsWith(".class")) {
+					jarEntries.add(new JarEntrySpec(file, null));
 				}
 			}
 		}
@@ -221,4 +215,3 @@ public class ClassSpec extends DataType implements JarSpec {
 		return set;
 	}
 }
-// vi:set ts=4 sw=4:

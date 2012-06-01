@@ -302,19 +302,18 @@ public class LibrarySpec extends DataType implements JarSpec {
 		if (!root.isDirectory()) {
 			throw new IllegalStateException("resolveDir:root is not a dir!");
 		}
-		File[] files = root.listFiles();
 
-		for (int i = 0; i < files.length; ++i) {
-			if (files[i].isDirectory()) {
-				resolveDir(files[i]);
+		for (File file: root.listFiles()) {
+			if (file.isDirectory()) {
+				resolveDir(file);
 				continue;
 			}
 			JarEntrySpec je = new JarEntrySpec();
-			je.setJarName(genJarName(files[i]));
-			je.setSourceFile(files[i]);
-			je.setAttribute("Last-Modified", new Date(files[i].lastModified()));
-			je.setAttribute("Content-Length", files[i].length());
-			je.setAttribute("Content-Location", files[i].getAbsolutePath());
+			je.setJarName(genJarName(file));
+			je.setSourceFile(file);
+			je.setAttribute("Last-Modified", new Date(file.lastModified()));
+			je.setAttribute("Content-Length", file.length());
+			je.setAttribute("Content-Location", file.getAbsolutePath());
 			jarEntries.add(je);
 		}
 	}
@@ -331,5 +330,3 @@ public class LibrarySpec extends DataType implements JarSpec {
 		return f.getPath().replace('\\', '/').substring(chopPath.length() + 1);
 	}
 }
-// vi:set ts=4 sw=4:
-

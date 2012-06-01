@@ -160,4 +160,3 @@ class ZipResolver extends PathResolver {
 		return is;
 	}
 }
-// vi:set ts=4 sw=4:

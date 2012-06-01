@@ -157,8 +157,8 @@ public class JarEntrySpec {
 	 */
 	public void addAttributes(Attributes a) {
 		if (a != null) {
-			for (Iterator<Object> it = a.keySet().iterator(); it.hasNext();) {
-				String key = it.next().toString();
+			for (Object o : a.keySet()) {
+				String key = o.toString();
 				atts.putValue(key, a.getValue(key));
 			}
 		}
@@ -268,9 +268,9 @@ public class JarEntrySpec {
 			sb.append(srcFile.getAbsolutePath());
 		}
 
-		for (Iterator<Object> it = atts.keySet().iterator(); it.hasNext();) {
+		for (Object o : atts.keySet()) {
 			sb.append("\n\tAtt: ");
-			sb.append(key = it.next().toString());
+			sb.append(key = o.toString());
 			sb.append(": ");
 			sb.append(atts.getValue(key));
 		}

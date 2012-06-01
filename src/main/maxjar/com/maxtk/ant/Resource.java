@@ -51,7 +51,6 @@ package com.maxtk.ant;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
@@ -219,16 +218,13 @@ public class Resource extends DataType implements JarSpec {
 			}
 		}
 
-		for (Iterator<FileSet> it = filesets.iterator(); it.hasNext();) {
-			FileSet fs = it.next();
+		for (FileSet fs : filesets) {
 			File dir = fs.getDir(project);
 
 			DirectoryScanner ds = fs.getDirectoryScanner(project);
 
-			String[] a = ds.getIncludedFiles();
-			for (int i = 0; i < a.length; ++i) {
-				jarEntries.add(new JarEntrySpec(repackage(a[i]), new File(dir,
-						a[i])));
+			for (String a : ds.getIncludedFiles()) {
+				jarEntries.add(new JarEntrySpec(repackage(a), new File(dir, a)));
 			}
 		}
 	}
@@ -240,9 +236,9 @@ public class Resource extends DataType implements JarSpec {
 	 */
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		for (Iterator<JarEntrySpec> it = jarEntries.iterator(); it.hasNext();) {
+		for (JarEntrySpec entry : jarEntries) {
 			sb.append("\n");
-			sb.append(it.next());
+			sb.append(entry);
 		}
 		return sb.toString();
 	}

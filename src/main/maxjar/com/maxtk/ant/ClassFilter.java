@@ -58,7 +58,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
@@ -123,10 +122,10 @@ import org.apache.tools.ant.BuildException;
  */
 public class ClassFilter {
 	/** the list of include patterns */
-	private List includes = new ArrayList();
+	private List<String> includes = new ArrayList<String>();
 
 	/** the list of exclude patterns */
-	private List excludes = new ArrayList();
+	private List<String> excludes = new ArrayList<String>();
 
 	/** accessor object for setting include patterns */
 	private Setter includer = new Setter(includes);
@@ -247,8 +246,7 @@ public class ClassFilter {
 		// if the class is explicitly included, then
 		// say ok....
 		//
-		for (Iterator it = includes.iterator(); it.hasNext();) {
-			String ip = (String) it.next();
+		for (String ip : includes) {
 			if (cname.startsWith(ip)) {
 				log.debug("Explicit Include (" + ip + "):" + cname);
 				return true;
@@ -257,8 +255,7 @@ public class ClassFilter {
 		//
 		// no explicit inclusion - check for an exclusion
 		//
-		for (Iterator it = excludes.iterator(); it.hasNext();) {
-			String ip = (String) it.next();
+		for (String ip : excludes) {
 			if (cname.startsWith(ip)) {
 				log.debug("Explicit Exclude (" + ip + "):" + cname);
 				return false;
@@ -309,7 +306,7 @@ public class ClassFilter {
 		 * @param set
 		 *            Description of the Parameter
 		 */
-		public Setter(Collection set) {
+		public Setter(Collection<String> set) {
 			doInc = set == includes;
 		}
 

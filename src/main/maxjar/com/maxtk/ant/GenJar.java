@@ -154,8 +154,8 @@ public class GenJar extends Task {
 				// brute force approach - if the library is of jar type
 				// then it'll return a Path object that we can insert
 				//
-				for (Iterator<LibrarySpec> it = libraries.iterator(); it.hasNext();) {
-					Path p = it.next().getPathElement();
+				for (LibrarySpec lib : libraries) {
+					Path p = lib.getPathElement();
 					if (p != null) {
 						classpath.addExisting(p);
 					}
@@ -188,8 +188,7 @@ public class GenJar extends Task {
 		//
 		List<JarEntrySpec> entries = new LinkedList<JarEntrySpec>();
 
-		for (Iterator<JarSpec> it = jarSpecs.iterator(); it.hasNext();) {
-			JarSpec js = it.next();
+		for (JarSpec js : jarSpecs) {
 			try {
 				js.resolve(this);
 			} catch (FileNotFoundException ioe) {
@@ -204,9 +203,7 @@ public class GenJar extends Task {
 			// before adding a new jarspec - see if it already exists
 			// first entry added to jar always wins
 			//
-			List<JarEntrySpec> jarEntries = js.getJarEntries();
-			for (Iterator<JarEntrySpec> iter = jarEntries.iterator(); iter.hasNext();) {
-				JarEntrySpec spec = iter.next();
+			for (JarEntrySpec spec : js.getJarEntries()) {
 				if (!entries.contains(spec)) {
 					entries.add(spec);
 				} else {
@@ -219,8 +216,7 @@ public class GenJar extends Task {
 		// must be fully built prior to jar generation, so run over
 		// each entry and and add it to the manifest
 		//
-		for (Iterator<JarEntrySpec> it = entries.iterator(); it.hasNext();) {
-			JarEntrySpec jes = it.next();
+		for (JarEntrySpec jes : entries) {
 			if (jes.getSourceFile() == null) {
 				try {
 					InputStream is = resolveEntry(jes);
@@ -242,15 +238,14 @@ public class GenJar extends Task {
 				jout = new JarOutputStream(new FileOutputStream(destFile),
 						mft.getManifest());
 
-				for (Iterator<JarEntrySpec> it = entries.iterator(); it.hasNext();) {
-					JarEntrySpec jes = it.next();
+				for (JarEntrySpec jes : entries) {
 					JarEntry entry = new JarEntry(jes.getJarName());
 					is = resolveEntry(jes);
 
 					if (is == null) {
 						logger.error("Unable to locate previously resolved resource");
 						logger.error("       Jar Name:" + jes.getJarName());
-						logger.error(" Resoved Source:" + jes.getSourceFile());
+						logger.error("Resolved Source:" + jes.getSourceFile());
 						try {
 							if (jout != null) {
 								jout.close();
@@ -308,8 +303,7 @@ public class GenJar extends Task {
 			InputStream is = null;
 
 			try {
-				for (Iterator<JarEntrySpec> it = entries.iterator(); it.hasNext();) {
-					JarEntrySpec jes = it.next();
+				for (JarEntrySpec jes : entries) {
 					String classname = jes.getJarName();
 					int index = classname.lastIndexOf("/");
 					String path = "";
@@ -376,9 +370,9 @@ public class GenJar extends Task {
 		}
 
 		// Close all the resolvers
-		for (int i = 0, length = resolvers.length; i < length; i++) {
+		for (PathResolver resolver : resolvers) {
 			try {
-				resolvers[i].close();
+				resolver.close();
 			} catch (IOException ioe) {
 			}
 		}
@@ -504,10 +498,9 @@ public class GenJar extends Task {
 	 */
 	private void initPathResolvers() throws IOException {
 		List<PathResolver> l = new ArrayList<PathResolver>();
-		String[] pc = classpath.list();
 
-		for (int i = 0; i < pc.length; ++i) {
-			File f = new File(pc[i]);
+		for (String pc : classpath.list()) {
+			File f = new File(pc);
 			if (!f.exists()) {
 				continue;
 			}
@@ -537,8 +530,8 @@ public class GenJar extends Task {
 	 */
 	InputStream resolveEntry(JarEntrySpec spec) throws IOException {
 		InputStream is = null;
-		for (int i = 0; i < resolvers.length; ++i) {
-			is = resolvers[i].resolve(spec);
+		for (PathResolver resolver : resolvers) {
+			is = resolver.resolve(spec);
 			if (is != null) {
 				return is;
 			}
@@ -558,8 +551,8 @@ public class GenJar extends Task {
 	InputStream resolveEntry(String cname) throws IOException {
 		InputStream is = null;
 
-		for (int i = 0; i < resolvers.length; ++i) {
-			is = resolvers[i].resolve(cname);
+		for (PathResolver resolver : resolvers) {
+			is = resolver.resolve(cname);
 			if (is != null) {
 				return is;
 			}
@@ -579,13 +572,12 @@ public class GenJar extends Task {
 	void generateDependancies(List<JarEntrySpec> entries) throws IOException {
 		List<String> dependants = new LinkedList<String>();
 
-		for (Iterator<JarEntrySpec> it = entries.iterator(); it.hasNext();) {
-			JarEntrySpec js = it.next();
+		for (JarEntrySpec js : entries) {
 			generateClassDependancies(js.getJarName(), dependants);
 		}
 
-		for (Iterator<String> it = dependants.iterator(); it.hasNext();) {
-			entries.add(new JarEntrySpec(it.next(), null));
+		for (String dependent : dependants) {
+			entries.add(new JarEntrySpec(dependent, null));
 		}
 	}
 
@@ -610,8 +602,8 @@ public class GenJar extends Task {
 
 			List<String> referenced = ClassUtil.getDependancies(is);
 
-			for (Iterator<String> it = referenced.iterator(); it.hasNext();) {
-				String cname = it.next() + ".class";
+			for (String name : referenced) {
+				String cname = name + ".class";
 
 				if (!classFilter.include(cname) || resolved.contains(cname)) {
 					continue;

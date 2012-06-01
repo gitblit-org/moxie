@@ -181,4 +181,3 @@ abstract class PathResolver {
 		return formatDate(new Date(l));
 	}
 }
-// vi:set ts=4 sw=4:

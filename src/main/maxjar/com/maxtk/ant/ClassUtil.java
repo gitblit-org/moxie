@@ -58,7 +58,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -249,8 +248,7 @@ public class ClassUtil {
 		// come up with a scenario where it'd matter, but...
 		//
 		List<String> classNames = new ArrayList<String>(classRefs.size());
-		for (Iterator<Integer> it = classRefs.iterator(); it.hasNext();) {
-			int idx = it.next();
+		for (Integer idx : classRefs) {
 			if (idx != thisClassIdx) {
 				// strip array references here
 				classNames.add(cp[idx].toString());
@@ -258,13 +256,4 @@ public class ClassUtil {
 		}
 		return classNames;
 	}
-
-	// public static void main( String[] argv )
-	// throws Exception
-	// {
-	// List classes = getDependancies( argv[ 0 ] );
-	// long end = System.currentTimeMillis();
-	// for ( Iterator it = classes.iterator(); it.hasNext(); )
-	// System.out.println( it.next().toString() );
-	// }
 }

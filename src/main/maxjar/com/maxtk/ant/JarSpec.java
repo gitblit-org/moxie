@@ -84,4 +84,3 @@ interface JarSpec {
 	 */
 	public String getName();
 }
-// vi:set ts=4 sw=4:
