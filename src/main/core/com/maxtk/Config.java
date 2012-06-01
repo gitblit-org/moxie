@@ -80,6 +80,9 @@ public class Config implements Serializable {
 		proxies = new ArrayList<Proxy>();
 		dependencyAliases = new HashMap<String, Dependency>();
 		dependencyOverrides = new HashMap<Scope, Map<String, Pom>>();
+		mxjavac = new MaxmlMap();
+		mxjar = new MaxmlMap();
+		mxreport = new MaxmlMap();
 	}
 	
 	public Config(File file) throws IOException, MaxmlException {
@@ -172,13 +175,13 @@ public class Config implements Serializable {
 		pom.addExclusions(readStrings(map, Key.exclusions, new ArrayList<String>(), true));
 
 		if (map.containsKey(Key.mxjavac.name())) {
-			mxjavac = (MaxmlMap) map.get(Key.mxjavac.name());
+			mxjavac.putAll((MaxmlMap) map.get(Key.mxjavac.name()));
 		}
 		if (map.containsKey(Key.mxjar.name())) {
-			mxjar = (MaxmlMap) map.get(Key.mxjar.name());
+			mxjar.putAll((MaxmlMap) map.get(Key.mxjar.name()));
 		}
 		if (map.containsKey(Key.mxreport.name())) {
-			mxreport = (MaxmlMap) map.get(Key.mxreport.name());
+			mxreport.putAll((MaxmlMap) map.get(Key.mxreport.name()));
 		}
 		return this;
 	}
@@ -209,7 +212,6 @@ public class Config implements Serializable {
 	
 	void parseDependencyOverrides(Map<String, Object> map, Key key) {
 		if (map.containsKey(key.name())) {
-			Map<Scope, Map<String, Pom>> overrides = new HashMap<Scope, Map<String, Pom>>();
 			MaxmlMap poms = (MaxmlMap) map.get(key.name());
 			for (Map.Entry<String, Object> entry: poms.entrySet()) {
 				String definition = entry.getKey();
@@ -236,26 +238,24 @@ public class Config implements Serializable {
 							if (scope == null) {
 								scope = Scope.defaultScope;
 							}
-							if (!overrides.containsKey(scope)) {
-								overrides.put(scope, new TreeMap<String, Pom>());
+							if (!dependencyOverrides.containsKey(scope)) {
+								dependencyOverrides.put(scope, new TreeMap<String, Pom>());
 							}
-							overrides.get(scope).put(override.getCoordinates(), override);
+							dependencyOverrides.get(scope).put(override.getCoordinates(), override);
 						}
 					} else {
 						// all scopes
 						for (Scope scope : Scope.values()) {
-							if (!overrides.containsKey(scope)) {
-								overrides.put(scope, new TreeMap<String, Pom>());
+							if (!dependencyOverrides.containsKey(scope)) {
+								dependencyOverrides.put(scope, new TreeMap<String, Pom>());
 							}
-							overrides.get(scope).put(override.getCoordinates(), override);
+							dependencyOverrides.get(scope).put(override.getCoordinates(), override);
 						}
 					}
 				} else {
 					throw new RuntimeException(MessageFormat.format("Illegal {0} value {1} : {2}", Key.dependencyOverrides.name(), definition, entry.getValue()));
 				}
 			}
-			// only redefine overrides is specified in this config
-			dependencyOverrides = overrides;
 		}
 	}
 	

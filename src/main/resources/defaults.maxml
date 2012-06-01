@@ -21,7 +21,7 @@ outputFolder: build
 targetFolder: target
 
 # mx:Javac compiler attributes
-# http://ant.apache.org/manual/Tasks/javac.html
+# These defaults may be overriden in your build.maxml file.
 mxjavac: {
    clean: true
    compileLinkedProjects: true
@@ -36,6 +36,13 @@ mxjavac: {
 }
 
 # mx:Jar attributes
+# These defaults may be overriden in your build.maxml file.
 mxjar: {
    excludes: **/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
+}
+
+# mx:Report attributes
+# These defaults may be overriden in your build.maxml file.
+mxreport: {
+    verbose: false
 }
