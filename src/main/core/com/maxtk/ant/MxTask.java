@@ -20,6 +20,7 @@ import java.io.File;
 import org.apache.tools.ant.Task;
 
 import com.maxtk.Build;
+import com.maxtk.Constants;
 import com.maxtk.Constants.Key;
 import com.maxtk.console.Console;
 import com.maxtk.utils.StringUtils;
@@ -36,7 +37,7 @@ public abstract class MxTask extends Task {
 	
 	public boolean isVerbose() {
 		if (verbose == null) {
-			String mxvb = getProject().getProperty("mx.verbose");
+			String mxvb = System.getProperty(Constants.MX_VERBOSE);
 			if (StringUtils.isEmpty(mxvb)) {
 				Build build = getBuild();
 				if (build == null) {

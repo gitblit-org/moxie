@@ -45,25 +45,12 @@ public class Console {
 		this(false);
 	}
 	
-	public Console(boolean isColor) {
-		out = new PrintStream(wrapOutputStream(System.out, isColor));
-		err = new PrintStream(wrapOutputStream(System.err, isColor));
+	public Console(boolean useColor) {
+		out = new PrintStream(wrapOutputStream(System.out, useColor));
+		err = new PrintStream(wrapOutputStream(System.err, useColor));
 	}
 	
-	private static OutputStream wrapOutputStream(final OutputStream stream, boolean isColor) {
-		boolean useColor;
-		String mxColor = System.getProperty("mxcolor", null);
-		if (StringUtils.isEmpty(mxColor)) {
-			mxColor = System.getenv("mxcolor");
-		}
-		if (StringUtils.isEmpty(mxColor)) {
-			// use maxml preference
-			useColor = isColor;
-		} else {
-			// use system or environment property to determine color
-			useColor = Boolean.parseBoolean(mxColor);
-		}
-		
+	private static OutputStream wrapOutputStream(final OutputStream stream, boolean useColor) {
 		if (useColor) {
 			// pass-through ANSI sequences
 			return new FilterOutputStream(stream) {
@@ -75,7 +62,7 @@ public class Console {
 				}
 			};
 		}
-		// strip ANSI sequences
+		// strip ANSI sequences (no color)
 		return new AnsiOutputStream(stream);
 	}
 	

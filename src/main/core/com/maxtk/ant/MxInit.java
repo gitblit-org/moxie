@@ -48,6 +48,13 @@ public class MxInit extends MxTask {
 			return;
 		}
 		try {
+			// push all mx properties from ant into system 
+			Map<String,String> antProperties = getProject().getProperties();
+			for (Map.Entry<String, String> entry : antProperties.entrySet()) {
+				if (entry.getKey().startsWith("mx.")) {
+					System.setProperty(entry.getKey(), entry.getValue());
+				}
+			}
 			if (StringUtils.isEmpty(config)) {
 				// default configuration
 				build = new Build(new File("build.maxml"));
@@ -55,7 +62,6 @@ public class MxInit extends MxTask {
 				// specified configuration
 				build = new Build(new File(config));
 			}
-			Map<String,String> antProperties = getProject().getProperties();
 			build.getPom().setAntProperties(antProperties);			
 
 			// add a reference to the full build object

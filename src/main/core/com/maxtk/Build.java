@@ -121,7 +121,14 @@ public class Build {
 	}
 	
 	public boolean isColor() {
-		return maxilla.apply(Constants.APPLY_COLOR) || project.apply(Constants.APPLY_COLOR);
+		String mxColor = System.getProperty(Constants.MX_COLOR, null);
+		if (StringUtils.isEmpty(mxColor)) {
+			// use Maxilla apply setting
+			return maxilla.apply(Constants.APPLY_COLOR) || project.apply(Constants.APPLY_COLOR);
+		} else {
+			// use system property to determine color
+			return Boolean.parseBoolean(mxColor);
+		}
 	}
 	
 	public boolean isDebug() {
