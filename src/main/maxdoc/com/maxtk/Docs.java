@@ -57,12 +57,7 @@ public class Docs {
 		if (verbose) {
 			doc.describe(build.console);
 		}
-		if (doc.outputFolder.exists()) {
-			FileUtils.delete(doc.outputFolder);
-		}
-		doc.outputFolder.mkdirs();
 		
-		injectBootstrap(doc, true, verbose);
 		injectPrettify(doc, doc.injectPrettify, verbose);
 		injectFancybox(doc, doc.injectFancybox, verbose);
 		if (verbose) {
@@ -328,16 +323,6 @@ public class Docs {
 				build.console.error(t, "Failed to transform " + link.src);
 			}
 		}
-	}
-
-	static void injectBootstrap(Doc doc, boolean inject, boolean verbose) {
-		if (!inject) {
-			return;
-		}
-		if (verbose) {
-			out.println("injecting Twitter Bootstrap");
-		}
-		extractZippedResource(doc, null, "bootstrap.zip");
 	}
 
 	static void injectPrettify(Doc doc, boolean inject, boolean verbose) {

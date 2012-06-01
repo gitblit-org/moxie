@@ -15,7 +15,9 @@
  */
 package com.maxtk.ant;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 
 import org.apache.tools.ant.Task;
 
@@ -23,6 +25,7 @@ import com.maxtk.Build;
 import com.maxtk.Constants;
 import com.maxtk.Constants.Key;
 import com.maxtk.console.Console;
+import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
 public abstract class MxTask extends Task {
@@ -89,5 +92,32 @@ public abstract class MxTask extends Task {
 				console.key(StringUtils.leftPad(key, indent, ' '), value);
 			}
 		}
+	}
+	
+	protected void extractHtmlResources(File outputFolder) {
+		// extract resources
+		extractResource(outputFolder, "bootstrap/css/bootstrap.min.css");
+		extractResource(outputFolder, "bootstrap/js/bootstrap.min.js");
+		extractResource(outputFolder, "bootstrap/js/jquery.js");
+		extractResource(outputFolder, "bootstrap/img/glyphicons-halflings.png");
+		extractResource(outputFolder, "bootstrap/img/glyphicons-halflings-white.png");
+	}
+	
+	private void extractResource(File outputFolder, String resource) {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		try {
+			InputStream is = getClass().getResourceAsStream("/" + resource);
+			
+			byte [] buffer = new byte[32767];
+			int len = 0;
+			while ((len = is.read(buffer)) > -1) {
+				os.write(buffer, 0, len);
+			}			
+		} catch (Exception e) {
+			console.error(e, "Can't extract {0}!", resource);
+		}
+		File file = new File(outputFolder, resource);
+		file.getParentFile().mkdirs();
+		FileUtils.writeContent(file, os.toByteArray());
 	}
 }

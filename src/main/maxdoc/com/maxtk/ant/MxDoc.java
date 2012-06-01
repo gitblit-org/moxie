@@ -131,6 +131,14 @@ public class MxDoc extends MxTask {
 		}
 		
 		build.console.title(getClass(), build.getPom().name);
+		
+		if (doc.outputFolder.exists()) {
+			FileUtils.delete(doc.outputFolder);
+		}
+		doc.outputFolder.mkdirs();
+
+		extractHtmlResources(doc.outputFolder);
+		
 		Docs.execute(build, doc, isVerbose());
 
 		for (com.maxtk.Resource resource : resources) {

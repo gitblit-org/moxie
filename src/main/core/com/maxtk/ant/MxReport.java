@@ -78,7 +78,7 @@ public class MxReport extends MxTask {
 		String kvpPattern = "<tr><th>{0}</th><td>{1}</td></tr>";
 		String aPattern = "<a href=\"{1}\" target=\"_blank\">{0}</a>";
 		
-		StringBuilder sb = new StringBuilder("<html>\n<head>\n<link href=\"http://twitter.github.com/bootstrap/assets/css/bootstrap.css\" rel=\"stylesheet\">\n");
+		StringBuilder sb = new StringBuilder("<html>\n<head>\n<link href=\"./bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">\n");
 		sb.append(format("<title>{0} ({1})</title>\n", pom.name, pom.getCoordinates()));
 		sb.append("</head><body>\n");
 		sb.append("<div class='container'>\n");
@@ -92,7 +92,7 @@ public class MxReport extends MxTask {
 		if (!StringUtils.isEmpty(pom.url)) {
 			addRow(sb, kvpPattern, "url", format(aPattern, pom.url, pom.url));
 		}
-		addRow(sb, kvpPattern, "vendor", pom.vendor);
+		addRow(sb, kvpPattern, "vendor", pom.organization);
 		addRow(sb, kvpPattern, "groupId", pom.groupId);
 		addRow(sb, kvpPattern, "artifactId", pom.artifactId);
 		addRow(sb, kvpPattern, "version", pom.version);
@@ -171,9 +171,14 @@ public class MxReport extends MxTask {
 		sb.append("</div></body></html>");
 		// write report
 		if (outputFile == null) {
-			outputFile = new File(build.getReportsFolder(), "report.html");
+			outputFile = new File(build.getReportsFolder(), "index.html");
 		}
 		FileUtils.writeContent(outputFile, sb.toString());
+		
+		// extract resources
+		File outputFolder = outputFile.getParentFile();
+		extractHtmlResources(outputFolder);
+
 		build.console.log("report {0} generated", outputFile.getAbsolutePath());
 	}
 	

@@ -119,7 +119,9 @@
 			<class name="com.maxtk.ant.MxJar" />
 			<class name="com.maxtk.ant.MxZip" />
 
-			<resource file="${basedir}/src/main/resources/maxilla.xml" />
+			<resource>
+				<fileset dir="${basedir}/src/main/resources" />
+			</resource>
 			<resource file="${basedir}/src/main/config/pro/tasks.properties" />
 		</mx:jar>
 
@@ -149,7 +151,9 @@
 			<class name="com.maxtk.ant.MxGhPages" />				
 			<class name="com.maxtk.ant.MxDoc" />
 			
-			<resource file="${basedir}/src/main/resources/maxilla.xml" />
+			<resource>
+				<fileset dir="${basedir}/src/main/resources" />
+			</resource>
 			<resource file="${basedir}/src/main/config/all/tasks.properties" />
 
 		</mx:jar>
