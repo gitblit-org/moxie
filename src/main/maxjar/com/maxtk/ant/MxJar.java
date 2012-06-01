@@ -36,7 +36,6 @@ import com.maxtk.Pom;
 import com.maxtk.Scope;
 import com.maxtk.ant.Mft.MftAttr;
 import com.maxtk.maxml.MaxmlMap;
-import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
 public class MxJar extends GenJar {
@@ -209,12 +208,8 @@ public class MxJar extends GenJar {
 			destFile = new File(build.getTargetFolder(), name + ".jar");
 		}
 		
-		if (destFile != null) {
-			if (destFile.getParentFile() != null) {
-				destFile.getParentFile().mkdirs();
-			}
-		} else if (destDir != null) {
-			destDir.mkdirs();
+		if (destFile.getParentFile() != null) {
+			destFile.getParentFile().mkdirs();
 		}
 		
 		// optionally include resources from the outputfolder
@@ -265,15 +260,10 @@ public class MxJar extends GenJar {
 		long start = System.currentTimeMillis();
 		super.execute();
 
-		if (destFile != null) {
-			build.console.log(1, destFile.getAbsolutePath());
-			build.console.log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
-		} else {
-			build.console.log(1, "class structure => " + destDir);
-			build.console.log(1, "{0} KB, generated in {1} ms", (FileUtils.folderSize(destDir)/1024), System.currentTimeMillis() - start);
-		}
+		build.console.log(1, destFile.getAbsolutePath());
+		build.console.log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
 		
-		if (packageSources && destFile != null) {
+		if (packageSources) {
 			String name = destFile.getName();
 			if (!StringUtils.isEmpty(classifier)) {
 				// replace the classifier with "sources"

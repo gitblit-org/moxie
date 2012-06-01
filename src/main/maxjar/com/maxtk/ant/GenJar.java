@@ -55,7 +55,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -90,8 +89,6 @@ public class GenJar extends Task {
 	private ClassFilter classFilter = null;
 
 	protected File destFile = null;
-
-	protected File destDir = null;
 
 	private PathResolver[] resolvers = null;
 
@@ -128,12 +125,6 @@ public class GenJar extends Task {
 		logger = new Logger(getProject());
 		if (classFilter == null) {
 			classFilter = new ClassFilter(logger);
-		}
-
-		if ((destFile == null) && (destDir == null)) {
-			throw new BuildException(
-					"maxjar: Either a destfile or destdir attribute is required",
-					getLocation());
 		}
 
 		mft.setBaseDir(getProject().getBaseDir());
@@ -286,89 +277,6 @@ public class GenJar extends Task {
 			logger.verbose("Jar Generated (" + (System.currentTimeMillis() - start) + " ms)");
 		}
 
-		// Destdir has been specified, so try to generate the dependencies on
-		// disk
-		if (destDir != null) {
-			if (!destDir.exists()) {
-				throw new BuildException("Destination directory: \'" + destDir
-						+ "\' does not exist", getLocation());
-			}
-
-			if (!destDir.isDirectory()) {
-				throw new BuildException("Destination directory: \'" + destDir
-						+ "\' is not a valid directory", getLocation());
-			}
-
-			FileOutputStream fileout = null;
-			InputStream is = null;
-
-			try {
-				for (JarEntrySpec jes : entries) {
-					String classname = jes.getJarName();
-					int index = classname.lastIndexOf("/");
-					String path = "";
-					if (index > 0) {
-						path = classname.substring(0, index);
-					}
-					classname = classname.substring(index + 1);
-
-					File filepath = new File(destDir, path);
-					if (!filepath.exists()) {
-						if (!filepath.mkdirs()) {
-							throw new BuildException(
-									"Unable to create directory: "
-											+ filepath.getName(), getLocation());
-						}
-					}
-					File classfile = new File(filepath, classname);
-					logger.debug("Writing: " + classfile.getAbsolutePath());
-					fileout = new FileOutputStream(classfile);
-					is = resolveEntry(jes);
-
-					if (is == null) {
-						logger.error("Unable to locate previously resolved resource");
-						logger.error("       Jar Name:" + jes.getJarName());
-						logger.error(" Resoved Source:" + jes.getSourceFile());
-						try {
-							if (fileout != null) {
-								fileout.close();
-							}
-						} catch (IOException ioe) {
-						}
-						throw new BuildException("File not found \'"
-								+ jes.getJarName() + "\'", getLocation());
-					}
-					byte[] buff = new byte[4096]; // stream copy buffer
-					int len;
-					while ((len = is.read(buff, 0, buff.length)) != -1) {
-						fileout.write(buff, 0, len);
-					}
-					fileout.close();
-					is.close();
-
-					logger.verbose("Wrote: " + classfile.getName());
-				}
-			} catch (IOException ioe) {
-				throw new BuildException("Unable to write classes to: "
-						+ destDir.getName(), ioe, getLocation());
-			} finally {
-				try {
-					if (is != null) {
-						is.close();
-					}
-				} catch (IOException ioe) {
-				}
-				try {
-					if (fileout != null) {
-						fileout.close();
-					}
-				} catch (IOException ioe) {
-				}
-			}
-
-			logger.verbose("Class Structure Generated (" + (System.currentTimeMillis() - start) + " ms)");
-		}
-
 		// Close all the resolvers
 		for (PathResolver resolver : resolvers) {
 			try {
@@ -477,16 +385,6 @@ public class GenJar extends Task {
 	 */
 	public void setDestfile(File destFile) {
 		this.destFile = destFile;
-	}
-
-	/**
-	 * Sets the name of the directory where the classes will be copied.
-	 * 
-	 * @param path
-	 *            The directory name.
-	 */
-	public void setDestdir(Path path) {
-		destDir = getProject().resolveFile(path.toString());
 	}
 
 	/**
