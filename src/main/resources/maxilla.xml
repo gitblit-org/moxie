@@ -21,22 +21,37 @@
 	<!-- This JavaScript sneakery assumes this XML file is -->
 	<!-- located within a Maxilla jar file and it is being -->
 	<!-- imported or included from a project build script. -->
-	<dirname file="${ant.file.maxilla}" property="maxilla.import.url"/>
 	<script language="javascript">
 		<![CDATA[
 			// extract the jar path
-			url = project.getProperty("maxilla.import.url");
-			index = url.lastIndexOf("file:");
-			jar = url.substring(index + 5);
-			if (jar.endsWith("!")) {
-				jar = jar.substring(0, jar.length() - 1);
+			//url = project.getProperty("maxilla.import.url");
+			url = project.getProperty("ant.file.maxilla");			
+			index = url.lastIndexOf("file:/");
+			jar = url.substring(index + 6);
+			bang = jar.lastIndexOf("!");
+			if (bang > -1) {
+				jar = jar.substring(0, bang);
 			}
 			project.setProperty("maxilla.jar", jar);
 		]]>
 	</script>
 	
+	<!-- Define the folder where the Maxilla jar is located -->
+	<dirname property="maxilla.dir" file="${maxilla.jar}" />
+	
+	<!-- Make the Maxilla extensions folder -->
+	<property name="maxilla.extensions" value="${user.home}/.maxilla/extensions" />
+	<mkdir dir="${maxilla.extensions}" />
+
+	<!-- Define the Maxilla classpath -->
+	<path id="maxilla.classpath">
+		<pathelement location="${maxilla.jar}" />
+		<fileset dir="${maxilla.dir}" includes="mxext-*.jar" />
+		<fileset dir="${maxilla.extensions}" includes="*.jar" />
+	</path>
+	
 	<!-- Define Maxilla tasks -->
-	<taskdef resource="tasks.properties" classpath="${maxilla.jar}" uri="antlib:com.maxtk"/>
+	<taskdef resource="tasks.properties" classpathref="maxilla.classpath" uri="antlib:com.maxtk"/>
 
 	<!-- Set the environment into the ${env} property -->
 	<property environment="env" />
@@ -245,7 +260,7 @@
 							<include name="*.emma" />
 						</fileset>
 						<txt outfile="${code.coverage.report}/coverage.txt" />
-						<html outfile="${code.coverage.report}/coverage.html" />
+						<html outfile="${code.coverage.report}/index.html" />
 					</emma:report>
 				</emma:emma>
 			</then>
