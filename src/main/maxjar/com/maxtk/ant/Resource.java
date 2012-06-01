@@ -75,9 +75,9 @@ import org.apache.tools.ant.types.FileSet;
 public class Resource extends DataType implements JarSpec {
 	private Project project;
 
-	private List jarEntries = new ArrayList();
+	private List<JarEntrySpec> jarEntries = new ArrayList<JarEntrySpec>();
 
-	private List filesets = new ArrayList(8);
+	private List<FileSet> filesets = new ArrayList<FileSet>();
 
 	private File file = null;
 
@@ -98,7 +98,7 @@ public class Resource extends DataType implements JarSpec {
 	 * 
 	 * @return List all collected JarEntry objects
 	 */
-	public List getJarEntries() {
+	public List<JarEntrySpec> getJarEntries() {
 		return jarEntries;
 	}
 
@@ -219,8 +219,8 @@ public class Resource extends DataType implements JarSpec {
 			}
 		}
 
-		for (Iterator it = filesets.iterator(); it.hasNext();) {
-			FileSet fs = (FileSet) it.next();
+		for (Iterator<FileSet> it = filesets.iterator(); it.hasNext();) {
+			FileSet fs = it.next();
 			File dir = fs.getDir(project);
 
 			DirectoryScanner ds = fs.getDirectoryScanner(project);
@@ -240,11 +240,10 @@ public class Resource extends DataType implements JarSpec {
 	 */
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		for (Iterator it = jarEntries.iterator(); it.hasNext();) {
+		for (Iterator<JarEntrySpec> it = jarEntries.iterator(); it.hasNext();) {
 			sb.append("\n");
 			sb.append(it.next());
 		}
 		return sb.toString();
 	}
 }
-// vi:set ts=4 sw=4:

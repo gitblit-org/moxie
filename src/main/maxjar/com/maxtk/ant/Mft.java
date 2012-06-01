@@ -104,38 +104,6 @@ public class Mft {
 		//
 		Attributes atts = man.getMainAttributes();
 		atts.put(Attributes.Name.MANIFEST_VERSION, "1.0");
-		atts.putValue("Created-By", "Jakarta Ant " + getAntVersion());
-	}
-
-	//
-	// I lifted this directly from the ant Main class - there should be a way
-	// for a task to determine what version of Ant it's operating within
-	//
-	/**
-	 * Gets the antVersion attribute of the Mft object
-	 * 
-	 * @return The antVersion value
-	 */
-	String getAntVersion() {
-		String ret = "Version Unavailable";
-
-		try {
-			Properties props = new Properties();
-			InputStream in = org.apache.tools.ant.Main.class
-					.getResourceAsStream("/org/apache/tools/ant/version.txt");
-			props.load(in);
-			in.close();
-			StringBuffer msg = new StringBuffer();
-			msg.append(props.getProperty("VERSION"));
-			msg.append(" (");
-			msg.append(props.getProperty("DATE"));
-			msg.append(")");
-			ret = msg.toString();
-		} catch (Exception e) {
-			;
-		} finally {
-			return ret;
-		}
 	}
 
 	/**

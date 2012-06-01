@@ -65,7 +65,7 @@ interface JarSpec {
 	 * 
 	 * @return The jarEntries value
 	 */
-	public List getJarEntries();
+	public List<JarEntrySpec> getJarEntries();
 
 	/**
 	 * Description of the Method

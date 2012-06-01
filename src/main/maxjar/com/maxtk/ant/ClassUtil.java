@@ -110,7 +110,7 @@ public class ClassUtil {
 	 * @throws IOException
 	 *             when IO errors occur
 	 */
-	public static List getDependancies(String classFile) throws IOException {
+	public static List<String> getDependancies(String classFile) throws IOException {
 		return getDependancies(new File(classFile));
 	}
 
@@ -124,7 +124,7 @@ public class ClassUtil {
 	 * @throws IOException
 	 *             when IO errors occur
 	 */
-	public static List getDependancies(File classFile) throws IOException {
+	public static List<String> getDependancies(File classFile) throws IOException {
 		InputStream is = null;
 		try {
 			is = new FileInputStream(classFile);
@@ -146,7 +146,7 @@ public class ClassUtil {
 	 * @throws IOException
 	 *             when IO errors occur
 	 */
-	public static List getDependancies(InputStream is) throws IOException {
+	public static List<String> getDependancies(InputStream is) throws IOException {
 		return getDependancies(new DataInputStream(is));
 	}
 
@@ -160,7 +160,7 @@ public class ClassUtil {
 	 * @throws IOException
 	 *             when IO errors occur
 	 */
-	public static List getDependancies(DataInputStream is) throws IOException {
+	public static List<String> getDependancies(DataInputStream is) throws IOException {
 		//
 		// read the prefix stuff
 		//
@@ -184,7 +184,7 @@ public class ClassUtil {
 		// poolCount / 4 should be larger than we ever need
 		// this holds indices into the UTFs for class class names
 		//
-		List classRefs = new ArrayList(pool_count / 4);
+		List<Integer> classRefs = new ArrayList<Integer>(pool_count / 4);
 		//
 		// now read the constant pool - storing only
 		// UTF and CLASS entries
@@ -248,12 +248,12 @@ public class ClassUtil {
 		// couldn't they assume that the entire file was read? I can't
 		// come up with a scenario where it'd matter, but...
 		//
-		List classNames = new ArrayList(classRefs.size());
-		for (Iterator it = classRefs.iterator(); it.hasNext();) {
-			int idx = ((Integer) it.next()).intValue();
+		List<String> classNames = new ArrayList<String>(classRefs.size());
+		for (Iterator<Integer> it = classRefs.iterator(); it.hasNext();) {
+			int idx = it.next();
 			if (idx != thisClassIdx) {
 				// strip array references here
-				classNames.add(cp[idx]);
+				classNames.add(cp[idx].toString());
 			}
 		}
 		return classNames;

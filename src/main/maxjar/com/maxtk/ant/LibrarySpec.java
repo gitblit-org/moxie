@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
@@ -86,7 +87,7 @@ public class LibrarySpec extends DataType implements JarSpec {
 
 	private File dir = null; // the actual dir to use
 
-	private List jarEntries = new ArrayList();
+	private List<JarEntrySpec> jarEntries = new ArrayList<JarEntrySpec>();
 
 	private String chopPath = null;
 
@@ -118,7 +119,7 @@ public class LibrarySpec extends DataType implements JarSpec {
 	 * 
 	 * @return The jarEntries value
 	 */
-	public List getJarEntries() {
+	public List<JarEntrySpec> getJarEntries() {
 		return jarEntries;
 	}
 
@@ -241,7 +242,7 @@ public class LibrarySpec extends DataType implements JarSpec {
 			JarFile jarFile = new JarFile(jar);
 			Manifest mft = jarFile.getManifest();
 
-			Enumeration entries = jarFile.entries();
+			Enumeration<JarEntry> entries = jarFile.entries();
 			while (entries.hasMoreElements()) {
 				JarEntrySpec je = new JarEntrySpec();
 				ZipEntry zentry = (ZipEntry) entries.nextElement();
