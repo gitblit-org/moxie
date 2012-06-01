@@ -36,8 +36,6 @@ import com.maxtk.utils.StringUtils;
 
 public class MxReport extends MxTask {
 	
-	boolean quiet;
-	
 	File outputFile;
 	
 	@Override
@@ -55,17 +53,9 @@ public class MxReport extends MxTask {
 		if (attributes.containsKey(Key.outputFile.name())) {
 			outputFile = new File(attributes.getString(Key.outputFile.name(), null));
 		}
-		if (attributes.containsKey(Key.quiet.name())) {
-			quiet = attributes.getBoolean(Key.quiet.name(), false);
+		if (attributes.containsKey(Key.verbose.name())) {
+			setVerbose(attributes.getBoolean(Key.verbose.name(), false));
 		}
-	}
-	
-	public boolean getQuiet() {
-		return quiet;
-	}
-	
-	public void setQuiet(boolean value) {
-		this.quiet = value;
 	}
 	
 	public File getOutputfile() {
@@ -80,6 +70,8 @@ public class MxReport extends MxTask {
 		Build build = getBuild();		
 		build.console.title(getClass(), build.getPom().getCoordinates());
 
+		boolean verbose = isVerbose();
+		
 		Pom pom = build.getPom();
 		
 		String h2Pattern = "<h2>{0}</h2>\n";
@@ -124,7 +116,7 @@ public class MxReport extends MxTask {
 				continue;
 			}
 			sb.append(format("<h3>{0} dependencies</h3>\n", scope));
-			if (!quiet) {
+			if (verbose) {
 				// log to console
 				build.console.scope(scope, dependencies.size());
 			}
@@ -168,7 +160,7 @@ public class MxReport extends MxTask {
 					}
 				}
 				sb.append("</td></tr>\n");
-				if (!quiet) {
+				if (verbose) {
 					// log to console
 					build.console.license(dep, depPom);
 				}
