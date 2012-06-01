@@ -143,7 +143,7 @@ public class MxJar extends GenJar {
 		setManifest("Build-Date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
 		setManifest("Implementation-Title", Key.name);
-		setManifest("Implementation-Vendor", Key.vendor);
+		setManifest("Implementation-Vendor", Key.organization);
 		setManifest("Implementation-Vendor-Id", Key.groupId);
 		setManifest("Implementation-Vendor-URL", Key.url);
 		setManifest("Implementation-Version", Key.version);
@@ -151,7 +151,7 @@ public class MxJar extends GenJar {
 		setManifest("Bundle-Name", Key.name);
 		setManifest("Bundle-SymbolicName", Key.artifactId);
 		setManifest("Bundle-Version", Key.version);
-		setManifest("Bundle-Vendor", Key.vendor);
+		setManifest("Bundle-Vendor", Key.organization);
 		
 		setManifest("Git-Commit", Key.commit);
 

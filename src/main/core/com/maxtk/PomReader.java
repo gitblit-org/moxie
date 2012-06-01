@@ -67,7 +67,6 @@ public class PomReader {
 		pom.name = readStringTag(docElement, Key.name);
 		pom.description = readStringTag(docElement, Key.description);
 		pom.url = readStringTag(docElement, Key.url);
-		pom.vendor = readStringTag(docElement, Key.vendor);
 		
 		NodeList projectNodes = docElement.getChildNodes();
 		for (int i = 0; i < projectNodes.getLength(); i++) {
@@ -150,6 +149,9 @@ public class PomReader {
 				} else if ("issueManagement".equalsIgnoreCase(element.getTagName())) {
 					// extract the issue tracker url
 					pom.issuesUrl = readStringTag(element, Key.url);
+				} else if ("organization".equalsIgnoreCase(element.getTagName())) {
+					// extract the organization name
+					pom.organization = readStringTag(element, Key.name);
 				}
 			}
 		}

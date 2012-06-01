@@ -143,7 +143,7 @@ public class Config implements Serializable {
 		pom.classifier = readString(map, Key.classifier, false);
 		pom.description = readString(map, Key.description, false);
 		pom.url = readString(map, Key.url, false);
-		pom.vendor = readString(map, Key.vendor, false);
+		pom.organization = readString(map, Key.organization, false);
 
 		// build parameters
 		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(), true));

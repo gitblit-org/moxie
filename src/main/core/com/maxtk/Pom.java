@@ -38,7 +38,7 @@ public class Pom {
 	public String description;
 	public String url;
 	public String issuesUrl;
-	public String vendor;
+	public String organization;
 	
 	public String groupId;
 	public String artifactId;
@@ -357,8 +357,8 @@ public class Pom {
 		if (pom.licenses != null) {
 			licenses.addAll(pom.licenses);
 		}
-		if (StringUtils.isEmpty(vendor)) {
-			vendor = pom.vendor;
+		if (StringUtils.isEmpty(organization)) {
+			organization = pom.organization;
 		}
 		if (StringUtils.isEmpty(url)) {
 			url = pom.url;
@@ -432,7 +432,7 @@ public class Pom {
 		sb.append(StringUtils.toXML("version", version));
 		sb.append(StringUtils.toXML("name", name));
 		sb.append(StringUtils.toXML("description", description));
-		sb.append(StringUtils.toXML("vendor", vendor));
+		sb.append(StringUtils.toXML("organization", StringUtils.toXML("name", organization).trim()));
 		sb.append(StringUtils.toXML("url", url));
 		sb.append('\n');
 		

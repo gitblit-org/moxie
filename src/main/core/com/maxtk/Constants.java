@@ -56,7 +56,7 @@ public class Constants {
 	public static final String MX_COLOR = "mx.color";
 	
 	public static enum Key {
-		build, name, description, url, vendor, scope, groupId, artifactId, version,
+		build, name, description, url, organization, scope, groupId, artifactId, version,
 		type, classifier, optional, folder, sourceFolder, sourceFolders, compile_sourcepath,
 		test_sourcepath, outputFolder, compile_outputpath, test_outputpath, linkedProjects,
 		dependencyFolder, repositories, properties, dependencies, apply,

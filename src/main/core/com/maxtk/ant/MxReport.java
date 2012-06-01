@@ -92,7 +92,7 @@ public class MxReport extends MxTask {
 		if (!StringUtils.isEmpty(pom.url)) {
 			addRow(sb, kvpPattern, "url", format(aPattern, pom.url, pom.url));
 		}
-		addRow(sb, kvpPattern, "vendor", pom.organization);
+		addRow(sb, kvpPattern, "organization", pom.organization);
 		addRow(sb, kvpPattern, "groupId", pom.groupId);
 		addRow(sb, kvpPattern, "artifactId", pom.artifactId);
 		addRow(sb, kvpPattern, "version", pom.version);

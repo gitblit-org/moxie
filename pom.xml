@@ -10,7 +10,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 	<version>0.3.0-SNAPSHOT</version>
 	<name>Maxilla</name>
 	<description>Project Build Toolkit</description>
-	<vendor>James Moger</vendor>
+	<organization><name>James Moger</name></organization>
 	<url>http://gitblit.github.com/maxilla</url>
 
 	<properties>

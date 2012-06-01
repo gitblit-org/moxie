@@ -983,7 +983,7 @@ public class Build {
 		describe(Key.groupId, pom.groupId);
 		describe(Key.artifactId, pom.artifactId);
 		describe(Key.version, pom.version);
-		describe(Key.vendor, pom.vendor);
+		describe(Key.organization, pom.organization);
 		describe(Key.url, pom.url);
 
 		if (verbose) {

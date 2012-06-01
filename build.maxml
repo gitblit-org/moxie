@@ -3,7 +3,7 @@ description : Project Build Toolkit
 groupId : com.maxtk
 artifactId : maxilla
 version : 0.3.0-SNAPSHOT
-vendor : James Moger 
+organization : James Moger 
 url : http://gitblit.github.com/maxilla
 apply : eclipse, pom, cache
 sourceFolders : 

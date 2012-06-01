@@ -93,7 +93,7 @@ public class MxInit extends MxTask {
 			setProperty(Key.groupId, pom.groupId);
 			setProperty(Key.artifactId, pom.artifactId);
 			setProperty(Key.version, pom.version);
-			setProperty(Key.vendor, pom.vendor);
+			setProperty(Key.organization, pom.organization);
 			setProperty(Key.url, pom.url);
 
 			setProperty(Key.reportsFolder, build.getReportsFolder().toString());
