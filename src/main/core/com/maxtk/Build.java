@@ -64,6 +64,7 @@ public class Build {
 	public final ArtifactCache artifactCache;
 	public final Console console;
 	
+	private final Map<String, Dependency> aliases;
 	private final Map<Scope, Set<Dependency>> solutions;	
 	private final Map<Scope, List<File>> classpaths;
 	
@@ -118,6 +119,11 @@ public class Build {
 		console.debug("determining proxies and repositories");
 		determineProxies();
 		determineRepositories();
+		
+		console.debug("building alias map");
+		aliases = new HashMap<String, Dependency>();
+		aliases.putAll(maxilla.dependencyAliases);
+		aliases.putAll(project.dependencyAliases);
 	}
 	
 	public boolean isColor() {
@@ -207,6 +213,44 @@ public class Build {
 		}
 	}
 	
+	private void resolveAliasedDependencies() {
+		resolveAliasedDependencies(project.pom.getDependencies().toArray(new Dependency[0]));
+	}
+	
+	private void resolveAliasedDependencies(Dependency... dependencies) {
+		for (Dependency dep : dependencies) {
+			// check for alias
+			String name = null;
+			if (StringUtils.isEmpty(dep.artifactId) && aliases.containsKey(dep.groupId)) {
+				// alias by simple name
+				name = dep.groupId;
+			} else if (aliases.containsKey(dep.getManagementId())) {
+				// alias by groupId:artifactId
+				name = dep.getManagementId();
+			}
+
+			if (name != null) {
+				// we have an alias
+				Dependency alias = aliases.get(name);
+				dep.groupId = alias.groupId;
+				dep.artifactId = alias.artifactId;
+				dep.version = alias.version;
+				
+				if (StringUtils.isEmpty(dep.version)) {
+					dep.version = project.pom.getManagedVersion(dep);
+					if (StringUtils.isEmpty(dep.version)) {
+						dep.version = maxilla.pom.getManagedVersion(dep);
+					}
+				}
+				if (StringUtils.isEmpty(dep.version)) {
+					console.error("unable to resolve version for alias {0} = ", name, dep.getCoordinates());
+				} else {
+					console.debug("resolved dependency alias {0} = {1}", name, dep.getCoordinates());
+				}
+			}
+		}
+	}
+	
 	public Pom getPom() {
 		return project.pom;
 	}
@@ -288,6 +332,9 @@ public class Build {
 			// solve linked projects
 			solveLinkedProjects();
 			
+			// substitute aliases with definitions
+			resolveAliasedDependencies();
+
 			// build solution
 			retrievePOMs();
 			importDependencyManagement();
@@ -472,7 +519,13 @@ public class Build {
 			override = maxilla.getDependencyOverrides(scope, dependency.getCoordinates());
 		}
 		if (override != null) {
-			console.notice("OVERRIDE: {0} {1} dependency {2}", project.getPom().getCoordinates(), scope.name().toUpperCase(), dependency.getCoordinates());
+			if (Scope.build.equals(scope)) {
+				// build scope overrides are normal
+				console.debug("OVERRIDE: {0} {1} dependency {2}", project.getPom().getCoordinates(), scope.name().toUpperCase(), dependency.getCoordinates());
+			} else {
+				// notify on any other scope
+				console.notice("OVERRIDE: {0} {1} dependency {2}", project.getPom().getCoordinates(), scope.name().toUpperCase(), dependency.getCoordinates());
+			}
 			dependencies = override.getDependencies(scope, dependency.ring + 1);
 		}
 		
@@ -722,6 +775,7 @@ public class Build {
 		// solve the classpath solution for the Maxilla runtime dependencies
 		Pom pom = new Pom();
 		for (Dependency dependency : dependencies) {
+			resolveAliasedDependencies(dependency);
 			retrievePOM(dependency);
 			pom.addDependency(dependency, Scope.runtime);
 		}

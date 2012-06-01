@@ -56,6 +56,7 @@ public class Config implements Serializable {
 	File outputFolder;
 	File targetFolder;
 	Set<String> apply;
+	Map<String, Dependency> dependencyAliases;
 	Map<Scope, Map<String, Pom>> dependencyOverrides;
 	MaxmlMap mxjavac;
 	MaxmlMap mxjar;
@@ -77,6 +78,7 @@ public class Config implements Serializable {
 		dependencyFolder = null;
 		apply = new TreeSet<String>();
 		proxies = new ArrayList<Proxy>();
+		dependencyAliases = new HashMap<String, Dependency>();
 		dependencyOverrides = new HashMap<Scope, Map<String, Pom>>();
 	}
 	
@@ -162,8 +164,9 @@ public class Config implements Serializable {
 		}
 
 		repositoryUrls = readStrings(map, Key.repositories, repositoryUrls);
+		parseDependencyAliases(map, Key.dependencyAliases);
 		parseDependencies(map, Key.dependencies);
-		parsePomOverrides(map, Key.dependencyOverrides);
+		parseDependencyOverrides(map, Key.dependencyOverrides);
 		parseProxies(map, Key.proxies);
 		
 		pom.addExclusions(readStrings(map, Key.exclusions, new ArrayList<String>(), true));
@@ -179,6 +182,17 @@ public class Config implements Serializable {
 		}
 		return this;
 	}
+	
+	void parseDependencyAliases(Map<String, Object> map, Key key) {
+		if (map.containsKey(key.name())) {
+			MaxmlMap aliases = (MaxmlMap) map.get(key.name());
+			for (Map.Entry<String, Object> entry : aliases.entrySet()) {
+				String definition = entry.getValue().toString();
+				Dependency dep = new Dependency(definition);
+				dependencyAliases.put(entry.getKey(), dep);
+			}
+		}
+	}
 
 	void parseDependencies(Map<String, Object> map, Key key) {
 		if (map.containsKey(key.name())) {
@@ -193,7 +207,7 @@ public class Config implements Serializable {
 		}		
 	}
 	
-	void parsePomOverrides(Map<String, Object> map, Key key) {
+	void parseDependencyOverrides(Map<String, Object> map, Key key) {
 		if (map.containsKey(key.name())) {
 			Map<Scope, Map<String, Pom>> overrides = new HashMap<Scope, Map<String, Pom>>();
 			MaxmlMap poms = (MaxmlMap) map.get(key.name());
@@ -503,5 +517,6 @@ public class Config implements Serializable {
 		mxjar = parent.mxjar;
 		mxreport = parent.mxreport;
 		dependencyOverrides = parent.dependencyOverrides;
+		dependencyAliases = parent.dependencyAliases;
 	}
 }

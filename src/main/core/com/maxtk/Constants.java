@@ -64,7 +64,7 @@ public class Constants {
 		compile_dependencypath, runtime_dependencypath, test_dependencypath, commit, targetFolder,
 		proxies, parent, exclusions, mxjar, mxjavac, compilerArgs, excludes, includes,
 		dependencyManagement, mxreport, outputFile, verbose, build_classpath, reportsFolder,
-		dependencyOverrides;
+		dependencyOverrides, dependencyAliases;
 		
 		public String propId() {
 			return "mxp." + name().replace('_', '.');

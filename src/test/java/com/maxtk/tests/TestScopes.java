@@ -119,7 +119,7 @@ public class TestScopes extends Assert {
 		assertEquals(null, Scope.test.getTransitiveScope(Scope.build));
 
 		assertEquals(Scope.build, Scope.build.getTransitiveScope(Scope.compile));
-		assertEquals(null, Scope.build.getTransitiveScope(Scope.provided));
+		assertEquals(Scope.build, Scope.build.getTransitiveScope(Scope.provided));
 		assertEquals(Scope.build, Scope.build.getTransitiveScope(Scope.runtime));
 		assertEquals(null, Scope.build.getTransitiveScope(Scope.test));
 	}

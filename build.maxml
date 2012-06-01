@@ -20,8 +20,5 @@ dependencies :
 - provided org.apache.ant:ant:1.8.3
 - provided org.eclipse.jgit:org.eclipse.jgit:${jgit.version}
 - provided org.tautua.markdownpapers:markdownpapers-core:1.2.7
-- provided net.sourceforge.cobertura:cobertura
-- test junit:junit
-mxreport: {
-  quiet : true
-}
+- provided cobertura
+- test junit

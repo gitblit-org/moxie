@@ -118,7 +118,9 @@ public class MxDoc extends MxTask {
 	@Override
 	public void execute() throws BuildException {
 		Build build = getBuild();
-		build.loadDependency(new Dependency("org.tautua.markdownpapers:markdownpapers-core:1.2.7"));
+		
+		build.loadDependency(new Dependency("mxreport:freemarker"));
+		build.loadDependency(new Dependency("mxdoc:markdownpapers"));
 
 		if (doc.sourceFolder == null) {
 			doc.sourceFolder = build.getSiteSourceFolder();

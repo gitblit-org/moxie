@@ -29,6 +29,6 @@ public class MxGitTask extends MxTask {
 	}
 
 	protected void loadDependency(Build build) {
-		build.loadDependency(new Dependency("org.eclipse.jgit:org.eclipse.jgit:1.3.0.201202151440-r"));
+		build.loadDependency(new Dependency("mxgit:jgit"));
 	}
 }

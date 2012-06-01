@@ -170,7 +170,7 @@ public class Pom {
 		}
 	}
 	
-	private String getManagedVersion(Dependency dep) {
+	String getManagedVersion(Dependency dep) {
 		if (managedVersions.containsKey(dep.getManagementId())) {
 			return managedVersions.get(dep.getManagementId());
 		}
@@ -261,6 +261,14 @@ public class Pom {
 				return sb.toString();
 			}
 		}		
+	}
+	
+	public List<Dependency> getDependencies() {
+		List<Dependency> all = new ArrayList<Dependency>();
+		for (Scope dependencyScope : dependencies.keySet()) {
+			all.addAll(getDependencies(dependencyScope));
+		}
+		return all;
 	}
 	
 	public List<Dependency> getDependencies(Scope scope) {
