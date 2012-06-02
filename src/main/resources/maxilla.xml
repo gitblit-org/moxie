@@ -23,12 +23,14 @@
 	<!-- imported or included from a project build script. -->
 	<script language="javascript">
 		<![CDATA[
-			// extract the jar path
-			//url = project.getProperty("maxilla.import.url");
-			url = project.getProperty("ant.file.maxilla");			
-			index = url.lastIndexOf("file:/");
-			jar = url.substring(index + 6);
-			bang = jar.lastIndexOf("!");
+			var url = project.getProperty("ant.file.maxilla")
+		
+			// strip leading jar:file:
+			var index = url.lastIndexOf("file:");
+			var jar = url.substring(index + 5);
+		
+			// strip trailing bang
+			var bang = jar.lastIndexOf("!");
 			if (bang > -1) {
 				jar = jar.substring(0, bang);
 			}
@@ -134,7 +136,7 @@
 		<path id="execution.test.classpath">
 			<path refid="mxr.test.classpath" />
 			<path refid="mxr.build.classpath" />
-			<pathelement location="${maxilla.jar}"/>
+			<path refid="${maxilla.classpath}"/>
 		</path>
 		
 		<!-- Automatic instrumentation for Code Coverage -->
