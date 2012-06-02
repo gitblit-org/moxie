@@ -88,13 +88,13 @@ public class MxInit extends MxTask {
 				build.console.log("string properties");
 			}
 			
-			setProperty(Key.name, pom.name);
-			setProperty(Key.description, pom.description);
-			setProperty(Key.groupId, pom.groupId);
-			setProperty(Key.artifactId, pom.artifactId);
-			setProperty(Key.version, pom.version);
-			setProperty(Key.organization, pom.organization);
-			setProperty(Key.url, pom.url);
+			setProjectProperty(Key.name, pom.name);
+			setProjectProperty(Key.description, pom.description);
+			setProjectProperty(Key.groupId, pom.groupId);
+			setProjectProperty(Key.artifactId, pom.artifactId);
+			setProjectProperty(Key.version, pom.version);
+			setProjectProperty(Key.organization, pom.organization);
+			setProjectProperty(Key.url, pom.url);
 
 			setProperty(Key.reportsFolder, build.getReportsFolder().toString());
 			setProperty(Key.targetFolder, build.getTargetFolder().toString());
@@ -122,6 +122,14 @@ public class MxInit extends MxTask {
 			throw new BuildException(e);
 		}		
 	}
+	
+	protected void setProjectProperty(Key prop, String value) {
+		if (!StringUtils.isEmpty(value)) {
+			getProject().setProperty(prop.projectId(), value);
+			log(prop.projectId(), value, false);
+		}
+	}
+
 	
 	private void setSourcepath(Key key, Build build, Scope scope) {
 		Set<File> folders = new LinkedHashSet<File>();

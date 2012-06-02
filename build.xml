@@ -72,7 +72,7 @@
 
 		<!-- Prepare the project -->
 		<mx:init />
-		
+
 		<mx:gitid verbose="true" />
 				
 		<!-- Delete the target folder -->
@@ -95,7 +95,9 @@
 			<class name="com.maxtk.antcontrib.IfTask" />
 			<class name="com.maxtk.cobertura.ReportTask" />
 			
-			<resource file="${basedir}/src/main/resources/maxilla.xml" />
+			<resource>
+				<fileset dir="${basedir}/src/main/resources" />
+			</resource>
 			<resource file="${basedir}/src/main/config/core/tasks.properties" />
 		</mx:jar>
 		
@@ -159,11 +161,11 @@
 		</mx:jar>
 
 		<!-- Maxml -->
-		<mx:jar destfile="${mxp.targetFolder}/maxml-${mxp.version}.jar">
+		<mx:jar destfile="${mxp.targetFolder}/maxml-${project.version}.jar">
 			<class name="com.maxtk.maxml.Maxml" />
 		</mx:jar>
 
-		<jar destfile="${mxp.targetFolder}/maxml-${mxp.version}-sources.jar">
+		<jar destfile="${mxp.targetFolder}/maxml-${project.version}-sources.jar">
 			<fileset dir="${basedir}/src/main/core/com/maxtk/maxml" />
 		</jar>
 		

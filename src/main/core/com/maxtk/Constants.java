@@ -65,7 +65,11 @@ public class Constants {
 		proxies, parent, exclusions, mxjar, mxjavac, compilerArgs, excludes, includes,
 		dependencyManagement, mxreport, outputFile, verbose, build_classpath, reportsFolder,
 		dependencyOverrides, dependencyAliases;
-		
+
+		public String projectId() {
+			return "project." + name().replace('_', '.');
+		}
+
 		public String propId() {
 			return "mxp." + name().replace('_', '.');
 		}
