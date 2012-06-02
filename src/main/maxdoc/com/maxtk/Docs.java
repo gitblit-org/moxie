@@ -299,7 +299,7 @@ public class Docs {
 				}
 
 				writer.append("\n<script src=\"./bootstrap/js/jquery.js\"></script>");
-				writer.append("\n<script src=\"./bootstrap/js/bootstrap.js\"></script>");
+				writer.append("\n<script src=\"./bootstrap/js/bootstrap.min.js\"></script>");
 
 				if (doc.injectFancybox) {
 					String fancybox = readResource(doc, "fancybox.html");

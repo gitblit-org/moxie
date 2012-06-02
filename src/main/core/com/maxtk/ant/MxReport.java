@@ -81,7 +81,12 @@ public class MxReport extends MxTask {
 		StringBuilder sb = new StringBuilder("<html>\n<head>\n<link href=\"./bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">\n");
 		sb.append(format("<title>{0} ({1})</title>\n", pom.name, pom.getCoordinates()));
 		sb.append("</head><body>\n");
-		sb.append("<div class='container'>\n");
+		sb.append("<div class='container-fluid'>\n");
+		sb.append("<div class='row-fluid'>\n");
+		sb.append("<div class='span2'>\n");
+		sb.append("<ul class=\"nav nav-list\"><li class=\"nav-header\">Reports</li><li class=\"active\"><a href=\"#\">Project Data</a></li><li><a href=\"#\">Dependencies</a></li><li><a href=\"./tests/index.html\">Unit Tests</a></li><li><a href=\"./coverage/index.html\">Code Coverage</a></li></ul>");
+		sb.append("</div>\n");
+		sb.append("<div class='span10'>\n");
 		sb.append(format("<h1>{0} <small>{1}</small></h1>\n", pom.name, pom.description));
 		
 		// project metadata
@@ -127,7 +132,21 @@ public class MxReport extends MxTask {
 				File file = build.getArtifact(dep);
 				String size = file.length()/1024L + " kB";
 				Pom depPom = build.getPom(dep);
-				sb.append(format("<tr><td>{0,number,0}</td>", dep.ring));
+				String badge;
+				switch (dep.ring){
+					case 0:
+						badge = "badge-success";
+						break;
+					case 1:
+						badge = "badge-info";
+						break;
+					case 2:
+						badge = "badge-inverse";
+						break;
+					default:
+						badge = "badge";						
+				}
+				sb.append(format("<tr><td><span class=\"badge {1}\">{0,number,0}</span></td>", dep.ring, badge));
 				if (!dep.isMavenObject()) {
 					// not a Maven artifact
 					sb.append(format("<td>{0}</td><td>{1}</td><td></td>", depPom.getCoordinates(), size));
@@ -168,7 +187,7 @@ public class MxReport extends MxTask {
 			sb.append("</tbody></table>\n");
 		}
 		
-		sb.append("</div></body></html>");
+		sb.append("</div></div></body></html>");
 		// write report
 		if (outputFile == null) {
 			outputFile = new File(build.getReportsFolder(), "index.html");

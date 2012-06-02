@@ -53,7 +53,7 @@
 	</path>
 	
 	<!-- Define Maxilla tasks -->
-	<taskdef resource="tasks.properties" classpathref="maxilla.classpath" uri="antlib:com.maxtk"/>
+	<taskdef resource="tasks.properties" classpathref="maxilla.classpath" uri="antlib:com.maxtk" loaderref="maxilla.loader" />
 
 	<!-- Set the environment into the ${env} property -->
 	<property environment="env" />
@@ -136,7 +136,7 @@
 		<path id="execution.test.classpath">
 			<path refid="mxr.test.classpath" />
 			<path refid="mxr.build.classpath" />
-			<path refid="${maxilla.classpath}"/>
+			<path refid="maxilla.classpath"/>
 		</path>
 		
 		<!-- Automatic instrumentation for Code Coverage -->
@@ -261,7 +261,6 @@
 						<fileset dir="${mxp.outputFolder}" >
 							<include name="*.emma" />
 						</fileset>
-						<txt outfile="${code.coverage.report}/coverage.txt" />
 						<html outfile="${code.coverage.report}/index.html" />
 					</emma:report>
 				</emma:emma>

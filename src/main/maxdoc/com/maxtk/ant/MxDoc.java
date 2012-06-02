@@ -119,9 +119,6 @@ public class MxDoc extends MxTask {
 	public void execute() throws BuildException {
 		Build build = getBuild();
 		
-		build.loadDependency(new Dependency("mxreport:freemarker"));
-		build.loadDependency(new Dependency("mxdoc:markdownpapers"));
-
 		if (doc.sourceFolder == null) {
 			doc.sourceFolder = build.getSiteSourceFolder();
 		}
@@ -132,6 +129,9 @@ public class MxDoc extends MxTask {
 		
 		build.console.title(getClass(), build.getPom().name);
 		
+		build.loadDependency(new Dependency("mxreport:freemarker"));
+		build.loadDependency(new Dependency("mxdoc:markdownpapers"));
+
 		if (doc.outputFolder.exists()) {
 			FileUtils.delete(doc.outputFolder);
 		}
