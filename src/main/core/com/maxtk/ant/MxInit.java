@@ -16,13 +16,16 @@
 package com.maxtk.ant;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 
@@ -55,13 +58,34 @@ public class MxInit extends MxTask {
 					System.setProperty(entry.getKey(), entry.getValue());
 				}
 			}
+			File configFile;
 			if (StringUtils.isEmpty(config)) {
 				// default configuration
-				build = new Build(new File("build.maxml"));
+				configFile = new File("build.maxml");
 			} else {
 				// specified configuration
-				build = new Build(new File(config));
+				configFile = new File(config);
 			}
+			
+			// load any associated properties file (e.g. build.properties)
+			File propsFile = new File(configFile.getAbsoluteFile().getParentFile(),
+					configFile.getName().substring(0, configFile.getName().lastIndexOf('.')) + ".properties");
+			if (propsFile.exists()) {
+				Properties props = new Properties();
+				FileInputStream is = new FileInputStream(propsFile);
+				props.load(is);
+				is.close();
+				
+				Project project = getProject();
+				for (Map.Entry<Object, Object> entry : props.entrySet()) {
+					project.setProperty(entry.getKey().toString(), entry.getValue().toString());
+				}
+				if (isVerbose()) {
+					console.log("loaded " + propsFile);
+				}
+			}
+			
+			build = new Build(configFile);
 			build.getPom().setAntProperties(antProperties);			
 
 			// add a reference to the full build object
