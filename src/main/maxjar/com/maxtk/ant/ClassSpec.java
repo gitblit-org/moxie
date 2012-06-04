@@ -197,7 +197,7 @@ public class ClassSpec extends DataType implements JarSpec {
 		//
 		// get depends on all class files
 		//
-		gj.generateDependancies(jarEntries);
+		gj.generateDependencies(jarEntries);
 	}
 
 	/**

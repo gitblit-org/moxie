@@ -101,7 +101,7 @@ public class ClassUtil {
 
 	/**
 	 * Reads the indicated class file and returns a list of all referenced
-	 * classes (dependancy list). The list will not refer itself.
+	 * classes (dependency list). The list will not refer itself.
 	 * 
 	 * @param classFile
 	 *            the name of the class file to read
@@ -109,13 +109,13 @@ public class ClassUtil {
 	 * @throws IOException
 	 *             when IO errors occur
 	 */
-	public static List<String> getDependancies(String classFile) throws IOException {
-		return getDependancies(new File(classFile));
+	public static List<String> getDependencies(String classFile) throws IOException {
+		return getDependencies(new File(classFile));
 	}
 
 	/**
 	 * Reads the indicated class file and returns a list of all referenced
-	 * classes (dependancy list). The list will not refer itself.
+	 * classes (dependency list). The list will not refer itself.
 	 * 
 	 * @param classFile
 	 *            a File indicating the class file to read
@@ -123,11 +123,11 @@ public class ClassUtil {
 	 * @throws IOException
 	 *             when IO errors occur
 	 */
-	public static List<String> getDependancies(File classFile) throws IOException {
+	public static List<String> getDependencies(File classFile) throws IOException {
 		InputStream is = null;
 		try {
 			is = new FileInputStream(classFile);
-			return getDependancies(is);
+			return getDependencies(is);
 		} finally {
 			if (is != null) {
 				is.close();
@@ -137,7 +137,7 @@ public class ClassUtil {
 
 	/**
 	 * Reads the indicated class file and returns a list of all referenced
-	 * classes (dependancy list). The list will not refer itself.
+	 * classes (dependency list). The list will not refer itself.
 	 * 
 	 * @param is
 	 *            an inputstream opened to the first byte of a class file
@@ -145,13 +145,13 @@ public class ClassUtil {
 	 * @throws IOException
 	 *             when IO errors occur
 	 */
-	public static List<String> getDependancies(InputStream is) throws IOException {
-		return getDependancies(new DataInputStream(is));
+	public static List<String> getDependencies(InputStream is) throws IOException {
+		return getDependencies(new DataInputStream(is));
 	}
 
 	/**
 	 * Reads the indicated class file and returns a list of all referenced
-	 * classes (dependancy list). The list will not refer itself.
+	 * classes (dependency list). The list will not refer itself.
 	 * 
 	 * @param is
 	 *            a DataInput opened to the first byte of a class file
@@ -159,7 +159,7 @@ public class ClassUtil {
 	 * @throws IOException
 	 *             when IO errors occur
 	 */
-	public static List<String> getDependancies(DataInputStream is) throws IOException {
+	public static List<String> getDependencies(DataInputStream is) throws IOException {
 		//
 		// read the prefix stuff
 		//
