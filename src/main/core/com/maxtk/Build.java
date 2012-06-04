@@ -267,6 +267,10 @@ public class Build {
 		return project.mxreport;
 	}
 	
+	public Map<String, String> getExternalProperties() {
+		return project.externalProperties;
+	}
+	
 	public List<SourceFolder> getSourceFolders() {
 		return project.sourceFolders;
 	}

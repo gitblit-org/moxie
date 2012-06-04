@@ -16,6 +16,7 @@
 package com.maxtk;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -24,6 +25,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -61,6 +63,7 @@ public class Config implements Serializable {
 	MaxmlMap mxjavac;
 	MaxmlMap mxjar;
 	MaxmlMap mxreport;
+	Map<String, String> externalProperties;
 
 	public Config() {
 		// default configuration
@@ -83,6 +86,7 @@ public class Config implements Serializable {
 		mxjavac = new MaxmlMap();
 		mxjar = new MaxmlMap();
 		mxreport = new MaxmlMap();
+		externalProperties = new HashMap<String, String>();
 	}
 	
 	public Config(File file) throws IOException, MaxmlException {
@@ -115,7 +119,7 @@ public class Config implements Serializable {
 		
 		String content = FileUtils.readContent(file, "\n").trim();
 		Map<String, Object> map = Maxml.parse(content);
-
+		
 		if (inherit) {
 			// build.maxml inheritance
 			File parentConfig = readFile(map, Key.parent, null);
@@ -183,6 +187,10 @@ public class Config implements Serializable {
 		if (map.containsKey(Key.mxreport.name())) {
 			mxreport.putAll((MaxmlMap) map.get(Key.mxreport.name()));
 		}
+		
+		// maxml build properties
+		readExternalProperties();
+
 		return this;
 	}
 	
@@ -500,6 +508,23 @@ public class Config implements Serializable {
 		return null;
 	}
 	
+	void readExternalProperties() {
+		File propsFile = new File(baseFolder, file.getName().substring(0, file.getName().lastIndexOf('.')) + ".properties");
+		if (propsFile.exists()) {
+			try {
+				Properties props = new Properties();
+				FileInputStream is = new FileInputStream(propsFile);
+				props.load(is);
+				is.close();
+
+				for (Map.Entry<Object, Object> entry : props.entrySet()) {
+					externalProperties.put(entry.getKey().toString(), entry.getValue().toString());
+				}
+			} catch (Exception e) {
+			}
+		}
+	}
+	
 	void setDefaultsFrom(Config parent) {
 		pom = parent.pom;
 		lastModified = Math.max(lastModified, parent.lastModified);
@@ -518,5 +543,6 @@ public class Config implements Serializable {
 		mxreport = parent.mxreport;
 		dependencyOverrides = parent.dependencyOverrides;
 		dependencyAliases = parent.dependencyAliases;
+		externalProperties = parent.externalProperties;
 	}
 }

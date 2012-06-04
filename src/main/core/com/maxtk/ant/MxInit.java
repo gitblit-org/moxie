@@ -16,16 +16,14 @@
 package com.maxtk.ant;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Execute;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 
@@ -43,6 +41,7 @@ public class MxInit extends MxTask {
 		this.config = config;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void execute() throws BuildException {
 		Build build = getBuild();
@@ -50,14 +49,22 @@ public class MxInit extends MxTask {
 			// already initialized
 			return;
 		}
-		try {
-			// push all mx properties from ant into system 
-			Map<String,String> antProperties = getProject().getProperties();
-			for (Map.Entry<String, String> entry : antProperties.entrySet()) {
-				if (entry.getKey().startsWith("mx.")) {
-					System.setProperty(entry.getKey(), entry.getValue());
-				}
+
+		// load all environment variables into env property
+        Map<String, String> osEnv = Execute.getEnvironmentVariables();
+        for (Map.Entry<String, String> entry : osEnv.entrySet()) {
+            getProject().setProperty("env." + entry.getKey(), entry.getValue());
+        }
+		
+		// push all mx properties from ant into system 
+		Map<String,String> antProperties = getProject().getProperties();
+		for (Map.Entry<String, String> entry : antProperties.entrySet()) {
+			if (entry.getKey().startsWith("mx.")) {
+				System.setProperty(entry.getKey(), entry.getValue());
 			}
+		}
+
+		try {
 			File configFile;
 			if (StringUtils.isEmpty(config)) {
 				// default configuration
@@ -67,31 +74,18 @@ public class MxInit extends MxTask {
 				configFile = new File(config);
 			}
 			
-			// load any associated properties file (e.g. build.properties)
-			File propsFile = new File(configFile.getAbsoluteFile().getParentFile(),
-					configFile.getName().substring(0, configFile.getName().lastIndexOf('.')) + ".properties");
-			if (propsFile.exists()) {
-				Properties props = new Properties();
-				FileInputStream is = new FileInputStream(propsFile);
-				props.load(is);
-				is.close();
-				
-				Project project = getProject();
-				for (Map.Entry<Object, Object> entry : props.entrySet()) {
-					project.setProperty(entry.getKey().toString(), entry.getValue().toString());
-				}
-				if (isVerbose()) {
-					console.log("loaded " + propsFile);
-				}
+			// parse the config files and Maxilla settings
+			build = new Build(configFile);
+			
+			// set any external properties into the project
+			for (Map.Entry<String, String> entry : build.getExternalProperties().entrySet()) {
+				getProject().setProperty(entry.getKey(), entry.getValue());
 			}
 			
-			build = new Build(configFile);
 			build.getPom().setAntProperties(antProperties);			
 
 			// add a reference to the full build object
 			addReference(Key.build, build, false);
-			
-			//setProperty("project.name", build.getPom().name);
 			
 			// output the build info
 			build.describe();

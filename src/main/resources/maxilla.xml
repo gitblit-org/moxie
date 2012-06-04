@@ -55,9 +55,6 @@
 	<!-- Define Maxilla tasks -->
 	<taskdef resource="tasks.properties" classpathref="maxilla.classpath" uri="antlib:com.maxtk" loaderref="maxilla.loader" />
 
-	<!-- Set the environment into the ${env} property -->
-	<property environment="env" />
-	
 	<!--
 	
 	The targets in this script are designed to provide similar functionality to
