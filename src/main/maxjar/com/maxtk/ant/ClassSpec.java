@@ -93,9 +93,6 @@ public class ClassSpec extends DataType implements JarSpec {
 	/** name of class */
 	private String name = null;
 
-	/** if set, this class is to be marked as a bean in the manifest */
-	private boolean bean = false;
-
 	/** list of all dependent classes */
 	private List<JarEntrySpec> jarEntries = new ArrayList<JarEntrySpec>();
 
@@ -133,32 +130,6 @@ public class ClassSpec extends DataType implements JarSpec {
 	}
 
 	/**
-	 * Invoked by Ant when the <code>name</code> attribute is encountered. If
-	 * the value is <code>yes</code> or <code>true</code> then this class'
-	 * manifest entry will be marked as a java bean:
-	 * <code>Java-Bean: true</code>
-	 * 
-	 * @param v
-	 *            The new bean value
-	 */
-	public void setBean(String v) {
-		if ("yes".equalsIgnoreCase(v) || "true".equalsIgnoreCase(v)) {
-			bean = true;
-		} else {
-			bean = false;
-		}
-
-		//
-		// if the 'bean' attribute is AFTER the name
-		// attribute then we've gotta dig the
-		// jarEntrySpec outta the collection
-		//
-		for (JarEntrySpec entry : jarEntries) {
-			entry.setAttribute("Java-Bean",	bean ? "true" : "false");
-		}
-	}
-
-	/**
 	 * Invoked by Ant when the <code>name</code> attribute is encountered.
 	 * 
 	 * @param n
@@ -168,9 +139,6 @@ public class ClassSpec extends DataType implements JarSpec {
 		name = n.replace('.', '/') + ".class";
 		JarEntrySpec jes = new JarEntrySpec(name, null);
 
-		if (bean) {
-			jes.setAttribute("Java-Bean", "true");
-		}
 		jarEntries.add(jes);
 	}
 

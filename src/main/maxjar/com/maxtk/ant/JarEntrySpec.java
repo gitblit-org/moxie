@@ -49,9 +49,6 @@
 package com.maxtk.ant;
 
 import java.io.File;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.jar.Attributes;
 
 /**
  * Represents one object (file) that is to be placed into the jar.
@@ -70,7 +67,6 @@ import java.util.jar.Attributes;
  * @version $Revision: 1.2 $ $Date: 2003/02/23 10:43:21 $
  */
 public class JarEntrySpec {
-	Attributes atts;
 
 	String jarName;
 
@@ -78,7 +74,6 @@ public class JarEntrySpec {
 
 	/** Constructor for the JarEntrySpec object */
 	JarEntrySpec() {
-		atts = new Attributes();
 	}
 
 	/**
@@ -93,13 +88,6 @@ public class JarEntrySpec {
 	JarEntrySpec(String jarName, File srcFile) {
 		this.jarName = jarName.replace('\\', '/');
 		this.srcFile = srcFile;
-		atts = new Attributes();
-
-		if (srcFile != null) {
-			setAttribute("Content-Location", srcFile.getAbsolutePath());
-			setAttribute("Content-Length", srcFile.length());
-			setAttribute("Last-Modified", new Date(srcFile.lastModified()));
-		}
 	}
 
 	/**
@@ -141,102 +129,6 @@ public class JarEntrySpec {
 	}
 
 	/**
-	 * Gets the attributes attribute of the JarEntrySpec object
-	 * 
-	 * @return The attributes value
-	 */
-	Attributes getAttributes() {
-		return atts;
-	}
-
-	/**
-	 * copy an Attributes into this entry's attributs
-	 * 
-	 * @param a
-	 *            The feature to be added to the Attributes attribute
-	 */
-	public void addAttributes(Attributes a) {
-		if (a != null) {
-			for (Object o : a.keySet()) {
-				String key = o.toString();
-				atts.putValue(key, a.getValue(key));
-			}
-		}
-	}
-
-	/**
-	 * Sets the attribute attribute of the JarEntrySpec object
-	 * 
-	 * @param name
-	 *            The new attribute value
-	 * @param val
-	 *            The new attribute value
-	 */
-	void setAttribute(String name, int val) {
-		setAttribute(name, Integer.toString(val));
-	}
-
-	/**
-	 * Sets the attribute attribute of the JarEntrySpec object
-	 * 
-	 * @param name
-	 *            The new attribute value
-	 * @param val
-	 *            The new attribute value
-	 */
-	void setAttribute(String name, long val) {
-		setAttribute(name, Long.toString(val));
-	}
-
-	/**
-	 * Sets the attribute attribute of the JarEntrySpec object
-	 * 
-	 * @param name
-	 *            The new attribute value
-	 * @param val
-	 *            The new attribute value
-	 */
-	void setAttribute(String name, float val) {
-		setAttribute(name, Float.toString(val));
-	}
-
-	/**
-	 * Sets the attribute attribute of the JarEntrySpec object
-	 * 
-	 * @param name
-	 *            The new attribute value
-	 * @param val
-	 *            The new attribute value
-	 */
-	void setAttribute(String name, double val) {
-		setAttribute(name, Double.toString(val));
-	}
-
-	/**
-	 * Sets the attribute attribute of the JarEntrySpec object
-	 * 
-	 * @param name
-	 *            The new attribute value
-	 * @param d
-	 *            The new attribute value
-	 */
-	void setAttribute(String name, Date d) {
-		atts.putValue(name, d.toString());
-	}
-
-	/**
-	 * Sets the attribute attribute of the JarEntrySpec object
-	 * 
-	 * @param name
-	 *            The new attribute value
-	 * @param obj
-	 *            The new attribute value
-	 */
-	void setAttribute(String name, Object obj) {
-		atts.putValue(name, obj.toString());
-	}
-
-	/**
 	 * Description of the Method
 	 * 
 	 * @param o
@@ -248,32 +140,5 @@ public class JarEntrySpec {
 			return false;
 		}
 		return jarName.equals(((JarEntrySpec) o).jarName);
-	}
-
-	/**
-	 * Description of the Method
-	 * 
-	 * @return Description of the Return Value
-	 */
-	public String toString() {
-		String key;
-		StringBuffer sb = new StringBuffer("JarEntrySpec:");
-
-		sb.append("\n\tJar Name:");
-		sb.append(jarName);
-		sb.append("\n\tStream  :");
-		if (srcFile == null) {
-			sb.append("** NOT RESOLVED **");
-		} else {
-			sb.append(srcFile.getAbsolutePath());
-		}
-
-		for (Object o : atts.keySet()) {
-			sb.append("\n\tAtt: ");
-			sb.append(key = o.toString());
-			sb.append(": ");
-			sb.append(atts.getValue(key));
-		}
-		return sb.toString();
 	}
 }

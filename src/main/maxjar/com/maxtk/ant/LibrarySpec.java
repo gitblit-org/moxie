@@ -51,12 +51,10 @@ package com.maxtk.ant;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.jar.Manifest;
 import java.util.zip.ZipEntry;
 
 import org.apache.tools.ant.BuildException;
@@ -77,13 +75,9 @@ import org.apache.tools.ant.types.Path;
 public class LibrarySpec extends DataType implements JarSpec {
 	private File baseDir = null;
 
-	private String basePath = null;
-
 	private Path classpath = null;
 
 	private File jar = null;
-
-	private String dirSpec = null; // the original directory specified
 
 	private File dir = null; // the actual dir to use
 
@@ -101,7 +95,6 @@ public class LibrarySpec extends DataType implements JarSpec {
 	 */
 	public LibrarySpec(File baseDir, Path classpath) {
 		this.baseDir = baseDir;
-		this.basePath = baseDir.toString();
 		this.classpath = classpath;
 	}
 
@@ -213,7 +206,6 @@ public class LibrarySpec extends DataType implements JarSpec {
 			throw new BuildException(
 					"GenJar: Specified library dir not found (" + jar + ")");
 		}
-		this.dirSpec = dir;
 		this.dir = dirFile;
 	}
 
@@ -240,8 +232,6 @@ public class LibrarySpec extends DataType implements JarSpec {
 	private void resolveJar() {
 		try {
 			JarFile jarFile = new JarFile(jar);
-			Manifest mft = jarFile.getManifest();
-
 			Enumeration<JarEntry> entries = jarFile.entries();
 			while (entries.hasMoreElements()) {
 				JarEntrySpec je = new JarEntrySpec();
@@ -263,19 +253,9 @@ public class LibrarySpec extends DataType implements JarSpec {
 							|| name.toUpperCase().endsWith(".MF"))
 						continue;
 				}
-				//
-				// setup the JarEntry object and copy any existing
-				// attributes - attributes from library jar override
-				// ours
-				//
+
 				je.setJarName(name);
-				long size = zentry.getSize();
-				if (size != -1L) {
-					je.setAttribute("Content-Length", size);
-				}
-				if (mft != null) {
-					je.addAttributes(mft.getAttributes(name));
-				}
+
 				jarEntries.add(je);
 			}
 			jarFile.close();
@@ -311,9 +291,6 @@ public class LibrarySpec extends DataType implements JarSpec {
 			JarEntrySpec je = new JarEntrySpec();
 			je.setJarName(genJarName(file));
 			je.setSourceFile(file);
-			je.setAttribute("Last-Modified", new Date(file.lastModified()));
-			je.setAttribute("Content-Length", file.length());
-			je.setAttribute("Content-Location", file.getAbsolutePath());
 			jarEntries.add(je);
 		}
 	}

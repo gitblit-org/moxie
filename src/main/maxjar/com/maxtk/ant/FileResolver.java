@@ -52,7 +52,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.jar.Attributes;
 
 /**
  * Represents a directory in the classpath.
@@ -129,9 +128,6 @@ class FileResolver extends PathResolver {
 		if (f.exists()) {
 			spec.setSourceFile(f);
 			is = new FileInputStream(f);
-			Attributes atts = spec.getAttributes();
-			atts.putValue(CONTENT_LOC, f.getAbsolutePath());
-			atts.putValue(LAST_MOD, formatDate(f.lastModified()));
 			log.debug(spec.getJarName() + "->" + base);
 		}
 		return is;

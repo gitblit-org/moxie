@@ -51,7 +51,6 @@ package com.maxtk.ant;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -131,15 +130,6 @@ class JarResolver extends PathResolver {
 
 		JarEntry je = jarFile.getJarEntry(spec.getJarName());
 		if (je != null) {
-			Attributes atts = spec.getAttributes();
-			atts.putValue(CONTENT_LOC, file.getAbsolutePath());
-			long modTime = je.getTime();
-			if (modTime > 0) {
-				atts.putValue(LAST_MOD, formatDate(modTime));
-			} else {
-				atts.putValue(LAST_MOD, modified);
-			}
-			spec.addAttributes(je.getAttributes());
 			is = jarFile.getInputStream(je);
 			log.debug(spec.getJarName() + "->" + file);
 		}

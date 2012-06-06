@@ -51,7 +51,6 @@ package com.maxtk.ant;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.jar.Attributes;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -81,8 +80,6 @@ class ZipResolver extends PathResolver {
 
 	private ZipFile zip;
 
-	private String modified;
-
 	/**
 	 * Constructor for the ZipResolver object
 	 * 
@@ -98,7 +95,6 @@ class ZipResolver extends PathResolver {
 
 		file = f;
 		zip = new ZipFile(file);
-		modified = formatDate(file.lastModified());
 		log.verbose("Resolver: " + file);
 	}
 
@@ -127,14 +123,6 @@ class ZipResolver extends PathResolver {
 		InputStream is = null;
 		ZipEntry ze = zip.getEntry(spec.getJarName());
 		if (ze != null) {
-			Attributes atts = spec.getAttributes();
-			atts.putValue(CONTENT_LOC, file.getAbsolutePath());
-			long modTime = ze.getTime();
-			if (modTime > 0) {
-				atts.putValue(LAST_MOD, formatDate(modTime));
-			} else {
-				atts.putValue(LAST_MOD, modified);
-			}
 			is = zip.getInputStream(ze);
 			log.debug(spec.getJarName() + "->" + file);
 		}
