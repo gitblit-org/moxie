@@ -85,7 +85,7 @@ public class MxInit extends MxTask {
 			build.getPom().setAntProperties(antProperties);			
 
 			// add a reference to the full build object
-			addReference(Key.build, build, false);
+			getProject().addReference(Key.build.refId(), build);			
 			
 			// output the build info
 			build.describe();
