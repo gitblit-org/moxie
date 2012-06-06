@@ -80,7 +80,7 @@ import org.apache.tools.ant.types.FileSet;
  * <p>
  * 
  * The <code>resolve()</code> method is implemented to determine which classes
- * <i>this</i> class is dependant upon. A list of these classes is held for
+ * <i>this</i> class is dependent upon. A list of these classes is held for
  * later inclusion into the jar.
  * </p>
  * 
@@ -96,7 +96,7 @@ public class ClassSpec extends DataType implements JarSpec {
 	/** if set, this class is to be marked as a bean in the manifest */
 	private boolean bean = false;
 
-	/** list of all dependant classes */
+	/** list of all dependent classes */
 	private List<JarEntrySpec> jarEntries = new ArrayList<JarEntrySpec>();
 
 	private List<FileSet> filesets = new ArrayList<FileSet>();
@@ -115,9 +115,9 @@ public class ClassSpec extends DataType implements JarSpec {
 	}
 
 	/**
-	 * Returns the list of classes upon which this class is dependant.
+	 * Returns the list of classes upon which this class is dependent.
 	 * 
-	 * @return the list of all dependant classes
+	 * @return the list of all dependent classes
 	 */
 	public List<JarEntrySpec> getJarEntries() {
 		return jarEntries;
@@ -126,7 +126,7 @@ public class ClassSpec extends DataType implements JarSpec {
 	/**
 	 * Gets the name of the resource.
 	 * 
-	 * @return Thr name
+	 * @return the name
 	 */
 	public String getName() {
 		return name;
@@ -175,7 +175,7 @@ public class ClassSpec extends DataType implements JarSpec {
 	}
 
 	/**
-	 * Generates a list of all classes upon which this/these class is dependant.
+	 * Generates a list of all classes upon which this/these class is dependent.
 	 * 
 	 * @param gj
 	 *            Description of the Parameter
@@ -205,7 +205,7 @@ public class ClassSpec extends DataType implements JarSpec {
 	 * 
 	 * @return Description of the Return Value
 	 */
-	public Object createFileset() {
+	public FileSet createFileset() {
 		if (name != null) {
 			throw new BuildException(
 					"Unable to add Fileset - class name already set");
