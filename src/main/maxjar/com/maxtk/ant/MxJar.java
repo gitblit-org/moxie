@@ -15,42 +15,62 @@
  */
 package com.maxtk.ant;
 
+import java.io.BufferedOutputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Jar;
+import org.apache.tools.ant.taskdefs.Javac;
+import org.apache.tools.ant.taskdefs.Manifest;
+import org.apache.tools.ant.taskdefs.Manifest.Attribute;
+import org.apache.tools.ant.taskdefs.ManifestException;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
+import org.apache.tools.ant.types.resources.FileResource;
 
 import com.maxtk.Build;
 import com.maxtk.Constants;
 import com.maxtk.Constants.Key;
 import com.maxtk.Pom;
 import com.maxtk.Scope;
-import com.maxtk.ant.Mft.MftAttr;
+import com.maxtk.console.Console;
 import com.maxtk.maxml.MaxmlMap;
+import com.maxtk.utils.FileUtils;
 import com.maxtk.utils.StringUtils;
 
 public class MxJar extends GenJar {
 
+	Build build;
+	Console console;
+	
 	ClassSpec mainclass;
 	boolean classResolution;
 	boolean fatjar;
 	boolean includeResources;
 	String includes;
 	String excludes;
-	
-	String classifier;
-	
 	boolean packageSources;
 
+	String classifier;
+	
 	/**
 	 * Builds a <mainclass> element.
 	 * 
@@ -135,39 +155,20 @@ public class MxJar extends GenJar {
 
 	@Override
 	public void execute() throws BuildException {
-		Build build = (Build) getProject().getReference(Key.build.refId());
-
-		// automatic manifest entries from Maxilla metadata
-		setManifest("Created-By", "Maxilla v" + Constants.VERSION);
-		setManifest("Build-Jdk", System.getProperty("java.version"));
-		setManifest("Build-Date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
-
-		setManifest("Implementation-Title", Key.name);
-		setManifest("Implementation-Vendor", Key.organization);
-		setManifest("Implementation-Vendor-Id", Key.groupId);
-		setManifest("Implementation-Vendor-URL", Key.url);
-		setManifest("Implementation-Version", Key.version);
-
-		setManifest("Bundle-Name", Key.name);
-		setManifest("Bundle-SymbolicName", Key.artifactId);
-		setManifest("Bundle-Version", Key.version);
-		setManifest("Bundle-Vendor", Key.organization);
+		build = (Build) getProject().getReference(Key.build.refId());
+		console = build.console;
 		
-		setManifest("Git-Commit", Key.commit);
+		// automatic manifest entries from Maxilla metadata
+		configureManifest(mft);
 
 		if (mainclass != null) {
 			String mc = mainclass.getName().replace('/', '.');
 			if (mc.endsWith(".class")) {
 				mc = mc.substring(0, mc.length() - ".class".length());
 			}
-			setManifest("Main-Class", mc);
+			setManifest(mft, "Main-Class", mc);
 		}
-		// if (splash != null) {
-		// setManifest("SplashScreen-Image", splash);
-		// }
 
-		// TODO specify import-package? and export-package?
-		
 		// automatic classpath resolution, if not manually specified
 		if (classpath == null) {
 			Object o = getProject().getReference(Key.compile_classpath.refId());
@@ -212,6 +213,8 @@ public class MxJar extends GenJar {
 			destFile.getParentFile().mkdirs();
 		}
 		
+		version = build.getPom().version;
+		
 		// optionally include resources from the outputfolder
 		if (includeResources) {
 			Resource resources = createResource();			
@@ -221,7 +224,7 @@ public class MxJar extends GenJar {
 				set.setIncludes(includes);
 			}
 			if (excludes == null) {
-				excludes = Constants.DEFAULT_BIN_EXCLUDES;
+				excludes = Constants.DEFAULT_EXCLUDES;
 			}
 			set.setExcludes(excludes);
 		}
@@ -263,6 +266,9 @@ public class MxJar extends GenJar {
 		build.console.log(1, destFile.getAbsolutePath());
 		build.console.log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
 		
+		/*
+		 * Build sources jar
+		 */
 		if (packageSources) {
 			String name = destFile.getName();
 			if (!StringUtils.isEmpty(classifier)) {
@@ -284,12 +290,64 @@ public class MxJar extends GenJar {
 			// set the destination file
 			jar.setDestFile(sourcesFile);
 			
-			// add the source folders
-			for (File dir : build.getSourceFolders(Scope.compile)) {
-				FileSet set = new FileSet();				
-				set.setDir(dir);
-				set.setExcludes(Constants.DEFAULT_SRC_EXCLUDES);
-				jar.add(set);
+			// use the resolved classes to determine included source files
+			List<FileResource> sourceFiles = new ArrayList<FileResource>();
+			Map<File, Set<String>> packageResources = new HashMap<File, Set<String>>();
+			
+			if (resolvedLocal.size() == 0) {
+				console.warn("mxjar has not resolved any class files local to {0}", build.getPom().getManagementId());
+			}
+			
+			List<File> folders = build.getSourceFolders(Scope.compile);
+			for (String className : resolvedLocal) {
+				String sourceName = className.substring(0, className.length() - ".class".length()).replace('.', '/') + ".java";
+				build.console.debug(sourceName);
+				for (File folder : folders) {
+					File file = new File(folder, sourceName);
+					if (file.exists()) {
+						FileResource resource = new FileResource(getProject(), file);
+						resource.setBaseDir(folder);
+						sourceFiles.add(resource);
+						if (!packageResources.containsKey(folder)) {
+							// always include default package resources
+							packageResources.put(folder, new TreeSet<String>(Arrays.asList( "/*" )));						
+						}
+						String packagePath = FileUtils.getRelativePath(folder, file.getParentFile());
+						packageResources.get(folder).add(packagePath + "/*");
+						build.console.debug(1, file.getAbsolutePath());
+						break;
+					}
+				}
+			}
+			
+			// add the discovered source files for the resolved classes
+			jar.add(new FileResourceSet(sourceFiles));
+			
+			// add the resolved package folders for resource files
+			if (includeResources) {
+				for (Map.Entry<File, Set<String>> entry : packageResources.entrySet()) {
+					FileSet set = new FileSet();				
+					set.setDir(entry.getKey());
+					set.setExcludes(excludes);
+					StringBuilder includes = new StringBuilder();
+					for (String packageName : entry.getValue()) {
+						includes.append(packageName + ",");
+					}
+					includes.setLength(includes.length() - 1);
+					set.setIncludes(includes.toString());
+					build.console.debug("adding resource fileset {0}", entry.getKey());
+					build.console.debug(1, "includes={0}", includes.toString());
+					jar.add(set);
+				}
+			}
+			
+			// set the source jar manifest
+			try {
+				Manifest mft = new Manifest();
+				configureManifest(mft);
+				jar.addConfiguredManifest(mft);
+			} catch (ManifestException e) {
+				build.console.error(e);
 			}
 			
 			start = System.currentTimeMillis();			
@@ -299,24 +357,59 @@ public class MxJar extends GenJar {
 			build.console.log(1, "{0} KB, generated in {1} ms", (sourcesFile.length()/1024), System.currentTimeMillis() - start);
 		}
 	}
+	
+	void configureManifest(Manifest manifest) {
+		// set manifest entries from Maxilla metadata
+		Manifest mft = new Manifest();
+		setManifest(mft, "Created-By", "Maxilla v" + Constants.VERSION);
+		setManifest(mft, "Build-Jdk", System.getProperty("java.version"));
+		setManifest(mft, "Build-Date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 
-	void setManifest(String key, String value) {
-		// do not override a manual specification
-		for (Object obj : mft.attrs) {
-			MftAttr attr = (MftAttr) obj;
-			if (attr.getName().equals(key)) {
-				return;
-			}
+		setManifest(mft, "Implementation-Title", Key.name);
+		setManifest(mft, "Implementation-Vendor", Key.organization);
+		setManifest(mft, "Implementation-Vendor-Id", Key.groupId);
+		setManifest(mft, "Implementation-Vendor-URL", Key.url);
+		setManifest(mft, "Implementation-Version", Key.version);
+
+		setManifest(mft, "Bundle-Name", Key.name);
+		setManifest(mft, "Bundle-SymbolicName", Key.artifactId);
+		setManifest(mft, "Bundle-Version", Key.version);
+		setManifest(mft, "Bundle-Vendor", Key.organization);
+		
+		setManifest(mft, "Git-Commit", Key.commit);
+		
+		try {
+			manifest.merge(mft, true);
+		} catch (ManifestException e) {
+			console.error(e, "Failed to configure manifest!");
 		}
-		MftAttr attr = (MftAttr) mft.createAttribute();
-		attr.setName(key);
-		attr.setValue(value);
 	}
 
-	void setManifest(String key, Key prop) {
-		String value = getProject().getProperty(prop.propId());
+	void setManifest(Manifest man, String key, Key prop) {
+		// try project property
+		String value = getProject().getProperty(prop.projectId());
+		if (value == null) {
+			return;
+		}
+		if (value.equals(prop.projectId())) {
+			// try mxp property
+			value = getProject().getProperty(prop.propId());
+			if (value.equals(prop.propId())) {
+				value = null;
+			}
+		}
 		if (!StringUtils.isEmpty(value)) {
-			setManifest(key, value);
+			setManifest(man, key, value);
+		}
+	}
+	
+	void setManifest(Manifest man, String key, String value) {
+			if (!StringUtils.isEmpty(value)) {
+			try {
+				man.addConfiguredAttribute(new Attribute(key, value));
+			} catch (ManifestException e) {
+				console.error(e, "Failed to set manifest attribute!");
+			}
 		}
 	}
 }

@@ -161,14 +161,10 @@
 		</mx:jar>
 
 		<!-- Maxml -->
-		<mx:jar destfile="${mxp.targetFolder}/maxml-${project.version}.jar">
+		<mx:jar destfile="${mxp.targetFolder}/maxml-${project.version}.jar" packageSources="true">
 			<class name="com.maxtk.maxml.Maxml" />
 		</mx:jar>
 
-		<jar destfile="${mxp.targetFolder}/maxml-${project.version}-sources.jar">
-			<fileset dir="${basedir}/src/main/core/com/maxtk/maxml" />
-		</jar>
-		
 		<!-- Install the build to our Maxilla cache -->
 		<mx:install />
 

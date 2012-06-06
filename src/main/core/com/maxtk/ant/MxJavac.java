@@ -279,7 +279,7 @@ public class MxJavac extends Javac {
 
 			if (excludes == null) {
 				// default exclusions
-				excludes = Constants.DEFAULT_BIN_EXCLUDES;
+				excludes = Constants.DEFAULT_EXCLUDES;
 			}
 			
 			for (String path : getSrcdir().list()) {
