@@ -32,13 +32,14 @@ mxjavac: {
    fork: false
    failOnError: true
    includeAntRuntime: true
-   excludes: **/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
+   excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
 }
 
 # mx:Jar attributes
 # These defaults may be overriden in your build.maxml file.
 mxjar: {
-   excludes: **/*.java, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
+   excludePomFiles: false
+   excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
 }
 
 # mx:Report attributes

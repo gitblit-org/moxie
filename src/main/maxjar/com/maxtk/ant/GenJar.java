@@ -226,7 +226,8 @@ public class GenJar extends Task {
 		InputStream is = null;
 		try {
 			jout = new JarOutputStream(new FileOutputStream(destFile), createJarManifest());
-
+			writeJarEntries(jout);
+			
 			for (JarEntrySpec jes : entries) {
 				JarEntry entry = new JarEntry(jes.getJarName());
 				is = resolveEntry(jes);
@@ -281,7 +282,10 @@ public class GenJar extends Task {
 			}
 		}
 	}
-
+	
+	protected void writeJarEntries(JarOutputStream jos) {
+	}
+	
 	/**
 	 * Sets the classpath attribute.
 	 * 
