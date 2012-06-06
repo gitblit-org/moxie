@@ -58,7 +58,7 @@ public class Constants {
 	public static enum Key {
 		build, name, description, url, organization, scope, groupId, artifactId, version,
 		type, classifier, optional, folder, sourceFolder, sourceFolders, compile_sourcepath,
-		test_sourcepath, outputFolder, compile_outputpath, test_outputpath, linkedProjects,
+		test_sourcepath, outputFolder, compile_outputFolder, test_outputFolder, linkedProjects,
 		dependencyFolder, repositories, properties, dependencies, apply,
 		googleAnalyticsId, googlePlusId, runtime_classpath, compile_classpath, test_classpath,
 		compile_dependencypath, runtime_dependencypath, test_dependencypath, commit, targetFolder,

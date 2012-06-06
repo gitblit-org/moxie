@@ -81,7 +81,7 @@ public abstract class MxTask extends Task {
 	
 	protected void log(String key, String value, boolean split) {
 		if (isVerbose()) {
-			int indent = 22;
+			int indent = 26;
 			if (split) {
 				String [] paths = value.split(File.pathSeparator);
 				console.key(StringUtils.leftPad(key, indent, ' '), paths[0]);

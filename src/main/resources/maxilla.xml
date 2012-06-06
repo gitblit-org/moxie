@@ -115,7 +115,7 @@
 		<delete file="${emma.data}" quiet="true" />
 
 		<!-- fileset for test classes -->
-		<fileset id="mixed.tests" dir="${mxp.test.outputpath}">			      
+		<fileset id="mixed.tests" dir="${mxp.test.outputFolder}">			      
 			<include name="**/*Test.class"/>
 		</fileset>
 		
@@ -126,7 +126,7 @@
 			<pathelement path="${unit.test.instrumented}" />
 			<path refid="mxr.test.classpath" />
 			<path refid="mxr.build.classpath" />
-			<pathelement location="${mxp.test.outputpath}"/>
+			<pathelement location="${mxp.test.outputFolder}"/>
 		</path>
 		
 		<!-- execution classpath for tests -->
@@ -143,7 +143,7 @@
 				<!-- instrument for Cobertura code coverage -->
 				<taskdef name="instrument" classname="net.sourceforge.cobertura.ant.InstrumentTask" classpathref="mxr.build.classpath" uri="antlib:net.sourceforge.cobertura" />
 				<cobertura:instrument datafile="${cobertura.data}" todir="${unit.test.instrumented}">
-		    		<fileset dir="${mxp.compile.outputpath}">
+		    		<fileset dir="${mxp.compile.outputFolder}">
 		        		<include name="**/*.class"/>
 		    		</fileset>
 				</cobertura:instrument>
@@ -157,7 +157,7 @@
 				<emma:emma>
 					<emma:instr metadatafile="${emma.data}" merge="true" destdir="${unit.test.instrumented}" >
 					 	<instrpath>
-							<pathelement location="${mxp.compile.outputpath}"/>
+							<pathelement location="${mxp.compile.outputFolder}"/>
 						</instrpath>
 					</emma:instr>
 				</emma:emma>

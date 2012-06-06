@@ -114,11 +114,11 @@ public class MxInit extends MxTask {
 			setProjectProperty(Key.organization, pom.organization);
 			setProjectProperty(Key.url, pom.url);
 
-			setProperty(Key.reportsFolder, build.getReportsFolder().toString());
-			setProperty(Key.targetFolder, build.getTargetFolder().toString());
 			setProperty(Key.outputFolder, build.getOutputFolder(null).toString());
-			setProperty(Key.compile_outputpath, build.getOutputFolder(Scope.compile).toString());
-			setProperty(Key.test_outputpath, build.getOutputFolder(Scope.test).toString());
+			setProperty(Key.compile_outputFolder, build.getOutputFolder(Scope.compile).toString());
+			setProperty(Key.test_outputFolder, build.getOutputFolder(Scope.test).toString());
+			setProperty(Key.targetFolder, build.getTargetFolder().toString());
+			setProperty(Key.reportsFolder, build.getReportsFolder().toString());
 
 			if (isVerbose()) {
 				build.console.separator();
