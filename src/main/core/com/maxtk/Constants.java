@@ -51,6 +51,8 @@ public class Constants {
 		
 	public static final String POM = "pom";
 	
+	public static final String MX_DEBUG = "mx.debug";
+
 	public static final String MX_VERBOSE = "mx.verbose";
 	
 	public static final String MX_COLOR = "mx.color";

@@ -138,7 +138,14 @@ public class Build {
 	}
 	
 	public boolean isDebug() {
-		return maxilla.apply(Constants.APPLY_DEBUG) || project.apply(Constants.APPLY_DEBUG);
+		String mxDebug = System.getProperty(Constants.MX_DEBUG, null);
+		if (StringUtils.isEmpty(mxDebug)) {
+			// use Maxilla apply setting
+			return maxilla.apply(Constants.APPLY_DEBUG) || project.apply(Constants.APPLY_DEBUG);
+		} else {
+			// use system property to determine debug
+			return Boolean.parseBoolean(mxDebug);
+		}
 	}
 
 	public boolean isVerbose() {
