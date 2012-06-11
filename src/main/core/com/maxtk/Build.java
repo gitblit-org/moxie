@@ -979,6 +979,14 @@ public class Build {
 		FileUtils.writeContent(new File(projectFolder, "pom.xml"), sb.toString());
 	}
 	
+	public String getCustomLess() {
+		File less = new File(configFile.getName().substring(0, configFile.getName().lastIndexOf('.')) + ".less");
+		if (less.exists()) {
+			return FileUtils.readContent(less, "\n");
+		}
+		return "";
+	}
+	
 	public void describe() {
 		console.title(getPom().name, getPom().version);
 

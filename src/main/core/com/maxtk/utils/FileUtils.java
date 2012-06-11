@@ -269,6 +269,9 @@ public class FileUtils {
 	public static String getRelativePath(File basePath, File path) {
 		File exactBase = getExactFile(basePath);
 		File exactPath = getExactFile(path);
+		if (exactBase.equals(exactPath)) {
+			return "";
+		}
 		return StringUtils.getRelativePath(exactBase.getPath(), exactPath.getPath());
 	}
 	

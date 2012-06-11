@@ -96,11 +96,19 @@ public abstract class MxTask extends Task {
 	
 	protected void extractHtmlResources(File outputFolder) {
 		// extract resources
-		extractResource(outputFolder, "bootstrap/css/bootstrap.min.css");
+		extractResource(outputFolder, "bootstrap/css/bootstrap.less");
+		extractResource(outputFolder, "bootstrap/css/bootstrap-responsive.min.css");
 		extractResource(outputFolder, "bootstrap/js/bootstrap.min.js");
+		extractResource(outputFolder, "bootstrap/js/less-1.3.0.min.js");
 		extractResource(outputFolder, "bootstrap/js/jquery.js");
 		extractResource(outputFolder, "bootstrap/img/glyphicons-halflings.png");
 		extractResource(outputFolder, "bootstrap/img/glyphicons-halflings-white.png");
+
+		// write custom LESS
+		Build build = getBuild();
+		String less = build.getCustomLess();
+		File file = new File(outputFolder, "bootstrap/css/custom.less");
+		FileUtils.writeContent(file, less);
 	}
 	
 	private void extractResource(File outputFolder, String resource) {

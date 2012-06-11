@@ -78,7 +78,8 @@ public class MxReport extends MxTask {
 		String kvpPattern = "<tr><th>{0}</th><td>{1}</td></tr>";
 		String aPattern = "<a href=\"{1}\" target=\"_blank\">{0}</a>";
 		
-		StringBuilder sb = new StringBuilder("<html>\n<head>\n<link href=\"./bootstrap/css/bootstrap.min.css\" rel=\"stylesheet\">\n");
+		StringBuilder sb = new StringBuilder("<html>\n<head>\n<link rel=\"stylesheet/less\" type=\"text/css\" href=\"./bootstrap/css/bootstrap.less\">\n");
+		sb.append("<script src=\"./bootstrap/js/less-1.3.0.min.js\"></script>");
 		sb.append(format("<title>{0} ({1})</title>\n", pom.name, pom.getCoordinates()));
 		sb.append("</head><body>\n");
 		sb.append("<div class='container-fluid'>\n");

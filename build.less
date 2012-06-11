@@ -1,0 +1,42 @@
+/*!
+ * Maxilla Bootstrap Overrides
+ *
+ * Copyright 2012 James Moger
+ * Licensed under the Apache License v2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ */
+
+// GLOBAL VALUES
+// --------------------------------------------------
+@purpleDarker:				#220022;
+@purpleDark:				#550055;
+@standardGray:				#ccc;
+@yellow:					#ffc40d;
+@white:						#fff;
+
+
+// Dropdown
+// -------------------------
+@dropdownLinkBackgroundHover:   @purpleDark;
+
+// Navbar
+// -------------------------
+@navbarHeight:                    40px;
+@navbarBackground:                @purpleDarker;
+@navbarBackgroundHighlight:       @purpleDark;
+@navbarText:                      @standardGray;
+@navbarLinkColor:                 @standardGray;
+@navbarLinkColorHover:            @yellow;
+@navbarLinkBackgroundHover:       transparent;
+@navbarLinkBackgroundActive:      transparent;
+
+body { padding-top: @navbarHeight + 20 } /* 60px to make the container go all the way to the bottom of the topbar */
+footer { margin-top: 25px; padding: 15px 0 16px; border-top: 1px solid #E5E5E5; }
+pre.prettyprint { overflow: hidden; }
+
+.navbar {
+	.brand {
+		padding: 10px 20px;
+	}
+}

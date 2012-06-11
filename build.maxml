@@ -11,6 +11,7 @@ sourceFolders :
 - compile src/main/maxjar
 - compile src/main/maxdoc
 - compile src/main/cobertura
+- compile src/less/java
 - compile src/main/resources
 - { scope: test, folder: src/test/java }
 properties: {
