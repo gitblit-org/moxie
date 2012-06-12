@@ -243,7 +243,7 @@
 			<available classpathref="execution.test.classpath" classname="net.sourceforge.cobertura.ant.ReportTask" />
 			<then>
 				<!-- report Cobertura code coverage -->
-				<taskdef name="report" classname="com.maxtk.cobertura.ReportTask" classpathref="execution.test.classpath" uri="antlib:net.sourceforge.cobertura" />
+				<taskdef name="report" classname="org.moxie.cobertura.ReportTask" classpathref="execution.test.classpath" uri="antlib:net.sourceforge.cobertura" />
 				<cobertura:report datafile="${cobertura.data}" format="html" destdir="${code.coverage.report}">
 					<path refid="mxr.compile.sourcepath" />
 				</cobertura:report>
