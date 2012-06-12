@@ -487,9 +487,10 @@ public class GenJar extends Task {
 						String className = spec.getJarName();
 						resolvedLocal.add(className);
 						
-						String packageName = className.substring(0, className.lastIndexOf('.'));
-						packageName = packageName.substring(0, className.lastIndexOf('.'));
-						exportedPackages.add(packageName);
+						if (className.lastIndexOf('/') > -1) {
+							String packageName = className.substring(0, className.lastIndexOf('/'));						
+							exportedPackages.add(packageName);
+						}
 					}
 				}
 				return is;
