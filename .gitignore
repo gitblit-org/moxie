@@ -5,10 +5,5 @@
 /.directory
 /.classpath
 /bin
-/maxilla-all.jar
-/maxilla-core.jar
-/maxml.jar
-/maxml-sources.jar
-/maxilla-pro.jar
 /target
 /build

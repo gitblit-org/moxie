@@ -1,6 +1,6 @@
 # settings.maxml
 #
-# This file contains settings for controlling Maxilla's behavior.
+# This file contains settings for controlling Moxie's behavior.
 proxies:
 - { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }
 repositories : central
@@ -34,7 +34,7 @@ dependencyAliases: {
 # POMs from other projects.  The most common use case would be to add undeclared
 # dependencies for old POMs or to purposefully exclude dependencies from specific scopes.
 #
-# Maxilla uses this feature to simplify specification of "build" scope dependencies so that
+# Moxie uses this feature to simplify specification of "build" scope dependencies so that
 # enabling Cobertura, Emma, or TestNG is as easy as adding a single build dependency.
 #
 # You must declare the full coordinates of the dependency to tweak, property substitution

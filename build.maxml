@@ -1,15 +1,15 @@
-name : Maxilla
-description : Project Build Toolkit
-groupId : com.maxtk
-artifactId : maxilla
-version : 0.3.0-SNAPSHOT
+name : Moxie
+description : Java Project Build Toolkit
+groupId : org.moxie
+artifactId : moxie
+version : 0.4.0-SNAPSHOT
 organization : James Moger 
-url : http://gitblit.github.com/maxilla
+url : http://gitblit.github.com/moxie
 apply : eclipse, pom, cache
 sourceFolders : 
-- compile src/main/core, src/main/maxgit
-- compile src/main/maxjar
-- compile src/main/maxdoc
+- compile src/main/core, src/main/mxgit
+- compile src/main/mxjar
+- compile src/main/mxdoc
 - compile src/main/cobertura
 - compile src/less/java
 - compile src/main/resources

@@ -6,7 +6,7 @@
     configuration editor
 -->
 <!--
-    Checkstyle-Configuration: maxilla Description: none
+    Checkstyle-Configuration: moxie Description: none
 -->
 <module name="Checker">
     <property name="severity" value="warning" />

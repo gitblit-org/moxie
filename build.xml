@@ -1,74 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="main" xmlns:mx="antlib:com.maxtk">
+<project default="main" xmlns:mx="antlib:org.moxie">
 
-	<!-- These are the default Maxilla locations -->
-	<property name="maxilla.bin" value="${basedir}/build" />
-	<property name="maxilla.bin.classes" value="${maxilla.bin}/classes" />
+	<!-- These are the default Moxie locations -->
+	<property name="moxie.bin" value="${basedir}/build" />
+	<property name="moxie.bin.classes" value="${moxie.bin}/classes" />
 
 	<!--
-	Declare the Maxilla tasks and Compile all of Maxilla
+	Declare the Moxie tasks and Compile all of Moxie
 	-->
 	<target name="bootstrap">
 		<!-- Clean -->
-		<delete dir="${maxilla.bin}" />
-		<mkdir dir="${maxilla.bin}" />
-		<mkdir dir="${maxilla.bin.classes}" />
+		<delete dir="${moxie.bin}" />
+		<mkdir dir="${moxie.bin}" />
+		<mkdir dir="${moxie.bin.classes}" />
 
-		<!-- Bootstrap compile MaxSetup task and core objects -->
-		<javac debug="true" destdir="${maxilla.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
+		<!-- Bootstrap compile MxInit task and core objects -->
+		<javac debug="true" destdir="${moxie.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
 			<src path="${basedir}/src/main/core" />
 		</javac>
 		
-		<!-- Copy Maxilla resources -->
-		<copy todir="${maxilla.bin.classes}" overwrite="false">
+		<!-- Copy Moxie resources -->
+		<copy todir="${moxie.bin.classes}" overwrite="false">
 			<fileset dir="${basedir}/src/main/resources" />
 		</copy>
 
 		<!-- Declare mx:init and read configuration -->
-		<taskdef classname="com.maxtk.ant.MxInit" name="init" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="org.moxie.ant.MxInit" name="init" classpath="${moxie.bin.classes}" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<mx:init />
 
-		<!-- Compile all of Maxilla with mx:javac and retrieved dependencies -->
-		<taskdef classname="com.maxtk.ant.MxJavac" name="javac" classpath="${maxilla.bin.classes}" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<!-- Compile all of Moxie with mx:javac and retrieved dependencies -->
+		<taskdef classname="org.moxie.ant.MxJavac" name="javac" classpath="${moxie.bin.classes}" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<mx:javac />
 		
 	</target>
 
 
 	<!--
-	Build the Maxilla release
+	Build the Moxie release
 	-->
 	<target name="main">
 
-		<!-- Bootstrap Maxilla in a separate task -->
+		<!-- Bootstrap Moxie in a separate task -->
 		<antcall target="bootstrap" inheritall="false" inheritrefs="false" />
 
 		<!-- 
-		Manually construct the Maxilla bootstrap classpath and define the tasks 
+		Manually construct the Moxie bootstrap classpath and define the tasks 
 		because we need to load the tasks using the same classloader in order
-		to share objects.  This is handled automatically in production Maxilla jars.
+		to share objects.  This is handled automatically in production Moxie jars.
 		-->
 		<path id="bootstrap.path">
-			<pathelement path="${maxilla.bin.classes}" />
+			<pathelement path="${moxie.bin.classes}" />
 		</path>
 
 		<!-- Core -->
-		<taskdef classname="com.maxtk.ant.MxInit" name="init" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<taskdef classname="com.maxtk.ant.MxJavac" name="javac" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<taskdef classname="com.maxtk.ant.MxClean" name="clean" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<taskdef classname="com.maxtk.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<taskdef classname="com.maxtk.ant.MxReport" name="report" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<taskdef classname="com.maxtk.antcontrib.IfTask" name="if" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="org.moxie.ant.MxInit" name="init" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxJavac" name="javac" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxClean" name="clean" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxReport" name="report" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.antcontrib.IfTask" name="if" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 
 		<!-- Pro -->
-		<taskdef classname="com.maxtk.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<taskdef classname="com.maxtk.ant.MxZip" name="zip" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="org.moxie.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxZip" name="zip" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		
 		<!-- All -->
-		<taskdef classname="com.maxtk.ant.MxExtract" name="extract" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<taskdef classname="com.maxtk.ant.MxGitId" name="gitid" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<taskdef classname="com.maxtk.ant.MxGhPages" name="ghpages" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
-		<taskdef classname="com.maxtk.ant.MxDoc" name="doc" classpathref="bootstrap.path" loaderref="maxilla.bootstrap" uri="antlib:com.maxtk" />
+		<taskdef classname="org.moxie.ant.MxExtract" name="extract" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxGitId" name="gitid" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxGhPages" name="ghpages" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxDoc" name="doc" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 
 		<!-- Prepare the project -->
 		<mx:init />
@@ -80,20 +80,20 @@
 		
 		<mx:report />
 
-		<!-- Maxilla-Core -->
+		<!-- Moxie-Core -->
 		<mx:jar classifier="core">
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
 				<exclude name="org.w3c." />
 			</classfilter>
-			<class name="com.maxtk.ant.MxInit" />
-			<class name="com.maxtk.ant.MxClean" />
-			<class name="com.maxtk.ant.MxJavac" />
-			<class name="com.maxtk.ant.MxInstall" />
-			<class name="com.maxtk.ant.MxReport" />
-			<class name="com.maxtk.antcontrib.IfTask" />
-			<class name="com.maxtk.cobertura.ReportTask" />
+			<class name="org.moxie.ant.MxInit" />
+			<class name="org.moxie.ant.MxClean" />
+			<class name="org.moxie.ant.MxJavac" />
+			<class name="org.moxie.ant.MxInstall" />
+			<class name="org.moxie.ant.MxReport" />
+			<class name="org.moxie.antcontrib.IfTask" />
+			<class name="org.moxie.cobertura.ReportTask" />
 			
 			<resource>
 				<fileset dir="${basedir}/src/main/resources" />
@@ -102,7 +102,7 @@
 		</mx:jar>
 		
 		
-		<!-- Maxilla-Pro -->
+		<!-- Moxie-Pro -->
 		<mx:jar classifier="pro">
 			<classfilter>
 				<exclude name="org.apache." />
@@ -110,16 +110,16 @@
 				<exclude name="org.w3c." />
 			</classfilter>
 				
-			<class name="com.maxtk.ant.MxInit" />
-			<class name="com.maxtk.ant.MxClean" />
-			<class name="com.maxtk.ant.MxJavac" />
-			<class name="com.maxtk.ant.MxInstall" />
-			<class name="com.maxtk.ant.MxReport" />
-			<class name="com.maxtk.antcontrib.IfTask" />
-			<class name="com.maxtk.cobertura.ReportTask" />
+			<class name="org.moxie.ant.MxInit" />
+			<class name="org.moxie.ant.MxClean" />
+			<class name="org.moxie.ant.MxJavac" />
+			<class name="org.moxie.ant.MxInstall" />
+			<class name="org.moxie.ant.MxReport" />
+			<class name="org.moxie.antcontrib.IfTask" />
+			<class name="org.moxie.cobertura.ReportTask" />
 			
-			<class name="com.maxtk.ant.MxJar" />
-			<class name="com.maxtk.ant.MxZip" />
+			<class name="org.moxie.ant.MxJar" />
+			<class name="org.moxie.ant.MxZip" />
 
 			<resource>
 				<fileset dir="${basedir}/src/main/resources" />
@@ -128,30 +128,30 @@
 		</mx:jar>
 
 		
-		<!-- Maxilla-All -->
-		<mx:jar classifier="all" includeresources="true">
+		<!-- Moxie-All -->
+		<mx:jar classifier="all" includeResources="true" packageSources="true">
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
 				<exclude name="org.tautua." />
 				<exclude name="org.w3c." />				
 			</classfilter>
-			<class name="com.maxtk.ant.MxInit" />
-			<class name="com.maxtk.ant.MxClean" />
-			<class name="com.maxtk.ant.MxJavac" />
-			<class name="com.maxtk.ant.MxInstall" />
-			<class name="com.maxtk.ant.MxReport" />
-			<class name="com.maxtk.antcontrib.IfTask" />
-			<class name="com.maxtk.cobertura.ReportTask" />
+			<class name="org.moxie.ant.MxInit" />
+			<class name="org.moxie.ant.MxClean" />
+			<class name="org.moxie.ant.MxJavac" />
+			<class name="org.moxie.ant.MxInstall" />
+			<class name="org.moxie.ant.MxReport" />
+			<class name="org.moxie.antcontrib.IfTask" />
+			<class name="org.moxie.cobertura.ReportTask" />
 				
-			<class name="com.maxtk.ant.MxJar" />
-			<class name="com.maxtk.ant.MxZip" />
+			<class name="org.moxie.ant.MxJar" />
+			<class name="org.moxie.ant.MxZip" />
 				
-			<class name="com.maxtk.ant.MxKeys" />
-			<class name="com.maxtk.ant.MxExtract" />
-			<class name="com.maxtk.ant.MxGitId" />
-			<class name="com.maxtk.ant.MxGhPages" />				
-			<class name="com.maxtk.ant.MxDoc" />
+			<class name="org.moxie.ant.MxKeys" />
+			<class name="org.moxie.ant.MxExtract" />
+			<class name="org.moxie.ant.MxGitId" />
+			<class name="org.moxie.ant.MxGhPages" />				
+			<class name="org.moxie.ant.MxDoc" />
 			
 			<resource>
 				<fileset dir="${basedir}/src/main/resources" />
@@ -162,10 +162,10 @@
 
 		<!-- Maxml -->
 		<mx:jar destfile="${mxp.targetFolder}/maxml-${project.version}.jar" packageSources="true">
-			<class name="com.maxtk.maxml.Maxml" />
+			<class name="org.moxie.maxml.Maxml" />
 		</mx:jar>
 
-		<!-- Install the build to our Maxilla cache -->
+		<!-- Install the build to our Moxie cache -->
 		<mx:install />
 
 		<!-- Build the site documentation -->
@@ -173,12 +173,12 @@
 			<structure>
 				<page name="overview" src="index.mkd" />
 				<menu name="tasks">
-					<page name="mx:Setup" src="mxsetup.mkd" />
-					<page name="mx:Extract" src="mxextract.mkd" />
+					<page name="mx:Init" src="mxinit.mkd" />
+					<page name="mx:Jar" src="mxjar.mkd" />
 					<divider />
+					<page name="mx:Extract" src="mxextract.mkd" />
 					<page name="mx:GitId" src="mxgitid.mkd" />
 					<page name="mx:GhPages" src="mxghpages.mkd" />					
-					<page name="mx:Jar" src="mxjar.mkd" />
 					<divider />
 					<page name="mx:Doc" src="mxdoc.mkd" />
 				</menu>
@@ -186,14 +186,14 @@
 				<page name="design" src="design.mkd" />
 				<page name="releases" src="releases.mkd" />
 				<menu name="download">
-					<link name="maxilla-core" src="maxilla-core.jar" />
-					<link name="maxilla-pro" src="maxilla-pro.jar" />
-					<link name="maxilla-all" src="maxilla-all.jar" />
+					<link name="moxie-core" src="moxie-core.jar" />
+					<link name="moxie-pro" src="moxie-pro.jar" />
+					<link name="moxie-all" src="moxie-all.jar" />
 					<divider />
 					<link name="maxml" src="maxml.jar" />
 					<link name="maxml-sources" src="maxml-sources.jar" />
 				</menu>
-				<link name="GitHub" src="http://github.com/gitblit/maxilla" />
+				<link name="GitHub" src="http://github.com/gitblit/moxie" />
 				<divider />
 			</structure>
 			<substitute token="%VERSION%" value="${mxp.version}" />
@@ -203,11 +203,12 @@
 			<resource>
 				<fileset dir="${mxp.targetFolder}/" includes="*.jar" />
 			</resource>
+			<logo file="${basedir}/src/main/resources/moxie.png" />
 		</mx:doc>
 	</target>
 
 	<!--
-	Build the Maxilla gh-pages branch
+	Build the Moxie gh-pages branch
 	-->
 	<target name="ghpages" depends="main">
 		<mx:ghpages sourceFolder="${mxp.targetFolder}/site" obliterate="true" />

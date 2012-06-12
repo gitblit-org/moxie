@@ -1,9 +1,9 @@
-## Maxilla Project Build Toolkit
+## Moxie Java Project Build Toolkit
 
 <span class="label label-warning">alpha: Not-production ready</span>
-Maxilla is a small collection of ANT tasks to facilitate building Java projects.
+Moxie is a small collection of ANT tasks to facilitate building Java projects.
 
-The Maxilla binaries and this site are built with Maxilla.
+The Moxie binaries and this site are built with Moxie.
 
 ### Core Package (45KB)
 
@@ -11,7 +11,7 @@ The core package includes the Setup task and some simple processing tasks.
 
 #### [MaxSetup](./maxsetup.html)
 
-* Dependency retrieval from a local Maven repository, local Maxilla repository, or content-addressable remote Maven repositories like MavenCentral.
+* Dependency retrieval from a local Maven repository, local Moxie repository, or content-addressable remote Maven repositories like MavenCentral.
 * Eclipse .classpath generation
 
 #### [MaxExtract](./maxextract.html)
@@ -23,7 +23,7 @@ This is useful for pulling a version identifier from source that you want to use
 
 The pro package adds some Git tasks and a fork of the super-useful GenJar task.
 
-The Git tasks depend on [JGit](http://eclipse.org/jgit) which is resolved automatically either from your local Maven repository, your local Maxilla repository, or MavenCentral.
+The Git tasks depend on [JGit](http://eclipse.org/jgit) which is resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.
 
 #### [MaxCommitId](./maxcommitid.html)
 
@@ -49,8 +49,8 @@ Generates a project site or project documentation from markdown source files.
 * Optionally injects GoogleCode Prettify for syntax highlighting
 * Optionally injects FancyBox for JavaScript-enhanced image gallery viewing
 
-The MaxDoc task depends on [MarkdownPapers](http://markdown.tautua.org) which is resolved automatically either from your local Maven repository, your local Maxilla repository, or MavenCentral. 
+The MaxDoc task depends on [MarkdownPapers](http://markdown.tautua.org) which is resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral. 
 
 ### License
 
-Maxilla is distributed under the Apache Software License, version 2.0.
+Moxie is distributed under the Apache Software License, version 2.0.

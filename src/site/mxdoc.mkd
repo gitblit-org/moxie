@@ -1,26 +1,26 @@
-## MaxDoc
+## mx:Doc
 
 %BEGINXML%
 <maxdoc injectPrettify="true" injectFancybox="true">
 	<structure>
 		<page name="overview" src="index.mkd" />
 		<menu name="tasks">
-			<page name="MaxSetup" src="maxsetup.mkd" />
-			<page name="MaxExtract" src="maxextract.mkd" />
-			<page name="MaxCommitId" src="maxcommitid.mkd" />
-			<page name="MaxGhPages" src="maxghpages.mkd" />
+			<page name="mx:SetupInit" src="mxinit.mkd" />
+			<page name="mx:Extract" src="mxextract.mkd" />
+			<page name="mx:GitId" src="mxgitid.mkd" />
+			<page name="mx:GhPages" src="mxghpages.mkd" />
 			<divider />
-			<page name="MaxJar" src="maxjar.mkd" />
-			<page name="MaxDoc" src="maxdoc.mkd" />
+			<page name="mx:Jar" src="mxjar.mkd" />
+			<page name="mx:Doc" src="mxdoc.mkd" />
 		</menu>
 		<page name="design" src="design.mkd" />
 		<page name="maxml" src="maxml.mkd" />
 		<page name="releases" src="releases.mkd" />
 		<menu name="download">
-			<link name="maxilla-core" src="maxilla-core.jar" />
-			<link name="maxilla-all" src="maxilla-all.jar" />
+			<link name="moxie-core" src="moxie-core.jar" />
+			<link name="moxie-all" src="moxie-all.jar" />
 		</menu>
-		<link name="GitHub" src="http://github.com/gitblit/maxilla" />
+		<link name="GitHub" src="http://github.com/gitblit/moxie" />
 		<divider />
 	</structure>
 	<substitute token="%VERSION%" value="${max-version}" />

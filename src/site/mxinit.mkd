@@ -1,0 +1,34 @@
+## mx:Init
+
+%BEGINMAXML%
+# Sample build.maxml file
+name : Moxie
+description : Java Project Build Toolkit
+groupId : org.moxie
+artifactId : moxie
+version : 0.4.0-SNAPSHOT
+organization : James Moger 
+url : http://gitblit.github.com/moxie
+apply : eclipse, pom, cache
+sourceFolders : 
+- compile src/main/core, src/main/mxgit
+- compile src/main/mxjar
+- compile src/main/mxdoc
+- compile src/main/cobertura
+- compile src/less/java
+- compile src/main/resources
+- { scope: test, folder: src/test/java }
+properties: {
+  jgit.version : 1.3.0.201202151440-r
+}
+dependencies :
+- provided org.apache.ant:ant:1.8.3
+- provided org.eclipse.jgit:org.eclipse.jgit:${jgit.version}
+- provided org.tautua.markdownpapers:markdownpapers-core:1.2.7
+- provided cobertura
+- test junit
+%ENDMAXML%
+
+%BEGINXML%
+<mx:init />
+%ENDXML%

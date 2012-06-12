@@ -1,6 +1,6 @@
 # defaults.maxml
 #
-# This file defines the default values for all Maxilla projects.
+# This file defines the default values for all Moxie projects.
 
 # Source folders are verified during initialization.
 # Defined folders that do not exist are excluded.

@@ -1,5 +1,5 @@
 /*!
- * Maxilla Bootstrap Overrides
+ * Moxie Bootstrap Overrides
  *
  * Copyright 2012 James Moger
  * Licensed under the Apache License v2.0
@@ -22,7 +22,7 @@
 
 // Navbar
 // -------------------------
-@navbarHeight:                    40px;
+@navbarHeight:                    60px;
 @navbarBackground:                @purpleDarker;
 @navbarBackgroundHighlight:       @purpleDark;
 @navbarText:                      @standardGray;
@@ -31,12 +31,21 @@
 @navbarLinkBackgroundHover:       transparent;
 @navbarLinkBackgroundActive:      transparent;
 
-body { padding-top: @navbarHeight + 20 } /* 60px to make the container go all the way to the bottom of the topbar */
-footer { margin-top: 25px; padding: 15px 0 16px; border-top: 1px solid #E5E5E5; }
-pre.prettyprint { overflow: hidden; }
-
 .navbar {
+	.nav {
+		margin: 0px;
+	}
+	
+	.nav > li > a {
+		@elementHeight: 40px;
+	}
+	
 	.brand {
+		@elementHeight: 40px;
 		padding: 10px 20px;
 	}
 }
+
+body { padding-top: @navbarHeight + 20 } /* 60px to make the container go all the way to the bottom of the topbar */
+footer { margin-top: 25px; padding: 15px 0 16px; border-top: 1px solid #E5E5E5; }
+pre.prettyprint { overflow: hidden; }
