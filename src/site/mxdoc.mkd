@@ -1,11 +1,11 @@
 ## mx:Doc
 
 %BEGINXML%
-<maxdoc injectPrettify="true" injectFancybox="true">
+<mx:doc injectPrettify="true">
 	<structure>
 		<page name="overview" src="index.mkd" />
 		<menu name="tasks">
-			<page name="mx:SetupInit" src="mxinit.mkd" />
+			<page name="mx:Init" src="mxinit.mkd" />
 			<page name="mx:Extract" src="mxextract.mkd" />
 			<page name="mx:GitId" src="mxgitid.mkd" />
 			<page name="mx:GhPages" src="mxghpages.mkd" />
@@ -20,6 +20,7 @@
 			<link name="moxie-core" src="moxie-core.jar" />
 			<link name="moxie-all" src="moxie-all.jar" />
 		</menu>
+		<report name="reports" />
 		<link name="GitHub" src="http://github.com/gitblit/moxie" />
 		<divider />
 	</structure>
@@ -31,5 +32,5 @@
 	<resource>
 		<fileset dir="${basedir}" includes="*.jar" />
 	</resource>	
-</maxdoc>
+</mx:doc>
 %ENDXML%

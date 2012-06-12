@@ -1,55 +1,30 @@
-## Moxie Java Project Build Toolkit
+## Java Project Build Toolkit
 
-<span class="label label-warning">alpha: Not-production ready</span>
-Moxie is a small collection of ANT tasks to facilitate building Java projects.
-
+Moxie is a collection of [Ant](http://ant.apache.org) tasks to facilitate building Java projects.  It's purpose is to bring some of the convenience of [Maven](http://maven.apache.org) and [Gradle](http://www.gradle.org) to Ant.  
 The Moxie binaries and this site are built with Moxie.
 
-### Core Package (45KB)
+### Core Package (100KB)
 
-The core package includes the Setup task and some simple processing tasks.
+The core package includes `mx:init` for project setup & dependency retrieval, and `mx:report` to create a text report about your transitive dependencies and their licenses.
 
-#### [MaxSetup](./maxsetup.html)
+Bundled with the core package is a private copy of the [AntContrib](http://ant-contrib.sourceforge.net) *if* task (included as `mx:if`) and a partial subset of [jansi](http://jansi.fusesource.org), to optionally liven-up your console.
 
-* Dependency retrieval from a local Maven repository, local Moxie repository, or content-addressable remote Maven repositories like MavenCentral.
-* Eclipse .classpath generation
+The core package has no external dependencies.
 
-#### [MaxExtract](./maxextract.html)
+### Pro Package (180KB)
 
-Pull the contents of a field from a source file.  
-This is useful for pulling a version identifier from source that you want to use in your build script.
+The pro package builds on the core package by adding a Maven-ish set of targets (*moxie.compile, moxie.test, etc*) and tasks to handle compiling your sources, packaging your compiled code, and installing artifacts into your local Moxie repository.
 
-### Pro Package (90KB)
 
-The pro package adds some Git tasks and a fork of the super-useful GenJar task.
+Also included in the pro package are Git tasks to grab the hash id of the checked-out of your project and a task to update a *ghpages* branch for [Github](http://www.github.com) or [Gitblit](http://gitblit.com).
 
-The Git tasks depend on [JGit](http://eclipse.org/jgit) which is resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.
+The git tasks depend on [JGit](http://eclipse.org/jgit) which is resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.
 
-#### [MaxCommitId](./maxcommitid.html)
+### All Package (360KB)
 
-Determines the Git commit hash of HEAD for the repository.
+The all package includes the pro package plus `mx:doc`, the Moxie site/document-generation tool.
 
-#### [MaxGhPages](./maxghpages.html)
-
-Updates the gh-pages branch of a Git repository with content from the specified folder.
-
-#### [MaxJar](./maxjar.html)
-
-This is a fork of the super-useful GenJar.
-
-### All Package (285KB)
-
-The all package includes the pro package plus the following tasks.
-
-#### [MaxDoc](./maxdoc.html)
-
-Generates a project site or project documentation from markdown source files.
-
-* Uses Twitter Bootstrap 2.0 for the generated content
-* Optionally injects GoogleCode Prettify for syntax highlighting
-* Optionally injects FancyBox for JavaScript-enhanced image gallery viewing
-
-The MaxDoc task depends on [MarkdownPapers](http://markdown.tautua.org) which is resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral. 
+The `mx:doc` task generates a project site or project documentation from markdown source files.  It depends on [MarkdownPapers](http://markdown.tautua.org) and [Rhino](http://www.mozilla.org/rhino), which are resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.  It also incorporates a private copy of [Twitter Bootstrap](http://twitter.github.com/bootstrap), [GoogleCode Prettify](https://code.google.com/p/google-code-prettify), and a partial subset of [lesscss-engine](http://www.asual.com/lesscss) to allow customization of the look of your documentation. 
 
 ### License
 

@@ -1,0 +1,69 @@
+## Getting Started
+
+Moxie does not specify exactly how you must use it and you can mix-and-match both styles: Maven-style and Ant-style.
+
+### Maven-style
+
+If you want to try Moxie's primitive approximation of Maven's lifecycle phases, then the following `build.xml` file will help you along.
+
+%BEGINXML%
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="main" xmlns:mx="antlib:org.moxie">
+
+    <!-- Register Moxie custom tasks and include Moxie targets -->
+    <include>
+        <javaresource name="moxie.xml" classpath="${basedir}/moxie-0.4.0-pro.jar" />
+    </include>
+
+    <target name="main">
+        <!-- Use antcall to avoid Eclipse errors about missing targets-->
+        <antcall target="moxie.install" />		
+    </target>
+
+</project>
+%ENDXML%
+
+In this build file we define the Moxie namespace (`mx:`) and we include an Ant build script (moxie.xml) which is embedded within the Moxie jar file.
+
+<div class="alert alert-info"><h4>moxie.xml</h4> Every Moxie jar contains a moxie.xml file, although not every moxie.xml is exactly the same.   More specifically, the <i>pro</i> and the <i>all</i> variants include the <i>moxie.yadyadayada</i> targets which approximate some of Maven's lifecycle phases.  The <i>core</i> variant does not offer the <i>moxie.yadayadayada</i> targets.</div>
+
+Finally, we define a *main* target which performs an Antcall to *moxie.install*.  Why use an Antcall?  The answer is, you don't have to.  You could specify the default target to be *moxie.install* or any other Moxie target, BUT Eclipse will complain because it's Ant integration does not process *included* targets from an embedded resource. 
+
+
+### Ant-style
+
+The following `build.xml` file is the Ant-style equivalent of what happened when we executed the *moxie.install* target.
+%BEGINXML%
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="main" xmlns:mx="antlib:org.moxie">
+
+    <!-- Register Moxie custom tasks and include Moxie targets -->
+    <include>
+        <javaresource name="moxie.xml" classpath="${basedir}/moxie-0.4.0-pro.jar" />
+    </include>
+
+    <target name="main">
+        <mx:init />
+        <mx:compile />
+        <mx:test />
+        <mx:jar includeResources="true" packageSources="true" />
+        <mx:install />
+    </target>
+
+</project>
+%ENDXML%
+
+
+### Describing your Project
+
+Moxie does not use the Maven pom.xml file nor the Ivy ixy.xml file to describe your project.  Moxie uses the `build.moxie` file.
+
+The `build.moxie` file uses a key:value format which is very similar to YAML.  The minimal Moxie file descriptor is:
+
+%BEGINMAXML%
+groupId : org.moxie
+artifactId : moxie
+version : 0.4.0-SNAPSHOT
+%ENDMAXML%
+
+This is similar to the minimal pom.xml descriptor.  Moxie assumes the same default project structure as Maven.  

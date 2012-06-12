@@ -1,0 +1,30 @@
+## Why not Ant+Ivy?
+
+[Ivy](http://ant.apache.org/ivy) is definitely a more featureful dependency manager.  But I hated the idea of adding another xml file.  Ivy also does nothing to decrease the complexity or verbosity of Ant build scripts.  And if you wanted to embed it within a repository, its a bit large.
+
+## Why not Gradle?
+
+Conceptually I like the idea of Gradle, but I have not been able to embrace it.
+
+## Why not Maven?
+
+There is much to admire and respect about Maven.
+
+Maven has done some tremendous things and has moved the Java ecosystem forward.  But I want to exert control over my build, not have my build exert control over me.  Maven is a fantastic *automated build* system but what I want is *build automation* system, and for now that is Ant.
+
+### Things that Maven has taught us
+
+1. a centralized repository of project artifacts accessible by http is brilliant
+2. transitive dependency management is *really* brilliant
+
+
+## Why Moxie?
+
+Moxie is a lightweight dependency retriever with some convenience tasks for setting up an Eclipse project, building and packaging Java sources, and generating project documentation.
+
+Some will consider Moxie [rinky-dink](http://www.merriam-webster.com/dictionary/rinky-dink).  I consider it just-enough to keep me happy in the transitive dependency world.
+
+### Limitations
+
+1. Version ranges can not be specified
+2. Moxie is not designed to manage enterprise software packages

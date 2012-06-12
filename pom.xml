@@ -41,6 +41,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.mozilla</groupId>
+			<artifactId>rhino</artifactId>
+			<version>1.7R3</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>net.sourceforge.cobertura</groupId>
 			<artifactId>cobertura</artifactId>
 			<version>1.9.4.1</version>

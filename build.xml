@@ -16,12 +16,12 @@
 
 		<!-- Bootstrap compile MxInit task and core objects -->
 		<javac debug="true" destdir="${moxie.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
-			<src path="${basedir}/src/main/core" />
+			<src path="${basedir}/src/core/java" />
 		</javac>
 		
 		<!-- Copy Moxie resources -->
 		<copy todir="${moxie.bin.classes}" overwrite="false">
-			<fileset dir="${basedir}/src/main/resources" />
+			<fileset dir="${basedir}/src/core/resources" />
 		</copy>
 
 		<!-- Declare mx:init and read configuration -->
@@ -54,13 +54,14 @@
 
 		<!-- Core -->
 		<taskdef classname="org.moxie.ant.MxInit" name="init" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxReport" name="report" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxIf" name="if" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+			
+		<!-- Pro -->
 		<taskdef classname="org.moxie.ant.MxJavac" name="javac" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxClean" name="clean" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.ant.MxReport" name="report" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.antcontrib.IfTask" name="if" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 
-		<!-- Pro -->
 		<taskdef classname="org.moxie.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxZip" name="zip" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		
@@ -85,79 +86,92 @@
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
+				<exclude name="org.mozilla." />
+				<exclude name="org.tautua." />
 				<exclude name="org.w3c." />
 			</classfilter>
 			<class name="org.moxie.ant.MxInit" />
-			<class name="org.moxie.ant.MxClean" />
-			<class name="org.moxie.ant.MxJavac" />
-			<class name="org.moxie.ant.MxInstall" />
 			<class name="org.moxie.ant.MxReport" />
-			<class name="org.moxie.antcontrib.IfTask" />
-			<class name="org.moxie.cobertura.ReportTask" />
-			
+			<class name="org.moxie.ant.MxIf" />
+
 			<resource>
-				<fileset dir="${basedir}/src/main/resources" />
+				<fileset dir="${basedir}/src/core/resources" />
 			</resource>
-			<resource file="${basedir}/src/main/config/core/tasks.properties" />
+			<resource file="${basedir}/src/core/config/core/tasks.properties" />
+			<resource file="${basedir}/src/core/config/core/moxie.xml" />
 		</mx:jar>
-		
-		
+
 		<!-- Moxie-Pro -->
 		<mx:jar classifier="pro">
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
+				<exclude name="org.mozilla." />
+				<exclude name="org.tautua." />
 				<exclude name="org.w3c." />
 			</classfilter>
-				
-			<class name="org.moxie.ant.MxInit" />
-			<class name="org.moxie.ant.MxClean" />
-			<class name="org.moxie.ant.MxJavac" />
-			<class name="org.moxie.ant.MxInstall" />
-			<class name="org.moxie.ant.MxReport" />
-			<class name="org.moxie.antcontrib.IfTask" />
-			<class name="org.moxie.cobertura.ReportTask" />
 			
-			<class name="org.moxie.ant.MxJar" />
-			<class name="org.moxie.ant.MxZip" />
-
-			<resource>
-				<fileset dir="${basedir}/src/main/resources" />
-			</resource>
-			<resource file="${basedir}/src/main/config/pro/tasks.properties" />
-		</mx:jar>
-
-		
-		<!-- Moxie-All -->
-		<mx:jar classifier="all" includeResources="true" packageSources="true">
-			<classfilter>
-				<exclude name="org.apache." />
-				<exclude name="org.eclipse." />
-				<exclude name="org.tautua." />
-				<exclude name="org.w3c." />				
-			</classfilter>
+			<!-- core -->
 			<class name="org.moxie.ant.MxInit" />
+			<class name="org.moxie.ant.MxReport" />
+			<class name="org.moxie.ant.MxIf" />
+				
+			<!-- pro -->
 			<class name="org.moxie.ant.MxClean" />
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
-			<class name="org.moxie.ant.MxReport" />
-			<class name="org.moxie.antcontrib.IfTask" />
-			<class name="org.moxie.cobertura.ReportTask" />
-				
 			<class name="org.moxie.ant.MxJar" />
 			<class name="org.moxie.ant.MxZip" />
-				
 			<class name="org.moxie.ant.MxKeys" />
 			<class name="org.moxie.ant.MxExtract" />
 			<class name="org.moxie.ant.MxGitId" />
 			<class name="org.moxie.ant.MxGhPages" />				
+			<class name="org.moxie.cobertura.ReportTask" />
+
+			<resource>
+				<fileset dir="${basedir}/src/core/resources" />
+			</resource>
+			<resource file="${basedir}/src/core/config/pro/tasks.properties" />
+			<resource file="${basedir}/src/core/config/pro/moxie.xml" />
+		</mx:jar>
+
+		
+		<!-- Moxie-All -->
+		<mx:jar classifier="all" packageSources="true">
+			<classfilter>
+				<exclude name="org.apache." />
+				<exclude name="org.eclipse." />
+				<exclude name="org.mozilla." />
+				<exclude name="org.tautua." />
+				<exclude name="org.w3c." />				
+			</classfilter>
+			
+			<!-- core -->
+			<class name="org.moxie.ant.MxInit" />
+			<class name="org.moxie.ant.MxReport" />
+			<class name="org.moxie.ant.MxIf" />
+			
+			<!-- pro -->
+			<class name="org.moxie.ant.MxClean" />
+			<class name="org.moxie.ant.MxJavac" />
+			<class name="org.moxie.ant.MxInstall" />
+			<class name="org.moxie.ant.MxJar" />
+			<class name="org.moxie.ant.MxZip" />
+			<class name="org.moxie.ant.MxKeys" />
+			<class name="org.moxie.ant.MxExtract" />
+			<class name="org.moxie.ant.MxGitId" />
+			<class name="org.moxie.ant.MxGhPages" />
+			<class name="org.moxie.cobertura.ReportTask" />			
+			
+			<!-- all -->
 			<class name="org.moxie.ant.MxDoc" />
 			
 			<resource>
-				<fileset dir="${basedir}/src/main/resources" />
+				<fileset dir="${basedir}/src/core/resources" />
+				<fileset dir="${basedir}/src/mxdoc/resources" />
 			</resource>
-			<resource file="${basedir}/src/main/config/all/tasks.properties" />
-
+			<resource file="${basedir}/src/core/config/all/tasks.properties" />
+			<resource file="${basedir}/src/core/config/pro/moxie.xml" />
 		</mx:jar>
 
 		<!-- Maxml -->
@@ -172,19 +186,23 @@
 		<mx:doc googlePlusOne="true" injectPrettify="true">
 			<structure>
 				<page name="overview" src="index.mkd" />
-				<menu name="tasks">
-					<page name="mx:Init" src="mxinit.mkd" />
-					<page name="mx:Jar" src="mxjar.mkd" />
-					<divider />
+				<page name="why?!" src="why.mkd" />
+				<page name="getting started" src="gettingstarted.mkd" />
+				<page name="core" src="core.mkd" />
+				<menu name="pro">
+					<page name="mx:Clean" src="mxextract.mkd" />
+					<page name="mx:Jar" src="mxextract.mkd" />
+					<page name="mx:Zip" src="mxextract.mkd" />
+					<page name="mx:Install" src="mxextract.mkd" />
+					<page name="mx:Keys" src="mxextract.mkd" />
 					<page name="mx:Extract" src="mxextract.mkd" />
 					<page name="mx:GitId" src="mxgitid.mkd" />
 					<page name="mx:GhPages" src="mxghpages.mkd" />					
-					<divider />
+				</menu>
+				<menu name="all">
 					<page name="mx:Doc" src="mxdoc.mkd" />
 				</menu>
 				<page name="maxml" src="maxml.mkd" sidebar="true" />
-				<page name="design" src="design.mkd" />
-				<page name="releases" src="releases.mkd" />
 				<menu name="download">
 					<link name="moxie-core" src="moxie-core.jar" />
 					<link name="moxie-pro" src="moxie-pro.jar" />
@@ -192,8 +210,12 @@
 					<divider />
 					<link name="maxml" src="maxml.jar" />
 					<link name="maxml-sources" src="maxml-sources.jar" />
+					<divider />
+					<page name="changelog" src="releases.mkd" />
+					<divider />
+					<link name="GitHub" src="http://github.com/gitblit/moxie" />
 				</menu>
-				<link name="GitHub" src="http://github.com/gitblit/moxie" />
+				<report name="reports" />
 				<divider />
 			</structure>
 			<substitute token="%VERSION%" value="${mxp.version}" />
@@ -203,7 +225,7 @@
 			<resource>
 				<fileset dir="${mxp.targetFolder}/" includes="*.jar" />
 			</resource>
-			<logo file="${basedir}/src/main/resources/moxie.png" />
+			<logo file="${basedir}/src/mxdoc/resources/moxie.png" />
 		</mx:doc>
 	</target>
 

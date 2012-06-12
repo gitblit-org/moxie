@@ -1,0 +1,43 @@
+# defaults.moxie
+#
+# This file defines the default values for all Moxie projects.
+
+# Source folders are verified during initialization.
+# Defined folders that do not exist are excluded.
+# Defined order is preserved.
+sourceFolders:
+- compile src/main/java
+- compile src/main/webapp
+- compile src/main/resources
+- test src/test/java
+- test src/test/resources
+
+# Default base folder within the project for compiled classes.
+# Consider NOT sharing the output folder with your IDE.
+# The default (build) is separate from the Eclipse default (bin).
+outputFolder: build
+
+# The base folder within the project for build artifacts.
+targetFolder: target
+
+# mx:Javac compiler attributes
+# These defaults may be overriden in your build.moxie file.
+mxjavac: {
+   clean: true
+   compileLinkedProjects: true
+   copyResources: true
+   compiler: modern
+   debug: true
+   debugLevel: vars,lines,source
+   fork: false
+   failOnError: true
+   includeAntRuntime: true
+   excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
+}
+
+# mx:Jar attributes
+# These defaults may be overriden in your build.moxie file.
+mxjar: {
+   excludePomFiles: false
+   excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
+}
