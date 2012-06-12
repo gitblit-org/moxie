@@ -29,9 +29,9 @@ public class MxZip extends Zip {
 		Build build = (Build) getProject().getReference(Key.build.refId());
 		if (zipFile == null) {
 			// default output jar if file unspecified
-			String name = getProject().getProperty(Key.artifactId.propId());
-			if (!StringUtils.isEmpty(getProject().getProperty(Key.version.propId()))) {
-				name += "-" + getProject().getProperty(Key.version.propId());
+			String name = build.getPom().artifactId;
+			if (!StringUtils.isEmpty(build.getPom().version)) {
+				name += "-" + build.getPom().version;
 			}
 			zipFile = new File(build.getTargetFolder(), name + ".zip");
 		}
