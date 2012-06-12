@@ -68,7 +68,7 @@ public class MxInit extends MxTask {
 			File configFile;
 			if (StringUtils.isEmpty(config)) {
 				// default configuration
-				configFile = new File("build.maxml");
+				configFile = new File("build.moxie");
 			} else {
 				// specified configuration
 				configFile = new File(config);

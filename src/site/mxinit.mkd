@@ -1,7 +1,7 @@
 ## mx:Init
 
 %BEGINMAXML%
-# Sample build.maxml file
+# Sample build.moxie file
 name : Moxie
 description : Java Project Build Toolkit
 groupId : org.moxie

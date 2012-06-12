@@ -1,4 +1,4 @@
-# defaults.maxml
+# defaults.moxie
 #
 # This file defines the default values for all Moxie projects.
 
@@ -21,7 +21,7 @@ outputFolder: build
 targetFolder: target
 
 # mx:Javac compiler attributes
-# These defaults may be overriden in your build.maxml file.
+# These defaults may be overriden in your build.moxie file.
 mxjavac: {
    clean: true
    compileLinkedProjects: true
@@ -36,14 +36,14 @@ mxjavac: {
 }
 
 # mx:Jar attributes
-# These defaults may be overriden in your build.maxml file.
+# These defaults may be overriden in your build.moxie file.
 mxjar: {
    excludePomFiles: false
    excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
 }
 
 # mx:Report attributes
-# These defaults may be overriden in your build.maxml file.
+# These defaults may be overriden in your build.moxie file.
 mxreport: {
     verbose: false
 }

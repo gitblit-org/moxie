@@ -115,7 +115,7 @@ public class TestMaxmlParser extends Assert {
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void testParseFile() throws MaxmlException {
-		String content = FileUtils.readContent(new File("build.maxml"), "\n");
+		String content = FileUtils.readContent(new File("build.moxie"), "\n");
 		Map<String, Object> map = Maxml.parse(content);
 		assertTrue(map.size() > 0);
 		assertTrue(map.containsKey("name"));
@@ -126,7 +126,7 @@ public class TestMaxmlParser extends Assert {
 
 	@Test
 	public void testConfig() throws Exception {
-		Config config = new Config(new File("build.maxml"), false);
+		Config config = new Config(new File("build.moxie"), false);
 		assertEquals("Moxie", config.getPom().name);
 		assertEquals(8, config.getSourceFolders().size());
 	}

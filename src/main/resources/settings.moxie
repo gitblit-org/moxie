@@ -1,4 +1,4 @@
-# settings.maxml
+# settings.moxie
 #
 # This file contains settings for controlling Moxie's behavior.
 proxies:
@@ -7,7 +7,7 @@ repositories : central
 apply: color, #debug
 
 # Managed dependencies are used to specify versions of dependencies
-# if those versions are not specified in the project's build.maxml.
+# if those versions are not specified in the project's build.moxie.
 dependencyManagement:
 - junit:junit:4.10
 - org.testng:testng:6.5.2

@@ -28,7 +28,7 @@ public class LinkedProject {
 		} else {
 			// default descriptor
 			this.name = def;
-			this.descriptor = "build.maxml";
+			this.descriptor = "build.moxie";
 		}
 	}
 }

@@ -63,7 +63,7 @@ public class MoxieCache extends ArtifactCache {
 			return null;
 		}
 
-		String path = Dependency.getMoxiePath(dep, "maxml", pattern);
+		String path = Dependency.getMoxiePath(dep, "moxie", pattern);
 		File moxieFile = new File(dataRoot, path);
 		return moxieFile;
 	}

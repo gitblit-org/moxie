@@ -47,12 +47,12 @@ import org.moxie.utils.StringUtils;
 
 
 /**
- * Represents the current build (build.maxml, settings.maxml, and build state)
+ * Represents the current build (build.moxie, settings.moxie, and build state)
  */
 public class Build {
 
-	public static final File SETTINGS = new File(System.getProperty("user.home") + "/.moxie/settings.maxml");
-	public static final File DEFAULTS = new File(System.getProperty("user.home") + "/.moxie/defaults.maxml");
+	public static final File SETTINGS = new File(System.getProperty("user.home") + "/.moxie/settings.moxie");
+	public static final File DEFAULTS = new File(System.getProperty("user.home") + "/.moxie/defaults.moxie");
 
 	public static final Repository CENTRAL = new Repository("MavenCentral", Constants.MAVENCENTRAL_URL);
 	public static final Repository GOOGLECODE = new GoogleCode();
@@ -78,8 +78,8 @@ public class Build {
 	private boolean solutionBuilt;
 	
 	static {
-		writeDefault(SETTINGS, "settings.maxml");
-		writeDefault(DEFAULTS, "defaults.maxml");
+		writeDefault(SETTINGS, "settings.moxie");
+		writeDefault(DEFAULTS, "defaults.moxie");
 	}
 	
 	private static void writeDefault(File file, String resource) {
