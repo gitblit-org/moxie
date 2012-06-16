@@ -12,16 +12,15 @@ I would have been satisfied with a simple, really small JSON parser.  The closes
 
 I like YAML.  
 I would have been satisfied with a simple, really small YAML parser.  The closest I found was [SnakeYaml](http://snakeyaml.googlecode.com), but that is ~250KB.  
-**Verdict:** Too large.
+**Verdict:** Too large to bundle.
 
-So I wrote my own YAML-ish parser and it is nice and small.  
-**Verdict:** Win!
+Because Moxie needs to have a bundled parser for the `build.moxie` project descriptor and I could not find a parser that suited my needs, I wrote a custom YAML-ish parser.
 
 ### Processing Rules
 
 1. Maxml files must be UTF-8 encoded.
 2. Leading whitespace is completely irrelevant and ignored (except for text blocks) so indent all you want.
-3. All lines are expected to begin with a *key*: sequence unless
+3. All lines are expected to begin with a `key:` or `"my:key:name":` sequence unless
     1. the line equals **"""** *(start/end text block)*
 	2. the line is blank *(included in a text block, otherwise ignored)*
     3. the line starts with **#** *(comment, ignored)*
@@ -51,7 +50,11 @@ e.g. 1 is an integer but 4,000,000,000 is a long
  
 ### Key Definitions
 
-Maxml is a key-value serialization format.  Keys may only be strings.  Keys may not have a **:** character nor be surrounded by single or double-quotes.  Keys are case-insensitive.
+Maxml is a key-value serialization format.
+
+1. Keys may only be strings
+2. Keys may have colons, if they are quoted
+3. Keys are case-insensitive
 
 ### Value Definitions
 

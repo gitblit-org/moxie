@@ -36,9 +36,9 @@
 
 
 	<!--
-	Build the Moxie release
+	Prepare all Moxie tasks and setup the Ant environment
 	-->
-	<target name="main">
+	<target name="prepare">
 
 		<!-- Bootstrap Moxie in a separate task -->
 		<antcall target="bootstrap" inheritall="false" inheritrefs="false" />
@@ -73,7 +73,12 @@
 
 		<!-- Prepare the project -->
 		<mx:init />
-
+	</target>
+		
+	<!--
+	Build the Moxie release
+	-->
+	<target name="main" depends="prepare">		
 		<mx:gitid verbose="true" />
 				
 		<!-- Delete the target folder -->
@@ -181,39 +186,48 @@
 
 		<!-- Install the build to our Moxie cache -->
 		<mx:install />
+	</target>
 
+	<!--
+	Build the Moxie site
+	-->
+	<target name="site" depends="prepare">
 		<!-- Build the site documentation -->
 		<mx:doc googlePlusOne="true" injectPrettify="true">
 			<structure>
 				<page name="overview" src="index.mkd" />
 				<page name="why?!" src="why.mkd" />
 				<page name="getting started" src="gettingstarted.mkd" />
-				<page name="core" src="core.mkd" />
-				<menu name="pro">
+				<page name="build.moxie" src="moxiedescriptor.mkd" />
+				<menu name="tasks">
 					<page name="mx:Clean" src="mxextract.mkd" />
-					<page name="mx:Jar" src="mxextract.mkd" />
-					<page name="mx:Zip" src="mxextract.mkd" />
-					<page name="mx:Install" src="mxextract.mkd" />
-					<page name="mx:Keys" src="mxextract.mkd" />
-					<page name="mx:Extract" src="mxextract.mkd" />
-					<page name="mx:GitId" src="mxgitid.mkd" />
-					<page name="mx:GhPages" src="mxghpages.mkd" />					
-				</menu>
-				<menu name="all">
 					<page name="mx:Doc" src="mxdoc.mkd" />
+					<page name="mx:Extract" src="mxextract.mkd" />
+					<page name="mx:GhPages" src="mxghpages.mkd" />					
+					<page name="mx:GitId" src="mxgitid.mkd" />
+					<page name="mx:If" src="mxextract.mkd" />
+					<page name="mx:Install" src="mxextract.mkd" />
+					<page name="mx:Init" src="mxextract.mkd" />
+					<page name="mx:Jar" src="mxextract.mkd" />
+					<page name="mx:Javac" src="mxextract.mkd" />
+					<page name="mx:Keys" src="mxextract.mkd" />
+					<page name="mx:Report" src="mxextract.mkd" />
+					<page name="mx:Test" src="mxextract.mkd" />
+					<page name="mx:War" src="mxextract.mkd" />
+					<page name="mx:Zip" src="mxextract.mkd" />
 				</menu>
 				<page name="maxml" src="maxml.mkd" sidebar="true" />
 				<menu name="download">
-					<link name="moxie-core" src="moxie-core.jar" />
-					<link name="moxie-pro" src="moxie-pro.jar" />
-					<link name="moxie-all" src="moxie-all.jar" />
+					<link name="moxie-core" src="moxie-${project.version}-core.jar" />
+					<link name="moxie-pro" src="moxie-${project.version}-pro.jar" />
+					<link name="moxie-all" src="moxie-${project.version}-all.jar" />
 					<divider />
-					<link name="maxml" src="maxml.jar" />
-					<link name="maxml-sources" src="maxml-sources.jar" />
+					<link name="maxml" src="maxml-${project.version}.jar" />
+					<link name="maxml-sources" src="maxml-${project.version}-sources.jar" />
 					<divider />
-					<page name="changelog" src="releases.mkd" />
+					<page name="release log" src="releases.mkd" />
 					<divider />
-					<link name="GitHub" src="http://github.com/gitblit/moxie" />
+					<link name="Github Project" src="http://github.com/gitblit/moxie" />
 				</menu>
 				<report name="reports" />
 				<divider />

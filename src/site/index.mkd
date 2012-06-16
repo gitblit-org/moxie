@@ -3,29 +3,72 @@
 Moxie is a collection of [Ant](http://ant.apache.org) tasks to facilitate building Java projects.  It's purpose is to bring some of the convenience of [Maven](http://maven.apache.org) and [Gradle](http://www.gradle.org) to Ant.  
 The Moxie binaries and this site are built with Moxie.
 
-### Core Package (100KB)
+<div class="row">
+<div class="span7">
+<pre>
+  [mx:init] =========================================================
+  [mx:init] Moxie  (0.4.0-SNAPSHOT)
+  [mx:init] ---------------------------------------------------------
+  [mx:init] project metadata
+  [mx:init]            name: Moxie
+  [mx:init]     description: Java Project Build Toolkit
+  [mx:init]         groupId: org.moxie
+  [mx:init]      artifactId: moxie
+  [mx:init]         version: 0.4.0-SNAPSHOT
+  [mx:init]    organization: James Moger
+  [mx:init]             url: http://gitblit.github.com/moxie
+  [mx:init] ---------------------------------------------------------
+  [mx:init] apply
+  [mx:init]    rebuilt Eclipse configuration
+  [mx:init]    rebuilt pom.xml
+ [mx:javac] =========================================================
+ [mx:javac] mx:Javac  (org.moxie:moxie:0.4.0-SNAPSHOT, compile)
+ [mx:javac] ---------------------------------------------------------
+ [mx:javac] Compiling 41 source files to C:\projects\git\moxie\build\classes
+ [mx:javac] Copying 20 files to C:\projects\git\moxie\build\classes
+   [mx:jar] =========================================================
+   [mx:jar] mx:Jar  (moxie-0.4.0-SNAPSHOT-all.jar)
+   [mx:jar] ---------------------------------------------------------
+   [mx:jar]    C:\projects\git\moxie\target\moxie-0.4.0-SNAPSHOT-all.jar
+   [mx:jar]    331 KB, generated in 460 ms
+   [mx:jar] Building jar: C:\projects\git\moxie\target\moxie-0.4.0-SNAPSHOT-sources.jar
+   [mx:jar]    C:\projects\git\moxie\target\moxie-0.4.0-SNAPSHOT-sources.jar
+   [mx:jar]    148 KB, generated in 80 ms
+[mx:install] =========================================================
+[mx:install] mx:Install  (moxie-0.4.0-SNAPSHOT)
+[mx:install] ---------------------------------------------------------
+[mx:install] Copying 2 files to C:\Users\James Moger\.moxie\repository\org.moxie\moxie\0.4.0-SNAPSHOT
+[mx:install] generating pom for moxie-0.4.0-SNAPSHOT
+[mx:install] calculating checksums for installed artifacts
+</pre>
+</div>
 
-The core package includes `mx:init` for project setup & dependency retrieval, and `mx:report` to create a text report about your transitive dependencies and their licenses.
+<div class="span5">
+<h3>Core Package (100KB)</h3>
 
-Bundled with the core package is a private copy of the [AntContrib](http://ant-contrib.sourceforge.net) *if* task (included as `mx:if`) and a partial subset of [jansi](http://jansi.fusesource.org), to optionally liven-up your console.
-
+The core package includes <code>mx:init</code> for project setup & dependency retrieval, and <code>mx:report</code> to create a text report about your transitive dependencies and their licenses.
+<br/><br/>
+Bundled with the core package is a private copy of the [AntContrib](http://ant-contrib.sourceforge.net) <i>if</i> task (included as <code>mx:if</code>) and a partial subset of <a href="http://jansi.fusesource.org">jansi</a>, to optionally liven-up your console.
+<br/><br/>
 The core package has no external dependencies.
 
-### Pro Package (180KB)
+<h3>Pro Package (180KB)</h3>
 
-The pro package builds on the core package by adding a Maven-ish set of targets (*moxie.compile, moxie.test, etc*) and tasks to handle compiling your sources, packaging your compiled code, and installing artifacts into your local Moxie repository.
+The pro package builds on the core package by adding a Maven-ish set of targets (<i>moxie.compile, moxie.test, etc</i>) and tasks to handle compiling your sources, packaging your compiled code, and installing artifacts into your local Moxie repository.
+<br/><br/>
+Also included in the pro package are Git tasks to grab the hash id of the checked-out of your project and a task to update a <i>ghpages</i> branch for <a href="http://www.github.com">Github</a> or <a href="http://gitblit.com">Gitblit</a>.
+<br/><br/>
+The git tasks depend on <a href="http://eclipse.org/jgit">JGit</a> which is resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.
 
+<h3>All Package (360KB)</h3>
 
-Also included in the pro package are Git tasks to grab the hash id of the checked-out of your project and a task to update a *ghpages* branch for [Github](http://www.github.com) or [Gitblit](http://gitblit.com).
+The all package includes the pro package plus <code>mx:doc</code>, the Moxie site/document-generation tool.
+<br/><br/>
+The <code>mx:doc</code> task generates a project site or project documentation from markdown source files.  It depends on <a href="http://markdown.tautua.org">MarkdownPapers</a> and <a href="http://www.mozilla.org/rhino">Rhino</a>, which are resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.  It also incorporates a private copy of <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>, <a href="https://code.google.com/p/google-code-prettify">GoogleCode Prettify</a>, and a partial subset of <a href="http://www.asual.com/lesscss">lesscss-engine</a> to allow customization of the look of your documentation. 
 
-The git tasks depend on [JGit](http://eclipse.org/jgit) which is resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.
-
-### All Package (360KB)
-
-The all package includes the pro package plus `mx:doc`, the Moxie site/document-generation tool.
-
-The `mx:doc` task generates a project site or project documentation from markdown source files.  It depends on [MarkdownPapers](http://markdown.tautua.org) and [Rhino](http://www.mozilla.org/rhino), which are resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.  It also incorporates a private copy of [Twitter Bootstrap](http://twitter.github.com/bootstrap), [GoogleCode Prettify](https://code.google.com/p/google-code-prettify), and a partial subset of [lesscss-engine](http://www.asual.com/lesscss) to allow customization of the look of your documentation. 
-
-### License
+<h3>License</h3>
 
 Moxie is distributed under the Apache Software License, version 2.0.
+
+</div>
+</div>

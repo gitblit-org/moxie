@@ -162,6 +162,9 @@ public class Docs {
 				if (link.content != null) {
 					// generated content
 					content = link.content;
+				} else if (link.src.endsWith(".html") || link.src.endsWith(".htm")) {
+					// static html content
+					content = FileUtils.readContent(new File(doc.sourceFolder, link.src), "\n");
 				} else {
 					// begin markdown
 					String markdownContent = FileUtils.readContent(new File(doc.sourceFolder, link.src), "\n");

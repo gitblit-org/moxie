@@ -1,0 +1,143 @@
+## Moxie Project Descriptor
+
+The default Moxie project descriptor used by the `mx:init` task and all the *Moxie targets* is `build.moxie`.
+
+### Metadata Keys
+<table class="table table-striped table-bordered table-condensed">
+<tbody>
+<tr><th>name</th>         <td>Moxie</td></tr>
+<tr><th>description</th>  <td>Java Project Build Toolkit</td></tr>
+<tr><th>organization</th> <td>James Moger </td></tr>
+<tr><th>url</th>          <td>http://gitblit.github.com/moxie</td></tr>
+</tbody>
+</table>
+
+### Artifact Keys
+<table class="table table-striped table-bordered table-condensed">
+<tbody>
+<tr><th>groupId</th>     <td>org.moxie</td></tr>
+<tr><th>artifactId</th>  <td>moxie</td></tr>
+<tr><th>version</th>     <td>0.4.0-SNAPSHOT</td></tr>
+</tbody>
+</table>
+
+<hr/>
+
+### Apply
+<div class="row">
+<div class="span8">
+special behaviors for your build script
+<dl>
+ <dt>eclipse</dt>
+ <dd>creates Eclipse .project and .classpath files</dd>
+ <dt>pom</dt>
+ <dd>creates and maintains a Maven pom.xml file</dd>
+ <dt>cache</dt>
+ <dd>build and caches a transitive dependency solution for re-use to accelerate builds (does not apply to SNAPSHOTs)</dd>
+ <dt>debug</dt>
+ <dd>enable Moxie's debug logging</dd>
+ <dt>color</dt>
+ <dd>console logging will use ansi color escape sequences</dd>
+</dl>
+</div>
+
+<div class="span4">
+<pre>
+apply : eclipse, pom, cache
+</pre>
+</div>
+</div>
+
+<hr/>
+
+### Source Folders
+
+<div class="row">
+<div class="span8">
+Example
+</div>
+
+<div class="span4">
+<pre>
+sourceFolders : 
+- compile src/main/core, src/main/mxgit
+- compile src/main/mxjar
+- compile src/main/mxdoc
+- compile src/main/cobertura
+- compile src/less/java
+- compile src/main/resources
+- { scope: test, folder: src/test/java }
+</pre>
+</div>
+</div>
+
+<hr/>
+
+### Properties
+
+<div class="row">
+<div class="span8">
+used in dependency management and dependencies
+exported as ant properties
+</div>
+
+<div class="span4">
+<pre>
+properties: {
+  jgit.version : 1.3.0.201202151440-r
+}
+</pre>
+</div>
+</div>
+
+<hr/>
+
+### Dependency Management
+
+<div class="row">
+<div class="span8">
+Example
+</div>
+
+<div class="span4">
+<pre>
+dependencyManagement :
+- org.apache.ant:ant:1.8.3
+</pre>
+</div>
+</div>
+
+<hr/>
+
+### Dependencies
+
+<div class="row">
+<div class="span8">
+Example
+
+scopes, @ext, excludes
+</div>
+
+<div class="span4">
+<pre>
+dependencies :
+- compile org.apache.ant:ant
+- compile org.apache.commons-lang3:3.1
+- test junit
+</pre>
+</div>
+</div>
+
+dependencyFolder
+repositories
+targetFolder
+proxies
+parent
+exclusions
+mxjar
+mxjavac
+compilerArgs
+mxreport
+reportsFolder
+dependencyOverrides
+dependencyAliases
