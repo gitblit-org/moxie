@@ -3,7 +3,7 @@
 # This file contains settings for controlling Moxie's behavior.
 proxies:
 - { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }
-repositories : central
+repositories : mavencentral
 apply: color, #debug
 
 # Managed dependencies are used to specify versions of dependencies

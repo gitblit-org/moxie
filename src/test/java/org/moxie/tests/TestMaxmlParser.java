@@ -126,7 +126,7 @@ public class TestMaxmlParser extends Assert {
 
 	@Test
 	public void testConfig() throws Exception {
-		Config config = new Config(new File("build.moxie"), false);
+		Config config = new Config(new File("build.moxie"), null);
 		assertEquals("Moxie", config.getPom().name);
 		assertEquals(8, config.getSourceFolders().size());
 	}

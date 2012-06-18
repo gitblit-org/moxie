@@ -18,6 +18,8 @@ package org.moxie;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -90,14 +92,23 @@ public class Config implements Serializable {
 		externalProperties = new HashMap<String, String>();
 	}
 	
-	public Config(File file) throws IOException, MaxmlException {
+	public Config(File file, String defaultResource) throws IOException, MaxmlException {
 		this();
-		parse(file, true);
+		parse(file, defaultResource);
 	}
 	
-	public Config(File file, boolean inherit) throws IOException, MaxmlException {
+	private Config(String resource) throws IOException, MaxmlException {
 		this();
-		parse(file, inherit);
+		System.out.println("reading resource " + resource);
+		InputStream is = getClass().getResourceAsStream(resource);
+		InputStreamReader reader = new InputStreamReader(is, "UTF-8");
+		StringBuilder sb = new StringBuilder();
+		char [] chars = new char[4096];
+		int len = 0;
+		while ((len = reader.read(chars)) >= 0) {
+			sb.append(chars, 0, len);
+		}
+		parse(sb.toString(), null);
 	}
 	
 	public Pom getPom() {
@@ -109,28 +120,39 @@ public class Config implements Serializable {
 		return "Config (" + pom + ")";
 	}
 
-	Config parse(File file, boolean inherit) throws IOException, MaxmlException {
-		if (!file.exists()) {
-			throw new MaxmlException(MessageFormat.format("{0} does not exist!", file));			
+	Config parse(File file, String defaultResource) throws IOException, MaxmlException {
+		String content = "";
+		if (file != null && file.exists()) {
+			this.file = file;
+			this.baseFolder = file.getAbsoluteFile().getParentFile();
+			this.lastModified = FileUtils.getLastModified(file);
+			System.out.println("reading " + file.getAbsolutePath());
+			content = FileUtils.readContent(file, "\n").trim();
 		}
-		
-		this.file = file;
-		this.baseFolder = file.getAbsoluteFile().getParentFile();
-		this.lastModified = FileUtils.getLastModified(file);
-		
-		String content = FileUtils.readContent(file, "\n").trim();
+		return parse(content, defaultResource);		
+	}
+	
+	
+	Config parse(String content, String defaultResource) throws IOException, MaxmlException {
 		Map<String, Object> map = Maxml.parse(content);
 		
-		if (inherit) {
-			// build.maxml inheritance
+		if (!StringUtils.isEmpty(defaultResource)) {
+			// build.moxie inheritance
 			File parentConfig = readFile(map, Key.parent, null);
 			if (parentConfig == null) {
-				// use system defaults
-				Config parent = new Config(Build.DEFAULTS, false);
-				setDefaultsFrom(parent);
+				File defaultFile = new File(System.getProperty("user.home") + "/.moxie/" + defaultResource);
+				if (this.file == null || this.file.equals(defaultFile) || !defaultFile.exists()) {
+					// Moxie-shipped default resource
+					Config parent = new Config("/" + defaultResource);
+					setDefaultsFrom(parent);
+				} else {
+					// local filesystem default is available
+					Config parent = new Config(defaultFile, defaultResource);
+					setDefaultsFrom(parent);
+				}
 			} else {
 				// parent has been specified
-				Config parent = new Config(parentConfig, true);
+				Config parent = new Config(parentConfig, defaultResource);
 				setDefaultsFrom(parent);
 
 				// set parent properties
@@ -515,6 +537,10 @@ public class Config implements Serializable {
 	}
 	
 	void readExternalProperties() {
+		if (file == null) {
+			// config object represents internal default resource
+			return;
+		}
 		File propsFile = new File(baseFolder, file.getName().substring(0, file.getName().lastIndexOf('.')) + ".properties");
 		if (propsFile.exists()) {
 			try {

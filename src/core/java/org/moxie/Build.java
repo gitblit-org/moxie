@@ -17,11 +17,8 @@ package org.moxie;
 
 import static java.text.MessageFormat.format;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -50,9 +47,6 @@ import org.moxie.utils.StringUtils;
  * Represents the current build (build.moxie, settings.moxie, and build state)
  */
 public class Build {
-
-	public static final File SETTINGS = new File(System.getProperty("user.home") + "/.moxie/settings.moxie");
-	public static final File DEFAULTS = new File(System.getProperty("user.home") + "/.moxie/defaults.moxie");
 
 	public static final Repository MAVENCENTRAL = new Repository("MavenCentral", "http://repo1.maven.org/maven2");
 	public static final Repository CENTRAL = new Repository("Central", "http://repo1.maven.org/maven2");
@@ -83,35 +77,12 @@ public class Build {
 	private boolean verbose;
 	private boolean solutionBuilt;
 	
-	static {
-		writeDefault(SETTINGS, "settings.moxie");
-		writeDefault(DEFAULTS, "defaults.moxie");
-	}
-	
-	private static void writeDefault(File file, String resource) {
-		if (file.exists()) {
-			return;
-		}
-		try {
-			file.getParentFile().mkdirs();
-			FileWriter writer = new FileWriter(file);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(Config.class.getResourceAsStream("/" + resource)));
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				writer.append(line).append('\n');
-			}
-			writer.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public Build(File configFile) throws MaxmlException, IOException {
 		this.configFile = configFile;
 		this.projectFolder = configFile.getAbsoluteFile().getParentFile();
 		
-		this.moxie = new Config(SETTINGS, false);
-		this.project = new Config(configFile, true);
+		this.moxie = new Config(new File(System.getProperty("user.home") + "/.moxie/" + Constants.MOXIE_SETTINGS), Constants.MOXIE_SETTINGS);
+		this.project = new Config(configFile, Constants.MOXIE_DEFAULTS);
 		
 		this.proxies = new LinkedHashSet<Proxy>();
 		this.repositories = new LinkedHashSet<Repository>();

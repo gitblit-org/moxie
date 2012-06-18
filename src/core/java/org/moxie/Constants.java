@@ -47,6 +47,10 @@ public class Constants {
 	
 	public static final String MX_COLOR = "mx.color";
 	
+	public static final String MOXIE_SETTINGS = "settings.moxie";
+	
+	public static final String MOXIE_DEFAULTS = "defaults.moxie";
+	
 	public static enum Key {
 		build, name, description, url, organization, scope, groupId, artifactId, version,
 		type, classifier, optional, folder, sourceFolder, sourceFolders, compile_sourcepath,
