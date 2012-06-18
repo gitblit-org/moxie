@@ -118,6 +118,7 @@ public class Build {
 		this.artifactCache = new MoxieCache();
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
 		this.classpaths = new HashMap<Scope, List<File>>();
+		this.linkedProjects = new ArrayList<Build>();
 		this.console = new Console(isColor());
 		this.console.setDebug(isDebug());
 
@@ -366,7 +367,6 @@ public class Build {
 	}
 	
 	private void solveLinkedProjects() {
-		linkedProjects = new ArrayList<Build>();
 		if (project.linkedProjects.size() > 0) {
 			console.separator();
 			console.log("solving linked projects");
@@ -381,9 +381,14 @@ public class Build {
 				console.debug("locating linked project {0} ({1})", linkedProject.name, resolvedName);
 			}
 			File projectDir = new File(resolvedName);
+			console.debug(1, "trying {0}", projectDir.getAbsolutePath());
 			if (!projectDir.exists()) {
-				console.error("failed to find linked project \"{0}\".", linkedProject.name);
-				continue;
+				projectDir = new File(projectFolder.getParentFile(), resolvedName);
+				console.debug(1, "trying {0}", projectDir.getAbsolutePath());
+				if (!projectDir.exists()) {
+					console.error("failed to find linked project \"{0}\".", linkedProject.name);
+					continue;
+				}
 			}
 			try {
 				File file = new File(projectDir, linkedProject.descriptor);
@@ -395,6 +400,13 @@ public class Build {
 					console.log(1, "=> project {0}", subProject.getPom().getCoordinates());
 					subProject.solve();
 					linkedProjects.add(subProject);
+					
+					// linked project dependencies are considered ring-0
+					for (Scope scope : new Scope[] { Scope.compile }) {
+						for (Dependency dep : subProject.getPom().getDependencies(scope, 0)) {
+							project.getPom().addDependency(dep, scope);
+						}
+					}
 				} else {
 					console.error("linked project {0} does not have a {1} descriptor!", linkedProject.name, linkedProject.descriptor);
 				}
@@ -940,8 +952,12 @@ public class Build {
 		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", FileUtils.getRelativePath(projectFolder, getEclipseOutputFolder(Scope.compile))));
 				
 		for (LinkedProject linkedProject : project.linkedProjects) {
-			String relativeProject = linkedProject.name.substring(linkedProject.name.replace('\\', '/').lastIndexOf('/'));
-			sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", relativeProject));
+			String path = linkedProject.name.replace('\\', '/');
+			String workspaceProject = path;
+			if (workspaceProject.lastIndexOf('/') > -1) {
+				workspaceProject = path.substring(path.lastIndexOf('/') + 1);
+			}
+			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", workspaceProject));
 		}
 		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
 		sb.append("</classpath>");
