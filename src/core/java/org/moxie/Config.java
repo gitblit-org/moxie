@@ -149,6 +149,11 @@ public class Config implements Serializable {
 		pom.description = readString(map, Key.description, false);
 		pom.url = readString(map, Key.url, false);
 		pom.organization = readString(map, Key.organization, false);
+		
+		// set default name to artifact id
+		if (StringUtils.isEmpty(pom.name)) {
+			pom.name = pom.artifactId;
+		}
 
 		// build parameters
 		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(), true));
