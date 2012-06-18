@@ -76,6 +76,7 @@ public class MxInit extends MxTask {
 			
 			// parse the config files and Moxie settings
 			build = new Build(configFile);
+			build.setVerbose(isVerbose());
 			
 			// set any external properties into the project
 			for (Map.Entry<String, String> entry : build.getExternalProperties().entrySet()) {
@@ -86,11 +87,11 @@ public class MxInit extends MxTask {
 
 			// add a reference to the full build object
 			getProject().addReference(Key.build.refId(), build);			
-			
+
 			// output the build info
 			build.describe();
 			
-			build.setup(isVerbose());
+			build.setup();
 			
 			console = build.console;
 			if (isVerbose()) {

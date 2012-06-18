@@ -165,9 +165,7 @@ public class Build {
 		return moxie.apply(Constants.APPLY_CACHE) || project.apply(Constants.APPLY_CACHE);
 	}
 	
-	public void setup(boolean verbose) {
-		this.verbose = verbose;
-				
+	public void setup() {
 		solve();
 		
 		if (project.apply.size() > 0) {
@@ -210,7 +208,6 @@ public class Build {
 			boolean identified = false;
 			for (Repository repository : REPOSITORIES) {
 				if (repository.repositoryUrl.equalsIgnoreCase(url) || repository.name.equalsIgnoreCase(url)) {
-				// MavenCentral
 					repositories.add(repository);
 					identified = true;
 					break;
