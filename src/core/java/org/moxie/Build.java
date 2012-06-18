@@ -54,8 +54,14 @@ public class Build {
 	public static final File SETTINGS = new File(System.getProperty("user.home") + "/.moxie/settings.moxie");
 	public static final File DEFAULTS = new File(System.getProperty("user.home") + "/.moxie/defaults.moxie");
 
-	public static final Repository CENTRAL = new Repository("MavenCentral", Constants.MAVENCENTRAL_URL);
+	public static final Repository MAVENCENTRAL = new Repository("MavenCentral", "http://repo1.maven.org/maven2");
+	public static final Repository CENTRAL = new Repository("Central", "http://repo1.maven.org/maven2");
+	public static final Repository CODEHAUS = new Repository("Codehaus", "http://repository.codehaus.org");
+	public static final Repository JAVANET = new Repository("Java.net", "http://download.java.net/maven/2");
+	public static final Repository RESTLET = new Repository("Restlet", "http://maven.restlet.org");
 	public static final Repository GOOGLECODE = new GoogleCode();
+	
+	public static final Repository [] REPOSITORIES = { MAVENCENTRAL, CENTRAL, CODEHAUS, JAVANET, RESTLET, GOOGLECODE };
 	
 	public final Set<Proxy> proxies;
 	public final Set<Repository> repositories;
@@ -201,13 +207,16 @@ public class Build {
 		urls.addAll(moxie.repositoryUrls);
 		
 		for (String url : urls) {
-			if (Constants.MAVENCENTRAL_URL.equalsIgnoreCase(url) || Constants.MAVENCENTRAL.equalsIgnoreCase(url)) {
+			boolean identified = false;
+			for (Repository repository : REPOSITORIES) {
+				if (repository.repositoryUrl.equalsIgnoreCase(url) || repository.name.equalsIgnoreCase(url)) {
 				// MavenCentral
-				repositories.add(CENTRAL);
-			} else if (Constants.GOOGLECODE.equalsIgnoreCase(url)) {
-					// GoogleCode
-				repositories.add(GOOGLECODE);
-			} else {
+					repositories.add(repository);
+					identified = true;
+					break;
+				}	
+			}
+			if (!identified) {
 				// unidentified repository
 				repositories.add(new Repository(null, url));
 			}
@@ -215,7 +224,7 @@ public class Build {
 
 		// default to central
 		if (repositories.size() == 0) {
-			repositories.add(CENTRAL);
+			repositories.add(MAVENCENTRAL);
 		}
 	}
 	

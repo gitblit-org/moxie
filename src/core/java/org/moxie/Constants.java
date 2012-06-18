@@ -27,12 +27,6 @@ public class Constants {
 	
 	public static final String MAVEN2_PATTERN = "${groupId}/${artifactId}/${version}/${artifactId}-${version}${classifier}.${ext}";
 
-	public static final String MAVENCENTRAL = "central";
-
-	public static final String MAVENCENTRAL_URL = "http://repo1.maven.org/maven2";
-	
-	public static final String GOOGLECODE = "googlecode";
-	
 	public static final String APPLY_ECLIPSE = "eclipse";
 	
 	public static final String APPLY_POM = "pom";
