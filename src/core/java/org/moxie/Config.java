@@ -99,7 +99,6 @@ public class Config implements Serializable {
 	
 	private Config(String resource) throws IOException, MaxmlException {
 		this();
-		System.out.println("reading resource " + resource);
 		InputStream is = getClass().getResourceAsStream(resource);
 		InputStreamReader reader = new InputStreamReader(is, "UTF-8");
 		StringBuilder sb = new StringBuilder();
@@ -126,7 +125,6 @@ public class Config implements Serializable {
 			this.file = file;
 			this.baseFolder = file.getAbsoluteFile().getParentFile();
 			this.lastModified = FileUtils.getLastModified(file);
-			System.out.println("reading " + file.getAbsolutePath());
 			content = FileUtils.readContent(file, "\n").trim();
 		}
 		return parse(content, defaultResource);		
