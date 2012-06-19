@@ -7,7 +7,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 	<!-- project metadata-->
 	<groupId>org.moxie</groupId>
 	<artifactId>moxie</artifactId>
-	<version>0.4.0-SNAPSHOT</version>
+	<version>0.4.0</version>
 	<name>Moxie</name>
 	<description>Java Project Build Toolkit</description>
 	<organization><name>James Moger</name></organization>
