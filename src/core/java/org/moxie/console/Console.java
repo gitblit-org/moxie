@@ -120,9 +120,10 @@ public class Console {
 		out.println(")");
 	}
 	
-	public void scope(Scope scope, int count) {
+	public String scope(Scope scope, int count) {
 		out.print(ansi().bold().fg(Color.MAGENTA).a(scope).boldOff().reset());
 		out.println(" dependencies" + (count > 0 ? (" (" + count + ")"):""));
+		return MessageFormat.format("{0} dependencies ({1,number,0})", scope.name(), count);
 	}
 
 	public void dependency(Dependency dependency) {
@@ -130,23 +131,29 @@ public class Console {
 		out.println(ansi().fg(Color.GREEN).a(dependency.getDetailedCoordinates()).reset());
 	}
 	
-	public void license(Dependency dependency, Pom pom) {
+	public String license(Dependency dependency, Pom pom) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < (dependency.ring + 1); i++) {
 			sb.append("  ");
 		}
 		String dd = sb.toString();
 		String md = dd + Constants.INDENT + " ";
+		StringBuilder rs = new StringBuilder();
 		out.append(dd).append(ansi().fg(Color.YELLOW).a(dependency.ring + ":").toString()).println(ansi().fg(Color.GREEN).a(dependency.getDetailedCoordinates()).reset());
+		rs.append(dd).append(dependency.ring).append(':').append(dependency.getDetailedCoordinates()).append('\n');
 		if (pom.getLicenses().size() == 0) {
 			out.append(md).println(ansi().bold().fg(Color.YELLOW).a("unknown!").boldOff().reset());
+			rs.append(md).append("unknown!\n");
 		}
 		for (License license : pom.getLicenses()) {
 			out.append(md).println(ansi().fg(Color.WHITE).a(license.name).reset());
+			rs.append(md).append(license.name).append('\n');
 			if (!StringUtils.isEmpty(license.url)) {
 				out.append(md).println(ansi().fg(Color.CYAN).a(license.url).reset());
+				rs.append(md).append(license.url).append('\n');
 			}
 		}
+		return rs.toString();
 	}
 	
 	public void download(String url) {

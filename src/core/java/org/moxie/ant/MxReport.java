@@ -15,31 +15,58 @@
  */
 package org.moxie.ant;
 
+import java.io.File;
 import java.util.Set;
 
 import org.moxie.Build;
 import org.moxie.Dependency;
 import org.moxie.Pom;
 import org.moxie.Scope;
+import org.moxie.utils.FileUtils;
 
 public class MxReport extends MxTask {
+	
+	private Scope scope;
+	
+	File destFile;
+	
+	public void setScope(String scope) {
+		this.scope = Scope.fromString(scope);
+	}
+	
+	public void setDestfile(File file) {
+		this.destFile = file;
+	}
 	
 	public void execute() {
 		Build build = getBuild();		
 		build.console.title(getClass(), build.getPom().getCoordinates());
 
-		for (Scope scope : new Scope[] { Scope.compile, Scope.runtime, Scope.test, Scope.build }) {
+		Scope [] scopes;
+		if (scope == null) {
+			scopes = new Scope[] { Scope.compile, Scope.runtime, Scope.test, Scope.build };
+		} else {
+			scopes = new Scope[] { scope };
+		}
+		StringBuilder sb = new StringBuilder();
+		for (Scope scope : scopes) {
 			Set<Dependency> dependencies = build.getDependencies(scope);
 			if (dependencies.size() == 0) {
 				continue;
 			}
 
-			build.console.scope(scope, dependencies.size());
-
+			sb.append(build.console.scope(scope, dependencies.size()));
+			sb.append('\n');
 			for (Dependency dep : dependencies) {
 				Pom depPom = build.getPom(dep);
-				build.console.license(dep, depPom);
+				sb.append(build.console.license(dep, depPom));
 			}
+		}
+		if (destFile != null) {
+			if (isVerbose()) {
+				build.console.debug("generating {0}", destFile.getAbsolutePath());
+			}
+			FileUtils.writeContent(destFile, sb.toString());
 		}
 	}
 }

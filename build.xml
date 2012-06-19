@@ -84,7 +84,7 @@
 		<!-- Delete the target folder -->
 		<delete dir="${mxp.targetFolder}" />
 		
-		<mx:report />
+		<mx:report scope="compile" destFile = "${mxp.targetFolder}/compile_dependencies.txt"/>
 
 		<!-- Moxie-Core -->
 		<mx:jar classifier="core">
