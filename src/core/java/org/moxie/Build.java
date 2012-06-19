@@ -334,6 +334,17 @@ public class Build {
 			
 			// flag new solution
 			solutionBuilt = true;
+		} else {
+			// we may have a cached solution, but we need to confirm we have
+			// the pom and artifacts
+			Set<Dependency> all = new LinkedHashSet<Dependency>();
+			for (Map.Entry<Scope, Set<Dependency>> entry : solutions.entrySet()) {
+				all.addAll(entry.getValue());
+			}
+			for (Dependency dep : all) {
+				retrievePOM(dep);
+				retrieveArtifact(dep, true);
+			}
 		}
 	}
 	
