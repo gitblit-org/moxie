@@ -35,15 +35,17 @@ public class Repository {
 	final String name;
 	final String repositoryUrl;
 	final String artifactPattern;
+	final String metadataPattern;
 
 	public Repository(String name, String mavenUrl) {
-		this(name, mavenUrl, Constants.MAVEN2_PATTERN);
+		this(name, mavenUrl, Constants.MAVEN2_PATTERN, Constants.MAVEN2_METADATA_PATTERN);
 	}
 
-	public Repository(String name, String mavenUrl, String pattern) {
+	public Repository(String name, String mavenUrl, String pattern, String metadataPattern) {
 		this.name = name;
 		this.repositoryUrl = mavenUrl;
 		this.artifactPattern = pattern;
+		this.metadataPattern = metadataPattern;
 	}
 
 	@Override
@@ -87,6 +89,10 @@ public class Repository {
 		return repositoryUrl + (repositoryUrl.endsWith("/") ? "":"/") + artifactPattern;
 	}
 
+	public String getMetadataUrl() {
+		return repositoryUrl + (repositoryUrl.endsWith("/") ? "":"/") + metadataPattern;
+	}
+
 	protected URL getURL(Dependency dep, String ext) throws MalformedURLException {
 		String url = Dependency.getMavenPath(dep, ext, getArtifactUrl());
 		return new URL(url);
@@ -95,7 +101,7 @@ public class Repository {
 	protected String getSHA1(Build build, Dependency dep, String ext) {
 		try {
 			String extsha1 = ext + ".sha1";
-			File hashFile = build.getArtifactCache().getFile(dep, extsha1);
+			File hashFile = build.getArtifactCache().getArtifact(dep, extsha1);
 			if (hashFile.exists()) {
 				// read cached sha1
 				return FileUtils.readContent(hashFile, "\n").trim();
@@ -107,7 +113,7 @@ public class Repository {
 			String hashCode = content.substring(0, 40);
 
 			// cache this sha1 file
-			File file = build.getArtifactCache().writeFile(dep, extsha1, hashCode);
+			File file = build.getArtifactCache().writeArtifact(dep, extsha1, hashCode);
 			file.setLastModified(data.lastModified);
 			return hashCode;
 		} catch (FileNotFoundException t) {
@@ -120,6 +126,98 @@ public class Repository {
 			}
 		} catch (Throwable t) {
 			build.console.error(t, "Error retrieving SHA1 for {0}", dep);
+		}
+		return null;
+	}
+	
+	protected String getMetadataSHA1(Build build, Dependency dep) {
+		try {
+			String extsha1 = Constants.XML + ".sha1";
+			File hashFile = build.getArtifactCache().getMetadata(dep, extsha1);
+			if (hashFile.exists()) {
+				// read cached sha1
+				return FileUtils.readContent(hashFile, "\n").trim();
+			}
+
+			URL url = new URL(Dependency.getMavenPath(dep, extsha1, getMetadataUrl()));
+			DownloadData data = download(build, url);
+			String content = new String(data.content, "UTF-8").trim();
+			String hashCode = content.substring(0, 40);
+
+			// cache this sha1 file
+			File file = build.getArtifactCache().writeMetadata(dep, extsha1, hashCode);
+			file.setLastModified(data.lastModified);
+			return hashCode;
+		} catch (FileNotFoundException t) {
+			// this repository does not have the requested metadata
+		} catch (IOException t) {
+			if (t.getMessage().contains("400") || t.getMessage().contains("404")) {
+				// disregard bad request and not found responses
+			} else {
+				build.console.error(t, "Error retrieving metadata SHA1 for {0}", dep);
+			}
+		} catch (Throwable t) {
+			build.console.error(t, "Error retrieving metadata SHA1 for {0}", dep);
+		}
+		return null;
+	}
+	
+	public File downloadMetadata(Build build, Dependency dep) {
+		String expectedSHA1 = "";
+		if (calculateSHA1()) {
+			expectedSHA1 = getMetadataSHA1(build, dep);
+			if (expectedSHA1 == null) {
+				// there is no SHA1 for this artifact
+				// check for the artifact just-in-case we can download w/o
+				// checksum verification
+				try {
+					URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl()));
+					URLConnection conn = url.openConnection();
+					conn.connect();
+				} catch (Throwable t) {
+					return null;
+				}
+			}
+		}
+		
+		try {
+			URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl()));
+			build.console.download(url.toString());
+			DownloadData data = download(build, url);
+			if (calculateSHA1()) {
+				String calculatedSHA1 = StringUtils.getSHA1(data.content);
+				if (!StringUtils.isEmpty(expectedSHA1) && !calculatedSHA1.equals(expectedSHA1)) {
+					throw new RuntimeException("SHA1 checksum mismatch; got: " + calculatedSHA1);
+				}
+			}
+			
+			Metadata oldMetadata;
+			File file = build.getArtifactCache().getMetadata(dep, Constants.XML);
+			if (file != null && file.exists()) {
+				oldMetadata = MetadataReader.readMetadata(file);				
+			} else {
+				oldMetadata = new Metadata();
+			}
+			
+			// merge metadata
+			Metadata newMetadata = MetadataReader.readMetadata(new String(data.content, "UTF-8"));				
+			newMetadata.merge(oldMetadata);
+
+			// save merged metadata to the artifact cache
+			file = build.getArtifactCache().writeMetadata(dep, Constants.XML, newMetadata.toXML());
+			file.setLastModified(data.lastModified);
+
+			return file;
+		} catch (MalformedURLException m) {
+			m.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// this repository does not have the requested artifact
+		} catch (IOException e) {
+			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
+				// disregard bad request and not found responses
+			} else {
+				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", build.moxie.file.getAbsolutePath()), e);
+			}
 		}
 		return null;
 	}
@@ -154,7 +252,7 @@ public class Repository {
 			}
 
 			// save to the artifact cache
-			File file = build.getArtifactCache().writeFile(dep, ext, data.content);
+			File file = build.getArtifactCache().writeArtifact(dep, ext, data.content);
 			file.setLastModified(data.lastModified);
 			return file;
 		} catch (MalformedURLException m) {

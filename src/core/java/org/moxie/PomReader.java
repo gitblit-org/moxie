@@ -43,7 +43,7 @@ public class PomReader {
 	 * @throws Exception
 	 */
 	public static Pom readPom(ArtifactCache cache, Dependency dependency) {
-		File pomFile = cache.getFile(dependency, Constants.POM);
+		File pomFile = cache.getArtifact(dependency, Constants.POM);
 		if (!pomFile.exists()) {
 			return null;
 		}

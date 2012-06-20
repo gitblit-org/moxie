@@ -17,9 +17,10 @@ sourceFolders :
 - { scope: test, folder: src/test/java }
 properties: {
   jgit.version : 1.3.0.201202151440-r
+  ant.version : RELEASE
 }
 dependencies :
-- provided org.apache.ant:ant:1.8.3
+- provided org.apache.ant:ant:${ant.version}
 - provided org.eclipse.jgit:org.eclipse.jgit:${jgit.version}
 - provided org.tautua.markdownpapers:markdownpapers-core:1.2.7
 - provided org.mozilla:rhino:1.7R3

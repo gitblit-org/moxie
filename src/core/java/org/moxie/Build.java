@@ -23,8 +23,10 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -32,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tools.ant.BuildException;
 import org.moxie.Constants.Key;
 import org.moxie.console.Console;
 import org.moxie.maxml.MaxmlException;
@@ -307,7 +308,7 @@ public class Build {
 	}
 
 	public File getArtifact(Dependency dependency) {
-		return artifactCache.getFile(dependency, dependency.type);
+		return artifactCache.getArtifact(dependency, dependency.type);
 	}
 
 	public Set<Dependency> getDependencies(Scope scope) {
@@ -394,7 +395,7 @@ public class Build {
 				}
 			} catch (Exception e) {
 				console.error(e, "failed to parse linked project {0}", linkedProject.name);
-				throw new BuildException(e);
+				throw new RuntimeException(e);
 			}
 		}
 	}
@@ -578,7 +579,7 @@ public class Build {
 		if (file == null || !file.exists()) {
 			return null;
 		}
-		if (file.lastModified() == FileUtils.getLastModified(artifactCache.getFile(dependency, Constants.POM))) {
+		if (file.lastModified() == FileUtils.getLastModified(artifactCache.getArtifact(dependency, Constants.POM))) {
 			// solution lastModified date must equal pom lastModified date
 			try {
 				console.debug(1, "=> reusing solution {0}", dependency.getDetailedCoordinates());
@@ -620,7 +621,7 @@ public class Build {
 			String content = solution.toMaxML();
 			file = artifactCache.writeSolution(dependency, content);
 			// set solution lastModified date to pom lastModified date
-			file.setLastModified(FileUtils.getLastModified(artifactCache.getFile(dependency, Constants.POM)));
+			file.setLastModified(FileUtils.getLastModified(artifactCache.getArtifact(dependency, Constants.POM)));
 		} catch (Exception e) {
 			console.error(e, "Failed to cache {0} solution {1}", scope, dependency.getDetailedCoordinates());
 		}
@@ -685,7 +686,67 @@ public class Build {
 			return null;
 		}
 		
-		File pomFile = artifactCache.getFile(dependency, Constants.POM);
+		// Support RELEASE and LATEST versions
+		if (dependency.version.equalsIgnoreCase(Constants.RELEASE)
+				|| dependency.version.equalsIgnoreCase(Constants.LATEST)) {
+			File metadataFile = artifactCache.getMetadata(dependency, Constants.XML);
+			boolean updateRequired = !metadataFile.exists();
+			
+			if (!updateRequired) {
+				// we have metadata, check update policy
+				if (UpdatePolicy.daily.equals(project.updatePolicy)) {
+					// daily is a special case
+					SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+					String mdate = df.format(new Date(metadataFile.lastModified()));
+					String today = df.format(new Date());
+					updateRequired = !mdate.equals(today);
+				} else {
+					// always, never, interval
+					long msecs = project.updatePolicy.mins*60*1000L;
+					updateRequired = Math.abs(System.currentTimeMillis() - metadataFile.lastModified()) > msecs;
+				}
+				
+				if (updateRequired) {
+					console.debug(1, "{0} maven-metadata.xml is stale according to {1} update policy", dependency.getManagementId(), project.updatePolicy.toString());
+				} else {
+					console.debug(1, "{0} maven-metadata.xml is acceptable according to {1} update policy", dependency.getManagementId(), project.updatePolicy.toString());
+				}
+			}
+			
+			if (updateRequired) {
+				// download artifact maven-metadata.xml
+				for (Repository repository : repositories) {
+					if (!repository.isMavenSource()) {
+						// skip non-Maven repositories
+						continue;
+					}
+					console.debug(1, "locating maven-metadata.xml for {0}", dependency.getManagementId());
+					metadataFile = repository.downloadMetadata(this, dependency);
+					if (metadataFile != null && metadataFile.exists()) {
+						// reset last modified time of metadata file for next update check
+						metadataFile.setLastModified(System.currentTimeMillis());
+						break;
+					}
+				}
+			} else {
+				console.debug(1, "reading maven-metadata.xml for {0}", dependency.getManagementId());
+			}
+
+			// read latest/release from metadata
+			if (metadataFile != null && metadataFile.exists()) {
+				Metadata metadata = MetadataReader.readMetadata(metadataFile);
+				String version;
+				if (Constants.RELEASE.equalsIgnoreCase(dependency.version)) {
+					version = metadata.release;
+				} else {
+					version = metadata.latest;
+				}
+				console.debug(1, "{0} = {1}", dependency.getCoordinates(), version);
+				dependency.version = version;
+			}
+		}
+		
+		File pomFile = artifactCache.getArtifact(dependency, Constants.POM);
 		if (!pomFile.exists()) {
 			// download the POM
 			for (Repository repository : repositories) {
@@ -747,7 +808,7 @@ public class Build {
 			Dependency [] dependencies = { dependency, dependency.getSourcesArtifact() };
 			for (Dependency dep : dependencies) {
 				// check to see if we already have the artifact
-				File cachedFile = artifactCache.getFile(dep, dep.type);
+				File cachedFile = artifactCache.getArtifact(dep, dep.type);
 				if (cachedFile.exists()) {
 					// assume we already have subsequent classifiers
 					break;
@@ -756,7 +817,7 @@ public class Build {
 				}
 			}
 			
-			File cachedFile = artifactCache.getFile(dependency, dependency.type);
+			File cachedFile = artifactCache.getArtifact(dependency, dependency.type);
 			if (cachedFile != null && cachedFile.exists()) {
 				// optionally copy artifact to project-specified folder
 				if (forProject && project.dependencyFolder != null) {
@@ -803,7 +864,7 @@ public class Build {
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
 		for (Dependency dependency : solution) {
-			File file = artifactCache.getFile(dependency, dependency.type);
+			File file = artifactCache.getArtifact(dependency, dependency.type);
 			if (file.exists()) {
 				try {
 					URL u = file.toURI().toURL();
@@ -835,7 +896,7 @@ public class Build {
 				SystemDependency sys = (SystemDependency) dependency;				
 				jar = new File(sys.path);
 			} else {
-				jar = artifactCache.getFile(dependency, dependency.type); 
+				jar = artifactCache.getArtifact(dependency, dependency.type); 
 				if (projectFolder != null) {
 					File pJar = new File(projectFolder, jar.getName());
 					if (pJar.exists()) {
@@ -919,9 +980,9 @@ public class Build {
 				SystemDependency sys = (SystemDependency) dependency;
 				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, new File(sys.path))));
 			} else {				
-				File jar = artifactCache.getFile(dependency, dependency.type);
+				File jar = artifactCache.getArtifact(dependency, dependency.type);
 				Dependency sources = dependency.getSourcesArtifact();
-				File srcJar = artifactCache.getFile(sources, sources.type);
+				File srcJar = artifactCache.getArtifact(sources, sources.type);
 				if (srcJar.exists()) {
 					// have sources
 					sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" sourcepath=\"{1}\" />\n", jar.getAbsolutePath(), srcJar.getAbsolutePath()));

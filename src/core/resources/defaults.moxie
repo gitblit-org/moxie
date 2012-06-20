@@ -20,6 +20,13 @@ outputFolder: build
 # The base folder within the project for build artifacts.
 targetFolder: target
 
+# Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT
+#   always - always check when for newer versions
+#   never - never check when for newer versions
+#   daily (default) - check on the first run of the day (local time)
+#   interval:NNN - check every NNN minutes (default is 60 mins)
+updatePolicy: daily
+
 # mx:Javac compiler attributes
 # These defaults may be overriden in your build.moxie file.
 mxjavac: {

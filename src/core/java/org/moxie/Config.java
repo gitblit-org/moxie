@@ -67,6 +67,7 @@ public class Config implements Serializable {
 	MaxmlMap mxjar;
 	MaxmlMap mxreport;
 	Map<String, String> externalProperties;
+	UpdatePolicy updatePolicy;
 
 	public Config() {
 		// default configuration
@@ -90,6 +91,7 @@ public class Config implements Serializable {
 		mxjar = new MaxmlMap();
 		mxreport = new MaxmlMap();
 		externalProperties = new HashMap<String, String>();
+		updatePolicy = UpdatePolicy.defaultPolicy;
 	}
 	
 	public Config(File file, String defaultResource) throws IOException, MaxmlException {
@@ -182,6 +184,19 @@ public class Config implements Serializable {
 		targetFolder = readFile(map, Key.targetFolder, new File(baseFolder, "target"));
 		linkedProjects = readLinkedProjects(map, Key.linkedProjects);
 		dependencyFolder = readFile(map, Key.dependencyFolder, null);
+		
+		String policy = readString(map, Key.updatePolicy, null);
+		if (!StringUtils.isEmpty(policy)) {
+			int mins = 0;
+			if (policy.indexOf(':') > -1) {
+				mins = Integer.parseInt(policy.substring(policy.indexOf(':') + 1));
+				policy = policy.substring(0, policy.indexOf(':'));
+			}
+			updatePolicy = UpdatePolicy.fromString(policy);
+			if (UpdatePolicy.interval.equals(updatePolicy) && mins > 0) {
+				updatePolicy.setMins(mins);
+			}
+		}
 		
 		if (map.containsKey(Key.properties.name())) {
 			MaxmlMap props = (MaxmlMap) map.get(Key.properties);
@@ -574,5 +589,6 @@ public class Config implements Serializable {
 		dependencyOverrides = parent.dependencyOverrides;
 		dependencyAliases = parent.dependencyAliases;
 		externalProperties = parent.externalProperties;
+		updatePolicy = parent.updatePolicy;
 	}
 }

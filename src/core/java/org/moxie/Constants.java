@@ -27,6 +27,8 @@ public class Constants {
 	
 	public static final String MAVEN2_PATTERN = "${groupId}/${artifactId}/${version}/${artifactId}-${version}${classifier}.${ext}";
 
+	public static final String MAVEN2_METADATA_PATTERN = "${groupId}/${artifactId}/maven-metadata.${ext}";
+	
 	public static final String APPLY_ECLIPSE = "eclipse";
 	
 	public static final String APPLY_POM = "pom";
@@ -38,8 +40,14 @@ public class Constants {
 	public static final String APPLY_CACHE = "cache";
 	
 	public static final String DEFAULT_EXCLUDES = "**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
-		
+	
+	public static final String RELEASE = "RELEASE";
+	
+	public static final String LATEST = "LATEST";
+	
 	public static final String POM = "pom";
+	
+	public static final String XML = "xml";
 	
 	public static final String MX_DEBUG = "mx.debug";
 
@@ -60,7 +68,7 @@ public class Constants {
 		compile_dependencypath, runtime_dependencypath, test_dependencypath, commit, targetFolder,
 		proxies, parent, exclusions, mxjar, mxjavac, compilerArgs, excludes, includes,
 		dependencyManagement, mxreport, outputFile, verbose, build_classpath, reportsFolder,
-		dependencyOverrides, dependencyAliases;
+		dependencyOverrides, dependencyAliases, updatePolicy;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

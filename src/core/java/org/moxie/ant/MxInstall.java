@@ -40,7 +40,7 @@ public class MxInstall extends MxTask {
 		String pattern = artifact + "*";
 		
 		Dependency asDependency = new Dependency(pom.getCoordinates());
-		File moxieFile = build.getArtifactCache().getFile(asDependency, asDependency.type);
+		File moxieFile = build.getArtifactCache().getArtifact(asDependency, asDependency.type);
 		File destinationFolder = moxieFile.getParentFile();
 		
 		build.console.title(getClass(), artifact);

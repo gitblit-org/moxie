@@ -200,13 +200,15 @@ public class Dependency implements Serializable {
 		url = url.replace("${groupId}", dep.groupId.replace(a, b));
 		url = url.replace("${artifactId}", dep.artifactId);
 		url = url.replace("${version}", dep.version);
-		if (ext.equalsIgnoreCase(Constants.POM)) {
+		if (ext != null && ext.equalsIgnoreCase(Constants.POM)) {
 			// POMs do not have classifiers
 			url = url.replace("${classifier}", "");
 		} else {
 			url = url.replace("${classifier}", dep.classifier == null ? "":("-" + dep.classifier));
 		}
-		url = url.replace("${ext}", ext);		
+		if (ext != null) {
+			url = url.replace("${ext}", ext);
+		}
 		return url;
 	}
 }

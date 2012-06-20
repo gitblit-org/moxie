@@ -24,29 +24,48 @@ public class ArtifactCache {
 
 	final File root;
 	final String pattern;
+	final String metadataPattern;
 	
 	public ArtifactCache(File root) {
-		this(root, Constants.MAVEN2_PATTERN);
+		this(root, Constants.MAVEN2_PATTERN, Constants.MAVEN2_METADATA_PATTERN);
 	}
 	
-	public ArtifactCache(File root, String pattern) {
+	public ArtifactCache(File root, String pattern, String metadataPattern) {
 		this.root = root;
 		this.pattern = pattern;
+		this.metadataPattern = metadataPattern;
 	}
 	
-	public File getFile(Dependency dep, String ext) {
+	public File getArtifact(Dependency dep, String ext) {
 		String path = Dependency.getMavenPath(dep,  ext, pattern);
 		return new File(root, path);
 	}
-	
-	public File writeFile(Dependency dep, String ext, String content) {
-		File file = getFile(dep, ext);
+
+	public File writeArtifact(Dependency dep, String ext, String content) {
+		File file = getArtifact(dep, ext);
 		FileUtils.writeContent(file, content);
 		return file;
 	}
 	
-	public File writeFile(Dependency dep, String ext, byte [] content) {
-		File file = getFile(dep, ext);
+	public File writeArtifact(Dependency dep, String ext, byte [] content) {
+		File file = getArtifact(dep, ext);
+		FileUtils.writeContent(file, content);
+		return file;
+	}
+	
+	public File getMetadata(Dependency dep, String ext) {
+		String path = Dependency.getMavenPath(dep,  ext, metadataPattern);
+		return new File(root, path);
+	}
+
+	public File writeMetadata(Dependency dep, String ext, String content) {
+		File file = getMetadata(dep, ext);
+		FileUtils.writeContent(file, content);
+		return file;
+	}
+
+	public File writeMetadata(Dependency dep, String ext, byte [] content) {
+		File file = getMetadata(dep, ext);
 		FileUtils.writeContent(file, content);
 		return file;
 	}

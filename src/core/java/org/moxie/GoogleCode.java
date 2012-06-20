@@ -19,7 +19,7 @@ package org.moxie;
 public class GoogleCode extends Repository {
 
 	public GoogleCode() {
-		super("GoogleCode", "http://", "${artifactId}.googlecode.com/files/${version}");
+		super("GoogleCode", "http://", "${artifactId}.googlecode.com/files/${version}", null);
 	}
 	
 	@Override

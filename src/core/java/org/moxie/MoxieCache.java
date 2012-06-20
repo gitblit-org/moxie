@@ -38,11 +38,31 @@ public class MoxieCache extends ArtifactCache {
 	}
 	
 	@Override
-	public File getFile(Dependency dep, String ext) {
+	public File getArtifact(Dependency dep, String ext) {
 		String path = Dependency.getMoxiePath(dep, ext, pattern);
 	
 		File moxieFile = new File(root, path);
-		File mavenFile = mavenCache.getFile(dep, ext);
+		File mavenFile = mavenCache.getArtifact(dep, ext);
+		
+		if (!moxieFile.exists() && mavenFile.exists()) {
+			// transparently copy from Maven cache to Moxie cache
+			try {
+				FileUtils.copy(moxieFile.getParentFile(), mavenFile);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return moxieFile;
+	}
+	
+	@Override
+	public File getMetadata(Dependency dep, String ext) {
+		String path = Dependency.getMoxiePath(dep,  ext, metadataPattern);
+		
+		File moxieFile = new File(root, path);
+		File mavenFile = mavenCache.getMetadata(dep, ext);
 		
 		if (!moxieFile.exists() && mavenFile.exists()) {
 			// transparently copy from Maven cache to Moxie cache
