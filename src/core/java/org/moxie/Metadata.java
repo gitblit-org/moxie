@@ -45,14 +45,43 @@ public class Metadata {
 	}
 
 	public void merge(Metadata oldMetadata) {
-		LinkedHashSet<String> set = new LinkedHashSet<String>();
-		set.addAll(versions);
-		set.addAll(oldMetadata.versions);
+		// merge versions
+		LinkedHashSet<ArtifactVersion> set = new LinkedHashSet<ArtifactVersion>();
+		for (String version : versions) {
+			set.add(new ArtifactVersion(version));
+		}		
+		for (String version : oldMetadata.versions) {
+			set.add(new ArtifactVersion(version));
+		}
+		
+		// sort them by Maven rules
+		List<ArtifactVersion> list = new ArrayList<ArtifactVersion>(set);				
+		Collections.sort(list);
+		
+		// convert back to simple strings and determine latest and release
+		ArtifactVersion latest = null;
+		ArtifactVersion release = null;
 		versions.clear();
-		versions.addAll(set);
+		for (ArtifactVersion version : list) {
+			versions.add(version.toString());
+			if (StringUtils.isEmpty(version.getQualifier())) {
+				if (release == null || release.compareTo(version) == -1) {
+					release = version;
+				}
+			}			
+			if (latest == null || latest.compareTo(version) == -1) {
+				latest = version;
+			}
+		}
 		
-		Collections.sort(versions);
-		
+		if (release != null) {
+			this.release = release.toString();
+		}
+
+		if (latest != null) {
+			this.latest = latest.toString();
+		}
+
 		if (oldMetadata.lastUpdated.after(lastUpdated)) {
 			lastUpdated = oldMetadata.lastUpdated;
 		}
