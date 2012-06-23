@@ -27,9 +27,9 @@ import org.apache.tools.ant.taskdefs.Execute;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 import org.moxie.Build;
+import org.moxie.Constants.Key;
 import org.moxie.Pom;
 import org.moxie.Scope;
-import org.moxie.Constants.Key;
 import org.moxie.utils.StringUtils;
 
 

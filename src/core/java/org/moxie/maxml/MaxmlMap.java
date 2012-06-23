@@ -16,6 +16,7 @@
 package org.moxie.maxml;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -84,6 +85,16 @@ public class MaxmlMap extends LinkedHashMap<String, Object> {
 				return (List<String>) o;
 			} else if (o instanceof String) {
 				return Arrays.asList(o.toString());
+			}
+		}
+		return defaultValue;
+	}
+
+	public Date getDate(String key, Date defaultValue) {
+		if (containsKey(key)) {
+			Object o = get(key);
+			if (o instanceof Date) {
+				return (Date) o;
 			}
 		}
 		return defaultValue;

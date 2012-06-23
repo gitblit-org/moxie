@@ -16,12 +16,12 @@
 package org.moxie;
 
 import java.io.File;
-import java.text.ParseException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.tools.ant.filters.StringInputStream;
+import org.moxie.Constants.Key;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -74,8 +74,9 @@ public class MetadataReader {
 		Metadata metadata = new Metadata();
 
 		Element docElement = doc.getDocumentElement();		
-		metadata.groupId = readStringTag(docElement, "groupId");
-		metadata.artifactId = readStringTag(docElement, "artifactId");		
+		metadata.groupId = readStringTag(docElement, Key.groupId.name());
+		metadata.artifactId = readStringTag(docElement, Key.artifactId.name());		
+		metadata.version = readStringTag(docElement, Key.version.name());
 
 		NodeList projectNodes = docElement.getChildNodes();
 		for (int i = 0; i < projectNodes.getLength(); i++) {
@@ -83,18 +84,28 @@ public class MetadataReader {
 			if (pNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element element = (Element) pNode;				
 				if ("versioning".equalsIgnoreCase(element.getTagName())) {
-					metadata.latest = readStringTag(pNode, "latest");
-					metadata.release = readStringTag(pNode, "release");
-					try {
-						metadata.setLastUpdated(readStringTag(pNode, "lastUpdated"));
-					} catch (ParseException e) {
-						throw new RuntimeException(e);
+					metadata.latest = readStringTag(pNode, Key.latest.name());
+					metadata.release = readStringTag(pNode, Key.release.name());
+					
+					NodeList snapshots = element.getElementsByTagName("snapshot");
+					if (snapshots != null) {
+						for (int j = 0, jlen = snapshots.getLength(); j < jlen; j++) {
+							Node node = snapshots.item(j);						
+							String timestamp = readStringTag(node, "timestamp");
+							String buildNumber = readStringTag(node, "buildNumber");						
+							metadata.addSnapshot(timestamp, buildNumber);
+						}
 					}
 					
-					NodeList versions = element.getElementsByTagName("version");
-					for (int j = 0, jlen = versions.getLength(); j < jlen; j++) {
-						Node node = versions.item(j);						
-						metadata.addVersion(node.getFirstChild().getTextContent());
+					String lastUpdated = readStringTag(pNode, Key.lastUpdated.name());
+					metadata.setLastUpdated(lastUpdated);
+					
+					NodeList versions = element.getElementsByTagName(Key.version.name());
+					if (versions != null) {
+						for (int j = 0, jlen = versions.getLength(); j < jlen; j++) {
+							Node node = versions.item(j);						
+							metadata.addVersion(node.getFirstChild().getTextContent());
+						}
 					}
 				}
 			}

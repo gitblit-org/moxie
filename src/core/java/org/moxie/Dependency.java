@@ -32,6 +32,7 @@ public class Dependency implements Serializable {
 	public String groupId;
 	public String artifactId;
 	public String version;
+	public String revision;
 	public String type;
 	public String classifier;
 	public boolean optional;	
@@ -119,14 +120,16 @@ public class Dependency implements Serializable {
 	
 	public Dependency getSourcesArtifact() {
 		Dependency sources = new Dependency(getDetailedCoordinates());
+		sources.revision = revision;
 		sources.classifier = "sources";
 		return sources;
 	}
 
 	public Dependency getJavadocArtifact() {
-		Dependency sources = new Dependency(getDetailedCoordinates());
-		sources.classifier = "javadoc";
-		return sources;
+		Dependency javadoc = new Dependency(getDetailedCoordinates());
+		javadoc.revision = revision;
+		javadoc.classifier = "javadoc";
+		return javadoc;
 	}
 	
 	public String getMediationId() {
@@ -200,6 +203,7 @@ public class Dependency implements Serializable {
 		url = url.replace("${groupId}", dep.groupId.replace(a, b));
 		url = url.replace("${artifactId}", dep.artifactId);
 		url = url.replace("${version}", dep.version);
+		url = url.replace("${revision}", StringUtils.isEmpty(dep.revision) ? dep.version : dep.revision);
 		if (ext != null && ext.equalsIgnoreCase(Constants.POM)) {
 			// POMs do not have classifiers
 			url = url.replace("${classifier}", "");

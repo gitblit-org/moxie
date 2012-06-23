@@ -31,8 +31,8 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 import org.moxie.Build;
 import org.moxie.Constants;
-import org.moxie.Scope;
 import org.moxie.Constants.Key;
+import org.moxie.Scope;
 import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.FileUtils;
 

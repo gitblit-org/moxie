@@ -19,8 +19,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.text.MessageFormat;
 
-import org.moxie.Scope;
-
 
 /**
  * SourceFolder represents a scoped source folder.

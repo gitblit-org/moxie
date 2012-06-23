@@ -32,48 +32,56 @@ public class Metadata {
 	public String artifactId;
 	public String latest;
 	public String release;
+	public String version;
 	public Date lastUpdated;
 
 	private final List<String> versions;
+	private final List<Snapshot> snapshots;
 
 	public Metadata() {
+		lastUpdated = new Date(0);
 		versions = new ArrayList<String>();
+		snapshots = new ArrayList<Snapshot>();
 	}
 
 	public void addVersion(String version) {
 		versions.add(version);
 	}
 
+	public void addSnapshot(String timestamp, String buildNumber) {
+		snapshots.add(new Snapshot(timestamp, buildNumber));
+	}
+
 	public void merge(Metadata oldMetadata) {
 		// merge versions
-		LinkedHashSet<ArtifactVersion> set = new LinkedHashSet<ArtifactVersion>();
+		LinkedHashSet<ArtifactVersion> vset = new LinkedHashSet<ArtifactVersion>();
 		for (String version : versions) {
-			set.add(new ArtifactVersion(version));
-		}		
-		for (String version : oldMetadata.versions) {
-			set.add(new ArtifactVersion(version));
+			vset.add(new ArtifactVersion(version));
 		}
-		
+		for (String version : oldMetadata.versions) {
+			vset.add(new ArtifactVersion(version));
+		}
+
 		// sort them by Maven rules
-		List<ArtifactVersion> list = new ArrayList<ArtifactVersion>(set);				
-		Collections.sort(list);
-		
-		// convert back to simple strings and determine latest and release
+		List<ArtifactVersion> vlist = new ArrayList<ArtifactVersion>(vset);
+		Collections.sort(vlist);
+
+		// convert back to simple strings and determine LATEST and RELEASE
 		ArtifactVersion latest = null;
 		ArtifactVersion release = null;
 		versions.clear();
-		for (ArtifactVersion version : list) {
+		for (ArtifactVersion version : vlist) {
 			versions.add(version.toString());
 			if (StringUtils.isEmpty(version.getQualifier())) {
 				if (release == null || release.compareTo(version) == -1) {
 					release = version;
 				}
-			}			
+			}
 			if (latest == null || latest.compareTo(version) == -1) {
 				latest = version;
 			}
 		}
-		
+
 		if (release != null) {
 			this.release = release.toString();
 		}
@@ -87,18 +95,25 @@ public class Metadata {
 		}
 	}
 
-	public List<String> getVersions() {
-		return versions;
-	}
-
-	public void setLastUpdated(String date) throws ParseException {
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-		df.setTimeZone(TimeZone.getTimeZone("UTC"));
-		lastUpdated = df.parse(date);
+	public void setLastUpdated(String date) {
+		if (StringUtils.isEmpty(date) || "null".equalsIgnoreCase(date)) {
+			return;
+		}
+		try {
+			SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+			df.setTimeZone(TimeZone.getTimeZone("UTC"));
+			lastUpdated = df.parse(date);
+		} catch (ParseException e) {
+			// silently ignore malformed lastUpdate
+		}
 	}
 
 	public String getManagementId() {
 		return groupId + ":" + artifactId;
+	}
+	
+	public String getSnapshotRevision() {
+		return snapshots.get(snapshots.size() - 1).getRevision();
 	}
 
 	@Override
@@ -115,6 +130,7 @@ public class Metadata {
 		sb.append("\t<!-- project metadata -->\n");
 		sb.append(StringUtils.toXML("groupId", groupId));
 		sb.append(StringUtils.toXML("artifactId", artifactId));
+		sb.append(StringUtils.toXML("version", version));
 
 		// project versioning
 		sb.append("\t<!-- project versioning -->\n");
@@ -123,25 +139,84 @@ public class Metadata {
 		node.append(StringUtils.toXML("latest", latest));
 		node.append(StringUtils.toXML("release", release));
 		sb.append(StringUtils.insertTab(node.toString()));
-
-		sb.append("\t\t<versions>\n");
-		StringBuilder sbv = new StringBuilder();
-		for (String version : versions) {
-			sbv.append(StringUtils.insertTab(StringUtils.toXML("version", version)));
+		
+		// snapshots
+		if (snapshots.size() > 0) {
+			sb.append("\t\t<!-- snapshots -->\n");
+			for (Snapshot snapshot : snapshots) {
+				sb.append("\t\t<snapshot>\n");
+				sb.append("\t\t").append(StringUtils.toXML("timestamp", snapshot.timestamp));
+				sb.append("\t\t").append(StringUtils.toXML("buildNumber", snapshot.buildNumber));
+				sb.append("\t\t</snapshot>\n");
+			}
 		}
-		if (sbv.length() > 0) {
-			sb.append(StringUtils.insertTab(sbv.toString()));
-		}
-		sb.append("\t\t</versions>\n");
 
+		// versions
+		if (versions.size() > 0) {
+			sb.append("\t\t<!-- versions-->\n");
+			sb.append("\t\t<versions>\n");
+			StringBuilder sbv = new StringBuilder();
+			for (String version : versions) {
+				sbv.append(StringUtils.insertTab(StringUtils.toXML("version", version)));
+			}
+			if (sbv.length() > 0) {
+				sb.append(StringUtils.insertTab(sbv.toString()));
+			}
+			sb.append("\t\t</versions>\n");
+		}
+		
+		// set lastUpdated to now, if it is unset
+		if (lastUpdated.getTime() == 0) {
+			lastUpdated = new Date();
+		}
+
+		if (snapshots.size() > 0) {
+			// lastUpdated is most recent snapshot timestamp
+			SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd.HHmmss");
+			sf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			try {
+				lastUpdated = sf.parse(snapshots.get(snapshots.size() - 1).timestamp);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		// set lastUpdated
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 		df.setTimeZone(TimeZone.getTimeZone("UTC"));
-		sb.append("\t").append(StringUtils.toXML("lastUpdated", df.format(new Date())));
-
+		sb.append("\t").append(StringUtils.toXML("lastUpdated", df.format(lastUpdated)));
+		
 		sb.append("\t</versioning>\n");
 
 		// close metadata
 		sb.append("</metadata>");
 		return sb.toString();
+	}
+	
+	class Snapshot {
+		final String timestamp;
+		final String buildNumber;
+		
+		public Snapshot(String timestamp, String buildNumber) {
+			this.timestamp = timestamp;
+			this.buildNumber = buildNumber;
+		}
+		
+		public String getRevision() {
+			return version.replace("SNAPSHOT", timestamp + "-" + buildNumber);
+		}
+		
+		@Override
+		public boolean equals(Object o) {
+			if (o instanceof Snapshot) {
+				return o.hashCode() == hashCode();
+			}
+			return false;
+		}
+		
+		@Override
+		public int hashCode() {
+			return 11 + timestamp.hashCode() + buildNumber.hashCode();
+		}
 	}
 }

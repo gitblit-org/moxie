@@ -25,7 +25,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
+import java.util.Date;
 
+import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 
@@ -36,16 +38,18 @@ public class Repository {
 	final String repositoryUrl;
 	final String artifactPattern;
 	final String metadataPattern;
+	final String snapshotPattern;
 
 	public Repository(String name, String mavenUrl) {
-		this(name, mavenUrl, Constants.MAVEN2_PATTERN, Constants.MAVEN2_METADATA_PATTERN);
+		this(name, mavenUrl, Constants.MAVEN2_PATTERN, Constants.MAVEN2_METADATA_PATTERN, Constants.MAVEN2_SNAPSHOT_PATTERN);
 	}
 
-	public Repository(String name, String mavenUrl, String pattern, String metadataPattern) {
+	public Repository(String name, String mavenUrl, String pattern, String metadataPattern, String snapshotPattern) {
 		this.name = name;
 		this.repositoryUrl = mavenUrl;
 		this.artifactPattern = pattern;
 		this.metadataPattern = metadataPattern;
+		this.snapshotPattern = snapshotPattern;
 	}
 
 	@Override
@@ -89,8 +93,8 @@ public class Repository {
 		return repositoryUrl + (repositoryUrl.endsWith("/") ? "":"/") + artifactPattern;
 	}
 
-	public String getMetadataUrl() {
-		return repositoryUrl + (repositoryUrl.endsWith("/") ? "":"/") + metadataPattern;
+	public String getMetadataUrl(Dependency dep) {
+		return repositoryUrl + (repositoryUrl.endsWith("/") ? "":"/") + (dep.isSnapshot() ? snapshotPattern : metadataPattern);
 	}
 
 	protected URL getURL(Dependency dep, String ext) throws MalformedURLException {
@@ -139,7 +143,7 @@ public class Repository {
 				return FileUtils.readContent(hashFile, "\n").trim();
 			}
 
-			URL url = new URL(Dependency.getMavenPath(dep, extsha1, getMetadataUrl()));
+			URL url = new URL(Dependency.getMavenPath(dep, extsha1, getMetadataUrl(dep)));
 			DownloadData data = download(build, url);
 			String content = new String(data.content, "UTF-8").trim();
 			String hashCode = content.substring(0, 40);
@@ -171,7 +175,7 @@ public class Repository {
 				// check for the artifact just-in-case we can download w/o
 				// checksum verification
 				try {
-					URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl()));
+					URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl(dep)));
 					URLConnection conn = url.openConnection();
 					conn.connect();
 				} catch (Throwable t) {
@@ -181,7 +185,7 @@ public class Repository {
 		}
 		
 		try {
-			URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl()));
+			URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl(dep)));
 			build.console.download(url.toString());
 			DownloadData data = download(build, url);
 			if (calculateSHA1()) {
@@ -206,7 +210,41 @@ public class Repository {
 			// save merged metadata to the artifact cache
 			file = build.getArtifactCache().writeMetadata(dep, Constants.XML, newMetadata.toXML());
 			file.setLastModified(data.lastModified);
-
+					
+			Date now = new Date();
+			if (dep.isSnapshot()) {
+				MoxieData moxiedata = build.getArtifactCache().readMoxieData(dep);
+				moxiedata.setOrigin(repositoryUrl);
+				// do not set lastDownloaded for metadata retrieval
+				moxiedata.setLastChecked(now);
+				moxiedata.setLastUpdated(newMetadata.lastUpdated);
+				build.getArtifactCache().writeMoxieData(dep, moxiedata);	
+			} else {				
+				// update the Moxie RELEASE metadata
+				Dependency versions = DeepCopier.copy(dep);
+				versions.version = Constants.RELEASE;
+				
+				MoxieData moxiedata = build.getArtifactCache().readMoxieData(versions);
+				moxiedata.setOrigin(repositoryUrl);
+				// do not set lastDownloaded for metadata retrieval
+				moxiedata.setLastChecked(now);
+				moxiedata.setLastUpdated(now);
+				moxiedata.setRELEASE(newMetadata.release);
+				moxiedata.setLATEST(newMetadata.latest);
+				build.getArtifactCache().writeMoxieData(dep, moxiedata);
+				
+				// update the Moxie LATEST metadata
+				versions.version = Constants.LATEST;
+				
+				moxiedata = build.getArtifactCache().readMoxieData(versions);
+				moxiedata.setOrigin(repositoryUrl);
+				// do not set lastDownloaded for metadata retrieval
+				moxiedata.setLastChecked(now);
+				moxiedata.setLastUpdated(now);
+				moxiedata.setRELEASE(newMetadata.release);
+				moxiedata.setLATEST(newMetadata.latest);
+				build.getArtifactCache().writeMoxieData(dep, moxiedata);	
+			}
 			return file;
 		} catch (MalformedURLException m) {
 			m.printStackTrace();
@@ -254,6 +292,32 @@ public class Repository {
 			// save to the artifact cache
 			File file = build.getArtifactCache().writeArtifact(dep, ext, data.content);
 			file.setLastModified(data.lastModified);
+			
+			// update Moxie metadata
+			MoxieData moxiedata = build.getArtifactCache().readMoxieData(dep);
+			moxiedata.setOrigin(repositoryUrl);
+			
+			Date now = new Date();
+			if (Constants.POM.equals(ext)) {
+				Pom pom = PomReader.readPom(build.getArtifactCache(), dep);
+				if (pom.isPOM()) {
+					// POM packaging, so no subsequent download check to mess up
+					moxiedata.setLastDownloaded(now);
+					moxiedata.setLastChecked(now);
+				}
+			} else {
+				// set lastDownloaded on a non-POM download
+				moxiedata.setLastDownloaded(now);
+				moxiedata.setLastChecked(now);
+				if (!dep.isSnapshot()) {
+					// set lastUpdated to lastModified date as reported by server
+					// for non-POM downloads. snapshot lastUpdated is set by
+					// metadata extraction from maven-metadata.xml
+					moxiedata.setLastUpdated(new Date(data.lastModified));
+				}
+			}
+			build.getArtifactCache().writeMoxieData(dep, moxiedata);
+			
 			return file;
 		} catch (MalformedURLException m) {
 			m.printStackTrace();

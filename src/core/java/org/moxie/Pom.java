@@ -45,6 +45,7 @@ public class Pom {
 	public String artifactId;
 	public String version;
 	public String classifier;
+	public String packaging;
 		
 	public String parentGroupId;
 	public String parentArtifactId;
@@ -349,6 +350,18 @@ public class Pom {
 	 */
 	public void addExclusions(Collection<String> exclusions) {
 		exclusions.addAll(exclusions);
+	}
+	
+	public boolean isPOM() {
+		return !StringUtils.isEmpty(packaging) && packaging.equalsIgnoreCase(Constants.POM);
+	}
+
+	public boolean isJAR() {
+		return StringUtils.isEmpty(packaging) || packaging.equalsIgnoreCase("jar");
+	}
+
+	public boolean isWAR() {
+		return !StringUtils.isEmpty(packaging) && packaging.equalsIgnoreCase("war");
 	}
 
 	public void inherit(Pom pom) {

@@ -51,7 +51,7 @@ public class MaxmlParser {
 	 * @param lines
 	 * @return an object map
 	 */
-	public Map<String, Object> parse(BufferedReader reader) throws IOException,
+	public MaxmlMap parse(BufferedReader reader) throws IOException,
 			MaxmlException {
 		String lastKey = null;
 		MaxmlMap map = new MaxmlMap();

@@ -62,7 +62,7 @@ public class Maxml {
 	 * @param content
 	 * @return an object map
 	 */
-	public static Map<String, Object> parse(String content)
+	public static MaxmlMap parse(String content)
 			throws MaxmlException {
 		try {
 			MaxmlParser parser = new MaxmlParser();

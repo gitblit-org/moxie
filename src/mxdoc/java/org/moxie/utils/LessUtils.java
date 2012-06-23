@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 
 import org.moxie.less.LessEngine;
 import org.moxie.less.LessException;
-import org.moxie.utils.FileUtils;
 
 /**
  * Aggregates the many Bootstrap LESS files into a monolithic LESS file with an

@@ -19,29 +19,42 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
 
 
-public class MoxieCache extends ArtifactCache {
+public class MoxieCache extends MavenCache {
 
-	final ArtifactCache mavenCache;
 	final File dataRoot;
-	
+	final File snapshotsRoot;
+	final MavenCache mavenCache;
+
 	public MoxieCache() {
-		this(new File(System.getProperty("user.home") + "/.moxie"), new File(System.getProperty("user.home") + "/.m2/repository"));
+		this(new File(System.getProperty("user.home") + "/.moxie"));
 	}
 	
-	public MoxieCache(File moxieRoot, File mavenRoot) {
-		super(new File(moxieRoot, "repository"));
-		mavenCache = new ArtifactCache(mavenRoot);
+	public MoxieCache(File moxieRoot) {
+		super(new File(moxieRoot, "releases"));
 		dataRoot = new File(moxieRoot, "data");
+		snapshotsRoot = new File(moxieRoot, "snapshots");
+		
+		mavenCache = new MavenCache(new File(System.getProperty("user.home") + "/.m2/repository"));
 	}
 	
 	@Override
 	public File getArtifact(Dependency dep, String ext) {
-		String path = Dependency.getMoxiePath(dep, ext, pattern);
+		File baseFolder = root;
+		Dependency dcopy = DeepCopier.copy(dep);
+		if (dcopy.isSnapshot()) {
+			// in artifact cache we store as a.b-SNAPSHOT
+			// not a.b.20120618.134509-5
+			dcopy.revision = null;
+			baseFolder = snapshotsRoot;
+		}
+
+		String path = Dependency.getMoxiePath(dcopy, ext, pattern);
 	
-		File moxieFile = new File(root, path);
+		File moxieFile = new File(baseFolder, path);
 		File mavenFile = mavenCache.getArtifact(dep, ext);
 		
 		if (!moxieFile.exists() && mavenFile.exists()) {
@@ -59,9 +72,15 @@ public class MoxieCache extends ArtifactCache {
 	
 	@Override
 	public File getMetadata(Dependency dep, String ext) {
-		String path = Dependency.getMoxiePath(dep,  ext, metadataPattern);
+		File baseFolder = root;
+		String pattern = metadataPattern;
+		if (dep.isSnapshot()) {
+			baseFolder = snapshotsRoot;
+			pattern = snapshotPattern;
+		}
+		String path = Dependency.getMoxiePath(dep,  ext, pattern);
 		
-		File moxieFile = new File(root, path);
+		File moxieFile = new File(baseFolder, path);
 		File mavenFile = mavenCache.getMetadata(dep, ext);
 		
 		if (!moxieFile.exists() && mavenFile.exists()) {
@@ -77,14 +96,33 @@ public class MoxieCache extends ArtifactCache {
 		return moxieFile;
 	}
 	
-	@Override
-	public File getSolution(Dependency dep) {
+	protected File getMoxieDataFile(Dependency dep) {
+		if (!dep.isMavenObject()) {
+			return null;
+		}
+		
+		String path = Dependency.getMoxiePath(dep, "moxie", pattern);
+		// artifactId-version.moxie
+		File moxieFile = new File(dataRoot, path);
+		// metadata.moxie
+		moxieFile = new File(moxieFile.getParentFile(), "metadata.moxie");
+		return moxieFile;
+	}
+	
+	public MoxieData readMoxieData(Dependency dep) {
 		if (!dep.isMavenObject()) {
 			return null;
 		}
 
-		String path = Dependency.getMoxiePath(dep, "moxie", pattern);
-		File moxieFile = new File(dataRoot, path);
-		return moxieFile;
+		File moxieFile = getMoxieDataFile(dep);
+		MoxieData moxiedata = new MoxieData(moxieFile);
+		moxiedata.setArtifact(dep);
+		return moxiedata;
 	}
+	
+	public File writeMoxieData(Dependency dep, MoxieData moxiedata) {
+		File file = getMoxieDataFile(dep);
+		FileUtils.writeContent(file, moxiedata.toMaxML());
+		return file;
+	}	
 }

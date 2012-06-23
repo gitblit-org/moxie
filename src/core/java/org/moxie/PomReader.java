@@ -42,7 +42,7 @@ public class PomReader {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Pom readPom(ArtifactCache cache, Dependency dependency) {
+	public static Pom readPom(MavenCache cache, Dependency dependency) {
 		File pomFile = cache.getArtifact(dependency, Constants.POM);
 		if (!pomFile.exists()) {
 			return null;
@@ -67,6 +67,7 @@ public class PomReader {
 		pom.name = readStringTag(docElement, Key.name);
 		pom.description = readStringTag(docElement, Key.description);
 		pom.url = readStringTag(docElement, Key.url);
+		pom.packaging = readStringTag(docElement, Key.packaging);
 		
 		NodeList projectNodes = docElement.getChildNodes();
 		for (int i = 0; i < projectNodes.getLength(); i++) {

@@ -62,7 +62,7 @@ public class Build {
 	public final Set<Repository> repositories;
 	public final Config moxie;
 	public final Config project;
-	public final ArtifactCache artifactCache;
+	public final MoxieCache moxieCache;
 	public final Console console;
 	
 	private final Map<String, Dependency> aliases;
@@ -87,7 +87,7 @@ public class Build {
 		
 		this.proxies = new LinkedHashSet<Proxy>();
 		this.repositories = new LinkedHashSet<Repository>();
-		this.artifactCache = new MoxieCache();
+		this.moxieCache = new MoxieCache();
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
 		this.classpaths = new HashMap<Scope, List<File>>();
 		this.linkedProjects = new ArrayList<Build>();
@@ -274,8 +274,8 @@ public class Build {
 		return linkedProjects;
 	}
 
-	public ArtifactCache getArtifactCache() {
-		return artifactCache;
+	public MoxieCache getArtifactCache() {
+		return moxieCache;
 	}
 	
 	public Collection<Repository> getRepositories() {
@@ -304,11 +304,11 @@ public class Build {
 	}
 	
 	public Pom getPom(Dependency dependency) {
-		return PomReader.readPom(artifactCache, dependency);
+		return PomReader.readPom(moxieCache, dependency);
 	}
 
 	public File getArtifact(Dependency dependency) {
-		return artifactCache.getArtifact(dependency, dependency.type);
+		return moxieCache.getArtifact(dependency, dependency.type);
 	}
 
 	public Set<Dependency> getDependencies(Scope scope) {
@@ -416,7 +416,7 @@ public class Build {
 
 			// This Moxie project imports a pom's dependencyManagement list.
 			for (Dependency dependency : project.pom.getDependencies(Scope.imprt, 0)) {
-				Pom pom = PomReader.readPom(artifactCache, dependency);
+				Pom pom = PomReader.readPom(moxieCache, dependency);
 				project.pom.importManagedDependencies(pom);
 			}
 		}
@@ -429,7 +429,7 @@ public class Build {
 			
 			// This Moxie project integrates a pom's dependency list.
 			for (Dependency dependency : project.pom.getDependencies(Scope.assimilate, 0)) {
-				Pom pom = PomReader.readPom(artifactCache, dependency);
+				Pom pom = PomReader.readPom(moxieCache, dependency);
 				for (Scope scope : pom.getScopes()) {
 					if (!assimilate.containsKey(scope)) {
 						assimilate.put(scope,  new ArrayList<Dependency>());
@@ -547,7 +547,7 @@ public class Build {
 		
 		if (dependencies == null) {
 			// solve the transitive dependencies for this scope
-			Pom pom = PomReader.readPom(artifactCache, dependency);
+			Pom pom = PomReader.readPom(moxieCache, dependency);
 			dependencies = pom.getDependencies(scope, dependency.ring + 1);
 
 			// cache the scope's transitive dependency solution
@@ -575,17 +575,13 @@ public class Build {
 			// do not use cached solution for snapshots
 			return null;
 		}
-		File file = artifactCache.getSolution(dependency);
-		if (file == null || !file.exists()) {
-			return null;
-		}
-		if (file.lastModified() == FileUtils.getLastModified(artifactCache.getArtifact(dependency, Constants.POM))) {
+		MoxieData moxiedata = moxieCache.readMoxieData(dependency);
+		if (moxiedata.getLastSolved().getTime() == FileUtils.getLastModified(moxieCache.getArtifact(dependency, Constants.POM))) {
 			// solution lastModified date must equal pom lastModified date
 			try {
-				console.debug(1, "=> reusing solution {0}", dependency.getDetailedCoordinates());
-				Solution solution = new Solution(file);
-				if (solution.hasScope(scope)) {
-					List<Dependency> list = new ArrayList<Dependency>(solution.getDependencies(scope));
+				console.debug(1, "=> reusing solution {0}", dependency.getDetailedCoordinates());				
+				if (moxiedata.hasScope(scope)) {
+					List<Dependency> list = new ArrayList<Dependency>(moxiedata.getDependencies(scope));
 					for (Dependency dep : list) {
 						// reset ring to be relative to the dependency
 						dep.ring += dependency.ring + 1;
@@ -603,10 +599,7 @@ public class Build {
 		if (transitiveDependencies.size() == 0) {
 			return;
 		}
-		File file = artifactCache.getSolution(dependency);
-		if (file == null) {
-			return;
-		}
+		MoxieData moxiedata = moxieCache.readMoxieData(dependency);
 		// copy transitives and reset the ring level relative to the dependency		
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		for (Dependency dep : transitiveDependencies) {
@@ -615,13 +608,11 @@ public class Build {
 			dependencies.add(dep);
 		}
 		try {
-			console.debug(1, "=> caching solution {0}", scope);
-			Solution solution = new Solution(file);
-			solution.setDependencies(scope, dependencies);
-			String content = solution.toMaxML();
-			file = artifactCache.writeSolution(dependency, content);
-			// set solution lastModified date to pom lastModified date
-			file.setLastModified(FileUtils.getLastModified(artifactCache.getArtifact(dependency, Constants.POM)));
+			console.debug(1, "=> caching solution {0}", scope);			
+			moxiedata.setDependencies(scope, dependencies);
+			// solution date is lastModified of POM
+			moxiedata.setLastSolved(new Date(FileUtils.getLastModified(moxieCache.getArtifact(dependency, Constants.POM))));
+			moxieCache.writeMoxieData(dependency, moxiedata);
 		} catch (Exception e) {
 			console.error(e, "Failed to cache {0} solution {1}", scope, dependency.getDetailedCoordinates());
 		}
@@ -638,41 +629,31 @@ public class Build {
 			// do not use cached solution for snapshots
 			return;
 		}
-		File file = artifactCache.getSolution(projectAsDep);
-		if (file == null) {
-			return;
-		}
-		long lastModified = FileUtils.getLastModified(file);
-		if (lastModified == project.lastModified) {
+		MoxieData moxiedata = moxieCache.readMoxieData(projectAsDep);
+		if (moxiedata.getLastSolved().getTime() == project.lastModified) {
 			try {
-				console.debug("reusing project solution {0}", getPom());
-				Solution solution = new Solution(file);
-				for (Scope scope : solution.getScopes()) {
-					Set<Dependency> dependencies = new LinkedHashSet<Dependency>(solution.getDependencies(scope));
+				console.debug("reusing project solution {0}", getPom());				
+				for (Scope scope : moxiedata.getScopes()) {
+					Set<Dependency> dependencies = new LinkedHashSet<Dependency>(moxiedata.getDependencies(scope));
 					console.debug(1, "{0} {1} dependencies", dependencies.size(), scope);
 					solutions.put(scope, dependencies);
 				}
 			} catch (Exception e) {
-				console.error(e, "Failed to cache project solution {0}", projectAsDep.getDetailedCoordinates());
+				console.error(e, "Failed to read project solution {0}", projectAsDep.getDetailedCoordinates());
 			}
 		}
 	}
 	
 	private void cacheProjectSolution() {
 		Dependency projectAsDep = new Dependency(getPom().toString());
-		File file = artifactCache.getSolution(projectAsDep);
-		if (file == null) {
-			return;
-		}
+		MoxieData moxiedata = moxieCache.readMoxieData(projectAsDep);
 		try {
-			console.debug("caching project solution {0}", getPom());
-			Solution solution = new Solution(file);
+			console.debug("caching project solution {0}", getPom());			
 			for (Map.Entry<Scope, Set<Dependency>> entry : solutions.entrySet()) {
-				solution.setDependencies(entry.getKey(), entry.getValue());
+				moxiedata.setDependencies(entry.getKey(), entry.getValue());
 			}
-			String content = solution.toMaxML();
-			file = artifactCache.writeSolution(projectAsDep, content);
-			file.setLastModified(project.lastModified);
+			moxiedata.setLastSolved(new Date(project.lastModified));
+			moxieCache.writeMoxieData(projectAsDep, moxiedata);
 		} catch (Exception e) {
 			console.error(e, "Failed to cache project solution {0}", projectAsDep.getDetailedCoordinates());
 		}
@@ -686,30 +667,32 @@ public class Build {
 			return null;
 		}
 		
-		// Support RELEASE and LATEST versions
-		if (dependency.version.equalsIgnoreCase(Constants.RELEASE)
+		if (dependency.isSnapshot()
+				|| dependency.version.equalsIgnoreCase(Constants.RELEASE)
 				|| dependency.version.equalsIgnoreCase(Constants.LATEST)) {
-			File metadataFile = artifactCache.getMetadata(dependency, Constants.XML);
+			// Support SNAPSHOT, RELEASE and LATEST versions
+			File metadataFile = moxieCache.getMetadata(dependency, Constants.XML);
 			boolean updateRequired = !metadataFile.exists();
 			
 			if (!updateRequired) {
+				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
 				// we have metadata, check update policy
 				if (UpdatePolicy.daily.equals(project.updatePolicy)) {
 					// daily is a special case
 					SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
-					String mdate = df.format(new Date(metadataFile.lastModified()));
+					String mdate = df.format(moxiedata.getLastChecked());
 					String today = df.format(new Date());
 					updateRequired = !mdate.equals(today);
 				} else {
 					// always, never, interval
 					long msecs = project.updatePolicy.mins*60*1000L;
-					updateRequired = Math.abs(System.currentTimeMillis() - metadataFile.lastModified()) > msecs;
+					updateRequired = Math.abs(System.currentTimeMillis() - moxiedata.getLastChecked().getTime()) > msecs;
 				}
 				
 				if (updateRequired) {
-					console.debug(1, "{0} maven-metadata.xml is stale according to {1} update policy", dependency.getManagementId(), project.updatePolicy.toString());
+					console.debug(1, "{0} maven-metadata.xml is STALE according to {1} update policy", dependency.getManagementId(), project.updatePolicy.toString());
 				} else {
-					console.debug(1, "{0} maven-metadata.xml is acceptable according to {1} update policy", dependency.getManagementId(), project.updatePolicy.toString());
+					console.debug(1, "{0} maven-metadata.xml is CURRENT according to {1} update policy", dependency.getManagementId(), project.updatePolicy.toString());
 				}
 			}
 			
@@ -723,8 +706,7 @@ public class Build {
 					console.debug(1, "locating maven-metadata.xml for {0}", dependency.getManagementId());
 					metadataFile = repository.downloadMetadata(this, dependency);
 					if (metadataFile != null && metadataFile.exists()) {
-						// reset last modified time of metadata file for next update check
-						metadataFile.setLastModified(System.currentTimeMillis());
+						// downloaded the metadata
 						break;
 					}
 				}
@@ -732,22 +714,39 @@ public class Build {
 				console.debug(1, "reading maven-metadata.xml for {0}", dependency.getManagementId());
 			}
 
-			// read latest/release from metadata
+			// read SNAPSHOT, LATEST, or RELEASE from metadata
 			if (metadataFile != null && metadataFile.exists()) {
 				Metadata metadata = MetadataReader.readMetadata(metadataFile);
 				String version;
+				String revision;
 				if (Constants.RELEASE.equalsIgnoreCase(dependency.version)) {
 					version = metadata.release;
-				} else {
+					revision = version;
+				} else if (Constants.LATEST.equalsIgnoreCase(dependency.version)) {
 					version = metadata.latest;
+					revision = version;
+				} else {
+					// SNAPSHOT
+					version = dependency.version;
+					revision = metadata.getSnapshotRevision();
 				}
-				console.debug(1, "{0} = {1}", dependency.getCoordinates(), version);
+				console.debug(1, "{0} = {1}", dependency.getCoordinates(), revision);
 				dependency.version = version;
+				dependency.revision = revision;
+			}
+			
+			if (updateRequired) {
+				// reset last checked date for next update check
+				// after we have resolved RELEASE, LATEST, or SNAPSHOT
+				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
+				moxiedata.setLastChecked(new Date());
+				moxieCache.writeMoxieData(dependency, moxiedata);
 			}
 		}
 		
-		File pomFile = artifactCache.getArtifact(dependency, Constants.POM);
-		if (!pomFile.exists()) {
+		MoxieData moxiedata = moxieCache.readMoxieData(dependency);
+		File pomFile = moxieCache.getArtifact(dependency, Constants.POM);
+		if (!pomFile.exists() || (dependency.isSnapshot() && moxiedata.isRefreshRequired())) {
 			// download the POM
 			for (Repository repository : repositories) {
 				if (!repository.isMavenSource()) {
@@ -766,7 +765,7 @@ public class Build {
 		// Read POM
 		if (pomFile.exists()) {
 			try {
-				Pom pom = PomReader.readPom(artifactCache, dependency);
+				Pom pom = PomReader.readPom(moxieCache, dependency);
 				// retrieve parent POM
 				if (pom.hasParentDependency()) {			
 					Dependency parent = pom.getParentDependency();
@@ -805,28 +804,36 @@ public class Build {
 				continue;
 			}
 			
-			Dependency [] dependencies = { dependency, dependency.getSourcesArtifact() };
-			for (Dependency dep : dependencies) {
-				// check to see if we already have the artifact
-				File cachedFile = artifactCache.getArtifact(dep, dep.type);
-				if (cachedFile.exists()) {
-					// assume we already have subsequent classifiers
-					break;
+			// Determine to download/update the dependency
+			File artifactFile = moxieCache.getArtifact(dependency, dependency.type);
+			boolean downloadDependency = !artifactFile.exists();				
+			if (!downloadDependency && dependency.isSnapshot()) {
+				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
+				downloadDependency = moxiedata.isRefreshRequired();
+				if (downloadDependency) {
+					console.debug(1, "{0} is STALE according to {1}", dependency.getManagementId(), moxiedata.getOrigin());
 				} else {
-					cachedFile = repository.download(this, dep, dep.type);
+					console.debug(1, "{0} is CURRENT according to {1}", dependency.getManagementId(), moxiedata.getOrigin());
 				}
 			}
 			
-			File cachedFile = artifactCache.getArtifact(dependency, dependency.type);
-			if (cachedFile != null && cachedFile.exists()) {
-				// optionally copy artifact to project-specified folder
+			if (downloadDependency) {
+				// Download primary artifact (e.g. jar)
+				artifactFile = repository.download(this, dependency, dependency.type);
+				// Download sources artifact (e.g. -sources.jar)
+				Dependency sources = dependency.getSourcesArtifact();
+				repository.download(this, sources, sources.type);
+			}
+			
+			// optionally copy primary artifact to project-specified folder
+			if (artifactFile != null && artifactFile.exists()) {
 				if (forProject && project.dependencyFolder != null) {
-					File projectFile = new File(project.dependencyFolder, cachedFile.getName());
+					File projectFile = new File(project.dependencyFolder, artifactFile.getName());
 					if (dependency.isSnapshot() || !projectFile.exists()) {
-						console.debug(1, "copying {0} to {1}", cachedFile.getName(), projectFile.getParent());
+						console.debug(1, "copying {0} to {1}", artifactFile.getName(), projectFile.getParent());
 						try {
 							projectFile.getParentFile().mkdirs();
-							FileUtils.copy(projectFile.getParentFile(), cachedFile);
+							FileUtils.copy(projectFile.getParentFile(), artifactFile);
 						} catch (IOException e) {
 							throw new RuntimeException("Error writing to file " + projectFile, e);
 						}
@@ -864,7 +871,7 @@ public class Build {
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
 		for (Dependency dependency : solution) {
-			File file = artifactCache.getArtifact(dependency, dependency.type);
+			File file = moxieCache.getArtifact(dependency, dependency.type);
 			if (file.exists()) {
 				try {
 					URL u = file.toURI().toURL();
@@ -896,7 +903,7 @@ public class Build {
 				SystemDependency sys = (SystemDependency) dependency;				
 				jar = new File(sys.path);
 			} else {
-				jar = artifactCache.getArtifact(dependency, dependency.type); 
+				jar = moxieCache.getArtifact(dependency, dependency.type); 
 				if (projectFolder != null) {
 					File pJar = new File(projectFolder, jar.getName());
 					if (pJar.exists()) {
@@ -980,9 +987,9 @@ public class Build {
 				SystemDependency sys = (SystemDependency) dependency;
 				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, new File(sys.path))));
 			} else {				
-				File jar = artifactCache.getArtifact(dependency, dependency.type);
+				File jar = moxieCache.getArtifact(dependency, dependency.type);
 				Dependency sources = dependency.getSourcesArtifact();
-				File srcJar = artifactCache.getArtifact(sources, sources.type);
+				File srcJar = moxieCache.getArtifact(sources, sources.type);
 				if (srcJar.exists()) {
 					// have sources
 					sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" sourcepath=\"{1}\" />\n", jar.getAbsolutePath(), srcJar.getAbsolutePath()));

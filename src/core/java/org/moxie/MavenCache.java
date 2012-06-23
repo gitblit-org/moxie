@@ -17,27 +17,32 @@ package org.moxie;
 
 import java.io.File;
 
+import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
 
 
-public class ArtifactCache {
+public class MavenCache {
 
 	final File root;
 	final String pattern;
 	final String metadataPattern;
+	final String snapshotPattern;
 	
-	public ArtifactCache(File root) {
-		this(root, Constants.MAVEN2_PATTERN, Constants.MAVEN2_METADATA_PATTERN);
-	}
-	
-	public ArtifactCache(File root, String pattern, String metadataPattern) {
+	public MavenCache(File root) {
 		this.root = root;
-		this.pattern = pattern;
-		this.metadataPattern = metadataPattern;
+		this.pattern = Constants.MAVEN2_PATTERN;
+		this.metadataPattern = Constants.MAVEN2_METADATA_PATTERN;
+		this.snapshotPattern = Constants.MAVEN2_SNAPSHOT_PATTERN;
 	}
 	
 	public File getArtifact(Dependency dep, String ext) {
-		String path = Dependency.getMavenPath(dep,  ext, pattern);
+		Dependency dcopy = DeepCopier.copy(dep);
+		if (dcopy.isSnapshot()) {
+			// in artifact cache we store as a.b-SNAPSHOT
+			// not a.b.20120618.134509-5
+			dcopy.revision = null;
+		}
+		String path = Dependency.getMavenPath(dcopy,  ext, pattern);
 		return new File(root, path);
 	}
 
@@ -54,7 +59,7 @@ public class ArtifactCache {
 	}
 	
 	public File getMetadata(Dependency dep, String ext) {
-		String path = Dependency.getMavenPath(dep,  ext, metadataPattern);
+		String path = Dependency.getMavenPath(dep,  ext, dep.isSnapshot() ? snapshotPattern : metadataPattern);
 		return new File(root, path);
 	}
 
@@ -68,15 +73,5 @@ public class ArtifactCache {
 		File file = getMetadata(dep, ext);
 		FileUtils.writeContent(file, content);
 		return file;
-	}
-	
-	public File getSolution(Dependency dep) {
-		return null;
-	}
-	
-	public File writeSolution(Dependency dep, String content) {
-		File file = getSolution(dep);
-		FileUtils.writeContent(file, content);
-		return file;
-	}
+	}	
 }
