@@ -82,12 +82,22 @@ public class Build {
 		this.configFile = configFile;
 		this.projectFolder = configFile.getAbsoluteFile().getParentFile();
 		
-		this.moxie = new Config(new File(System.getProperty("user.home") + "/.moxie/" + Constants.MOXIE_SETTINGS), Constants.MOXIE_SETTINGS);
+		// allow specifying Moxie root folder
+		File moxieRoot = new File(System.getProperty("user.home") + "/.moxie");
+		if (System.getProperty(Constants.MX_ROOT) != null) {
+			String value = System.getProperty(Constants.MX_ROOT);
+			if (!StringUtils.isEmpty(value)) {
+				moxieRoot = new File(value);
+			}
+		}
+		moxieRoot.mkdirs();
+		
+		this.moxie = new Config(new File(moxieRoot, Constants.MOXIE_SETTINGS), Constants.MOXIE_SETTINGS);
 		this.project = new Config(configFile, Constants.MOXIE_DEFAULTS);
 		
 		this.proxies = new LinkedHashSet<Proxy>();
 		this.repositories = new LinkedHashSet<Repository>();
-		this.moxieCache = new MoxieCache();
+		this.moxieCache = new MoxieCache(moxieRoot);
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
 		this.classpaths = new HashMap<Scope, List<File>>();
 		this.linkedProjects = new ArrayList<Build>();
@@ -1115,6 +1125,13 @@ public class Build {
 	
 	void describeSettings() {
 		if (verbose) {
+			console.log("Moxie parameters");
+			describe(Constants.MX_ROOT, getMoxieCache().root.getAbsolutePath());
+			describe(Constants.MX_ONLINE, "" + isOnline());
+			describe(Constants.MX_UPDATEMETADATA, "" + isUpdateMetadata());
+			describe(Constants.MX_DEBUG, "" + isDebug());
+			describe(Constants.MX_VERBOSE, "" + isVerbose());
+			
 			console.log("dependency sources");
 			if (repositories.size() == 0) {
 				console.error("no dependency sources defined!");
