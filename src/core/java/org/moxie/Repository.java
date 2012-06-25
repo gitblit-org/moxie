@@ -105,7 +105,7 @@ public class Repository {
 	protected String getSHA1(Build build, Dependency dep, String ext) {
 		try {
 			String extsha1 = ext + ".sha1";
-			File hashFile = build.getArtifactCache().getArtifact(dep, extsha1);
+			File hashFile = build.getMoxieCache().getArtifact(dep, extsha1);
 			if (hashFile.exists()) {
 				// read cached sha1
 				return FileUtils.readContent(hashFile, "\n").trim();
@@ -117,7 +117,7 @@ public class Repository {
 			String hashCode = content.substring(0, 40);
 
 			// cache this sha1 file
-			File file = build.getArtifactCache().writeArtifact(dep, extsha1, hashCode);
+			File file = build.getMoxieCache().writeArtifact(dep, extsha1, hashCode);
 			file.setLastModified(data.lastModified);
 			return hashCode;
 		} catch (FileNotFoundException t) {
@@ -137,7 +137,7 @@ public class Repository {
 	protected String getMetadataSHA1(Build build, Dependency dep) {
 		try {
 			String extsha1 = Constants.XML + ".sha1";
-			File hashFile = build.getArtifactCache().getMetadata(dep, extsha1);
+			File hashFile = build.getMoxieCache().getMetadata(dep, extsha1);
 			if (hashFile.exists()) {
 				// read cached sha1
 				return FileUtils.readContent(hashFile, "\n").trim();
@@ -149,7 +149,7 @@ public class Repository {
 			String hashCode = content.substring(0, 40);
 
 			// cache this sha1 file
-			File file = build.getArtifactCache().writeMetadata(dep, extsha1, hashCode);
+			File file = build.getMoxieCache().writeMetadata(dep, extsha1, hashCode);
 			file.setLastModified(data.lastModified);
 			return hashCode;
 		} catch (FileNotFoundException t) {
@@ -196,7 +196,7 @@ public class Repository {
 			}
 			
 			Metadata oldMetadata;
-			File file = build.getArtifactCache().getMetadata(dep, Constants.XML);
+			File file = build.getMoxieCache().getMetadata(dep, Constants.XML);
 			if (file != null && file.exists()) {
 				oldMetadata = MetadataReader.readMetadata(file);				
 			} else {
@@ -208,42 +208,42 @@ public class Repository {
 			newMetadata.merge(oldMetadata);
 
 			// save merged metadata to the artifact cache
-			file = build.getArtifactCache().writeMetadata(dep, Constants.XML, newMetadata.toXML());
+			file = build.getMoxieCache().writeMetadata(dep, Constants.XML, newMetadata.toXML());
 			file.setLastModified(data.lastModified);
 					
 			Date now = new Date();
 			if (dep.isSnapshot()) {
-				MoxieData moxiedata = build.getArtifactCache().readMoxieData(dep);
+				MoxieData moxiedata = build.getMoxieCache().readMoxieData(dep);
 				moxiedata.setOrigin(repositoryUrl);
 				// do not set lastDownloaded for metadata retrieval
 				moxiedata.setLastChecked(now);
 				moxiedata.setLastUpdated(newMetadata.lastUpdated);
-				build.getArtifactCache().writeMoxieData(dep, moxiedata);	
+				build.getMoxieCache().writeMoxieData(dep, moxiedata);	
 			} else {				
 				// update the Moxie RELEASE metadata
 				Dependency versions = DeepCopier.copy(dep);
 				versions.version = Constants.RELEASE;
 				
-				MoxieData moxiedata = build.getArtifactCache().readMoxieData(versions);
+				MoxieData moxiedata = build.getMoxieCache().readMoxieData(versions);
 				moxiedata.setOrigin(repositoryUrl);
 				// do not set lastDownloaded for metadata retrieval
 				moxiedata.setLastChecked(now);
 				moxiedata.setLastUpdated(now);
 				moxiedata.setRELEASE(newMetadata.release);
 				moxiedata.setLATEST(newMetadata.latest);
-				build.getArtifactCache().writeMoxieData(dep, moxiedata);
+				build.getMoxieCache().writeMoxieData(dep, moxiedata);
 				
 				// update the Moxie LATEST metadata
 				versions.version = Constants.LATEST;
 				
-				moxiedata = build.getArtifactCache().readMoxieData(versions);
+				moxiedata = build.getMoxieCache().readMoxieData(versions);
 				moxiedata.setOrigin(repositoryUrl);
 				// do not set lastDownloaded for metadata retrieval
 				moxiedata.setLastChecked(now);
 				moxiedata.setLastUpdated(now);
 				moxiedata.setRELEASE(newMetadata.release);
 				moxiedata.setLATEST(newMetadata.latest);
-				build.getArtifactCache().writeMoxieData(dep, moxiedata);	
+				build.getMoxieCache().writeMoxieData(dep, moxiedata);	
 			}
 			return file;
 		} catch (MalformedURLException m) {
@@ -290,16 +290,16 @@ public class Repository {
 			}
 
 			// save to the artifact cache
-			File file = build.getArtifactCache().writeArtifact(dep, ext, data.content);
+			File file = build.getMoxieCache().writeArtifact(dep, ext, data.content);
 			file.setLastModified(data.lastModified);
 			
 			// update Moxie metadata
-			MoxieData moxiedata = build.getArtifactCache().readMoxieData(dep);
+			MoxieData moxiedata = build.getMoxieCache().readMoxieData(dep);
 			moxiedata.setOrigin(repositoryUrl);
 			
 			Date now = new Date();
 			if (Constants.POM.equals(ext)) {
-				Pom pom = PomReader.readPom(build.getArtifactCache(), dep);
+				Pom pom = PomReader.readPom(build.getMoxieCache(), dep);
 				if (pom.isPOM()) {
 					// POM packaging, so no subsequent download check to mess up
 					moxiedata.setLastDownloaded(now);
@@ -316,7 +316,7 @@ public class Repository {
 					moxiedata.setLastUpdated(new Date(data.lastModified));
 				}
 			}
-			build.getArtifactCache().writeMoxieData(dep, moxiedata);
+			build.getMoxieCache().writeMoxieData(dep, moxiedata);
 			
 			return file;
 		} catch (MalformedURLException m) {

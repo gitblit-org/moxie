@@ -292,7 +292,7 @@ public class Build {
 		return linkedProjects;
 	}
 
-	public MoxieCache getArtifactCache() {
+	public MoxieCache getMoxieCache() {
 		return moxieCache;
 	}
 	
