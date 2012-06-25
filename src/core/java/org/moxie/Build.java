@@ -142,6 +142,15 @@ public class Build {
 		}
 		return false;
 	}
+	
+	public boolean isUpdateMetadata() {
+		String mxUpdateMetadata = System.getProperty(Constants.MX_UPDATEMETADATA, null);
+		if (!StringUtils.isEmpty(mxUpdateMetadata)) {
+			// use system property to force updating maven-metadata.xml
+			return Boolean.parseBoolean(mxUpdateMetadata);
+		}
+		return false;
+	}
 
 	private boolean cache() {
 		return moxie.apply(Constants.APPLY_CACHE) || project.apply(Constants.APPLY_CACHE);
@@ -681,7 +690,7 @@ public class Build {
 				|| dependency.version.equalsIgnoreCase(Constants.LATEST)) {
 			// Support SNAPSHOT, RELEASE and LATEST versions
 			File metadataFile = moxieCache.getMetadata(dependency, Constants.XML);
-			boolean updateRequired = !metadataFile.exists();
+			boolean updateRequired = !metadataFile.exists() || isUpdateMetadata();
 			
 			if (!updateRequired) {
 				MoxieData moxiedata = moxieCache.readMoxieData(dependency);

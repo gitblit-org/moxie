@@ -59,6 +59,8 @@ public class Constants {
 	
 	public static final String MX_ONLINE = "mx.online";
 	
+	public static final String MX_UPDATEMETADATA = "mx.updateMetadata";
+	
 	public static final String MOXIE_SETTINGS = "settings.moxie";
 	
 	public static final String MOXIE_DEFAULTS = "defaults.moxie";
