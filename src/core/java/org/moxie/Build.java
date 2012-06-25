@@ -1106,7 +1106,7 @@ public class Build {
 		
 		if (!isOnline()) {
 			console.separator();
-			console.warn("Moxie is running offline. Network functions disabled");
+			console.warn("Moxie is running offline. Network functions disabled.");
 		}
 
 		if (verbose) {
