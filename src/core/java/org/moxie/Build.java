@@ -140,7 +140,7 @@ public class Build {
 			// use system property to determine online
 			return Boolean.parseBoolean(mxOnline);
 		}
-		return false;
+		return true;
 	}
 	
 	public boolean isUpdateMetadata() {
