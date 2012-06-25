@@ -57,6 +57,8 @@ public class Constants {
 	
 	public static final String MX_COLOR = "mx.color";
 	
+	public static final String MX_ONLINE = "mx.online";
+	
 	public static final String MOXIE_SETTINGS = "settings.moxie";
 	
 	public static final String MOXIE_DEFAULTS = "defaults.moxie";

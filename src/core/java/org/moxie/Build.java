@@ -133,6 +133,15 @@ public class Build {
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
 	}
+	
+	public boolean isOnline() {
+		String mxOnline = System.getProperty(Constants.MX_ONLINE, null);
+		if (!StringUtils.isEmpty(mxOnline)) {
+			// use system property to determine online
+			return Boolean.parseBoolean(mxOnline);
+		}
+		return false;
+	}
 
 	private boolean cache() {
 		return moxie.apply(Constants.APPLY_CACHE) || project.apply(Constants.APPLY_CACHE);
@@ -696,7 +705,7 @@ public class Build {
 				}
 			}
 			
-			if (updateRequired) {
+			if (updateRequired && isOnline()) {
 				// download artifact maven-metadata.xml
 				for (Repository repository : repositories) {
 					if (!repository.isMavenSource()) {
@@ -735,7 +744,7 @@ public class Build {
 				dependency.revision = revision;
 			}
 			
-			if (updateRequired) {
+			if (updateRequired && isOnline()) {
 				// reset last checked date for next update check
 				// after we have resolved RELEASE, LATEST, or SNAPSHOT
 				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
@@ -746,7 +755,7 @@ public class Build {
 		
 		MoxieData moxiedata = moxieCache.readMoxieData(dependency);
 		File pomFile = moxieCache.getArtifact(dependency, Constants.POM);
-		if (!pomFile.exists() || (dependency.isSnapshot() && moxiedata.isRefreshRequired())) {
+		if ((!pomFile.exists() || (dependency.isSnapshot() && moxiedata.isRefreshRequired())) && isOnline()) {
 			// download the POM
 			for (Repository repository : repositories) {
 				if (!repository.isMavenSource()) {
@@ -817,7 +826,7 @@ public class Build {
 				}
 			}
 			
-			if (downloadDependency) {
+			if (downloadDependency && isOnline()) {
 				// Download primary artifact (e.g. jar)
 				artifactFile = repository.download(this, dependency, dependency.type);
 				// Download sources artifact (e.g. -sources.jar)
@@ -1075,6 +1084,11 @@ public class Build {
 		describe(Key.version, pom.version);
 		describe(Key.organization, pom.organization);
 		describe(Key.url, pom.url);
+		
+		if (!isOnline()) {
+			console.separator();
+			console.warn("Moxie is running offline. Network functions disabled");
+		}
 
 		if (verbose) {
 			console.separator();
