@@ -7,6 +7,13 @@
 	</include>
 	
 	<target name="main">
-		<antcall target="moxie.package" />
+		<mx:init />
+		<mx:javac />
+		<mx:jar fatjar="true" includeResources="true">
+			<classfilter>
+				<exclude name="org.xml." />
+			</classfilter>
+			<mainclass name="org.moxie.proxy.Main" />
+		</mx:jar>
 	</target>
 </project>
