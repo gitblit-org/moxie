@@ -18,12 +18,9 @@ package org.moxie.proxy;
 import java.io.File;
 import java.net.URL;
 
-import org.codehaus.plexus.util.FileUtils;
-import org.moxie.proxy.Config;
-import org.moxie.proxy.ProxyDownload;
-import org.moxie.proxy.RequestHandler;
-
 import junit.framework.TestCase;
+
+import org.moxie.utils.FileUtils;
 
 public class ProxyDownloadTest extends TestCase
 {

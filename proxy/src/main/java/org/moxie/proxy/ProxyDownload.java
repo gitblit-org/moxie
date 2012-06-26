@@ -32,7 +32,8 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Download a file via a proxy server and store it somewhere.
@@ -42,7 +43,7 @@ import org.apache.log4j.Logger;
  */
 public class ProxyDownload
 {
-    public static final Logger log = Logger.getLogger(ProxyDownload.class);
+    public static final Log log = LogFactory.getLog(ProxyDownload.class);
     private final URL url;
     private final File dest;
 

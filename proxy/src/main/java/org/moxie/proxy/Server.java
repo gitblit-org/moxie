@@ -19,7 +19,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Wait for connections from somewhere and pass them on to <code>RequestHandler</code>
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
  */
 public class Server
 {
-    public static final Logger log = Logger.getLogger(Server.class);
+    public static final Log log = LogFactory.getLog(Server.class);
     
     private int port;
     private ServerSocket socket;

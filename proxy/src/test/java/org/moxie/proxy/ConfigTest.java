@@ -20,12 +20,12 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.apache.log4j.Logger;
-import org.moxie.proxy.Config;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class ConfigTest extends TestCase
 {
-    public static final Logger log = Logger.getLogger(ConfigTest.class);
+    public static final Log log = LogFactory.getLog(ConfigTest.class);
     
     public void testGetProperties () throws Exception
     {
@@ -70,13 +70,7 @@ public class ConfigTest extends TestCase
         Config.reload ();
         assertEquals ("cache-dir", Config.getCacheDirectory().getName());
     }
-    
-    public void testGetPatchesDirectory () throws Exception
-    {
-        Config.reload ();
-        assertEquals ("patches-dir", Config.getPatchesDirectory().getName());
-    }
-    
+       
     public void testGetProxyUsername () throws Exception
     {
         Config.reload ();

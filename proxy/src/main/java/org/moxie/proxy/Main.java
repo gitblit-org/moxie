@@ -15,7 +15,8 @@
  */
 package org.moxie.proxy;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * The main class.
@@ -25,7 +26,7 @@ import org.apache.log4j.Logger;
  */
 public class Main
 {
-    public static final Logger log = Logger.getLogger(Main.class);
+    public static final Log log = LogFactory.getLog(Main.class);
     
     public static void main (String[] args)
     {

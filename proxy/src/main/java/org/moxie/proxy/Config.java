@@ -24,13 +24,13 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+import org.moxie.utils.StringUtils;
 
 /**
  * Read and manage the configuration.
@@ -43,7 +43,7 @@ import org.jdom.input.SAXBuilder;
  */
 public class Config
 {
-    public static final Logger log = Logger.getLogger(Config.class);
+    public static final Log log = LogFactory.getLog(Config.class);
     
     private static Document config;
     private static long configLastModified;
@@ -54,7 +54,6 @@ public class Config
     private static String proxyUser;
     private static String proxyPassword;
     private static File cacheDirectory = new File ("cache");
-    private static File patchesDirectory = new File ("patches");
     
     public static synchronized void reload ()
     {
@@ -82,14 +81,12 @@ public class Config
             String tmpProxyUser = proxyUser;
             String tmpProxyPassword = proxyPassword;
             File tmpCacheDirectory = cacheDirectory;
-            File tmpPatchesDirectory = patchesDirectory;
             
             try
             {
                 doc = builder.build(configFile);
                 Element root = doc.getRootElement ();
                 tmpCacheDirectory = getCacheDirectory (root);
-                tmpPatchesDirectory = getPatchesDirectory (root);
                 tmpMirrors = getMirrors (root);
                 tmpAllowDeny = getAllowDeny (root);
                 tmpNoProxy = getNoProxy (root);
@@ -121,7 +118,6 @@ public class Config
             // After the error checking, save the new parameters
             config = doc;
             cacheDirectory = tmpCacheDirectory;
-            patchesDirectory = tmpPatchesDirectory;
             mirrors = tmpMirrors;
             allowDeny = tmpAllowDeny;
             noProxy = tmpNoProxy;
@@ -170,31 +166,12 @@ public class Config
     {
         return cacheDirectory;
     }
-    
-    private static File getPatchesDirectory (Element root)
-    {
-        String defaultValue = "patches";
-        
-        String s = getStringProperty(root, "directories", "patches", defaultValue);
-        File f = new File (s);
-        if (!f.isAbsolute())
-            f = new File (getBaseDirectory (), s);
-        
-        IOUtils.mkdirs (f);
-        
-        return f;
-    }
 
-    public static File getPatchesDirectory ()
-    {
-        return patchesDirectory;
-    }
-    
     public static File getBaseDirectory ()
     {
         String path = BASE_DIR;
         if (path == null)
-            path = SystemUtils.USER_HOME;
+            path = System.getProperty("user.home");
         return new File (path);
     }
 
@@ -356,9 +333,9 @@ public class Config
             String from = element.getAttributeValue("from");
             String to = element.getAttributeValue("to");
             
-            if (StringUtils.isBlank(from))
+            if (StringUtils.isEmpty(from))
                 throw new RuntimeException ("from attribute is missing or empty in redirect element");
-            if (StringUtils.isBlank(to))
+            if (StringUtils.isEmpty(to))
                 throw new RuntimeException ("to attribute is missing or empty in redirect element");
             
             l.add (new MirrorEntry (from, to));
@@ -397,7 +374,7 @@ public class Config
         if (s == null)
             return new String[0];
         
-        String[] result = StringUtils.split(s, ",");
+        String[] result = s.split(",");
         for (int i=0; i<result.length; i++)
         {
             result[i] = result[i].trim ();

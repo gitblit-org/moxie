@@ -8,6 +8,7 @@
 	
 	<target name="main">
 		<mx:init />
+		<mx:report scope="compile" />
 		<mx:javac />
 		<mx:jar fatjar="true" includeResources="true">
 			<classfilter>

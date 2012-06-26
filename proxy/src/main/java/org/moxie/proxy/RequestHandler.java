@@ -19,7 +19,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,12 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
-import org.codehaus.plexus.digest.DigesterException;
-import org.codehaus.plexus.digest.Md5Digester;
-import org.codehaus.plexus.digest.Sha1Digester;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Handle a connection from a maven.
@@ -45,7 +40,7 @@ import org.codehaus.plexus.digest.Sha1Digester;
  */
 public class RequestHandler extends Thread
 {
-    public static final Logger log = Logger.getLogger(RequestHandler.class);
+    public static final Log log = LogFactory.getLog(RequestHandler.class);
     
     private Socket clientSocket;
 
@@ -79,7 +74,7 @@ public class RequestHandler extends Thread
                     fullRequest.append (line);
                     fullRequest.append ('\n');
                     
-                    if ("Proxy-Connection: keep-alive".equals (line))
+                    if ("proxy-connection: keep-alive".equals (line.toLowerCase()))
                         keepAlive = true;
                     
                     if (line.startsWith("GET "))
@@ -161,9 +156,7 @@ public class RequestHandler extends Thread
         if (!"http".equals(url.getProtocol()))
             throw new IOException ("Can only handle HTTP requests, got "+downloadURL);
         
-        File f = getPatchFile(url);
-        if (!f.exists())
-            f = getCacheFile(url);
+        File f = getCacheFile(url);
         
         if (!f.exists())
         {
@@ -194,7 +187,7 @@ public class RequestHandler extends Thread
         print ("Content-length: ");
         println (String.valueOf(f.length()));
         print ("Content-type: ");
-        String ext = StringUtils.substringAfterLast(downloadURL, ".").toLowerCase();
+        String ext = downloadURL.substring(downloadURL.lastIndexOf('.') + 1).toLowerCase();
         String type = CONTENT_TYPES.get (ext);
         if (type == null)
         {
@@ -208,63 +201,7 @@ public class RequestHandler extends Thread
         data.close();
     }
 
-    public static File getPatchFile (URL url)
-    {
-        File dir = Config.getPatchesDirectory();
-        File f = getCacheFile(url, dir);
-        
-        if (!f.exists())
-        {
-            String ext = StringUtils.substringAfterLast(url.getPath(), ".").toLowerCase();
-            if ("md5".equals (ext) || "sha1".equals (ext))
-            {
-                File source = new File (StringUtils.substringBeforeLast(f.getAbsolutePath(), "."));
-                if (source.exists())
-                {
-                    generateChecksum (source, f, ext);
-                }
-            }
-        }
-        
-        return f;
-    }
-    
-    public static void generateChecksum (File source, File f, String ext)
-    {
-        try
-        {
-            String checksum = null;
-            if ("md5".equals (ext))
-            {
-                Md5Digester digester = new Md5Digester ();
-                checksum = digester.calc(source);
-            }
-            else if ("sha1".equals (ext))
-            {
-                Sha1Digester digester = new Sha1Digester ();
-                checksum = digester.calc(source);
-            }
-            
-            if (checksum != null)
-            {
-                FileWriter w = new FileWriter (f);
-                w.write(checksum);
-                w.write(SystemUtils.LINE_SEPARATOR);
-                w.close ();
-            }
-        }
-        catch (DigesterException e)
-        {
-            log.warn ("Error creating "+ext.toUpperCase()+" checksum for "+source.getAbsolutePath(), e);
-        }
-        catch (IOException e)
-        {
-            log.warn ("Error writing "+ext.toUpperCase()+" checksum for "+source.getAbsolutePath()+" to "+f.getAbsolutePath(), e);
-        }
-        
-    }
-
-    public static File getCacheFile (URL url)
+     public static File getCacheFile (URL url)
     {
         File dir = Config.getCacheDirectory();
         return getCacheFile(url, dir);
@@ -285,25 +222,13 @@ public class RequestHandler extends Thread
         CONTENT_TYPES.put ("pom", "application/xml");
         
         CONTENT_TYPES.put ("jar", "application/java-archive");
+        CONTENT_TYPES.put ("zip", "application/zip");
+        CONTENT_TYPES.put ("war", "application/java-archive");
         
         CONTENT_TYPES.put ("md5", "text/plain");
         CONTENT_TYPES.put ("sha1", "text/plain");
         CONTENT_TYPES.put ("asc", "text/plain");
-
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
-        CONTENT_TYPES.put ("", "");
+ 
     }
     
     private final static SimpleDateFormat INTERNET_FORMAT = new SimpleDateFormat ("EEE, d MMM yyyy HH:mm:ss zzz");
@@ -360,7 +285,7 @@ public class RequestHandler extends Thread
         }
         catch (SocketException e)
         {
-            if ("Connection reset".equals (e.getMessage()))
+            if ("connection reset".equals (e.getMessage().toLowerCase()))
                 return null;
             
             throw e;
