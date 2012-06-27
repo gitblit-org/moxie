@@ -15,10 +15,14 @@
  */
 package org.moxie;
 
+import java.io.File;
+
 public class LinkedProject {
 
 	final String name;
 	final String descriptor;
+	
+	File folder;
 	
 	public LinkedProject(String def) {
 		if (def.indexOf('@') > -1) {

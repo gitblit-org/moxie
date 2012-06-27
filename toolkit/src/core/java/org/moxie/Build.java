@@ -18,6 +18,7 @@ package org.moxie;
 import static java.text.MessageFormat.format;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -32,7 +33,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.moxie.Constants.Key;
 import org.moxie.console.Console;
@@ -405,6 +409,7 @@ public class Build {
 				File file = new File(projectDir, linkedProject.descriptor);
 				if (file.exists()) {
 					// use Moxie config
+					linkedProject.folder = projectDir;
 					console.debug("located linked project {0} ({1})", linkedProject.name, file.getAbsolutePath());
 					Build subProject = new Build(file.getAbsoluteFile());
 					subProject.silent = true;
@@ -1029,13 +1034,37 @@ public class Build {
 		}
 		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", FileUtils.getRelativePath(projectFolder, getEclipseOutputFolder(Scope.compile))));
 				
-		for (LinkedProject linkedProject : project.linkedProjects) {
-			String path = linkedProject.name.replace('\\', '/');
-			String workspaceProject = path;
-			if (workspaceProject.lastIndexOf('/') > -1) {
-				workspaceProject = path.substring(path.lastIndexOf('/') + 1);
+		for (LinkedProject linkedProject : project.linkedProjects) {			
+			String projectName = null;
+			File dotProject = new File(linkedProject.folder, ".project");
+			if (dotProject.exists()) {
+				// extract Eclipse project name
+				console.debug("extracting project name from {0}", dotProject.getAbsolutePath());
+				Pattern p = Pattern.compile("(<name>)(.+)(</name>)");
+				try {
+					Scanner scanner = new Scanner(dotProject);
+					while (scanner.hasNextLine()) {
+						scanner.nextLine();
+						projectName = scanner.findInLine(p);
+						if (!StringUtils.isEmpty(projectName)) {
+							Matcher m = p.matcher(projectName);
+							m.find();
+							projectName = m.group(2).trim();
+							console.debug(1, projectName);
+							break;
+						}
+					}
+				} catch (FileNotFoundException e) {
+				}
+			} else {
+				// use folder name
+				String path = linkedProject.name.replace('\\', '/');
+				projectName = path;
+				if (projectName.lastIndexOf('/') > -1) {
+					projectName = path.substring(path.lastIndexOf('/') + 1);
+				}
 			}
-			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", workspaceProject));
+			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", projectName));
 		}
 		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
 		sb.append("</classpath>");
