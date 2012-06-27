@@ -2,34 +2,54 @@
 <project default="main" xmlns:mx="antlib:org.moxie">
 
 	<!-- These are the default Moxie locations -->
-	<property name="moxie.bin" value="${basedir}/build" />
-	<property name="moxie.bin.classes" value="${moxie.bin}/classes" />
+	<property name="common.dir" value="${basedir}/../common" />
+	<property name="common.bin" value="${common.dir}/build" />
+	<property name="common.bin.classes" value="${common.bin}/classes" />
+	
+	<property name="toolkit.bin" value="${basedir}/build" />
+	<property name="toolkit.bin.classes" value="${toolkit.bin}/classes" />
 
 	<!--
 	Declare the Moxie tasks and Compile all of Moxie
 	-->
 	<target name="bootstrap">
 		<!-- Clean -->
-		<delete dir="${moxie.bin}" />
-		<mkdir dir="${moxie.bin}" />
-		<mkdir dir="${moxie.bin.classes}" />
+		<delete dir="${common.bin}" />
+		<mkdir dir="${common.bin}" />
+		<mkdir dir="${common.bin.classes}" />
+
+		<delete dir="${toolkit.bin}" />
+		<mkdir dir="${toolkit.bin}" />
+		<mkdir dir="${toolkit.bin.classes}" />
 
 		<!-- Bootstrap compile MxInit task and core objects -->
-		<javac debug="true" destdir="${moxie.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
+		<javac debug="true" destdir="${common.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
+			<src path="${common.dir}/src/main/java" />
+		</javac>
+		
+		<javac debug="true" destdir="${toolkit.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
 			<src path="${basedir}/src/core/java" />
+			<classpath>
+				<pathelement path="${common.bin.classes}" />
+			</classpath>
 		</javac>
 		
 		<!-- Copy Moxie resources -->
-		<copy todir="${moxie.bin.classes}" overwrite="false">
+		<copy todir="${toolkit.bin.classes}" overwrite="false">
 			<fileset dir="${basedir}/src/core/resources" />
 		</copy>
+		
+		<path id="moxie.classpath">
+			<pathelement path="${toolkit.bin.classes}" />
+			<pathelement path="${common.bin.classes}" />			
+		</path>
 
 		<!-- Declare mx:init and read configuration -->
-		<taskdef classname="org.moxie.ant.MxInit" name="init" classpath="${moxie.bin.classes}" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxInit" name="init" classpathref="moxie.classpath" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<mx:init />
 
 		<!-- Compile all of Moxie with mx:javac and retrieved dependencies -->
-		<taskdef classname="org.moxie.ant.MxJavac" name="javac" classpath="${moxie.bin.classes}" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxJavac" name="javac" classpathref="moxie.classpath" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<mx:javac />
 		
 	</target>
@@ -49,7 +69,8 @@
 		to share objects.  This is handled automatically in production Moxie jars.
 		-->
 		<path id="bootstrap.path">
-			<pathelement path="${moxie.bin.classes}" />
+			<pathelement path="${common.bin.classes}" />
+			<pathelement path="${toolkit.bin.classes}" />
 		</path>
 
 		<!-- Core -->
