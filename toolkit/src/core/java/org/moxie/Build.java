@@ -404,6 +404,7 @@ public class Build {
 			console.log("solving {0} linked projects", project.getPom().getManagementId());
 			console.separator();
 		}
+		Set<Build> builds = new LinkedHashSet<Build>();
 		for (LinkedProject linkedProject : project.linkedProjects) {
 			console.debug(Console.SEP);
 			String resolvedName = getPom().resolveProperties(linkedProject.name);
@@ -432,8 +433,8 @@ public class Build {
 					console.log(1, "=> project {0}", subProject.getPom().getCoordinates());
 					subProject.solve();
 					// add this subproject and it's dependent projects
-					linkedProjects.add(subProject);
-					linkedProjects.addAll(subProject.linkedProjects);
+					builds.add(subProject);
+					builds.addAll(subProject.linkedProjects);
 					
 					// linked project dependencies are considered ring-0
 					for (Scope scope : new Scope[] { Scope.compile }) {
@@ -449,6 +450,9 @@ public class Build {
 				throw new RuntimeException(e);
 			}
 		}
+		
+		// add the list of unique builds
+		linkedProjects.addAll(builds);
 	}
 	
 	private void retrievePOMs() {
