@@ -23,7 +23,6 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 
-import org.moxie.Constants;
 import org.moxie.Dependency;
 import org.moxie.License;
 import org.moxie.Pom;
@@ -34,6 +33,14 @@ import org.moxie.utils.StringUtils;
 
 
 public class Console {
+
+	public static final String HDR = "=========================================================";
+
+	public static final String SUB = "---------------------------------------------------------";
+	
+	public static final String SEP = "---------------------------------------------------------";
+
+	public static final String INDENT = "   ";
 
 	protected boolean debug;
 
@@ -72,15 +79,15 @@ public class Console {
 	}
 	
 	public void header() {		
-		out.println(ansi().fg(Color.CYAN).a(Constants.HDR).reset());
+		out.println(ansi().fg(Color.CYAN).a(HDR).reset());
 	}
 	
 	public void subheader() {		
-		out.println(ansi().fg(Color.CYAN).a(Constants.SUB).reset());
+		out.println(ansi().fg(Color.CYAN).a(SUB).reset());
 	}
 
 	public void separator() {
-		out.println(ansi().fg(Color.RED).a(Constants.SEP).reset());
+		out.println(ansi().fg(Color.RED).a(SEP).reset());
 	}
 	
 	public void title(String name) {
@@ -113,7 +120,7 @@ public class Console {
 	}
 	
 	public void sourceFolder(SourceFolder sourceFolder) {
-		out.append(Constants.INDENT);
+		out.append(INDENT);
 		out.print(ansi().fg(Color.GREEN).a(sourceFolder.name).reset());
 		out.print(" (");
 		out.print(ansi().bold().fg(Color.MAGENTA).a(sourceFolder.scope).boldOff().reset());
@@ -127,7 +134,7 @@ public class Console {
 	}
 
 	public void dependency(Dependency dependency) {
-		out.append(Constants.INDENT);
+		out.append(INDENT);
 		out.println(ansi().fg(Color.GREEN).a(dependency.getDetailedCoordinates()).reset());
 	}
 	
@@ -137,7 +144,7 @@ public class Console {
 			sb.append("  ");
 		}
 		String dd = sb.toString();
-		String md = dd + Constants.INDENT + " ";
+		String md = dd + INDENT + " ";
 		StringBuilder rs = new StringBuilder();
 		out.append(dd).append(ansi().fg(Color.YELLOW).a(dependency.ring + ":").toString()).println(ansi().fg(Color.GREEN).a(dependency.getDetailedCoordinates()).reset());
 		rs.append(dd).append(dependency.ring).append(':').append(dependency.getDetailedCoordinates()).append('\n');
@@ -157,7 +164,7 @@ public class Console {
 	}
 	
 	public void download(String url) {
-		out.append(Constants.INDENT);
+		out.append(INDENT);
 		out.append("<= ");
 		out.println(ansi().fg(Color.CYAN).a(url).reset());
 	}
@@ -180,7 +187,7 @@ public class Console {
 	
 	public void log(int indent, String message, Object... args) {
 		for (int i = 0; i < indent; i++) {
-			out.append(Constants.INDENT);
+			out.append(INDENT);
 		}
 		out.println(MessageFormat.format(message, args));		
 	}
@@ -198,13 +205,13 @@ public class Console {
 			return;
 		}
 		for (int i = 0; i < indent; i++) {
-			out.append(Constants.INDENT);
+			out.append(INDENT);
 		}
 		out.println(ansi().bold().fg(Color.BLUE).a(MessageFormat.format(message, args)).boldOff().reset());		
 	}
 
 	public void key(String key, String value) {
-		out.append(Constants.INDENT);
+		out.append(INDENT);
 		out.print(ansi().fg(Color.DEFAULT).a(key).reset());
 		if (key.trim().length() > 0) {
 			out.print(": ");
@@ -224,7 +231,7 @@ public class Console {
 
 	public void notice(int indent, String message, Object... args) {
 		for (int i = 0; i < indent; i++) {
-			out.append(Constants.INDENT);
+			out.append(INDENT);
 		}
 		out.println(ansi().fg(Color.YELLOW).a(MessageFormat.format(message, args)).reset());
 	}
@@ -243,7 +250,7 @@ public class Console {
 	
 	public void warn(int indent, String message, Object... args) {
 		for (int i = 0; i < indent; i++) {
-			out.append(Constants.INDENT);
+			out.append(INDENT);
 		}
 		out.println(ansi().bold().fg(Color.YELLOW).a(MessageFormat.format(message, args)).boldOff().reset());
 	}

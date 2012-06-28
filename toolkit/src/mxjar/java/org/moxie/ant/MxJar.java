@@ -46,8 +46,8 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 import org.apache.tools.ant.types.resources.FileResource;
 import org.moxie.Build;
-import org.moxie.Constants;
-import org.moxie.Constants.Key;
+import org.moxie.Toolkit;
+import org.moxie.Toolkit.Key;
 import org.moxie.Pom;
 import org.moxie.Scope;
 import org.moxie.console.Console;
@@ -268,7 +268,7 @@ public class MxJar extends GenJar {
 				set.setIncludes(includes);
 			}
 			if (excludes == null) {
-				excludes = Constants.DEFAULT_EXCLUDES;
+				excludes = Toolkit.DEFAULT_EXCLUDES;
 			}
 			set.setExcludes(excludes);
 		}
@@ -405,7 +405,7 @@ public class MxJar extends GenJar {
 	void configureManifest(Manifest manifest) {
 		// set manifest entries from Moxie metadata
 		Manifest mft = new Manifest();
-		setManifest(mft, "Created-By", "Moxie v" + Constants.getVersion());
+		setManifest(mft, "Created-By", "Moxie v" + Toolkit.getVersion());
 		setManifest(mft, "Build-Jdk", System.getProperty("java.version"));
 		setManifest(mft, "Build-Date", new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
 

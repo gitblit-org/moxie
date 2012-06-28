@@ -15,12 +15,12 @@
  */
 package org.moxie;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.tools.ant.filters.StringInputStream;
 import org.moxie.Constants.Key;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -61,7 +61,7 @@ public class MetadataReader {
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			doc = builder.parse(new StringInputStream(content, "UTF-8"));
+			doc = builder.parse(new ByteArrayInputStream(content.getBytes("UTF-8")));
 			doc.getDocumentElement().normalize();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

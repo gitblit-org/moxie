@@ -28,7 +28,7 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 import org.apache.tools.ant.util.FileUtils;
 import org.moxie.Build;
-import org.moxie.Constants.Key;
+import org.moxie.Toolkit.Key;
 import org.moxie.Pom;
 import org.moxie.Scope;
 import org.moxie.utils.StringUtils;

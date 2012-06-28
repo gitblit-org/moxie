@@ -21,8 +21,8 @@ import java.io.InputStream;
 
 import org.apache.tools.ant.Task;
 import org.moxie.Build;
-import org.moxie.Constants;
-import org.moxie.Constants.Key;
+import org.moxie.Toolkit;
+import org.moxie.Toolkit.Key;
 import org.moxie.console.Console;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
@@ -40,7 +40,7 @@ public abstract class MxTask extends Task {
 	
 	public boolean isVerbose() {
 		if (verbose == null) {
-			String mxvb = System.getProperty(Constants.MX_VERBOSE);
+			String mxvb = System.getProperty(Toolkit.MX_VERBOSE);
 			if (StringUtils.isEmpty(mxvb)) {
 				Build build = getBuild();
 				if (build == null) {

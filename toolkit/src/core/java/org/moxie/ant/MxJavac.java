@@ -30,8 +30,8 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 import org.moxie.Build;
-import org.moxie.Constants;
-import org.moxie.Constants.Key;
+import org.moxie.Toolkit;
+import org.moxie.Toolkit.Key;
 import org.moxie.Scope;
 import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.FileUtils;
@@ -279,7 +279,7 @@ public class MxJavac extends Javac {
 
 			if (excludes == null) {
 				// default exclusions
-				excludes = Constants.DEFAULT_EXCLUDES;
+				excludes = Toolkit.DEFAULT_EXCLUDES;
 			}
 			
 			for (String path : getSrcdir().list()) {

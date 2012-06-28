@@ -15,21 +15,7 @@
  */
 package org.moxie;
 
-public class Constants {
-
-	public static final String HDR = "=========================================================";
-
-	public static final String SUB = "---------------------------------------------------------";
-	
-	public static final String SEP = "---------------------------------------------------------";
-
-	public static final String INDENT = "   ";
-	
-	public static final String MAVEN2_PATTERN = "${groupId}/${artifactId}/${version}/${artifactId}-${revision}${classifier}.${ext}";
-
-	public static final String MAVEN2_METADATA_PATTERN = "${groupId}/${artifactId}/maven-metadata.${ext}";
-	
-	public static final String MAVEN2_SNAPSHOT_PATTERN = "${groupId}/${artifactId}/${version}/maven-metadata.${ext}";
+public class Toolkit {
 	
 	public static final String APPLY_ECLIPSE = "eclipse";
 	
@@ -42,14 +28,6 @@ public class Constants {
 	public static final String APPLY_CACHE = "cache";
 	
 	public static final String DEFAULT_EXCLUDES = "**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
-	
-	public static final String RELEASE = "RELEASE";
-	
-	public static final String LATEST = "LATEST";
-	
-	public static final String POM = "pom";
-	
-	public static final String XML = "xml";
 	
 	public static final String MX_DEBUG = "mx.debug";
 
@@ -94,7 +72,7 @@ public class Constants {
 	}
 	
 	public static String getVersion() {
-		String v = Constants.class.getPackage().getImplementationVersion();
+		String v = Toolkit.class.getPackage().getImplementationVersion();
 		if (v == null) {
 			return "DEVELOPMENT";
 		}

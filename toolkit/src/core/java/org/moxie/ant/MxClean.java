@@ -18,7 +18,7 @@ package org.moxie.ant;
 import java.io.File;
 
 import org.moxie.Build;
-import org.moxie.Constants.Key;
+import org.moxie.Toolkit.Key;
 import org.moxie.Scope;
 import org.moxie.utils.FileUtils;
 

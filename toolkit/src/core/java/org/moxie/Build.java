@@ -38,7 +38,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.moxie.Constants.Key;
+import org.moxie.Toolkit.Key;
 import org.moxie.console.Console;
 import org.moxie.maxml.MaxmlException;
 import org.moxie.maxml.MaxmlMap;
@@ -92,16 +92,16 @@ public class Build {
 		
 		// allow specifying Moxie root folder
 		File moxieRoot = new File(System.getProperty("user.home") + "/.moxie");
-		if (System.getProperty(Constants.MX_ROOT) != null) {
-			String value = System.getProperty(Constants.MX_ROOT);
+		if (System.getProperty(Toolkit.MX_ROOT) != null) {
+			String value = System.getProperty(Toolkit.MX_ROOT);
 			if (!StringUtils.isEmpty(value)) {
 				moxieRoot = new File(value);
 			}
 		}
 		moxieRoot.mkdirs();
 		
-		this.moxie = new Config(new File(moxieRoot, Constants.MOXIE_SETTINGS), projectFolder, Constants.MOXIE_SETTINGS);
-		this.project = new Config(configFile, projectFolder, Constants.MOXIE_DEFAULTS);
+		this.moxie = new Config(new File(moxieRoot, Toolkit.MOXIE_SETTINGS), projectFolder, Toolkit.MOXIE_SETTINGS);
+		this.project = new Config(configFile, projectFolder, Toolkit.MOXIE_DEFAULTS);
 		
 		this.proxies = new LinkedHashSet<Proxy>();
 		this.repositories = new LinkedHashSet<Repository>();
@@ -136,10 +136,10 @@ public class Build {
 	}
 	
 	public boolean isColor() {
-		String mxColor = System.getProperty(Constants.MX_COLOR, null);
+		String mxColor = System.getProperty(Toolkit.MX_COLOR, null);
 		if (StringUtils.isEmpty(mxColor)) {
 			// use Moxie apply setting
-			return moxie.apply(Constants.APPLY_COLOR) || project.apply(Constants.APPLY_COLOR);
+			return moxie.apply(Toolkit.APPLY_COLOR) || project.apply(Toolkit.APPLY_COLOR);
 		} else {
 			// use system property to determine color
 			return Boolean.parseBoolean(mxColor);
@@ -147,10 +147,10 @@ public class Build {
 	}
 	
 	public boolean isDebug() {
-		String mxDebug = System.getProperty(Constants.MX_DEBUG, null);
+		String mxDebug = System.getProperty(Toolkit.MX_DEBUG, null);
 		if (StringUtils.isEmpty(mxDebug)) {
 			// use Moxie apply setting
-			return moxie.apply(Constants.APPLY_DEBUG) || project.apply(Constants.APPLY_DEBUG);
+			return moxie.apply(Toolkit.APPLY_DEBUG) || project.apply(Toolkit.APPLY_DEBUG);
 		} else {
 			// use system property to determine debug
 			return Boolean.parseBoolean(mxDebug);
@@ -166,7 +166,7 @@ public class Build {
 	}
 	
 	public boolean isOnline() {
-		String mxOnline = System.getProperty(Constants.MX_ONLINE, null);
+		String mxOnline = System.getProperty(Toolkit.MX_ONLINE, null);
 		if (!StringUtils.isEmpty(mxOnline)) {
 			// use system property to determine online
 			return Boolean.parseBoolean(mxOnline);
@@ -175,7 +175,7 @@ public class Build {
 	}
 	
 	public boolean isUpdateMetadata() {
-		String mxUpdateMetadata = System.getProperty(Constants.MX_UPDATEMETADATA, null);
+		String mxUpdateMetadata = System.getProperty(Toolkit.MX_UPDATEMETADATA, null);
 		if (!StringUtils.isEmpty(mxUpdateMetadata)) {
 			// use system property to force updating maven-metadata.xml
 			return Boolean.parseBoolean(mxUpdateMetadata);
@@ -184,7 +184,7 @@ public class Build {
 	}
 
 	private boolean cache() {
-		return moxie.apply(Constants.APPLY_CACHE) || project.apply(Constants.APPLY_CACHE);
+		return moxie.apply(Toolkit.APPLY_CACHE) || project.apply(Toolkit.APPLY_CACHE);
 	}
 	
 	public void setup() {
@@ -196,7 +196,7 @@ public class Build {
 			boolean applied = false;
 			
 			// create/update Eclipse configuration files
-			if (solutionBuilt && project.apply(Constants.APPLY_ECLIPSE)) {
+			if (solutionBuilt && project.apply(Toolkit.APPLY_ECLIPSE)) {
 				writeEclipseClasspath();
 				writeEclipseProject();
 				console.notice(1, "rebuilt Eclipse configuration");
@@ -204,7 +204,7 @@ public class Build {
 			}
 		
 			// create/update Maven POM
-			if (solutionBuilt && project.apply(Constants.APPLY_POM)) {
+			if (solutionBuilt && project.apply(Toolkit.APPLY_POM)) {
 				writePOM();
 				console.notice(1, "rebuilt pom.xml");
 				applied = true;
@@ -405,7 +405,7 @@ public class Build {
 			console.separator();
 		}
 		for (LinkedProject linkedProject : project.linkedProjects) {
-			console.debug(Constants.SEP);
+			console.debug(Console.SEP);
 			String resolvedName = getPom().resolveProperties(linkedProject.name);
 			if (resolvedName.equals(linkedProject.name)) {
 				console.debug("locating linked project {0}", linkedProject.name);
@@ -1179,11 +1179,11 @@ public class Build {
 	void describeSettings() {
 		if (verbose) {
 			console.log("Moxie parameters");
-			describe(Constants.MX_ROOT, getMoxieCache().root.getAbsolutePath());
-			describe(Constants.MX_ONLINE, "" + isOnline());
-			describe(Constants.MX_UPDATEMETADATA, "" + isUpdateMetadata());
-			describe(Constants.MX_DEBUG, "" + isDebug());
-			describe(Constants.MX_VERBOSE, "" + isVerbose());
+			describe(Toolkit.MX_ROOT, getMoxieCache().root.getAbsolutePath());
+			describe(Toolkit.MX_ONLINE, "" + isOnline());
+			describe(Toolkit.MX_UPDATEMETADATA, "" + isUpdateMetadata());
+			describe(Toolkit.MX_DEBUG, "" + isDebug());
+			describe(Toolkit.MX_VERBOSE, "" + isVerbose());
 			
 			console.log("dependency sources");
 			if (repositories.size() == 0) {

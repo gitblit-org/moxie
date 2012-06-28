@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.moxie.Constants.Key;
+import org.moxie.Toolkit.Key;
 import org.moxie.console.Console;
 import org.moxie.utils.StringUtils;
 

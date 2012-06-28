@@ -32,7 +32,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import org.moxie.Constants.Key;
+import org.moxie.Toolkit.Key;
 import org.moxie.maxml.Maxml;
 import org.moxie.maxml.MaxmlException;
 import org.moxie.maxml.MaxmlMap;
