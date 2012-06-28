@@ -118,6 +118,19 @@ public class Build {
 		aliases.putAll(project.dependencyAliases);
 	}
 	
+	@Override
+	public int hashCode() {
+		return 11 + configFile.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof Build) {
+			return configFile.equals(((Build) o).configFile);
+		}
+		return false;
+	}
+	
 	public boolean isColor() {
 		String mxColor = System.getProperty(Constants.MX_COLOR, null);
 		if (StringUtils.isEmpty(mxColor)) {
@@ -384,7 +397,7 @@ public class Build {
 	private void solveLinkedProjects() {
 		if (project.linkedProjects.size() > 0) {
 			console.separator();
-			console.log("solving linked projects");
+			console.log("solving {0} linked projects", project.getPom().getManagementId());
 			console.separator();
 		}
 		for (LinkedProject linkedProject : project.linkedProjects) {
@@ -409,13 +422,14 @@ public class Build {
 				File file = new File(projectDir, linkedProject.descriptor);
 				if (file.exists()) {
 					// use Moxie config
-					linkedProject.folder = projectDir;
 					console.debug("located linked project {0} ({1})", linkedProject.name, file.getAbsolutePath());
 					Build subProject = new Build(file.getAbsoluteFile());
 					subProject.silent = true;
 					console.log(1, "=> project {0}", subProject.getPom().getCoordinates());
 					subProject.solve();
+					// add this subproject and it's dependent projects
 					linkedProjects.add(subProject);
+					linkedProjects.addAll(subProject.linkedProjects);
 					
 					// linked project dependencies are considered ring-0
 					for (Scope scope : new Scope[] { Scope.compile }) {
@@ -1034,9 +1048,9 @@ public class Build {
 		}
 		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", FileUtils.getRelativePath(projectFolder, getEclipseOutputFolder(Scope.compile))));
 				
-		for (LinkedProject linkedProject : project.linkedProjects) {			
+		for (Build linkedProject : linkedProjects) {
 			String projectName = null;
-			File dotProject = new File(linkedProject.folder, ".project");
+			File dotProject = new File(linkedProject.projectFolder, ".project");
 			if (dotProject.exists()) {
 				// extract Eclipse project name
 				console.debug("extracting project name from {0}", dotProject.getAbsolutePath());
@@ -1058,11 +1072,7 @@ public class Build {
 				}
 			} else {
 				// use folder name
-				String path = linkedProject.name.replace('\\', '/');
-				projectName = path;
-				if (projectName.lastIndexOf('/') > -1) {
-					projectName = path.substring(path.lastIndexOf('/') + 1);
-				}
+				projectName = linkedProject.projectFolder.getName();
 			}
 			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", projectName));
 		}
