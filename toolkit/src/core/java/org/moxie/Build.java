@@ -1122,10 +1122,20 @@ public class Build {
 	}
 	
 	public String getCustomLess() {
-		File less = new File(configFile.getName().substring(0, configFile.getName().lastIndexOf('.')) + ".less");
+		String lessName = configFile.getName().substring(0, configFile.getName().lastIndexOf('.')) + ".less";
+		// prefer config-relative LESS
+		File less = new File(configFile.getParentFile(), lessName);
+		
+		// try projectFolder-relative LESS
+		if (!less.exists()) {
+			less = new File(projectFolder, lessName);
+		}
+		
 		if (less.exists()) {
 			return FileUtils.readContent(less, "\n");
 		}
+		
+		// default CSS
 		return "";
 	}
 	
