@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.moxie.Scope;
 
 
-public class TestScopes extends Assert {
+public class ScopeTest extends Assert {
 
 	@Test
 	public void testClasspathScopes() {

@@ -20,7 +20,7 @@ import org.junit.Test;
 import org.moxie.Dependency;
 
 
-public class TestDependencies extends Assert {
+public class DependencyParseTest extends Assert {
 
 	@Test
 	public void testParsing1() {
