@@ -26,6 +26,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.Execute;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
+import org.apache.tools.ant.util.FileUtils;
 import org.moxie.Build;
 import org.moxie.Constants.Key;
 import org.moxie.Pom;
@@ -36,10 +37,17 @@ import org.moxie.utils.StringUtils;
 public class MxInit extends MxTask {
 
 	private String config;
+
+	private File basedir;
 	
 	public void setConfig(String config) {
 		this.config = config;
 	}
+	
+	public void setBasedir(File dir) {
+		this.basedir = dir;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -65,17 +73,22 @@ public class MxInit extends MxTask {
 		}
 
 		try {
+			if (basedir == null) {
+				basedir = getProject().getBaseDir();
+			}
+
 			File configFile;
 			if (StringUtils.isEmpty(config)) {
-				// default configuration
-				configFile = new File("build.moxie");
+				// default configuration				
+				configFile = new File(basedir, "build.moxie");
 			} else {
 				// specified configuration
-				configFile = new File(config);
+				FileUtils futils = FileUtils.getFileUtils();				
+				configFile = futils.resolveFile(basedir, config);
 			}
 			
 			// parse the config files and Moxie settings
-			build = new Build(configFile);
+			build = new Build(configFile, basedir);
 			build.setVerbose(isVerbose());
 			
 			// set any external properties into the project

@@ -82,9 +82,13 @@ public class Build {
 	private boolean verbose;
 	private boolean solutionBuilt;
 	
-	public Build(File configFile) throws MaxmlException, IOException {
+	public Build(File configFile, File basedir) throws MaxmlException, IOException {
 		this.configFile = configFile;
-		this.projectFolder = configFile.getAbsoluteFile().getParentFile();
+		if (basedir == null) {
+			this.projectFolder = configFile.getAbsoluteFile().getParentFile();
+		} else {
+			this.projectFolder = basedir;
+		}
 		
 		// allow specifying Moxie root folder
 		File moxieRoot = new File(System.getProperty("user.home") + "/.moxie");
@@ -96,8 +100,8 @@ public class Build {
 		}
 		moxieRoot.mkdirs();
 		
-		this.moxie = new Config(new File(moxieRoot, Constants.MOXIE_SETTINGS), Constants.MOXIE_SETTINGS);
-		this.project = new Config(configFile, Constants.MOXIE_DEFAULTS);
+		this.moxie = new Config(new File(moxieRoot, Constants.MOXIE_SETTINGS), projectFolder, Constants.MOXIE_SETTINGS);
+		this.project = new Config(configFile, projectFolder, Constants.MOXIE_DEFAULTS);
 		
 		this.proxies = new LinkedHashSet<Proxy>();
 		this.repositories = new LinkedHashSet<Repository>();
@@ -423,7 +427,7 @@ public class Build {
 				if (file.exists()) {
 					// use Moxie config
 					console.debug("located linked project {0} ({1})", linkedProject.name, file.getAbsolutePath());
-					Build subProject = new Build(file.getAbsoluteFile());
+					Build subProject = new Build(file.getAbsoluteFile(), null);
 					subProject.silent = true;
 					console.log(1, "=> project {0}", subProject.getPom().getCoordinates());
 					subProject.solve();

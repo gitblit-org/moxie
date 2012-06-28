@@ -94,9 +94,9 @@ public class Config implements Serializable {
 		updatePolicy = UpdatePolicy.defaultPolicy;
 	}
 	
-	public Config(File file, String defaultResource) throws IOException, MaxmlException {
+	public Config(File file, File baseFolder, String defaultResource) throws IOException, MaxmlException {
 		this();
-		parse(file, defaultResource);
+		parse(file, baseFolder, defaultResource);
 	}
 	
 	private Config(String resource) throws IOException, MaxmlException {
@@ -121,11 +121,15 @@ public class Config implements Serializable {
 		return "Config (" + pom + ")";
 	}
 
-	Config parse(File file, String defaultResource) throws IOException, MaxmlException {
+	Config parse(File file, File baseFolder, String defaultResource) throws IOException, MaxmlException {
 		String content = "";
 		if (file != null && file.exists()) {
 			this.file = file;
-			this.baseFolder = file.getAbsoluteFile().getParentFile();
+			if (baseFolder == null) {
+				this.baseFolder = file.getAbsoluteFile().getParentFile();
+			} else {
+				this.baseFolder = baseFolder;
+			}
 			this.lastModified = FileUtils.getLastModified(file);
 			content = FileUtils.readContent(file, "\n").trim();
 		}
@@ -147,12 +151,12 @@ public class Config implements Serializable {
 					setDefaultsFrom(parent);
 				} else {
 					// local filesystem default is available
-					Config parent = new Config(defaultFile, defaultResource);
+					Config parent = new Config(defaultFile, baseFolder, defaultResource);
 					setDefaultsFrom(parent);
 				}
 			} else {
 				// parent has been specified
-				Config parent = new Config(parentConfig, defaultResource);
+				Config parent = new Config(parentConfig, baseFolder, defaultResource);
 				setDefaultsFrom(parent);
 
 				// set parent properties
