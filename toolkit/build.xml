@@ -2,6 +2,10 @@
 <project default="main" xmlns:mx="antlib:org.moxie">
 
 	<!-- These are the default Moxie locations -->
+	<property name="maxml.dir" value="${basedir}/../maxml" />
+	<property name="maxml.bin" value="${maxml.dir}/build" />
+	<property name="maxml.bin.classes" value="${maxml.bin}/classes" />
+
 	<property name="common.dir" value="${basedir}/../common" />
 	<property name="common.bin" value="${common.dir}/build" />
 	<property name="common.bin.classes" value="${common.bin}/classes" />
@@ -14,6 +18,10 @@
 	-->
 	<target name="bootstrap">
 		<!-- Clean -->
+		<delete dir="${maxml.bin}" />
+		<mkdir dir="${maxml.bin}" />
+		<mkdir dir="${maxml.bin.classes}" />
+
 		<delete dir="${common.bin}" />
 		<mkdir dir="${common.bin}" />
 		<mkdir dir="${common.bin.classes}" />
@@ -23,13 +31,21 @@
 		<mkdir dir="${toolkit.bin.classes}" />
 
 		<!-- Bootstrap compile MxInit task and core objects -->
+		<javac debug="true" destdir="${maxml.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
+			<src path="${maxml.dir}/src/main/java" />
+		</javac>
+
 		<javac debug="true" destdir="${common.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
 			<src path="${common.dir}/src/main/java" />
+			<classpath>
+				<pathelement path="${maxml.bin.classes}" />
+			</classpath>
 		</javac>
 		
 		<javac debug="true" destdir="${toolkit.bin.classes}" includeantruntime="true" failonerror="false" verbose="no">
 			<src path="${basedir}/src/core/java" />
 			<classpath>
+				<pathelement path="${maxml.bin.classes}" />
 				<pathelement path="${common.bin.classes}" />
 			</classpath>
 		</javac>
@@ -41,7 +57,8 @@
 		
 		<path id="moxie.classpath">
 			<pathelement path="${toolkit.bin.classes}" />
-			<pathelement path="${common.bin.classes}" />			
+			<pathelement path="${common.bin.classes}" />
+			<pathelement path="${maxml.bin.classes}" />
 		</path>
 
 		<!-- Declare mx:init and read configuration -->
@@ -71,6 +88,7 @@
 		<path id="bootstrap.path">
 			<pathelement path="${common.bin.classes}" />
 			<pathelement path="${toolkit.bin.classes}" />
+			<pathelement path="${maxml.bin.classes}" />
 		</path>
 
 		<!-- Core -->
@@ -199,16 +217,7 @@
 			<resource file="${basedir}/src/core/config/all/tasks.properties" />
 			<resource file="${basedir}/src/core/config/pro/moxie.xml" />
 		</mx:jar>
-
-		<!-- Maxml -->
-		<mx:jar destfile="${mxp.targetFolder}/maxml-${project.version}.jar" packageSources="true">
-			<class name="org.moxie.maxml.Maxml" />
-		</mx:jar>
-
-		<!-- Install the build to our Moxie cache -->
-		<mx:install />
-	</target>
-
+		
 	<!--
 	Build the Moxie site
 	-->

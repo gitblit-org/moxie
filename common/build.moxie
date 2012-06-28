@@ -6,6 +6,8 @@ version : 0.5.0-SNAPSHOT
 organization : James Moger 
 url : http://gitblit.github.com/moxie
 apply : eclipse, pom, cache
+linkedProjects :
+- maxml
 sourceFolders :
 - compile src/main/java
 - test src/test/java

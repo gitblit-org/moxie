@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-<classpathentry kind="src" path="src/main/java"/>
-<classpathentry kind="src" path="src/test/java" output="bin/test-classes"/>
-<classpathentry kind="lib" path="/home/james/.moxie/releases/junit/junit/4.10/junit-4.10.jar" sourcepath="/home/james/.moxie/releases/junit/junit/4.10/junit-4.10-sources.jar" />
-<classpathentry kind="lib" path="/home/james/.moxie/releases/org.hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar" sourcepath="/home/james/.moxie/releases/org.hamcrest/hamcrest-core/1.1/hamcrest-core-1.1-sources.jar" />
-<classpathentry kind="output" path="bin/classes"/>
-<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-</classpath>

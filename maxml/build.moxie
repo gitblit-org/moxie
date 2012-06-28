@@ -1,0 +1,12 @@
+name : Moxie-Maxml
+description : Maxml parser
+groupId : org.moxie
+artifactId : maxml
+parent : ../build.moxie
+apply : eclipse, pom, cache
+sourceFolders :
+- compile src/main/java
+- test src/test/java
+dependencies :
+- test junit
+- build cobertura
