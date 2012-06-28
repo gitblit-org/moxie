@@ -45,12 +45,10 @@ public class LessEngine {
 	
 	public LessEngine() {
 		try {
-			classLoader = getClass().getClassLoader();
-			String packagename = getClass().getPackage().getName().replace('.', '/');
-			URL less = classLoader.getResource(packagename + "/less.js");
-			URL env = classLoader.getResource(packagename + "/env.js");
-			URL engine = classLoader.getResource(packagename + "/engine.js");
-			URL cssmin = classLoader.getResource(packagename + "/cssmin.js");
+			URL less = getClass().getResource("/less/less.js");
+			URL env = getClass().getResource("/less/env.js");
+			URL engine = getClass().getResource("/less/engine.js");
+			URL cssmin = getClass().getResource("/less/cssmin.js");
 			Context cx = Context.enter();
 			cx.setOptimizationLevel(9);
 			Global global = new Global();
