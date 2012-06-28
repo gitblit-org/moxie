@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="main" xmlns:mx="antlib:org.moxie">
+
+	<!--
+	Build all Moxie projects.
+
+	Because we are bootstrapping Moxie (building Moxie with Moxie) we have
+	to use a traditional, more complex ANT build strategy.
+	-->
+	<target name="main">
+		<!-- Build Toolkit first because other projects use built artifacts -->
+		<subant buildpath="${basedir}/toolkit" />
+		
+		<!-- Build remaining projects -->
+		<subant buildpath="${basedir}/proxy" />
+		<subant buildpath="${basedir}/common" />
+		<subant buildpath="${basedir}/site" />
+	</target>
+
+</project>
