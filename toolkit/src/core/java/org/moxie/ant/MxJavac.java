@@ -19,8 +19,10 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -30,9 +32,9 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 import org.moxie.Build;
+import org.moxie.Scope;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
-import org.moxie.Scope;
 import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.FileUtils;
 
@@ -45,6 +47,15 @@ public class MxJavac extends Javac {
 	boolean copyResources;
 	String includes;
 	String excludes;
+	Set<Build> builds;
+	
+	public MxJavac() {
+		super();
+	}
+	
+	private MxJavac(Set<Build> builds) {
+		this.builds = builds;
+	}
 	
 	public boolean getClean() {
 		return clean;
@@ -168,15 +179,28 @@ public class MxJavac extends Javac {
 			scope = Scope.defaultScope;
 		}
 		
+		if (builds == null) {
+			// top-level mx:javac instantiates the build stack
+			builds = new HashSet<Build>();
+		}
+		
 		if (compileLinkedProjects) {
-			for (Build linkedProject: build.getLinkedProjects()) {			
+			for (Build linkedProject: build.getLinkedProjects()) {
+				if (builds.contains(linkedProject)) {
+					// already built, skip
+					build.console.debug(1, "skipping {0}, already compiled", linkedProject.getPom().getManagementId());
+					continue;
+				}
+				// add the build to the stack so we do not rebuild
+				builds.add(linkedProject);
+				
 				try {
 					// compile the linked project
 					Project project = new Project();
 					project.setBaseDir(linkedProject.getProjectFolder());
 					project.addReference(Key.build.refId(), linkedProject);
 
-					MxJavac subCompile = new MxJavac();
+					MxJavac subCompile = new MxJavac(builds);
 					subCompile.setProject(project);
 					subCompile.perform();
 				} catch (Exception e) {
