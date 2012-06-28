@@ -2,9 +2,7 @@ name : Moxie-Proxy
 description : Stand-alone Maven 2 proxy server based on DSMP
 groupId : org.moxie
 artifactId : proxy
-version : 0.5.0-SNAPSHOT
-organization : James Moger 
-url : http://gitblit.github.com/moxie
+parent : ../build.moxie
 apply : eclipse, pom, cache
 linkedProjects :
 - common

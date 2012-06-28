@@ -166,15 +166,15 @@ public class Config implements Serializable {
 			}
 		}
 		
-		// metadata
-		pom.name = readString(map, Key.name, false);
-		pom.version = readString(map, Key.version, false);
-		pom.groupId = readString(map, Key.groupId, false);
-		pom.artifactId = readString(map, Key.artifactId, false);
-		pom.classifier = readString(map, Key.classifier, false);
-		pom.description = readString(map, Key.description, false);
-		pom.url = readString(map, Key.url, false);
-		pom.organization = readString(map, Key.organization, false);
+		// metadata (partially preserve inherited defaults)
+		pom.name = readString(map, Key.name, null);
+		pom.version = readString(map, Key.version, pom.version);
+		pom.groupId = readString(map, Key.groupId, pom.groupId);
+		pom.artifactId = readString(map, Key.artifactId, null);	
+		pom.classifier = readString(map, Key.classifier, null);
+		pom.description = readString(map, Key.description, null);
+		pom.url = readString(map, Key.url, pom.url);
+		pom.organization = readString(map, Key.organization, pom.organization);
 		
 		// set default name to artifact id
 		if (StringUtils.isEmpty(pom.name)) {
@@ -352,14 +352,12 @@ public class Config implements Serializable {
 		}
 	}
 
-	String readString(Map<String, Object> map, Key key, boolean required) {
+	String readRequiredString(Map<String, Object> map, Key key) {
 		Object o = map.get(key.name());
 		if (o != null && !StringUtils.isEmpty(o.toString())) {
 			return o.toString();
 		} else {
-			if (required) {
-				keyError(key);
-			}
+			keyError(key);
 			return null;
 		}
 	}
@@ -434,11 +432,8 @@ public class Config implements Serializable {
 				if (StringUtils.isEmpty(dir)) {
 					keyError(key);
 				} else {
-					File aFile = new File(dir);
-					if (aFile.getParentFile() == null) {
-						return new File(baseFolder, dir);
-					}
-					return aFile;
+					org.apache.tools.ant.util.FileUtils futils = org.apache.tools.ant.util.FileUtils.getFileUtils();
+					return futils.resolveFile(baseFolder, dir);
 				}
 			}
 		}
@@ -476,8 +471,8 @@ public class Config implements Serializable {
 						}
 					} else if (value instanceof Map) {
 						Map<String, Object> dirMap = (Map<String, Object>) value;
-						String dir = readString(dirMap, Key.folder, true);
-						Scope scope = Scope.fromString(readString(dirMap, Key.scope, true));
+						String dir = readRequiredString(dirMap, Key.folder);
+						Scope scope = Scope.fromString(readRequiredString(dirMap, Key.scope));
 						if (scope == null) {
 							scope = Scope.defaultScope;
 						} else {
@@ -525,7 +520,7 @@ public class Config implements Serializable {
 	}
 	
 	void keyError(Key key) {
-		System.err.println(MessageFormat.format("{0} is improperly specified, using default", key.name()));
+		System.err.println(MessageFormat.format("{0} is improperly specified in {1}, using default", key.name(), file.getAbsolutePath()));
 	}
 	
 	public List<SourceFolder> getSourceFolders() {
