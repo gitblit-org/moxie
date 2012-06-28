@@ -218,6 +218,13 @@
 			<resource file="${basedir}/src/core/config/pro/moxie.xml" />
 		</mx:jar>
 		
+		<!--
+		Copy the all jar to moxie.jar for use in the other Moxie projects,
+		otherwise we'd have to hard-code versions in the other projects.
+		-->
+		<copy file="${basedir}/target/moxie-${project.version}-all.jar" tofile="${basedir}/target/moxie.jar" />
+	</target>
+
 	<!--
 	Build the Moxie site
 	-->

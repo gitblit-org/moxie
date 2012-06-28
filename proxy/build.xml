@@ -3,7 +3,8 @@
 
 	<!-- Moxie tasks -->
 	<include>
-		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie-0.5.0-SNAPSHOT-all.jar" />
+		<!-- The toolkit project must be built first! -->
+		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie.jar" />
 	</include>
 	
 	<target name="main">

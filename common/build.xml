@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="main" xmlns:mx="antlib:org.moxie">
+<project xmlns:mx="antlib:org.moxie">
 
 	<!-- Moxie tasks -->
 	<include>
-		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie-0.5.0-SNAPSHOT-all.jar" />
+		<!-- The toolkit project must be built first! -->
+		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie.jar" />
 	</include>
 	
 	<target name="main">
 		<antcall target="moxie.package" />
 	</target>
+	
 </project>
