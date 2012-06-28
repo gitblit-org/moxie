@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="main" xmlns:mx="antlib:org.moxie">
+
+	<!-- Moxie tasks -->
+	<include>
+		<!-- The toolkit project must be built first! -->
+		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie.jar" />
+	</include>
+
+	<!--
+	Build the Moxie site
+	-->
+	<target name="main">
+		<!-- Use the Toolkit descriptor with the Site basedir -->
+		<mx:init config="${basedir}/../toolkit/build.moxie" basedir="${basedir}" />
+		
+		<!-- Build the site documentation -->
+		<mx:doc googlePlusOne="true" injectPrettify="true">
+			<structure>
+				<page name="overview" src="index.mkd" />
+				<page name="why?!" src="why.mkd" />
+				<page name="getting started" src="gettingstarted.mkd" />
+				<page name="build.moxie" src="moxiedescriptor.mkd" />
+				<menu name="tasks">
+					<page name="mx:Clean" src="mxextract.mkd" />
+					<page name="mx:Doc" src="mxdoc.mkd" />
+					<page name="mx:Extract" src="mxextract.mkd" />
+					<page name="mx:GhPages" src="mxghpages.mkd" />					
+					<page name="mx:GitId" src="mxgitid.mkd" />
+					<page name="mx:If" src="mxextract.mkd" />
+					<page name="mx:Install" src="mxextract.mkd" />
+					<page name="mx:Init" src="mxextract.mkd" />
+					<page name="mx:Jar" src="mxextract.mkd" />
+					<page name="mx:Javac" src="mxextract.mkd" />
+					<page name="mx:Keys" src="mxextract.mkd" />
+					<page name="mx:Report" src="mxextract.mkd" />
+					<page name="mx:Test" src="mxextract.mkd" />
+					<page name="mx:War" src="mxextract.mkd" />
+					<page name="mx:Zip" src="mxextract.mkd" />
+				</menu>
+				<page name="maxml" src="maxml.mkd" sidebar="true" />
+				<menu name="download">
+					<link name="moxie-core" src="moxie-${project.version}-core.jar" />
+					<link name="moxie-pro" src="moxie-${project.version}-pro.jar" />
+					<link name="moxie-all" src="moxie-${project.version}-all.jar" />
+					<divider />
+					<link name="moxie-proxy" src="moxie-proxy-${project.version}.jar" />
+					<divider />
+					<link name="maxml" src="maxml-${project.version}.jar" />
+					<link name="maxml-sources" src="maxml-${project.version}-sources.jar" />
+					<divider />
+					<page name="release log" src="releases.mkd" />
+					<divider />
+					<link name="Github Project" src="http://github.com/gitblit/moxie" />
+				</menu>
+				<report name="reports" />
+				<divider />
+			</structure>
+			<substitute token="%VERSION%" value="${mxp.version}" />
+			<nomarkdown startToken="%BEGINMAXML%" endToken="%ENDMAXML%" prettify="true" lang="lang-yaml" />
+			<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />
+			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />
+			
+			<!-- Copy the generated artifacts from the other projects -->
+			<resource>
+				<fileset dir="${basedir}/../toolkit/target/" includes="*.jar" excludes="*-sources.jar,moxie.jar" />
+				<fileset dir="${basedir}/../proxy/target/" includes="*.jar" excludes="*-sources.jar" />
+				<fileset dir="${basedir}/../maxml/target/" includes="*.jar" />
+			</resource>
+			
+			<!-- Set the logo from the mx:doc resources -->
+			<logo file="${basedir}/../toolkit/src/mxdoc/resources/moxie.png" />
+		</mx:doc>
+	</target>
+
+	<!--
+	Build the Moxie gh-pages branch
+	-->
+	<target name="ghpages" depends="main">
+		<mx:ghpages sourceFolder="${mxp.targetFolder}/site" obliterate="true" />
+	</target>
+	
+</project>
