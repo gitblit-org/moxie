@@ -30,6 +30,8 @@ public class TestMaxmlParser extends Assert {
 	String blockTest2 = "name: Moxie\ndescription:\n\"\"\"\nMoxie\n is a\n  Java Project Build Toolkit\"\"\"\nversion: 0.1.0";
 	
 	String inlineMap = "{ id: myproxy, active: true, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }";
+	
+	String inlineMap2 = "{ id: central, url: \"http://repo1.apache.org/maven\", url2: \"http://repo1.apache.org/maven\" }";
 
 	@SuppressWarnings("rawtypes")
 	@Test
@@ -83,6 +85,7 @@ public class TestMaxmlParser extends Assert {
 		
 		// inline map
 		assertEquals(7, ((MaxmlMap) parser.parseValue(inlineMap)).size());
+		assertEquals(3, ((MaxmlMap) parser.parseValue(inlineMap2)).size());
 
 		// dates
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");

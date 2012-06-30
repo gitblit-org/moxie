@@ -206,7 +206,7 @@ public class MaxmlParser {
 							format("Illegal value \"{0}\". Inline map must have key:value pairs!\n{1}",
 									kvp, value));
 				}
-				String[] chunks = kvp.split(":");
+				String[] chunks = kvp.split(":", 2);
 				Object o = parseValue(chunks[1].trim());
 				map.put(chunks[0].trim(), o);
 			}

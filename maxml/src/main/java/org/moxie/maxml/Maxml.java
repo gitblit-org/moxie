@@ -80,7 +80,7 @@ public class Maxml {
 	 *            an input stream
 	 * @return an object map
 	 */
-	public static Map<String, Object> parse(InputStream is)
+	public static MaxmlMap parse(InputStream is)
 			throws MaxmlException {
 		try {
 			MaxmlParser parser = new MaxmlParser();

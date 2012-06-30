@@ -99,4 +99,16 @@ public class MaxmlMap extends LinkedHashMap<String, Object> {
 		}
 		return defaultValue;
 	}
+	
+	public List<?> getList(String key, List<?> defaultValue) {
+		if (containsKey(key)) {
+			Object o = get(key);
+			if (o instanceof List<?>) {
+				return (List<?>) o;
+			} else if (o instanceof String) {
+				return Arrays.asList(o.toString());
+			}
+		}
+		return defaultValue;
+	}
 }
