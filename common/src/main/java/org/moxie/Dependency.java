@@ -40,6 +40,7 @@ public class Dependency implements Serializable {
 	public Set<String> exclusions;
 
 	public int ring;
+	public String origin;
 	
 	public Dependency() {
 		type = "jar";
@@ -152,6 +153,14 @@ public class Dependency implements Serializable {
 		return exclusions.contains(dependency.getMediationId()) 
 				|| exclusions.contains(dependency.getManagementId())
 				|| exclusions.contains(dependency.groupId);
+	}
+	
+	public String getOrigin() {
+		return origin;
+	}
+	
+	public void setOrigin(String origin) {
+		this.origin = origin;
 	}
 
 	@Override

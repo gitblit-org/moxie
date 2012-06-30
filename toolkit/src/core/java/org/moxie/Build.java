@@ -1183,7 +1183,7 @@ public class Build {
 	void describeSettings() {
 		if (verbose) {
 			console.log("Moxie parameters");
-			describe(Toolkit.MX_ROOT, getMoxieCache().root.getAbsolutePath());
+			describe(Toolkit.MX_ROOT, getMoxieCache().getMoxieRoot().getAbsolutePath());
 			describe(Toolkit.MX_ONLINE, "" + isOnline());
 			describe(Toolkit.MX_UPDATEMETADATA, "" + isUpdateMetadata());
 			describe(Toolkit.MX_DEBUG, "" + isDebug());

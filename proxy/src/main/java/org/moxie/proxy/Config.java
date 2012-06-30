@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.moxie.IMavenCache;
 import org.moxie.MavenCache;
 import org.moxie.Proxy;
 import org.moxie.maxml.Maxml;
@@ -151,15 +152,15 @@ public class Config {
 
 	public void setMoxieRoot(File val) {
 		this.moxieRoot = val;
-		localArtifactsRoot = new File(moxieRoot, "local");
-		remoteArtifactsRoot = new File(moxieRoot, "remote");
+		localArtifactsRoot = new File(moxieRoot, org.moxie.Constants.LOCAL);
+		remoteArtifactsRoot = new File(moxieRoot, org.moxie.Constants.REMOTE);
 	}
 
 	public File getArtifactRoot(String relativePath) {
 		String repo;
-		if (relativePath.startsWith("remotes/")) {
-			// strip out remotes/
-			relativePath = relativePath.substring("remotes/".length());
+		if (relativePath.startsWith(org.moxie.Constants.REMOTE + "/")) {
+			// strip out remote/
+			relativePath = relativePath.substring(org.moxie.Constants.REMOTE.length() + 1);
 		}
 		if (relativePath.indexOf('/') > -1) {
 			// strip out basepath
@@ -175,7 +176,7 @@ public class Config {
 		return new File(localArtifactsRoot, repo);
 	}
 	
-	public MavenCache getMavenCache(File file) {
+	public IMavenCache getMavenCache(File file) {
 		String path = FileUtils.getRelativePath(moxieRoot, file);
 		File folder = getArtifactRoot(path);
 		return new MavenCache(folder);

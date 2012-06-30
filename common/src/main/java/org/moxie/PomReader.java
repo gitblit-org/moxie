@@ -42,7 +42,7 @@ public class PomReader {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Pom readPom(MavenCache cache, Dependency dependency) {
+	public static Pom readPom(IMavenCache cache, Dependency dependency) {
 		File pomFile = cache.getArtifact(dependency, Constants.POM);
 		if (!pomFile.exists()) {
 			return null;
@@ -59,7 +59,7 @@ public class PomReader {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Pom readPom(MavenCache cache, File pomFile) {		
+	public static Pom readPom(IMavenCache cache, File pomFile) {		
 		Document doc = null;
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

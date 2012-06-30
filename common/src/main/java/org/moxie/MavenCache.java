@@ -21,20 +21,18 @@ import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
 
 
-public class MavenCache {
+public class MavenCache implements IMavenCache {
 
 	final File root;
-	final String pattern;
-	final String metadataPattern;
-	final String snapshotPattern;
 	
 	public MavenCache(File root) {
 		this.root = root;
-		this.pattern = Constants.MAVEN2_PATTERN;
-		this.metadataPattern = Constants.MAVEN2_METADATA_PATTERN;
-		this.snapshotPattern = Constants.MAVEN2_SNAPSHOT_PATTERN;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.moxie.IMavenCache#getArtifact(org.moxie.Dependency, java.lang.String)
+	 */
+	@Override
 	public File getArtifact(Dependency dep, String ext) {
 		Dependency dcopy = DeepCopier.copy(dep);
 		if (dcopy.isSnapshot()) {
@@ -42,33 +40,53 @@ public class MavenCache {
 			// not a.b.20120618.134509-5
 			dcopy.revision = null;
 		}
-		String path = Dependency.getMavenPath(dcopy,  ext, pattern);
+		String path = Dependency.getMavenPath(dcopy,  ext, Constants.MAVEN2_PATTERN);
 		return new File(root, path);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.moxie.IMavenCache#writeArtifact(org.moxie.Dependency, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public File writeArtifact(Dependency dep, String ext, String content) {
 		File file = getArtifact(dep, ext);
 		FileUtils.writeContent(file, content);
 		return file;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.moxie.IMavenCache#writeArtifact(org.moxie.Dependency, java.lang.String, byte[])
+	 */
+	@Override
 	public File writeArtifact(Dependency dep, String ext, byte [] content) {
 		File file = getArtifact(dep, ext);
 		FileUtils.writeContent(file, content);
 		return file;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.moxie.IMavenCache#getMetadata(org.moxie.Dependency, java.lang.String)
+	 */
+	@Override
 	public File getMetadata(Dependency dep, String ext) {
-		String path = Dependency.getMavenPath(dep,  ext, dep.isSnapshot() ? snapshotPattern : metadataPattern);
+		String path = Dependency.getMavenPath(dep,  ext, dep.isSnapshot() ? Constants.MAVEN2_SNAPSHOT_PATTERN : Constants.MAVEN2_METADATA_PATTERN);
 		return new File(root, path);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.moxie.IMavenCache#writeMetadata(org.moxie.Dependency, java.lang.String, java.lang.String)
+	 */
+	@Override
 	public File writeMetadata(Dependency dep, String ext, String content) {
 		File file = getMetadata(dep, ext);
 		FileUtils.writeContent(file, content);
 		return file;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.moxie.IMavenCache#writeMetadata(org.moxie.Dependency, java.lang.String, byte[])
+	 */
+	@Override
 	public File writeMetadata(Dependency dep, String ext, byte [] content) {
 		File file = getMetadata(dep, ext);
 		FileUtils.writeContent(file, content);

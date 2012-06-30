@@ -115,7 +115,10 @@ public class Repository {
 			DownloadData data = download(build, url);
 			String content = new String(data.content, "UTF-8").trim();
 			String hashCode = content.substring(0, 40);
-
+			
+			// set origin so that we write the artifact into the proper cache
+			dep.setOrigin(repositoryUrl);
+			
 			// cache this sha1 file
 			File file = build.getMoxieCache().writeArtifact(dep, extsha1, hashCode);
 			file.setLastModified(data.lastModified);
@@ -147,6 +150,9 @@ public class Repository {
 			DownloadData data = download(build, url);
 			String content = new String(data.content, "UTF-8").trim();
 			String hashCode = content.substring(0, 40);
+
+			// set origin so that we write the artifact into the proper cache
+			dep.setOrigin(repositoryUrl);
 
 			// cache this sha1 file
 			File file = build.getMoxieCache().writeMetadata(dep, extsha1, hashCode);
@@ -206,6 +212,9 @@ public class Repository {
 			// merge metadata
 			Metadata newMetadata = MetadataReader.readMetadata(new String(data.content, "UTF-8"));				
 			newMetadata.merge(oldMetadata);
+
+			// set origin so that we write the artifact into the proper cache
+			dep.setOrigin(repositoryUrl);
 
 			// save merged metadata to the artifact cache
 			file = build.getMoxieCache().writeMetadata(dep, Constants.XML, newMetadata.toXML());
@@ -288,6 +297,9 @@ public class Repository {
 					throw new RuntimeException("SHA1 checksum mismatch; got: " + calculatedSHA1);
 				}
 			}
+
+			// set origin so that we write the artifact into the proper cache
+			dep.setOrigin(repositoryUrl);
 
 			// save to the artifact cache
 			File file = build.getMoxieCache().writeArtifact(dep, ext, data.content);

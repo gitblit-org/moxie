@@ -21,7 +21,7 @@ import java.text.MessageFormat;
 import java.util.Map;
 import java.util.logging.Level;
 
-import org.moxie.MavenCache;
+import org.moxie.IMavenCache;
 import org.moxie.Pom;
 import org.moxie.PomReader;
 import org.moxie.proxy.resources.ArtifactsResource;
@@ -147,7 +147,7 @@ public class Main extends Application {
 				return null;
 			}
 			File pomFile = poms[0];
-			MavenCache cache = config.getMavenCache(folder);
+			IMavenCache cache = config.getMavenCache(folder);
 			return PomReader.readPom(cache, pomFile);
 		}
 		return null;
