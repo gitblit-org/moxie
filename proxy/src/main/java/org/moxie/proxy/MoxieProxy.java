@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import org.moxie.IMavenCache;
 import org.moxie.Pom;
 import org.moxie.PomReader;
+import org.moxie.proxy.connection.ProxyConnectionServer;
 import org.moxie.proxy.resources.ArtifactsResource;
 import org.moxie.proxy.resources.RootResource;
 import org.restlet.Application;
@@ -45,13 +46,13 @@ import com.beust.jcommander.Parameters;
 
 import freemarker.template.Configuration;
 
-public class Main extends Application {
+public class MoxieProxy extends Application {
 
-	private final Config config;
+	private final MoxieProxyConfig config;
 
 	private Configuration configuration;
 
-	public Main(Config config) {
+	public MoxieProxy(MoxieProxyConfig config) {
 		this.config = config;
 	}
 	
@@ -130,7 +131,7 @@ public class Main extends Application {
 		return configuration;
 	}
 	
-	public Config getProxyConfig() {
+	public MoxieProxyConfig getProxyConfig() {
 		return config;
 	}
 	
@@ -169,7 +170,7 @@ public class Main extends Application {
 			System.exit(-1);
 		}
 		
-		Config config = new Config();
+		MoxieProxyConfig config = new MoxieProxyConfig();
 		
 		// set defaults from command-line
 		
@@ -206,15 +207,15 @@ public class Main extends Application {
 		c.getClients().add(Protocol.FILE);
 
 		// override the default error pages
-		c.setStatusService(new MxStatusService(c.getContext()));
+		c.setStatusService(new ErrorStatusService(c.getContext()));
 
 		// get the default virtual host
 		VirtualHost host = c.getDefaultHost();		
 
-		Main app = new Main(config);
+		MoxieProxy app = new MoxieProxy(config);
 
 		// Guard Moxie Proxy with BASIC authentication.
-		MxAuthenticator guard = new MxAuthenticator(app);
+		Authenticator guard = new Authenticator(app);
 		host.attachDefault(guard);
 		guard.setNext(app);		
 
@@ -222,7 +223,7 @@ public class Main extends Application {
 		c.start();
 		
 		// start the proxy server
-        ProxyServer proxy = new ProxyServer(config);
+        ProxyConnectionServer proxy = new ProxyConnectionServer(config);
         proxy.handleRequests();
 	}
 

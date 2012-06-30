@@ -332,6 +332,8 @@ public class StringUtils {
 	 */
 	public static String urlToFolder(String url) {
 		String val = url.substring(url.indexOf("://") + 3);
-		return val.replace('/', '_');
+		val = val.replace('/', '_');
+		val = val.replace(':', '-');
+		return val;
 	}
 }

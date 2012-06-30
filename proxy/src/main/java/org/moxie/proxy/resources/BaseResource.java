@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.moxie.proxy.Constants;
-import org.moxie.proxy.Main;
+import org.moxie.proxy.MoxieProxy;
 import org.moxie.proxy.RemoteRepository;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
@@ -34,8 +34,8 @@ import org.restlet.resource.ServerResource;
 public abstract class BaseResource extends ServerResource {
 
 	@Override
-	public Main getApplication() {
-		return (Main) super.getApplication();
+	public MoxieProxy getApplication() {
+		return (MoxieProxy) super.getApplication();
 	}
 
 	private String getUser() {

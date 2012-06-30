@@ -38,8 +38,8 @@ import org.moxie.utils.StringUtils;
 /**
  * Read and manage the configuration.
  */
-public class Config {
-	public static final Logger log = Logger.getLogger(Config.class.getSimpleName());
+public class MoxieProxyConfig {
+	public static final Logger log = Logger.getLogger(MoxieProxyConfig.class.getSimpleName());
 
 	private File configFile;
 	private long configLastModified;
@@ -61,7 +61,7 @@ public class Config {
 	private List<AllowDeny> allowDeny;
 	private List<String> noProxy;
 
-	public Config() {
+	public MoxieProxyConfig() {
 		proxies = Collections.emptyList();
 		mirrors = Collections.emptyList();
 		allowDeny = Collections.emptyList();
@@ -114,8 +114,8 @@ public class Config {
 		return remotes;
 	}
 
-	public File getCacheFolder() {
-		return new File(moxieRoot, "cache");
+	public File getTempFolder() {
+		return new File(moxieRoot, "temp");
 	}
 
 	public int getHttpPort() {
@@ -174,6 +174,12 @@ public class Config {
 			return new File(remoteArtifactsRoot, StringUtils.urlToFolder(repository.url));			
 		}
 		return new File(localArtifactsRoot, repo);
+	}
+	
+	public File getRemoteFile(URL url) {
+		String remote = StringUtils.urlToFolder(url.toString());
+		File remoteFolder = new File(remoteArtifactsRoot, remote);
+		return new File(remoteFolder, url.getPath());
 	}
 	
 	public IMavenCache getMavenCache(File file) {

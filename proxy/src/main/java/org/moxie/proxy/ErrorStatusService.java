@@ -31,11 +31,11 @@ import org.restlet.service.StatusService;
 
 import freemarker.template.Configuration;
 
-public class MxStatusService extends StatusService {
+public class ErrorStatusService extends StatusService {
 	
 	final Configuration configuration;
 	
-	public MxStatusService(Context context) {
+	public ErrorStatusService(Context context) {
 		this.configuration = new Configuration();
 		this.configuration.setTemplateLoader(new ContextTemplateLoader(context, "clap://class/templates"));
 	}

@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 public class ConfigTest extends TestCase {
 
-	Config config;
+	MoxieProxyConfig config;
 
 	// public void testGetNoProxy () throws Exception
 	// {
@@ -85,7 +85,7 @@ public class ConfigTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		config = new Config();
+		config = new MoxieProxyConfig();
 		config.parse(new File("proxy.moxie"));
 	}
 }

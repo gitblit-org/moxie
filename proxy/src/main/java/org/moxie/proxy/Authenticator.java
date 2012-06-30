@@ -27,12 +27,12 @@ import org.restlet.data.ChallengeScheme;
 import org.restlet.security.ChallengeAuthenticator;
 import org.restlet.security.SecretVerifier;
 
-public class MxAuthenticator extends ChallengeAuthenticator {
+public class Authenticator extends ChallengeAuthenticator {
 
 	final Logger logger = Logger.getLogger(getClass().getSimpleName());
-	final Main app;
+	final MoxieProxy app;
 	
-	public MxAuthenticator(Main app) {
+	public Authenticator(MoxieProxy app) {
 		super(null, ChallengeScheme.HTTP_BASIC, Constants.getName());
 		this.app = app;
 		setVerifier(new CredentialsVerifier());

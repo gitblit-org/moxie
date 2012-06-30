@@ -1,4 +1,5 @@
 /*
+ * Copyright 2002-2005 The Apache Software Foundation.
  * Copyright 2012 James Moger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +19,9 @@ package org.moxie.proxy;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * @author digulla
+ */
 public class MirrorEntry {
 	private String from;
 	private String to;

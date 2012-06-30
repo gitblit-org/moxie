@@ -1,4 +1,5 @@
 /*
+ * Copyright 2002-2005 The Apache Software Foundation.
  * Copyright 2012 James Moger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +16,9 @@
  */
 package org.moxie.proxy;
 
+/**
+ * @author digulla
+ */
 public class AllowDeny {
 	private final String url;
 	private boolean allow;

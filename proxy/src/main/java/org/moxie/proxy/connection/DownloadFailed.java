@@ -1,5 +1,6 @@
 /*
  * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2012 James Moger
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moxie.proxy;
+package org.moxie.proxy.connection;
 
 import org.apache.commons.httpclient.methods.GetMethod;
 

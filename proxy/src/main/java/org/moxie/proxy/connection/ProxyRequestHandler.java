@@ -1,5 +1,6 @@
 /*
  * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2012 James Moger
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moxie.proxy;
+package org.moxie.proxy.connection;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -31,6 +32,8 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.moxie.proxy.MoxieProxyConfig;
+
 /**
  * Handle a connection from a maven.
  * 
@@ -40,10 +43,10 @@ import java.util.logging.Logger;
 public class ProxyRequestHandler extends Thread {
 	public static final Logger log = Logger.getLogger(ProxyRequestHandler.class.getSimpleName());
 
-	private Config config;
+	private MoxieProxyConfig config;
 	private Socket clientSocket;
 
-	public ProxyRequestHandler(Config config, Socket clientSocket) {
+	public ProxyRequestHandler(MoxieProxyConfig config, Socket clientSocket) {
 		this.config = config;
 		this.clientSocket = clientSocket;
 	}
@@ -131,7 +134,7 @@ public class ProxyRequestHandler extends Thread {
 		if (!"http".equals(url.getProtocol()))
 			throw new IOException("Can only handle HTTP requests, got " + downloadURL);
 
-		File f = getCacheFile(url);
+		File f = config.getRemoteFile(url);
 
 		if (!f.exists()) {
 			ProxyDownload d = new ProxyDownload(config, url, f);
@@ -165,22 +168,20 @@ public class ProxyRequestHandler extends Thread {
 		println(type);
 		println();
 		InputStream data = new BufferedInputStream(new FileInputStream(f));
-		IOUtils.copy(data, out);
+		copy(data, out);
 		data.close();
 	}
+	
+	void copy(InputStream in, OutputStream out) throws IOException {
+		byte[] buffer = new byte[1024 * 100];
+		int len;
 
-	public File getCacheFile(URL url) {
-		File dir = config.getCacheFolder();
-		return getCacheFile(url, dir);
+		while ((len = in.read(buffer)) != -1) {
+			out.write(buffer, 0, len);
+		}
+		out.flush();
 	}
 
-	public File getCacheFile(URL url, File root) {
-		root = new File(root, url.getHost());
-		if (url.getPort() != -1 && url.getPort() != 80)
-			root = new File(root, String.valueOf(url.getPort()));
-		File f = new File(root, url.getPath());
-		return f;
-	}
 
 	public final static HashMap<String, String> CONTENT_TYPES = new HashMap<String, String>();
 	static {

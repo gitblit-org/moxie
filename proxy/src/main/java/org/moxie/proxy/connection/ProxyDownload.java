@@ -1,5 +1,6 @@
 /*
  * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2012 James Moger
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moxie.proxy;
+package org.moxie.proxy.connection;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -21,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.logging.Level;
@@ -35,6 +37,7 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.moxie.Proxy;
+import org.moxie.proxy.MoxieProxyConfig;
 
 /**
  * Download a file via a proxy server and store it somewhere.
@@ -44,7 +47,7 @@ import org.moxie.Proxy;
  */
 public class ProxyDownload {
 	public static final Logger log = Logger.getLogger(ProxyDownload.class.getSimpleName());
-	private final Config config;
+	private final MoxieProxyConfig config;
 	private final URL url;
 	private final File dest;
 
@@ -60,20 +63,10 @@ public class ProxyDownload {
 	 * @param dest
 	 *            Where to store it.
 	 */
-	public ProxyDownload(Config config, URL url, File dest) {
+	public ProxyDownload(MoxieProxyConfig config, URL url, File dest) {
 		this.config = config;
 		this.url = url;
 		this.dest = dest;
-	}
-
-	/**
-	 * Create the neccessary paths to store the destination file.
-	 * 
-	 * @throws IOException
-	 */
-	public void mkdirs() throws IOException {
-		File parent = dest.getParentFile();
-		IOUtils.mkdirs(parent);
 	}
 
 	/**
@@ -108,7 +101,8 @@ public class ProxyDownload {
 			}
 		}
 
-		mkdirs();
+		File parent = dest.getParentFile();
+		parent.mkdirs();
 
 		HttpClient client = new HttpClient();
 
@@ -157,7 +151,7 @@ public class ProxyDownload {
 
 			File dl = new File(dest.getAbsolutePath() + ".new");
 			OutputStream out = new BufferedOutputStream(new FileOutputStream(dl));
-			IOUtils.copy(get.getResponseBodyAsStream(), out);
+			copy(get.getResponseBodyAsStream(), out);
 			out.close();
 
 			File bak = new File(dest.getAbsolutePath() + ".bak");
@@ -170,6 +164,17 @@ public class ProxyDownload {
 			get.releaseConnection();
 		}
 	}
+	
+	void copy(InputStream in, OutputStream out) throws IOException {
+		byte[] buffer = new byte[1024 * 100];
+		int len;
+
+		while ((len = in.read(buffer)) != -1) {
+			out.write(buffer, 0, len);
+		}
+		out.flush();
+	}
+
 
 	private String valueOf(Header responseHeader) {
 		return responseHeader == null ? "unknown" : responseHeader.getValue();

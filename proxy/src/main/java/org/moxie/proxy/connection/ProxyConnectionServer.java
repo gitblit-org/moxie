@@ -1,5 +1,6 @@
 /*
  * Copyright 2002-2005 The Apache Software Foundation.
+ * Copyright 2012 James Moger
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moxie.proxy;
+package org.moxie.proxy.connection;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.moxie.proxy.MoxieProxyConfig;
 
 /**
  * Wait for connections from somewhere and pass them on to
@@ -28,14 +31,14 @@ import java.util.logging.Logger;
  * @author digulla
  * 
  */
-public class ProxyServer {
-	public static final Logger log = Logger.getLogger(ProxyServer.class.getSimpleName());
+public class ProxyConnectionServer {
+	public static final Logger log = Logger.getLogger(ProxyConnectionServer.class.getSimpleName());
 
-	private final Config config;
+	private final MoxieProxyConfig config;
 	private int port;
 	private ServerSocket socket;
 
-	public ProxyServer(Config config) {
+	public ProxyConnectionServer(MoxieProxyConfig config) {
 		this.config = config;
 		port = config.getProxyPort();
 		try {
