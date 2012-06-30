@@ -19,8 +19,6 @@ package org.moxie.proxy.connection;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -78,27 +76,7 @@ public class ProxyDownload {
 	public void download() throws IOException, DownloadFailed {
 		if (!config.isAllowed(url)) {
 			throw new DownloadFailed("HTTP/1.1 " + HttpStatus.SC_FORBIDDEN
-					+ " Download denied by rule in DSMP config");
-		}
-
-		// If there is a status file in the cache, return it instead of trying
-		// it again. As usual with caches, this one is a key area which will
-		// always cause trouble.
-		// TODO There should be a simple way to get rid of the cached statuses
-		// TODO Maybe retry a download after a certain time?
-		File statusFile = new File(dest.getAbsolutePath() + ".status");
-		if (statusFile.exists()) {
-			try {
-				FileReader r = new FileReader(statusFile);
-				char[] buffer = new char[(int) statusFile.length()];
-				int len = r.read(buffer);
-				r.close();
-				String status = new String(buffer, 0, len);
-				throw new DownloadFailed(status);
-			} catch (IOException e) {
-				log.log(Level.WARNING,
-						"Error writing 'File not found'-Status to " + statusFile.getAbsolutePath(), e);
-			}
+					+ " Download denied by rule in Moxie Proxy config");
 		}
 
 		File parent = dest.getParentFile();
@@ -135,30 +113,13 @@ public class ProxyDownload {
 					+ valueOf(get.getResponseHeader("Content-Type")));
 
 			if (status != HttpStatus.SC_OK) {
-				// Remember "File not found"
-				if (status == HttpStatus.SC_NOT_FOUND) {
-					try {
-						FileWriter w = new FileWriter(statusFile);
-						w.write(get.getStatusLine().toString());
-						w.close();
-					} catch (IOException e) {
-						log.log(Level.WARNING,
-								"Error writing 'File not found'-Status to " + statusFile.getAbsolutePath(), e);
-					}
-				}
 				throw new DownloadFailed(get);
 			}
 
-			File dl = new File(dest.getAbsolutePath() + ".new");
+			File dl = File.createTempFile("moxie-", ".tmp");
 			OutputStream out = new BufferedOutputStream(new FileOutputStream(dl));
 			copy(get.getResponseBodyAsStream(), out);
 			out.close();
-
-			File bak = new File(dest.getAbsolutePath() + ".bak");
-			if (bak.exists())
-				bak.delete();
-			if (dest.exists())
-				dest.renameTo(bak);
 			dl.renameTo(dest);
 		} finally {
 			get.releaseConnection();

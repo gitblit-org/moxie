@@ -114,10 +114,6 @@ public class MoxieProxyConfig {
 		return remotes;
 	}
 
-	public File getTempFolder() {
-		return new File(moxieRoot, "temp");
-	}
-
 	public int getHttpPort() {
 		return httpPort;
 	}
