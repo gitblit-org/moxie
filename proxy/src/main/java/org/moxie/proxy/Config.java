@@ -88,8 +88,7 @@ public class Config {
 					httpPort = map.getInt("httpPort", httpPort);
 					proxyPort = map.getInt("proxyPort", proxyPort);
 					moxieRoot = new File(map.getString("rootFolder", "moxie"));
-					localArtifactsRoot = new File(moxieRoot, "local");
-					remoteArtifactsRoot = new File(moxieRoot, "remote");
+					setMoxieRoot(moxieRoot);
 					localRepositories = map.getStrings("localRepositories", localRepositories);
 					remoteRepositories = parseRemoteRepositories(map);
 					dateFormat = map.getString("dateFormat", dateFormat);
@@ -152,6 +151,8 @@ public class Config {
 
 	public void setMoxieRoot(File val) {
 		this.moxieRoot = val;
+		localArtifactsRoot = new File(moxieRoot, "local");
+		remoteArtifactsRoot = new File(moxieRoot, "remote");
 	}
 
 	public File getArtifactRoot(String relativePath) {
