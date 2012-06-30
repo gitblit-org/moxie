@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,11 @@ import java.util.List;
  */
 public class FileUtils {
 
+	public final static long KILOBYTE = 1024L;
+	public final static long MEGABYTE = 1024L*1024L;
+	public final static long GIGABYTE = 1024L*1024L*1024L;
+	
+	
 	/**
 	 * Returns the byte content of the specified file.
 	 * 
@@ -323,5 +329,30 @@ public class FileUtils {
 		} catch (IOException e) {
 			return path.getAbsoluteFile();
 		}
+	}
+	
+	/**
+	 * Formats a file size as a human-readable string.
+	 * @param size
+	 * @return human-readable file size
+	 */
+	public static String formatSize(long size) {
+		if (size < 1024) {
+			return size + " bytes";
+		}
+		double sz = size;
+		String units;
+		double nsz;		
+		if (size >= GIGABYTE) {
+			nsz = sz/GIGABYTE;
+			units = "GB";
+		} else if (size >= MEGABYTE) {
+			nsz = sz/MEGABYTE;
+			units = "MB";
+		} else {
+			nsz = sz/KILOBYTE;
+			units = "KB";
+		}
+		return new DecimalFormat("0.0").format(nsz) + " " + units;
 	}
 }

@@ -253,12 +253,17 @@ public class StringUtils {
 	 * @return the relative path
 	 */
 	public static String getRelativePath(String basePath, String fullPath) {
-		String relativePath = fullPath.substring(basePath.length()).replace(
-				'\\', '/');
-		if (relativePath.charAt(0) == '/') {
-			relativePath = relativePath.substring(1);
+		if (basePath.equals(fullPath)) {
+			return "";
 		}
-		return relativePath;
+		if (fullPath.startsWith(basePath)) {
+			String relativePath = fullPath.substring(basePath.length()).replace(
+					'\\', '/');
+			if (relativePath.charAt(0) == '/') {
+				relativePath = relativePath.substring(1);
+			}
+			return relativePath;
+		} return null;
 	}
 	
 	/**
@@ -305,7 +310,7 @@ public class StringUtils {
 	 */
 	public static <K> String toXML(String field, K value) {
 		if (value != null) {
-			return MessageFormat.format("\t<{0}>{1}</{0}>\n", field, value);
+			return MessageFormat.format("    <{0}>{1}</{0}>\n", field, value);
 		}
 		return "";
 	}
@@ -313,8 +318,20 @@ public class StringUtils {
 	public static String insertTab(String content) {
 		StringBuilder sb = new StringBuilder();
 		for (String line : content.split("\n")) {
-			sb.append('\t').append(line).append('\n');
+			sb.append("    ").append(line).append('\n');
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * Converts a url into a folder name by elimating the protocol and replacing
+	 * forward slashes with underscores.
+	 * e.g. http://repo1.apache.org/maven2 = repo1.apache.org_maven2
+	 * @param url
+	 * @return
+	 */
+	public static String urlToFolder(String url) {
+		String val = url.substring(url.indexOf("://") + 3);
+		return val.replace('/', '_');
 	}
 }
