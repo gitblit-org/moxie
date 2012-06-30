@@ -70,6 +70,14 @@ public class License implements Serializable {
 		return name + v;
 	}
 	
+	public String getName() {
+		return name;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+	
 	@Override
 	public String toString() {
 		return name + " (" + url + ")";

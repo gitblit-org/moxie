@@ -141,6 +141,26 @@ public class Pom {
 		return null;
 	}
 	
+	public String getArtifactId() {
+		return artifactId;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public String getUrl() {
+		return url;
+	}
+	
+	public String getIssuesUrl() {
+		return issuesUrl;
+	}
+
+	public String getOrganization() {
+		return organization;
+	}
+	
 	public void addLicense(License license) {
 		licenses.add(license);
 	}
