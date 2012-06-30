@@ -49,6 +49,11 @@ public class MoxieCache implements IMavenCache {
 		this.localSnapshotsRoot = new File(localRoot, "snapshots");
 		
 		this.dotM2Cache = new MavenCache(new File(System.getProperty("user.home") + "/.m2/repository"));
+		
+		// intial folder creation
+		remoteRoot.mkdirs();
+		localReleasesRoot.mkdirs();
+		localSnapshotsRoot.mkdirs();
 	}
 	
 	public File getMoxieRoot() {
