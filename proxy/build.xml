@@ -3,17 +3,17 @@
 
 	<!-- Moxie tasks -->
 	<include>
-		<!-- The toolkit project must be built first! -->
-		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie.jar" />
+		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie-0.5.0-SNAPSHOT-all.jar" />
 	</include>
 	
 	<target name="main">
 		<mx:init />
-		<mx:report scope="compile" />
 		<mx:javac />
-		<mx:jar fatjar="true" includeResources="true">
+		<mx:jar fatjar="true" includeResources="true" >
 			<classfilter>
+				<exclude name="org.w3c." />
 				<exclude name="org.xml." />
+				<exclude name="org.zeroturnaround." />
 			</classfilter>
 			<mainclass name="org.moxie.proxy.Main" />
 		</mx:jar>

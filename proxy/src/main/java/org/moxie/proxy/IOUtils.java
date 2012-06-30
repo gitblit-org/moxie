@@ -24,36 +24,31 @@ import java.io.OutputStream;
  * Various IO utils (copy streams, create directories)
  * 
  * @author digulla
- *
+ * 
  */
-public class IOUtils
-{
+public class IOUtils {
 
-    public static void copy (InputStream in, OutputStream out) throws IOException
-    {
-        byte[] buffer = new byte[1024*100];
-        int len;
-        
-        while ((len = in.read(buffer)) != -1)
-        {
-            out.write (buffer, 0, len);
-        }
-        
-        out.flush();
-    }
+	public static void copy(InputStream in, OutputStream out) throws IOException {
+		byte[] buffer = new byte[1024 * 100];
+		int len;
 
-    public static void mkdirs (File f)
-    {
-        if (f.exists())
-        {
-            if (!f.isDirectory ())
-                throw new RuntimeException ("Expected directory "+f.getAbsolutePath ()+" but found a file.");
+		while ((len = in.read(buffer)) != -1) {
+			out.write(buffer, 0, len);
+		}
 
-            return;
-        }
-        
-        if (!f.mkdirs())
-            throw new RuntimeException ("Cannot create directory "+f.getAbsolutePath());
-    }
-    
+		out.flush();
+	}
+
+	public static void mkdirs(File f) {
+		if (f.exists()) {
+			if (!f.isDirectory())
+				throw new RuntimeException("Expected directory " + f.getAbsolutePath() + " but found a file.");
+
+			return;
+		}
+
+		if (!f.mkdirs())
+			throw new RuntimeException("Cannot create directory " + f.getAbsolutePath());
+	}
+
 }

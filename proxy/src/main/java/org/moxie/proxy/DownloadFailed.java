@@ -18,30 +18,29 @@ package org.moxie.proxy;
 import org.apache.commons.httpclient.methods.GetMethod;
 
 /**
- * This exception extracts information from a failed GET request and
- * presents it in a user-friendly way.
+ * This exception extracts information from a failed GET request and presents it
+ * in a user-friendly way.
  * 
  * @author digulla
- *
+ * 
  */
-public class DownloadFailed extends Exception
-{
-    private String statusLine;
-    
-    public DownloadFailed (GetMethod get)
-    {
-        super ("Download failed: "+get.getStatusLine().toString());
-        statusLine = get.getStatusLine().toString();
-    }
+public class DownloadFailed extends Exception {
+	
+	private static final long serialVersionUID = 1L;
+	
+	private String statusLine;
 
-    public DownloadFailed (String message)
-    {
-        super ("Download failed: "+message);
-        statusLine = message;
-    }
+	public DownloadFailed(GetMethod get) {
+		super("Download failed: " + get.getStatusLine().toString());
+		statusLine = get.getStatusLine().toString();
+	}
 
-    public String getStatusLine ()
-    {
-        return statusLine;
-    }
+	public DownloadFailed(String message) {
+		super("Download failed: " + message);
+		statusLine = message;
+	}
+
+	public String getStatusLine() {
+		return statusLine;
+	}
 }

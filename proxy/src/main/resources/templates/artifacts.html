@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<#include "/header.html">
+<body>
+	<#include "/navbar.html">
+	<div class="container">
+		<#include "/breadcrumbs.html">
+		
+		<div class="row-fluid">
+			<div class="span7">	
+				<!-- list content --> 
+				<#if (items!?size > 0)>
+				<table class="table">
+					<tbody>				
+						<#list items as item>
+							<tr>
+								<td><a href="${pageRef}/${item.path}">${item.name}</a></td>
+								<td>
+									<#if item.date??>
+									${item.date}
+									</#if>
+								</td>
+								<td>
+									<#if item.size??>
+									${item.size}
+									</#if>
+								</td>
+							</tr>
+						</#list>
+					</tbody>
+				</table>
+				</#if>
+			</div>
+
+			<div class="span5">
+				<#if pom??>
+					<div class="alert">
+					<!-- Artifact Metadata -->
+					<h4>${pom.artifactId}</h4>
+					<ul class="unstyled">
+						<li style="padding-top:5px;">${pom.coordinates}</li>
+						<#if pom.description??>
+							<li style="padding-top:10px">${pom.description}</li>
+						</#if>
+						<#if pom.organization??>
+							<li style="padding-top:10px;">${rc.getString("mp.by")} ${pom.organization}</li>
+						</#if>
+						<#if pom.url??>
+							<li><a target="_blank" href="${pom.url}">${pom.url}</a></li>
+						</#if>
+						<#if pom.issuesUrl??>
+							<li style="padding-top:20px"><a target="_blank" href="${pom.issuesUrl}">${rc.getString("mp.issueTracker")}</a></li>
+						</#if>
+					</ul>
+
+					<!-- Artifact Licenses -->		
+					<#if (pom.licenses!?size > 0)>
+						<h4 style="padding-top:10px;">${rc.getString("mp.licenses")}</h4>
+						<ul class="unstyled">
+						<#list pom.licenses as license>
+							<li><a target="_blank" href="${license.url}">${license.name}</a></li>
+						</#list>
+						</ul>
+					</#if>
+					</div>
+				</#if>
+				<div class="alert alert-info"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
+				<h5>Moxie</h5>
+				<pre>${moxieSnippet}</pre>
+				<h5>Maven</h5>
+				<pre>${mavenSnippet}</pre>
+				<h5>Gradle</h5>
+				<pre>${gradleSnippet}</pre>
+			</div>
+		</div>
+		<#include "/footer.html">
+	</div>
+</body>
+</html>

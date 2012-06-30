@@ -1,0 +1,19 @@
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+           		<span class="icon-bar"></span>
+           		<span class="icon-bar"></span>
+           		<span class="icon-bar"></span>
+         	</a>
+         	<a class="brand" href="${baseRef}"><img src="${baseRef}/moxie.png" alt="${appName}"></img></a>
+			<div class="nav-collapse">
+				${appMenu}
+			</div>
+			<form class="navbar-search pull-right" action="${baseRef}/search" method="post">
+				<span style="color:#ccc;">${user}</span> &nbsp; 
+				<input name="query" class="input-medium search-query" type="text" placeholder="${rc.getString("mp.search")}">
+			</form>
+		</div>
+	</div>
+</div>
