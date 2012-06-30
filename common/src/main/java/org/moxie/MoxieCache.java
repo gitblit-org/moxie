@@ -52,7 +52,7 @@ public class MoxieCache extends MavenCache {
 			baseFolder = snapshotsRoot;
 		}
 
-		String path = Dependency.getMoxiePath(dcopy, ext, pattern);
+		String path = Dependency.getMavenPath(dcopy, ext, pattern);
 	
 		File moxieFile = new File(baseFolder, path);
 		File mavenFile = mavenCache.getArtifact(dep, ext);
@@ -78,7 +78,7 @@ public class MoxieCache extends MavenCache {
 			baseFolder = snapshotsRoot;
 			pattern = snapshotPattern;
 		}
-		String path = Dependency.getMoxiePath(dep,  ext, pattern);
+		String path = Dependency.getMavenPath(dep,  ext, pattern);
 		
 		File moxieFile = new File(baseFolder, path);
 		File mavenFile = mavenCache.getMetadata(dep, ext);
@@ -101,7 +101,7 @@ public class MoxieCache extends MavenCache {
 			return null;
 		}
 		
-		String path = Dependency.getMoxiePath(dep, "moxie", pattern);
+		String path = Dependency.getMavenPath(dep, "moxie", pattern);
 		// artifactId-version.moxie
 		File moxieFile = new File(dataRoot, path);
 		// metadata.moxie

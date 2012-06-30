@@ -191,16 +191,18 @@ public class Dependency implements Serializable {
 	}
 	
 	public static String getMavenPath(Dependency dep, String ext, String pattern) {
-		return getPath(dep,  ext, pattern, '.', '/');
+		return getPath(dep,  ext, pattern, false);
 	}
-
-	public static String getMoxiePath(Dependency dep, String ext, String pattern) {
-		return getPath(dep,  ext, pattern, '/', '.');
-	}
-
-	private static String getPath(Dependency dep, String ext, String pattern, char a, char b) {
+	
+	private static String getPath(Dependency dep, String ext, String pattern, boolean groupIdAsPath) {
 		String url = pattern;
-		url = url.replace("${groupId}", dep.groupId.replace(a, b));
+		if (groupIdAsPath) {
+			// Ivy-style paths (preferred, but add complexity)
+			url = url.replace("${groupId}", dep.groupId);
+		} else {
+			// Maven-style paths
+			url = url.replace("${groupId}", dep.groupId.replace('.', '/'));
+		}
 		url = url.replace("${artifactId}", dep.artifactId);
 		url = url.replace("${version}", dep.version);
 		url = url.replace("${revision}", StringUtils.isEmpty(dep.revision) ? dep.version : dep.revision);
