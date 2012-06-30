@@ -127,7 +127,7 @@ public class MoxieProxy extends Application {
 		router.attach("/" + folder, ArtifactsResource.class);
 	}
 	
-	public Configuration getConfiguration() {
+	public Configuration getFreemarkerConfiguration() {
 		return configuration;
 	}
 	

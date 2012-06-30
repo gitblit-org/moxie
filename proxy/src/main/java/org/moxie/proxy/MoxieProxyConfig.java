@@ -172,6 +172,14 @@ public class MoxieProxyConfig {
 		return new File(localArtifactsRoot, repo);
 	}
 	
+	public boolean isRemoteRepository(String repository) {
+		return remoteRepositories.containsKey(repository);
+	}
+	
+	public RemoteRepository getRemoteRepository(String repository) {
+		return remoteRepositories.get(repository);
+	}
+	
 	public File getRemoteFile(URL url) {
 		String remote = StringUtils.urlToFolder(url.toString());
 		File remoteFolder = new File(remoteArtifactsRoot, remote);

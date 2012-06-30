@@ -64,7 +64,13 @@
 					</#if>
 					</div>
 				</#if>
-				<div class="alert alert-info"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
+				
+				<#if isRemoteRepository>
+					<div class="alert alert-success"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
+				<#else>
+					<div class="alert alert-info"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
+				</#if>
+				
 				<h5>Moxie</h5>
 				<pre>${moxieSnippet}</pre>
 				<h5>Maven</h5>

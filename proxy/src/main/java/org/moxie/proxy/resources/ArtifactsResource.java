@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.moxie.proxy.Constants;
+import org.moxie.proxy.RemoteRepository;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 import org.restlet.representation.Representation;
@@ -56,48 +57,99 @@ public class ArtifactsResource extends BaseResource {
 		}
 	}
 	
+	boolean isRemoteRepository() {
+		String repository = getBasePath();
+		return getProxyConfig().isRemoteRepository(repository);
+	}
+	
 	String getRepositoryUrl() {
 		String repository = getBasePath();
 		return getRootRef() + "/m2/" + repository;
 	}
 	
+	String getProxyUrl() {
+		return getRootRef().getScheme() + "://" + getRootRef().getHostDomain() + ":" + getProxyConfig().getProxyPort();
+	}
+	
 	String getRepositoryNote() {
-		String repository = getBasePath();
-		String message = getTranslation().getString("mp.repositoryNote");
-		return MessageFormat.format(message, repository);
+		if (isRemoteRepository()) {
+			// remote/proxied repository
+			RemoteRepository repository = getProxyConfig().getRemoteRepository(getBasePath());
+			String message = getTranslation().getString("mp.remoteRepositoryNote");
+			return MessageFormat.format(message, repository.id, repository.getHost(), getProxyUrl());
+		} else {
+			// local repository
+			String repository = getBasePath();
+			String message = getTranslation().getString("mp.localRepositoryNote");
+			return MessageFormat.format(message, repository);
+		}
 	}
 
-	String getMoxieSnippet() {
+	String getMoxieSnippet() {		
 		StringBuilder sb = new StringBuilder();
-		sb.append("repositories:\n");
-		sb.append(" - ").append(getRepositoryUrl());		
+		if (isRemoteRepository()) {
+			// proxy settings
+			RemoteRepository repository = getProxyConfig().getRemoteRepository(getBasePath());			
+			sb.append("proxies:\n");
+			sb.append(MessageFormat.format("- '{'\n    active: true\n    id: moxieProxy\n    protocol: {0}\n    host: {1}\n    port: {2,number,0}\n    username: username\n    password: password\n    proxyHosts: {3}\n'}'", getRootRef().getScheme(), getRootRef().getHostDomain(), getProxyConfig().getProxyPort(), repository.getHost()));
+		} else {
+			// repository settings
+			sb.append("repositories:\n");
+			sb.append(" - ").append(getRepositoryUrl());
+		}
 		return sb.toString();
 	}
 
 	String getMavenSnippet() {
 		String repository = getBasePath();
 		StringBuilder sb = new StringBuilder();
-		sb.append("<repository>\n");
-		sb.append(StringUtils.toXML("id", "moxie-" + repository));
-		sb.append(StringUtils.toXML("name", Constants.getName() + " " + repository));
-		sb.append(StringUtils.toXML("url", getRepositoryUrl()));		
-		sb.append(StringUtils.toXML("layout", "default"));		
-		sb.append("</repository>");
+		if (isRemoteRepository()) {
+			// proxy settings
+			sb.append("<proxy>\n");
+			sb.append(StringUtils.toXML("id", "moxieProxy"));
+			sb.append(StringUtils.toXML("active", "true"));
+			sb.append(StringUtils.toXML("protocol", getRootRef().getScheme()));
+			sb.append(StringUtils.toXML("host", getRootRef().getHostDomain()));
+			sb.append(StringUtils.toXML("port", "" + getProxyConfig().getProxyPort()));
+			sb.append(StringUtils.toXML("username", "username"));
+			sb.append(StringUtils.toXML("password", "password"));
+			sb.append(StringUtils.toXML("nonProxyHosts", "*.nonproxyrepos.com|localhost"));
+			sb.append("</proxy>");
+		} else {
+			// repository settings
+			sb.append("<repository>\n");
+			sb.append(StringUtils.toXML("id", "moxie" + Character.toUpperCase(repository.charAt(0)) + repository.substring(1)));
+			sb.append(StringUtils.toXML("name", Constants.getName() + " " + repository));
+			sb.append(StringUtils.toXML("url", getRepositoryUrl()));		
+			sb.append(StringUtils.toXML("layout", "default"));		
+			sb.append("</repository>");
+		}
 		return StringUtils.escapeForHtml(sb.toString(), false);
 	}
 	
 	String getGradleSnippet() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("repositories {\n");
-		sb.append("  maven {\n");
-		sb.append("    url \"").append(getRepositoryUrl()).append("\"\n");
-		sb.append("  }\n");
-		sb.append("}");
+		if (isRemoteRepository()) {
+			// proxy settings
+			String base = "systemProp." + getRootRef().getScheme();
+			sb.append(base).append("proxyHost=").append(getRootRef().getHostDomain()).append('\n');
+			sb.append(base).append("proxyPort=").append(getProxyConfig().getProxyPort()).append('\n');
+			sb.append(base).append("proxyUser=username").append('\n');
+			sb.append(base).append("proxyPassword=password\n");
+			sb.append(base).append("nonProxyHosts=*.nonproxyrepos.com|localhost");
+		} else {
+			// repository settings
+			sb.append("repositories {\n");
+			sb.append("  maven {\n");
+			sb.append("    url \"").append(getRepositoryUrl()).append("\"\n");
+			sb.append("  }\n");
+			sb.append("}");
+		}
 		return sb.toString();
 	}
 	
 	File getArtifactRoot() {
-		return getApplication().getProxyConfig().getArtifactRoot(getBasePath());
+		return getProxyConfig().getArtifactRoot(getBasePath());
 	}
 
 	File getFile(String path) {
@@ -118,7 +170,7 @@ public class ArtifactsResource extends BaseResource {
 	List<ListItem> getItems(File folder) {
 		String rootPath = getArtifactRoot().getAbsolutePath();
 		List<ListItem> list = new ArrayList<ListItem>();
-		String pattern = getApplication().getProxyConfig().getDateFormat();
+		String pattern = getProxyConfig().getDateFormat();
 		SimpleDateFormat df = new SimpleDateFormat(pattern);
 		for (File file : folder.listFiles()) {
 			String relativePath= StringUtils.getRelativePath(rootPath, file.getAbsolutePath());
@@ -170,7 +222,14 @@ public class ArtifactsResource extends BaseResource {
 		map.put("title", Constants.getName());
 		map.put("crumbsRoot", getBasePathName());
 		map.put("crumbs", getCrumbs(file));
-		map.put("activeCrumb", file.getName());
+
+		boolean isRemote = isRemoteRepository();
+		String activeCrumb = file.getName();
+		if (isRemote && file.equals(getArtifactRoot())) {
+			// show the proxied url as the active root crumb
+			activeCrumb = getProxyConfig().getRemoteRepository(getBasePath()).url;
+		}
+		map.put("activeCrumb", activeCrumb);
 
 		if (file.isFile()) {
 			if (isText(file)) {
@@ -182,9 +241,10 @@ public class ArtifactsResource extends BaseResource {
 			}
 			// TODO redirect to binary download
 		}
-		
+				
 		// list of files/folders
 		map.put("pom", getApplication().readPom(file));
+		map.put("isRemoteRepository", isRemote);
 		map.put("repositoryUrl", getRepositoryUrl());
 		map.put("repositoryNote", getRepositoryNote());
 		map.put("moxieSnippet", getMoxieSnippet());

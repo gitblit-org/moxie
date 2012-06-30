@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 
 import org.moxie.proxy.Constants;
 import org.moxie.proxy.MoxieProxy;
+import org.moxie.proxy.MoxieProxyConfig;
 import org.moxie.proxy.RemoteRepository;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
@@ -37,6 +38,10 @@ public abstract class BaseResource extends ServerResource {
 	public MoxieProxy getApplication() {
 		return (MoxieProxy) super.getApplication();
 	}
+	
+	public MoxieProxyConfig getProxyConfig() {
+		return getApplication().getProxyConfig();
+	}
 
 	private String getUser() {
 		return "";
@@ -44,7 +49,7 @@ public abstract class BaseResource extends ServerResource {
 	
 	@Override
 	public Representation handle() {
-		getApplication().getProxyConfig().reload();
+		getProxyConfig().reload();
 		return super.handle();
 	}
 
@@ -62,7 +67,7 @@ public abstract class BaseResource extends ServerResource {
 		map.put("user", getUser());
 		map.put("pageRef", getRootRef() + "/" + getBasePath());
 		TemplateRepresentation template = new TemplateRepresentation(templateName, getApplication()
-				.getConfiguration(), map, MediaType.TEXT_HTML);
+				.getFreemarkerConfiguration(), map, MediaType.TEXT_HTML);
 		template.setCharacterSet(CharacterSet.UTF_8);
 		return template;
 	}
@@ -70,7 +75,7 @@ public abstract class BaseResource extends ServerResource {
 	private String buildMenu() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("\n<ul class='nav'>\n");
-		for (String folder : getApplication().getProxyConfig().getLocalRepositories()) {
+		for (String folder : getProxyConfig().getLocalRepositories()) {
 			String name = folder;
 			try {
 				name = getTranslation().getString("mp." + folder);
@@ -78,7 +83,7 @@ public abstract class BaseResource extends ServerResource {
 			}
 			sb.append(url(folder, name, false));
 		}
-		for (RemoteRepository remote : getApplication().getProxyConfig().getRemoteRepositories()) {
+		for (RemoteRepository remote : getProxyConfig().getRemoteRepositories()) {
 			sb.append(url(remote.id, remote.id, true));
 		}
 		sb.append("</ul>\n");

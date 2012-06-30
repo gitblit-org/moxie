@@ -16,17 +16,26 @@
 package org.moxie.proxy;
 
 import java.io.Serializable;
+import java.net.URL;
 
 public class RemoteRepository implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public final String id;
 	public final String url;
-	
+
 	public RemoteRepository(String id, String url) {
 		this.id = id;
 		this.url = url;
 	}
-	
+
+	public String getHost() {
+		try {
+			URL u = new URL(url);
+			return u.getHost();
+		} catch (Exception e) {
+		}
+		return url;
+	}
 }
