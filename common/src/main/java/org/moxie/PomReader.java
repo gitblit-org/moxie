@@ -47,12 +47,19 @@ public class PomReader {
 		if (!pomFile.exists()) {
 			return null;
 		}
-		
-		Pom pom = new Pom();
-		pom.groupId = dependency.groupId;
-		pom.artifactId = dependency.artifactId;
-		pom.version = dependency.version;
-		
+		return readPom(cache, pomFile);
+	}
+	
+	/**
+	 * Reads a POM file from an artifact cache.  Parent POMs will be read and
+	 * applied automatically, if they exist in the cache.
+	 * 
+	 * @param cache
+	 * @param pomFile
+	 * @return
+	 * @throws Exception
+	 */
+	public static Pom readPom(MavenCache cache, File pomFile) {		
 		Document doc = null;
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -64,6 +71,11 @@ public class PomReader {
 		}
 				
 		Element docElement = doc.getDocumentElement();
+		
+		Pom pom = new Pom();				
+		pom.groupId = readStringTag(docElement, Key.groupId);
+		pom.artifactId = readStringTag(docElement, Key.artifactId);
+		pom.version = readStringTag(docElement, Key.version);
 		pom.name = readStringTag(docElement, Key.name);
 		pom.description = readStringTag(docElement, Key.description);
 		pom.url = readStringTag(docElement, Key.url);
