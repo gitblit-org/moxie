@@ -12,6 +12,7 @@
 		<subant buildpath="${basedir}/toolkit" />
 		
 		<!-- Build remaining projects -->
+		<subant buildpath="${basedir}/maxml" />
 		<subant buildpath="${basedir}/proxy" />
 		<subant buildpath="${basedir}/common" />
 		<subant buildpath="${basedir}/site" />
