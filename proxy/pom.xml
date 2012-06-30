@@ -2,41 +2,47 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.moxie</groupId>
+        <artifactId>moxie-parent</artifactId>
+        <version>0.5.0-SNAPSHOT</version>
+    </parent>
 
 	<!-- project metadata-->
-	<groupId>org.moxie</groupId>
-	<artifactId>proxy</artifactId>
-	<version>0.5.0-SNAPSHOT</version>
-	<name>Moxie-Proxy</name>
-	<description>Stand-alone Maven 2 proxy server based on DSMP</description>
-	<organization><name>James Moger</name></organization>
-	<url>http://gitblit.github.com/moxie</url>
+    <groupId>org.moxie</groupId>
+    <artifactId>proxy</artifactId>
+    <version>0.5.0-SNAPSHOT</version>
+    <name>Moxie-Proxy</name>
+    <description>Stand-alone Maven 2 proxy server based on DSMP</description>
+    <organization><name>James Moger</name></organization>
+    <url>http://gitblit.github.com/moxie</url>
 
-	<dependencies>
-		<!-- compile dependencies -->
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-			<version>3.1</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>jdom</groupId>
-			<artifactId>jdom</artifactId>
-			<version>1.0</version>
-			<type>jar</type>
-			<scope>compile</scope>
-		</dependency>
-		<!-- test dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.10</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <dependencies>
+    	<!-- compile dependencies -->
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+    	<!-- test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
