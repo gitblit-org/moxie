@@ -27,14 +27,14 @@ import java.util.List;
  */
 public class Proxy {
 
-	String id;
-	boolean active;
-	String protocol;
-	String host;
-	int port;
-	String username;
-	String password;
-	List<String> nonProxyHosts;
+	public String id;
+	public boolean active;
+	public String protocol;
+	public String host;
+	public int port;
+	public String username;
+	public String password;
+	public List<String> nonProxyHosts;
 
 	public boolean matches(String url) {
 		if (url.startsWith(protocol)) {
