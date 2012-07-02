@@ -17,7 +17,10 @@ package org.moxie;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Collections;
 import java.util.List;
+
+import org.moxie.utils.StringUtils;
 
 /**
  * Represents a proxy server definition.
@@ -34,13 +37,28 @@ public class Proxy {
 	public int port;
 	public String username;
 	public String password;
-	public List<String> nonProxyHosts;
+	public List<String> proxyHosts = Collections.emptyList();
+	public List<String> nonProxyHosts = Collections.emptyList();
 
 	public boolean matches(String url) {
 		if (url.startsWith(protocol)) {
+			String host = StringUtils.getHost(url);
+
+			if (proxyHosts.size() > 0) {
+				for (String proxyHost : proxyHosts) {
+					if (host.equalsIgnoreCase(proxyHost)
+							|| host.endsWith(proxyHost)) {
+						// proxy this host!
+						return true;
+					}
+				}
+				return false;
+			}
+
 			for (String nonProxyHost : nonProxyHosts) {
-				if (nonProxyHost.equals(url)) {
-					// TODO improve this
+				if (host.equalsIgnoreCase(nonProxyHost)
+						|| host.endsWith(nonProxyHost)) {
+					// do not proxy this host!
 					return false;
 				}
 			}

@@ -22,11 +22,12 @@ import java.net.URL;
 /**
  * @author digulla
  */
-public class MirrorEntry {
-	private String from;
-	private String to;
+public class Redirect {
+	final String from;
+	final String to;
+	boolean active;
 
-	public MirrorEntry(String from, String to) {
+	public Redirect(String from, String to) {
 		this.from = fix(from);
 		this.to = fix(to);
 	}
@@ -38,7 +39,7 @@ public class MirrorEntry {
 		return s;
 	}
 
-	public URL getMirrorURL(String s) {
+	public URL getRedirectURL(String s) {
 		if (s.startsWith(from)) {
 			s = s.substring(from.length());
 			s = to + s;

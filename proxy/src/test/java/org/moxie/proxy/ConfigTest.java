@@ -22,7 +22,7 @@ import junit.framework.TestCase;
 
 public class ConfigTest extends TestCase {
 
-	MoxieProxyConfig config;
+	ProxyConfig config;
 
 	// public void testGetNoProxy () throws Exception
 	// {
@@ -42,23 +42,23 @@ public class ConfigTest extends TestCase {
 
 	public void testRedirect() throws Exception {
 		assertEquals("http://maven.sateh.com/maven2/org/apache/something",
-				config.getMirror(new URL("http://repo1.maven.org/maven2/org/apache/something")).toString());
+				config.getRedirect(new URL("http://repo1.maven.org/maven2/org/apache/something")).toString());
 	}
 
 	public void testRedirect2() throws Exception {
 		assertEquals("http://maven.sateh.com/maven2/org/apache/something",
-				config.getMirror(new URL("http://maven.sateh.com/repository/org/apache/something"))
+				config.getRedirect(new URL("http://maven.sateh.com/repository/org/apache/something"))
 						.toString());
 	}
 
 	public void testRedirect3() throws Exception {
 		assertEquals("http://maven.sateh.com/maven2/aopalliance/x",
-				config.getMirror(new URL("http://m2.safehaus.org/org/aopalliance/x")).toString());
+				config.getRedirect(new URL("http://m2.safehaus.org/org/aopalliance/x")).toString());
 	}
 
 	public void testRedirect4() throws Exception {
 		assertEquals("http://maven.sateh.com/maven2/org/x",
-				config.getMirror(new URL("http://m2.safehaus.org/org/x")).toString());
+				config.getRedirect(new URL("http://m2.safehaus.org/org/x")).toString());
 	}
 
 	public void testIsAllowed() throws Exception {
@@ -85,7 +85,7 @@ public class ConfigTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		config = new MoxieProxyConfig();
+		config = new ProxyConfig();
 		config.parse(new File("proxy.moxie"));
 	}
 }

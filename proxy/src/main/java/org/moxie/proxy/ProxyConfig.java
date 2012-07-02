@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -38,8 +40,8 @@ import org.moxie.utils.StringUtils;
 /**
  * Read and manage the configuration.
  */
-public class MoxieProxyConfig {
-	public static final Logger log = Logger.getLogger(MoxieProxyConfig.class.getSimpleName());
+public class ProxyConfig {
+	public static final Logger log = Logger.getLogger(ProxyConfig.class.getSimpleName());
 
 	private File configFile;
 	private long configLastModified;
@@ -57,15 +59,13 @@ public class MoxieProxyConfig {
 	private Map<String, RemoteRepository> remoteRepositories;
 
 	private List<Proxy> proxies;
-	private List<MirrorEntry> mirrors;
-	private List<AllowDeny> allowDeny;
-	private List<String> noProxy;
+	private List<Redirect> redirects;
+	private List<AllowDeny> allowDeny;	
 
-	public MoxieProxyConfig() {
+	public ProxyConfig() {
 		proxies = Collections.emptyList();
-		mirrors = Collections.emptyList();
+		redirects = Collections.emptyList();
 		allowDeny = Collections.emptyList();
-		noProxy = Collections.emptyList();
 		localRepositories = Collections.emptyList();
 		remoteRepositories = Collections.emptyMap();
 		dateFormat = "yyyy-MM-dd";
@@ -92,8 +92,11 @@ public class MoxieProxyConfig {
 					setMoxieRoot(moxieRoot);
 					localRepositories = map.getStrings("localRepositories", localRepositories);
 					remoteRepositories = parseRemoteRepositories(map);
-					dateFormat = map.getString("dateFormat", dateFormat);
 				}
+				proxies = parseProxies(map);
+				dateFormat = map.getString("dateFormat", dateFormat);
+				redirects = parseRedirects(map);
+				allowDeny = parseAllowDeny(map);
 			} catch (Exception e) {
 				log.log(Level.SEVERE, "failed to parse " + configFile, e);
 			}
@@ -112,6 +115,63 @@ public class MoxieProxyConfig {
 			}
 		}
 		return remotes;
+	}
+	
+	List<Proxy> parseProxies(MaxmlMap map) {
+		List<Proxy> list = new ArrayList<Proxy>();
+		if (map.containsKey("proxies")) {
+			List<MaxmlMap> values = (List<MaxmlMap>) map.get("proxies");
+			for (MaxmlMap definition : values) {
+				Proxy proxy = new Proxy();
+				proxy.id = definition.getString("id", "");
+				proxy.active = definition.getBoolean("active", true);
+				proxy.protocol = definition.getString("protocol", "http");
+				proxy.host = definition.getString("host", "");
+				proxy.port = definition.getInt("port", 80);
+				proxy.username = definition.getString("username", "");
+				proxy.password = definition.getString("password", "");
+				proxy.proxyHosts = definition.getStrings("proxyHosts", new ArrayList<String>());
+				proxy.nonProxyHosts = definition.getStrings("nonProxyHosts", new ArrayList<String>());
+				list.add(proxy);
+			}
+		}
+		return list;
+	}
+	
+	List<Redirect> parseRedirects(MaxmlMap map) {
+		List<Redirect> list = new ArrayList<Redirect>();
+		if (map.containsKey("proxies")) {
+			List<MaxmlMap> values = (List<MaxmlMap>) map.get("redirects");
+			for (MaxmlMap definition : values) {
+				String from = definition.getString("from", null);
+				String to = definition.getString("to", null);
+				if (StringUtils.isEmpty(from) || StringUtils.isEmpty(to)) {
+					log.warning(MessageFormat.format("Dropping incomplete redirect definition! from: \"{0}\" to: \"{1}\"", from, to));
+					continue;
+				}
+				Redirect redirect = new Redirect(from, to);
+				redirect.active = definition.getBoolean("active", true);
+				list.add(redirect);
+			}
+		}
+		return list;
+	}
+
+	List<AllowDeny> parseAllowDeny(MaxmlMap map) {
+		List<AllowDeny> list = new ArrayList<AllowDeny>();
+		if (map.containsKey("allow")) {
+			for (String value : map.getStrings("allow", new ArrayList<String>())) {
+				AllowDeny rule = new AllowDeny(value, true);
+				list.add(rule);
+			}			
+		}
+		if (map.containsKey("deny")) {
+			for (String value : map.getStrings("deny", new ArrayList<String>())) {
+				AllowDeny rule = new AllowDeny(value, false);
+				list.add(rule);
+			}			
+		}
+		return list;
 	}
 
 	public int getHttpPort() {
@@ -200,55 +260,39 @@ public class MoxieProxyConfig {
 		return remoteRepositories.values();
 	}
 
-	public List<MirrorEntry> getMirrors() {
-		return mirrors;
+	public List<Redirect> getRedirects() {
+		return redirects;
 	}
 
-	public URL getMirror(URL url) throws MalformedURLException {
+	public URL getRedirect(URL url) throws MalformedURLException {
 		String s = url.toString();
 
-		for (MirrorEntry entry : getMirrors()) {
-			URL mirror = entry.getMirrorURL(s);
-			if (mirror != null) {
-				log.info("Redirecting request to mirror " + mirror.toString());
-				return mirror;
+		for (Redirect entry : getRedirects()) {
+			URL to = entry.getRedirectURL(s);
+			if (to != null) {
+				log.info("Redirecting request to " + to.toString());
+				return to;
 			}
 		}
 
 		return url;
 	}
 
-	private String[] getNoProxy(Object root) {
-		String s = null;// getStringProperty(root, "proxy", "no-proxy", null);
-		if (s == null)
-			return new String[0];
-
-		String[] result = s.split(",");
-		for (int i = 0; i < result.length; i++) {
-			result[i] = result[i].trim();
-		}
-
-		return result;
-	}
-
-	public List<String> getNoProxy() {
-		return noProxy;
-	}
-
 	public boolean useProxy(URL url) {
-		// if (!hasProxy(config.getRootElement()))
-		// return false;
-		//
-		// String host = url.getHost();
-		// for (String postfix : getNoProxy()) {
-		// if (host.endsWith(postfix))
-		// return false;
-		// }
-		// return true;
+		for (Proxy proxy : proxies) {
+			if (proxy.active && proxy.matches(url.toExternalForm())) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	public Proxy getProxy(URL url) {
+		for (Proxy proxy : proxies) {
+			if (proxy.active && proxy.matches(url.toExternalForm())) {
+				return proxy;
+			}
+		}
 		return null;
 	}
 
@@ -265,7 +309,6 @@ public class MoxieProxyConfig {
 				return rule.isAllowed();
 			}
 		}
-
 		return true;
 	}
 }

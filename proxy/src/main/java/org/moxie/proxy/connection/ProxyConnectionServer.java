@@ -22,7 +22,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.moxie.proxy.MoxieProxyConfig;
+import org.moxie.proxy.ProxyConfig;
 
 /**
  * Wait for connections from somewhere and pass them on to
@@ -34,11 +34,11 @@ import org.moxie.proxy.MoxieProxyConfig;
 public class ProxyConnectionServer {
 	public static final Logger log = Logger.getLogger(ProxyConnectionServer.class.getSimpleName());
 
-	private final MoxieProxyConfig config;
+	private final ProxyConfig config;
 	private int port;
 	private ServerSocket socket;
 
-	public ProxyConnectionServer(MoxieProxyConfig config) {
+	public ProxyConnectionServer(ProxyConfig config) {
 		this.config = config;
 		port = config.getProxyPort();
 		try {

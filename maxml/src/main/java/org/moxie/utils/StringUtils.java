@@ -16,6 +16,7 @@
 package org.moxie.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
@@ -335,5 +336,20 @@ public class StringUtils {
 		val = val.replace('/', '_');
 		val = val.replace(':', '-');
 		return val;
+	}
+	
+	/**
+	 * Returns the hostname or ip address portion of a url.
+	 * 
+	 * @param url
+	 * @return a hostname or ip address
+	 */
+	public static String getHost(String url) {
+		try {
+			URL u = new URL(url);
+			return u.getHost();
+		} catch (Exception e) {
+		}
+		return url;
 	}
 }

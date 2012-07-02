@@ -345,6 +345,7 @@ public class Config implements Serializable {
 				proxy.port = definition.getInt("port", 80);
 				proxy.username = definition.getString("username", "");
 				proxy.password = definition.getString("password", "");
+				proxy.proxyHosts = definition.getStrings("proxyHosts", new ArrayList<String>());
 				proxy.nonProxyHosts = definition.getStrings("nonProxyHosts", new ArrayList<String>());
 				ps.add(proxy);
 			}

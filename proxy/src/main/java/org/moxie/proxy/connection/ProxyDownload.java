@@ -35,7 +35,7 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.moxie.Proxy;
-import org.moxie.proxy.MoxieProxyConfig;
+import org.moxie.proxy.ProxyConfig;
 
 /**
  * Download a file via a proxy server and store it somewhere.
@@ -45,7 +45,7 @@ import org.moxie.proxy.MoxieProxyConfig;
  */
 public class ProxyDownload {
 	public static final Logger log = Logger.getLogger(ProxyDownload.class.getSimpleName());
-	private final MoxieProxyConfig config;
+	private final ProxyConfig config;
 	private final URL url;
 	private final File dest;
 
@@ -61,7 +61,7 @@ public class ProxyDownload {
 	 * @param dest
 	 *            Where to store it.
 	 */
-	public ProxyDownload(MoxieProxyConfig config, URL url, File dest) {
+	public ProxyDownload(ProxyConfig config, URL url, File dest) {
 		this.config = config;
 		this.url = url;
 		this.dest = dest;

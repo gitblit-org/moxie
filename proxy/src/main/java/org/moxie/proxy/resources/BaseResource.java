@@ -22,7 +22,7 @@ import java.util.ResourceBundle;
 
 import org.moxie.proxy.Constants;
 import org.moxie.proxy.MoxieProxy;
-import org.moxie.proxy.MoxieProxyConfig;
+import org.moxie.proxy.ProxyConfig;
 import org.moxie.proxy.RemoteRepository;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
@@ -39,7 +39,7 @@ public abstract class BaseResource extends ServerResource {
 		return (MoxieProxy) super.getApplication();
 	}
 	
-	public MoxieProxyConfig getProxyConfig() {
+	public ProxyConfig getProxyConfig() {
 		return getApplication().getProxyConfig();
 	}
 

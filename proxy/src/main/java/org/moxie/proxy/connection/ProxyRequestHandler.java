@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.moxie.proxy.MoxieProxyConfig;
+import org.moxie.proxy.ProxyConfig;
 
 /**
  * Handle a connection from a maven.
@@ -43,10 +43,10 @@ import org.moxie.proxy.MoxieProxyConfig;
 public class ProxyRequestHandler extends Thread {
 	public static final Logger log = Logger.getLogger(ProxyRequestHandler.class.getSimpleName());
 
-	private MoxieProxyConfig config;
+	private ProxyConfig config;
 	private Socket clientSocket;
 
-	public ProxyRequestHandler(MoxieProxyConfig config, Socket clientSocket) {
+	public ProxyRequestHandler(ProxyConfig config, Socket clientSocket) {
 		this.config = config;
 		this.clientSocket = clientSocket;
 	}
@@ -129,7 +129,7 @@ public class ProxyRequestHandler extends Thread {
 
 	private void serveURL(String downloadURL) throws IOException {
 		URL url = new URL(downloadURL);
-		url = config.getMirror(url);
+		url = config.getRedirect(url);
 
 		if (!"http".equals(url.getProtocol()))
 			throw new IOException("Can only handle HTTP requests, got " + downloadURL);

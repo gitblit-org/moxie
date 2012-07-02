@@ -48,11 +48,11 @@ import freemarker.template.Configuration;
 
 public class MoxieProxy extends Application {
 
-	private final MoxieProxyConfig config;
+	private final ProxyConfig config;
 
 	private Configuration configuration;
 
-	public MoxieProxy(MoxieProxyConfig config) {
+	public MoxieProxy(ProxyConfig config) {
 		this.config = config;
 	}
 	
@@ -131,7 +131,7 @@ public class MoxieProxy extends Application {
 		return configuration;
 	}
 	
-	public MoxieProxyConfig getProxyConfig() {
+	public ProxyConfig getProxyConfig() {
 		return config;
 	}
 	
@@ -170,7 +170,7 @@ public class MoxieProxy extends Application {
 			System.exit(-1);
 		}
 		
-		MoxieProxyConfig config = new MoxieProxyConfig();
+		ProxyConfig config = new ProxyConfig();
 		
 		// set defaults from command-line
 		

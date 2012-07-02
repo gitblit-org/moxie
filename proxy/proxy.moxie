@@ -39,24 +39,24 @@ proxies :
 redirects :
 
 # Redirect all requests to central to the closest mirror
-- { active: false, from: "http://repo1.maven.org/maven2" to: "http://maven.sateh.com/maven2" }
+- { active: false, from: "http://repo1.maven.org/maven2", to: "http://maven.sateh.com/maven2" }
 
 # Sometimes, a POM will ask for a file from a mirror. In this case, direct
 # the requests to the closest mirror.
-- { active: false, from: "http://www.ibiblio.org/maven2" to: "http://maven.sateh.com/maven2" }
+- { active: false, from: "http://www.ibiblio.org/maven2", to: "http://maven.sateh.com/maven2" }
 
 # These two directories on the server always contain the same content (on
 # the server, one is a soft link to the other). We don't want to cache the
 # same files twice.
-- { active: false, from: "http://maven.sateh.com/repository" to: "http://maven.sateh.com/maven2" }
+- { active: false, from: "http://maven.sateh.com/repository", to: "http://maven.sateh.com/maven2" }
 
 # POM bugfixes
 # spring-javaconfig believes it has to download releases from m2.safehaus.org.
 # Also it uses the wrong path for aopalliance (org.aopalliance instead of aopalliance).
 # So we redirect requests for "org/aopalliance" to "aopalliance" and then
 # everything else to the root of the mirror
-- { active: false, from: "http://m2.safehaus.org/org/aopalliance" to: "http://maven.sateh.com/maven2/aopalliance" }
-- { active: false, from: "http://m2.safehaus.org" to: "http://maven.sateh.com/maven2" }
+- { active: false, from: "http://m2.safehaus.org/org/aopalliance", to: "http://maven.sateh.com/maven2/aopalliance" }
+- { active: false, from: "http://m2.safehaus.org", to: "http://maven.sateh.com/maven2" }
 
 # Sometimes, you just need to use snapshots. But most of the time, you just
 # want a very specific snapshot, not *all* of them. With deny/allow, you
