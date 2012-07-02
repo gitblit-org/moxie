@@ -15,7 +15,7 @@
 				<exclude name="org.xml." />
 				<exclude name="org.zeroturnaround." />
 			</classfilter>
-			<mainclass name="org.moxie.proxy.Main" />
+			<mainclass name="org.moxie.proxy.MoxieProxy" />
 		</mx:jar>
 	</target>
 </project>
