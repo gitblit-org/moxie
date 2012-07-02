@@ -14,7 +14,13 @@
 					<tbody>				
 						<#list items as item>
 							<tr>
-								<td><a href="${pageRef}/${item.path}">${item.name}</a></td>
+								<#if item.download>
+									<!-- downloadable artifact -->
+									<td><a href="${repositoryUrl}/${item.path}">${item.name}</a></td>
+								<#else>
+									<!-- viewable artifact -->
+									<td><a href="${pageRef}/${item.path}">${item.name}</a></td>
+								</#if>
 								<td>
 									<#if item.date??>
 									${item.date}

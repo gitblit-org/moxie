@@ -23,12 +23,14 @@ public class ListItem implements Serializable {
 
 	final String name;
 	final String path;
+	final boolean isDownload;
 	String size;
 	String date;
 
-	ListItem(String name, String path) {
+	ListItem(String name, String path, boolean isDownload) {
 		this.name = name;
 		this.path = path;
+		this.isDownload = isDownload;
 	}
 
 	public String getName() {
@@ -45,5 +47,9 @@ public class ListItem implements Serializable {
 	
 	public String getDate() {
 		return date;
+	}
+	
+	public boolean isDownload() {
+		return isDownload;
 	}
 }

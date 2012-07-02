@@ -174,7 +174,7 @@ public class ArtifactsResource extends BaseResource {
 		SimpleDateFormat df = new SimpleDateFormat(pattern);
 		for (File file : folder.listFiles()) {
 			String relativePath= StringUtils.getRelativePath(rootPath, file.getAbsolutePath());
-			ListItem item = new ListItem(file.getName(), relativePath);
+			ListItem item = new ListItem(file.getName(), relativePath, !isText(file));
 			if (file.isFile()) {
 				item.size = FileUtils.formatSize(file.length());
 				item.date = df.format(new Date(file.lastModified()));
@@ -201,7 +201,7 @@ public class ArtifactsResource extends BaseResource {
 			if (sb.length() > 1) {
 				// trim out trailing /
 				sb.setLength(sb.length() - 1);
-				list.add(new ListItem(paths[i], sb.toString()));
+				list.add(new ListItem(paths[i], sb.toString(), false));
 			}
 		}
 		return list;
@@ -222,7 +222,7 @@ public class ArtifactsResource extends BaseResource {
 		map.put("title", Constants.getName());
 		map.put("crumbsRoot", getBasePathName());
 		map.put("crumbs", getCrumbs(file));
-
+		
 		boolean isRemote = isRemoteRepository();
 		String activeCrumb = file.getName();
 		if (isRemote && file.equals(getArtifactRoot())) {
@@ -239,7 +239,6 @@ public class ArtifactsResource extends BaseResource {
 				map.put("content", html);
 				return toHtml(map, "artifact.html");
 			}
-			// TODO redirect to binary download
 		}
 				
 		// list of files/folders
@@ -256,9 +255,9 @@ public class ArtifactsResource extends BaseResource {
 	
 	boolean isText(File file) {
 		String ext = file.getName().substring(file.getName().lastIndexOf('.') + 1).toLowerCase();
-		if ("jar".equals(ext) || "zip".equals(ext) || "war".equals(ext)) {
-			return false;
+		if ("xml".equals(ext) || "sha1".equals(ext) || "md5".equals(ext) || "asc".equals(ext)) {
+			return true;
 		}
-		return true;
+		return false;
 	}
 }
