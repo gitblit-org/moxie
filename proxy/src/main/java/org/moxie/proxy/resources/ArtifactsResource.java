@@ -174,7 +174,7 @@ public class ArtifactsResource extends BaseResource {
 		SimpleDateFormat df = new SimpleDateFormat(pattern);
 		for (File file : folder.listFiles()) {
 			String relativePath= StringUtils.getRelativePath(rootPath, file.getAbsolutePath());
-			ListItem item = new ListItem(file.getName(), relativePath, !isText(file));
+			ListItem item = new ListItem(file.getName(), relativePath, file.isFile() && !isText(file));
 			if (file.isFile()) {
 				item.size = FileUtils.formatSize(file.length());
 				item.date = df.format(new Date(file.lastModified()));
