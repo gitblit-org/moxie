@@ -305,12 +305,22 @@ public class Pom {
 		}		
 	}
 	
-	public List<Dependency> getDependencies() {
-		List<Dependency> all = new ArrayList<Dependency>();
-		for (Scope dependencyScope : dependencies.keySet()) {
-			all.addAll(getDependencies(dependencyScope));
+	public List<Dependency> getDependencies(boolean ignoreDuplicates) {
+		if (ignoreDuplicates) {
+			// We just care about the unique dependencies
+			Set<Dependency> uniques = new LinkedHashSet<Dependency>();
+			for (Scope dependencyScope : dependencies.keySet()) {
+				uniques.addAll(getDependencies(dependencyScope));
+			}
+			return new ArrayList<Dependency>(uniques);
+		} else {
+			// We care about all dependency objects, e.g. for alias resolution
+			List<Dependency> all = new ArrayList<Dependency>();
+			for (Scope dependencyScope : dependencies.keySet()) {
+				all.addAll(getDependencies(dependencyScope));
+			}
+			return all;
 		}
-		return all;
 	}
 	
 	public List<Dependency> getDependencies(Scope scope) {

@@ -71,6 +71,23 @@
 					</div>
 				</#if>
 				
+				<!-- dependencies content --> 
+				<#if (dependencies!?size > 0)>
+				<div class="alert alert-info">
+					<h4 style="padding-bottom:5px;">dependencies</h4>
+					<table>
+						<tbody>				
+							<#list dependencies as dependency>
+								<tr>
+									<td><a href="${baseRef}/${dependency.path}">${dependency.coordinates}</a></td>
+								</tr>
+							</#list>
+						</tbody>
+					</table>
+				</div>
+				</#if>
+				
+				<#if repositoryNote??>
 				<#if isRemoteRepository>
 					<div class="alert alert-success"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
 				<#else>

@@ -23,12 +23,13 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.moxie.Dependency;
 import org.moxie.IMavenCache;
 import org.moxie.MavenCache;
 import org.moxie.Proxy;
@@ -56,7 +57,8 @@ public class ProxyConfig {
 	private String dateFormat;
 
 	private List<String> localRepositories;
-	private Map<String, RemoteRepository> remoteRepositories;
+	private List<RemoteRepository> remoteRepositories;
+	private Map<String, RemoteRepository> remoteRepositoryLookup;
 
 	private List<Proxy> proxies;
 	private List<Redirect> redirects;
@@ -67,7 +69,8 @@ public class ProxyConfig {
 		redirects = Collections.emptyList();
 		allowDeny = Collections.emptyList();
 		localRepositories = Collections.emptyList();
-		remoteRepositories = Collections.emptyMap();
+		remoteRepositories = Collections.emptyList();
+		remoteRepositoryLookup = new HashMap<String, RemoteRepository>();
 		dateFormat = "yyyy-MM-dd";
 	}
 
@@ -92,6 +95,10 @@ public class ProxyConfig {
 					setMoxieRoot(moxieRoot);
 					localRepositories = map.getStrings("localRepositories", localRepositories);
 					remoteRepositories = parseRemoteRepositories(map);
+					for (RemoteRepository repository : remoteRepositories) {
+						remoteRepositoryLookup.put(repository.id, repository);
+						remoteRepositoryLookup.put(StringUtils.urlToFolder(repository.url), repository);
+					}
 				}
 				proxies = parseProxies(map);
 				dateFormat = map.getString("dateFormat", dateFormat);
@@ -103,15 +110,15 @@ public class ProxyConfig {
 		}
 	}
 
-	Map<String, RemoteRepository> parseRemoteRepositories(MaxmlMap map) {
-		Map<String, RemoteRepository> remotes = new LinkedHashMap<String, RemoteRepository>();
+	List<RemoteRepository> parseRemoteRepositories(MaxmlMap map) {
+		List<RemoteRepository> remotes = new ArrayList<RemoteRepository>();
 		if (map.containsKey("remoteRepositories")) {
 			for (Object o : map.getList("remoteRepositories", Collections.emptyList())) {
 				MaxmlMap repoMap = (MaxmlMap) o;
 				String id = repoMap.getString("id", null);
 				String url = repoMap.getString("url", null);
 				RemoteRepository repo = new RemoteRepository(id, url);
-				remotes.put(repo.id, repo);
+				remotes.add(repo);
 			}
 		}
 		return remotes;
@@ -225,19 +232,19 @@ public class ProxyConfig {
 			repo = relativePath;
 		}
 
-		if (remoteRepositories.containsKey(repo)) {
-			RemoteRepository repository = remoteRepositories.get(repo);
+		if (remoteRepositoryLookup.containsKey(repo)) {
+			RemoteRepository repository = remoteRepositoryLookup.get(repo);
 			return new File(remoteArtifactsRoot, StringUtils.urlToFolder(repository.url));			
 		}
 		return new File(localArtifactsRoot, repo);
 	}
 	
 	public boolean isRemoteRepository(String repository) {
-		return remoteRepositories.containsKey(repository);
+		return remoteRepositoryLookup.containsKey(repository);
 	}
 	
 	public RemoteRepository getRemoteRepository(String repository) {
-		return remoteRepositories.get(repository);
+		return remoteRepositoryLookup.get(repository);
 	}
 	
 	public File getRemoteFile(URL url) {
@@ -251,13 +258,39 @@ public class ProxyConfig {
 		File folder = getArtifactRoot(path);
 		return new MavenCache(folder);
 	}
+	
+	public DependencyLink find(Dependency dependency) {
+		String path = null;
+		for (String repository : localRepositories) {
+			File cacheRoot = new File(localArtifactsRoot, repository);
+			IMavenCache cache = new MavenCache(cacheRoot);
+			File file = cache.getArtifact(dependency, dependency.type);
+			if (file != null && file.exists()) {				
+				path = repository + "/" + FileUtils.getRelativePath(cacheRoot, file.getParentFile());
+			}
+		}
+		
+		for (RemoteRepository repository : remoteRepositories) {
+			String folder = StringUtils.urlToFolder(repository.url);
+			File cacheRoot = new File(remoteArtifactsRoot, folder);
+			IMavenCache cache = new MavenCache(cacheRoot);
+			File file = cache.getArtifact(dependency, dependency.type);
+			if (file != null && file.exists()) {
+				path = repository.id + "/" + FileUtils.getRelativePath(cacheRoot, file.getParentFile());
+			}
+		}
+		if (StringUtils.isEmpty(path)) {
+			return null;
+		}
+		return new DependencyLink(dependency.getCoordinates(), path);
+	}
 
 	public List<String> getLocalRepositories() {
 		return localRepositories;
 	}
 
 	public Collection<RemoteRepository> getRemoteRepositories() {
-		return remoteRepositories.values();
+		return remoteRepositories;
 	}
 
 	public List<Redirect> getRedirects() {

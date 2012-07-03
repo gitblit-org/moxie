@@ -24,7 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.moxie.Dependency;
+import org.moxie.Pom;
+import org.moxie.Scope;
 import org.moxie.proxy.Constants;
+import org.moxie.proxy.DependencyLink;
 import org.moxie.proxy.RemoteRepository;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
@@ -206,6 +210,21 @@ public class ArtifactsResource extends BaseResource {
 		}
 		return list;
 	}
+	
+	List<DependencyLink> getDependencies(Pom pom) {
+		if (pom == null) {
+			return null;
+		}
+		// find dependencies as they might be in another local/proxied repository
+		List<DependencyLink> list = new ArrayList<DependencyLink>();
+		for (Dependency dependency : pom.getDependencies(true)) {
+			DependencyLink link = getProxyConfig().find(dependency);
+			if (link != null) {
+				list.add(link);
+			}
+		}
+		return list;
+	}
 
 	@Get
 	public Representation toText() {
@@ -242,7 +261,9 @@ public class ArtifactsResource extends BaseResource {
 		}
 				
 		// list of files/folders
-		map.put("pom", getApplication().readPom(file));
+		Pom pom = getApplication().readPom(file);
+		map.put("pom", pom);
+		map.put("dependencies", getDependencies(pom));
 		map.put("isRemoteRepository", isRemote);
 		map.put("repositoryUrl", getRepositoryUrl());
 		map.put("repositoryNote", getRepositoryNote());

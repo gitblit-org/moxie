@@ -248,7 +248,7 @@ public class Build {
 	}
 	
 	private void resolveAliasedDependencies() {
-		resolveAliasedDependencies(project.pom.getDependencies().toArray(new Dependency[0]));
+		resolveAliasedDependencies(project.pom.getDependencies(false).toArray(new Dependency[0]));
 	}
 	
 	private void resolveAliasedDependencies(Dependency... dependencies) {
