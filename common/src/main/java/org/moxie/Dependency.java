@@ -133,6 +133,18 @@ public class Dependency implements Serializable {
 		return javadoc;
 	}
 	
+	public String getGroupId() {
+		return groupId;
+	}
+
+	public String getArtifactId() {
+		return artifactId;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
 	public String getMediationId() {
 		return groupId + ":" + artifactId + (classifier == null ? "" : (":" + classifier)) + ":" + type;
 	}

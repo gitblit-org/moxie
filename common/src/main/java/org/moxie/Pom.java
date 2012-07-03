@@ -60,7 +60,7 @@ public class Pom {
 	private final List<License> licenses;
 	
 	public Pom() {
-		version = "0.0.0-SNAPSHOT";
+		version = "";
 		managedVersions = new TreeMap<String, String>();
 		managedScopes = new TreeMap<String, Scope>();
 		properties = new TreeMap<String, String>();
@@ -140,9 +140,21 @@ public class Pom {
 		}
 		return null;
 	}
-	
+
+	public String getGroupId() {
+		return groupId;
+	}
+
 	public String getArtifactId() {
 		return artifactId;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public String getName() {
+		return name;
 	}
 	
 	public String getDescription() {
@@ -264,6 +276,14 @@ public class Pom {
 		
 		dependencies.get(scope).add(dep);
 		return true;
+	}
+	
+	void resolveProperties() {
+		name = resolveProperties(name);
+		description = resolveProperties(description);
+		organization = resolveProperties(organization);		
+		url = resolveProperties(url);
+		issuesUrl = resolveProperties(issuesUrl);
 	}
 	
 	String resolveProperties(String string) {
@@ -388,6 +408,23 @@ public class Pom {
 		nonDestructiveCopy(pom.managedVersions, managedVersions);
 		nonDestructiveCopy(pom.managedScopes, managedScopes);
 		nonDestructiveCopy(pom.properties, properties);
+		
+		// inherit groupId and version from parent, by default
+		// if parent definition is at end of pom then we already
+		// have this data so ignore
+		if (StringUtils.isEmpty(groupId)) {
+			groupId = pom.groupId;
+		}
+		if (StringUtils.isEmpty(version)) {
+			version = pom.version;
+		}
+		if (StringUtils.isEmpty(name)) {
+			name = pom.name;
+		}
+		if (StringUtils.isEmpty(pom.description)) {
+			description = pom.description;
+		}
+
 		if (pom.licenses != null) {
 			licenses.addAll(pom.licenses);
 		}

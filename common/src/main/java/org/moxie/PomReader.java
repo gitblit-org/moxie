@@ -73,13 +73,6 @@ public class PomReader {
 		Element docElement = doc.getDocumentElement();
 		
 		Pom pom = new Pom();				
-		pom.groupId = readStringTag(docElement, Key.groupId);
-		pom.artifactId = readStringTag(docElement, Key.artifactId);
-		pom.version = readStringTag(docElement, Key.version);
-		pom.name = readStringTag(docElement, Key.name);
-		pom.description = readStringTag(docElement, Key.description);
-		pom.url = readStringTag(docElement, Key.url);
-		pom.packaging = readStringTag(docElement, Key.packaging);
 		
 		NodeList projectNodes = docElement.getChildNodes();
 		for (int i = 0; i < projectNodes.getLength(); i++) {
@@ -91,7 +84,7 @@ public class PomReader {
 					pom.parentGroupId = readStringTag(pNode, Key.groupId);
 					pom.parentArtifactId = readStringTag(pNode, Key.artifactId);
 					pom.parentVersion = readStringTag(pNode, Key.version);
-					
+										
 					// read parent pom
 					Dependency parent = pom.getParentDependency();
 					Pom parentPom = readPom(cache, parent);
@@ -162,12 +155,34 @@ public class PomReader {
 				} else if ("issueManagement".equalsIgnoreCase(element.getTagName())) {
 					// extract the issue tracker url
 					pom.issuesUrl = readStringTag(element, Key.url);
+				} else if ("groupId".equalsIgnoreCase(element.getTagName())) {
+					// extract the groupId
+					pom.groupId = readStringTag(element);
+				} else if ("artifactId".equalsIgnoreCase(element.getTagName())) {
+					// extract the artifactId
+					pom.artifactId = readStringTag(element);
+				} else if ("version".equalsIgnoreCase(element.getTagName())) {
+					// extract the version
+					pom.version = readStringTag(element);
+				} else if ("packaging".equalsIgnoreCase(element.getTagName())) {
+					// extract the packaging
+					pom.packaging = readStringTag(element);
+				} else if ("name".equalsIgnoreCase(element.getTagName())) {
+					// extract the name
+					pom.name = readStringTag(element);
+				} else if ("description".equalsIgnoreCase(element.getTagName())) {
+					// extract the description
+					pom.description = readStringTag(element);
+				} else if ("url".equalsIgnoreCase(element.getTagName())) {
+					// extract the url
+					pom.url = readStringTag(element);
 				} else if ("organization".equalsIgnoreCase(element.getTagName())) {
 					// extract the organization name
 					pom.organization = readStringTag(element, Key.name);
 				}
 			}
 		}
+		pom.resolveProperties();
 		return pom;
 	}
 	
@@ -198,6 +213,13 @@ public class PomReader {
 		String content = itemNode.getNodeValue().trim();
 		return content;
 	}
+	
+	private static String readStringTag(Node node) {
+		Node tagElement = node.getFirstChild();
+		String content = tagElement.getTextContent();
+		return content;
+	}
+
 
 	private static boolean readBooleanTag(Node node, Key tag) {
 		String content = readStringTag(node, tag);
