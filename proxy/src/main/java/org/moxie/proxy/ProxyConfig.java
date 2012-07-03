@@ -147,7 +147,7 @@ public class ProxyConfig {
 	
 	List<Redirect> parseRedirects(MaxmlMap map) {
 		List<Redirect> list = new ArrayList<Redirect>();
-		if (map.containsKey("proxies")) {
+		if (map.containsKey("redirects")) {
 			List<MaxmlMap> values = (List<MaxmlMap>) map.get("redirects");
 			for (MaxmlMap definition : values) {
 				String from = definition.getString("from", null);
@@ -157,7 +157,6 @@ public class ProxyConfig {
 					continue;
 				}
 				Redirect redirect = new Redirect(from, to);
-				redirect.active = definition.getBoolean("active", true);
 				list.add(redirect);
 			}
 		}

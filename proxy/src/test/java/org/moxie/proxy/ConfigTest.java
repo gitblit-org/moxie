@@ -24,20 +24,12 @@ public class ConfigTest extends TestCase {
 
 	ProxyConfig config;
 
-	// public void testGetNoProxy () throws Exception
-	// {
-	// String[] s = config.getNoProxy();
-	// assertEquals("a", s[0]);
-	// assertEquals("b", s[1]);
-	// assertEquals("c", s[2]);
-	// }
-
 	public void testNoProxy1() throws Exception {
 		assertFalse(config.useProxy(new URL("http://b/x/y/z")));
 	}
 
 	public void testNoProxy2() throws Exception {
-		assertTrue(config.useProxy(new URL("http://some.doma.in/x/y/z")));
+		assertFalse(config.useProxy(new URL("http://some.doma.in/x/y/z")));
 	}
 
 	public void testRedirect() throws Exception {
@@ -86,6 +78,6 @@ public class ConfigTest extends TestCase {
 		super.setUp();
 
 		config = new ProxyConfig();
-		config.parse(new File("proxy.moxie"));
+		config.parse(new File("src/test/resources/proxy-test.moxie"));
 	}
 }

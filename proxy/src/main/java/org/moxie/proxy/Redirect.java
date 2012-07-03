@@ -25,7 +25,6 @@ import java.net.URL;
 public class Redirect {
 	final String from;
 	final String to;
-	boolean active;
 
 	public Redirect(String from, String to) {
 		this.from = fix(from);
@@ -37,6 +36,14 @@ public class Redirect {
 		if (!s.endsWith("/"))
 			s += "/";
 		return s;
+	}
+	
+	public String getFrom() {
+		return from;
+	}
+	
+	public String getTo() {
+		return to;
 	}
 
 	public URL getRedirectURL(String s) {
