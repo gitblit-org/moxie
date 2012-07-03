@@ -21,6 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -65,13 +66,38 @@ public class ProxyConfig {
 	private List<AllowDeny> allowDeny;	
 
 	public ProxyConfig() {
+		httpPort = 8080;
+		proxyPort = 8081;
+		dateFormat = "yyyy-MM-dd";
 		proxies = Collections.emptyList();
 		redirects = Collections.emptyList();
 		allowDeny = Collections.emptyList();
 		localRepositories = Collections.emptyList();
 		remoteRepositories = Collections.emptyList();
 		remoteRepositoryLookup = new HashMap<String, RemoteRepository>();
-		dateFormat = "yyyy-MM-dd";
+	}
+	
+	public void setUserDefaults() {		
+		setMoxieRoot(new File(System.getProperty("user.home"), ".moxie"));
+		moxieRoot.mkdirs();
+		localArtifactsRoot.mkdirs();
+		remoteArtifactsRoot.mkdirs();
+		
+		// default local repositories 
+		localRepositories = Arrays.asList("releases", "snapshots");
+		for (String repository : localRepositories) {
+			new File(localArtifactsRoot, repository).mkdirs();
+		}
+		
+		// default proxy of central
+		remoteRepositories = new ArrayList<RemoteRepository>();
+		remoteRepositories.add(new RemoteRepository("central", "http://repo1.maven.org/maven2"));
+		
+		remoteRepositoryLookup = new HashMap<String, RemoteRepository>();
+		for (RemoteRepository repository : remoteRepositories) {
+			remoteRepositoryLookup.put(repository.id, repository);
+			remoteRepositoryLookup.put(StringUtils.urlToFolder(repository.url), repository);
+		}
 	}
 
 	public void parse(File file) {
@@ -80,6 +106,9 @@ public class ProxyConfig {
 	}
 
 	public synchronized void reload() {
+		if (configFile == null || !configFile.exists()) {
+			return;
+		}
 		long lastModified = configFile.lastModified();
 		if (lastModified != configLastModified) {
 			log.info((isLoaded ? "reloading" : "loading") + " config from " + configFile.getAbsolutePath());

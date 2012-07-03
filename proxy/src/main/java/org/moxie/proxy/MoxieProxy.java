@@ -171,12 +171,16 @@ public class MoxieProxy extends Application {
 		}
 		
 		ProxyConfig config = new ProxyConfig();
-		
-		// set defaults from command-line
-		
+				
 		// parse config file, allow override
-		config.parse(params.moxieConfig);
+		if (params.moxieConfig.exists()) {
+			config.parse(params.moxieConfig);
+		} else {
+			// default to user directory
+			config.setUserDefaults();			
+		}
 
+		// override defaults from command-line
 		if (params.httpPort != null) {
 			config.setHttpPort(params.httpPort);
 		}
