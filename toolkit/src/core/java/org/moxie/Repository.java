@@ -74,6 +74,22 @@ public class Repository {
 		return true;
 	}
 	
+	protected void verifySHA1(Build build, String expectedSHA1, DownloadData data) {
+		if (calculateSHA1()) {
+			String calculatedSHA1 = StringUtils.getSHA1(data.content);
+			if (!StringUtils.isEmpty(expectedSHA1) && !calculatedSHA1.equals(expectedSHA1)) {
+				String message = MessageFormat.format("SHA1 checksum mismatch for {0}\ncalculated: {1}\nretrieved: {2}", data.url.toExternalForm(), calculatedSHA1, expectedSHA1);
+				for (String line : message.split("\n")) {
+					build.console.warn(line);
+				}
+				if (build.isFailOnChecksumError()) {
+					build.console.warn(MessageFormat.format("specify \"-D{0}=false\" when running Ant to disable checksum verification.", Toolkit.MX_ENFORCECHECKSUMS));
+					throw new RuntimeException(message);
+				}
+			}
+		}
+	}
+	
 	protected boolean isMavenSource() {
 		return true;
 	}
@@ -194,12 +210,7 @@ public class Repository {
 			URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl(dep)));
 			build.console.download(url.toString());
 			DownloadData data = download(build, url);
-			if (calculateSHA1()) {
-				String calculatedSHA1 = StringUtils.getSHA1(data.content);
-				if (!StringUtils.isEmpty(expectedSHA1) && !calculatedSHA1.equals(expectedSHA1)) {
-					throw new RuntimeException("SHA1 checksum mismatch; got: " + calculatedSHA1);
-				}
-			}
+			verifySHA1(build, expectedSHA1, data);
 			
 			Metadata oldMetadata;
 			File file = build.getMoxieCache().getMetadata(dep, Constants.XML);
@@ -291,19 +302,7 @@ public class Repository {
 			URL url = getURL(dep, ext);
 			build.console.download(url.toString());
 			DownloadData data = download(build, url);
-			if (calculateSHA1()) {
-				String calculatedSHA1 = StringUtils.getSHA1(data.content);
-				if (!StringUtils.isEmpty(expectedSHA1) && !calculatedSHA1.equals(expectedSHA1)) {
-					String message = MessageFormat.format("SHA1 checksum mismatch for {0}\ncalculated: {1}\nretrieved: {2}", url.toExternalForm(), calculatedSHA1, expectedSHA1);
-					for (String line : message.split("\n")) {
-						build.console.warn(line);
-					}
-					if (build.isFailOnChecksumError()) {
-						build.console.warn(MessageFormat.format("specify \"-D{0}=false\" when running Ant to disable checksum verification.", Toolkit.MX_ENFORCECHECKSUMS));
-						throw new RuntimeException(message);
-					}
-				}
-			}
+			verifySHA1(build, expectedSHA1, data);
 
 			// set origin so that we write the artifact into the proper cache
 			dep.setOrigin(repositoryUrl);
@@ -378,14 +377,16 @@ public class Repository {
 		in.close();
 
 		byte[] data = buff.toByteArray();
-		return new DownloadData(data, lastModified);
+		return new DownloadData(url, data, lastModified);
 	}
 	
 	private class DownloadData {
+		final URL url;
 		final byte [] content;
 		final long lastModified;
 		
-		DownloadData(byte [] content, long lastModified) {
+		DownloadData(URL url, byte [] content, long lastModified) {
+			this.url = url;
 			this.content = content;
 			this.lastModified = lastModified;
 		}
