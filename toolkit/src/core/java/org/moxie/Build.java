@@ -365,10 +365,14 @@ public class Build {
 	}
 	
 	public void solve() {
+		solve(new LinkedHashSet<Build>());
+	}
+	
+	private void solve(Set<Build> solvedProjects) {
 		readProjectSolution();
 		if (solutions.size() == 0) {
 			// solve linked projects
-			solveLinkedProjects();
+			solveLinkedProjects(solvedProjects);
 			
 			// substitute aliases with definitions
 			resolveAliasedDependencies();
@@ -398,7 +402,7 @@ public class Build {
 		}
 	}
 	
-	private void solveLinkedProjects() {
+	private void solveLinkedProjects(Set<Build> solvedProjects) {
 		if (project.linkedProjects.size() > 0) {
 			console.separator();
 			console.log("solving {0} linked projects", project.getPom().getManagementId());
@@ -429,9 +433,27 @@ public class Build {
 					// use Moxie config
 					console.debug("located linked project {0} ({1})", linkedProject.name, file.getAbsolutePath());
 					Build subProject = new Build(file.getAbsoluteFile(), null);
+					if (solvedProjects.contains(subProject)) {
+						for (Build solvedProject: solvedProjects) {
+							if (solvedProject.equals(subProject)) {
+								// add this subproject and it's dependent projects
+								builds.add(subProject);
+								builds.addAll(subProject.linkedProjects);
+								break;
+							}
+						}
+						console.log(1, "=> already solved project {0}", subProject.getPom().getCoordinates());
+						continue;
+					}
 					subProject.silent = true;
-					console.log(1, "=> project {0}", subProject.getPom().getCoordinates());
-					subProject.solve();
+					console.log(1, "=> solving project {0}", subProject.getPom().getCoordinates());
+					subProject.solve(solvedProjects);
+
+					// add this subproject and it's dependent projects
+					// as solvedProjects for recursive, cross-linked projects
+					solvedProjects.add(subProject);
+					solvedProjects.addAll(subProject.linkedProjects);
+
 					// add this subproject and it's dependent projects
 					builds.add(subProject);
 					builds.addAll(subProject.linkedProjects);
