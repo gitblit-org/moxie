@@ -36,17 +36,25 @@
 					</tbody>
 				</table>
 				</#if>
-			</div>
+		</div>
 
 			<div class="span5">
 				<#if pom??>
 					<div class="alert">
 					<!-- Artifact Metadata -->
-					<h4>${pom.artifactId}</h4>
+					<h4>${pom.artifactId} ${pom.version}</h4>
 					<ul class="unstyled">
-						<li style="padding-top:5px;">${pom.coordinates}</li>
 						<#if pom.description??>
-							<li style="padding-top:10px">${pom.description}</li>
+							<#if pom.name??>
+								<li style="padding-top:10px">${pom.name}</li>
+								<li style="padding-top:5px">${pom.description}</li>
+							<#else>
+								<li style="padding-top:10px">${pom.description}</li>
+							</#if>
+						<#else>
+							<#if pom.name??>
+								<li style="padding-top:10px">${pom.name}</li>
+							</#if>
 						</#if>
 						<#if pom.organization??>
 							<li style="padding-top:10px;">${rc.getString("mp.by")} ${pom.organization}</li>
@@ -64,7 +72,11 @@
 						<h4 style="padding-top:10px;">${rc.getString("mp.licenses")}</h4>
 						<ul class="unstyled">
 						<#list pom.licenses as license>
-							<li><a target="_blank" href="${license.url}">${license.name}</a></li>
+							<#if license.url??>
+								<li><a target="_blank" href="${license.url}">${license.name}</a></li>
+							<#else>
+								<li>${license.name}</li>
+							</#if>
 						</#list>
 						</ul>
 					</#if>
@@ -88,10 +100,11 @@
 				</#if>
 				
 				<#if repositoryNote??>
-				<#if isRemoteRepository>
-					<div class="alert alert-success"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
-				<#else>
-					<div class="alert alert-info"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
+					<#if isRemoteRepository>
+						<div class="alert alert-success"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
+					<#else>
+						<div class="alert alert-info"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
+					</#if>
 				</#if>
 				
 				<h5>Moxie</h5>

@@ -1,6 +1,6 @@
 <!-- breadcrumb navigation -->
 <ul class="breadcrumb">
-	<li><a href="${pageRef}"><b>${crumbsRoot}</b></a><span class="divider">/</span></li>
+	<li><a href="${pageRef}"><b>${crumbsRoot}</b></a><span class="divider">//</span></li>
 	<#list crumbs as crumb>
 		<#if (crumbs!?size > 0)>
 			<li><a href="${pageRef}/${crumb.path}">${crumb.name}</a><span class="divider">/</span></li>

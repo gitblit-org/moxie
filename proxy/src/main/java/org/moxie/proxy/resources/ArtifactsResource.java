@@ -75,8 +75,10 @@ public class ArtifactsResource extends BaseResource {
 		return getRootRef().getScheme() + "://" + getRootRef().getHostDomain() + ":" + getProxyConfig().getProxyPort();
 	}
 	
-	String getRepositoryNote() {
-		if (isRemoteRepository()) {
+	String getRepositoryNote(Pom pom) {
+		if (pom != null) {
+			return null;
+		} else if (isRemoteRepository()) {
 			// remote/proxied repository
 			RemoteRepository repository = getProxyConfig().getRemoteRepository(getBasePath());
 			String message = getTranslation().getString("mp.remoteRepositoryNote");
@@ -89,9 +91,13 @@ public class ArtifactsResource extends BaseResource {
 		}
 	}
 
-	String getMoxieSnippet() {		
+	String getMoxieSnippet(Pom pom) {		
 		StringBuilder sb = new StringBuilder();
-		if (isRemoteRepository()) {
+		if (pom != null) {
+			// artifact
+			sb.append("dependencies:\n");
+			sb.append(" - compile ").append(pom.getCoordinates());
+		} else if (isRemoteRepository()) {
 			// proxy settings
 			RemoteRepository repository = getProxyConfig().getRemoteRepository(getBasePath());			
 			sb.append("proxies:\n");
@@ -104,10 +110,18 @@ public class ArtifactsResource extends BaseResource {
 		return sb.toString();
 	}
 
-	String getMavenSnippet() {
+	String getMavenSnippet(Pom pom) {
 		String repository = getBasePath();
 		StringBuilder sb = new StringBuilder();
-		if (isRemoteRepository()) {
+		if (pom != null) {
+			// artifact
+			sb.append("<dependency>\n");
+			sb.append(StringUtils.toXML("groupId", pom.groupId));
+			sb.append(StringUtils.toXML("artifactId", pom.artifactId));
+			sb.append(StringUtils.toXML("version", pom.version));
+			sb.append(StringUtils.toXML("scope", Scope.compile.name()));
+			sb.append("</dependency>");
+		} else if (isRemoteRepository()) {
 			// proxy settings
 			sb.append("<proxy>\n");
 			sb.append(StringUtils.toXML("id", "moxieProxy"));
@@ -131,9 +145,14 @@ public class ArtifactsResource extends BaseResource {
 		return StringUtils.escapeForHtml(sb.toString(), false);
 	}
 	
-	String getGradleSnippet() {
+	String getGradleSnippet(Pom pom) {
 		StringBuilder sb = new StringBuilder();
-		if (isRemoteRepository()) {
+		if (pom != null) {
+			// artifact
+			sb.append("dependencies {\n");
+			sb.append("  compile \"").append(pom.getCoordinates()).append("\"\n");
+			sb.append("}");
+		} else if (isRemoteRepository()) {
 			// proxy settings
 			String base = "systemProp." + getRootRef().getScheme();
 			sb.append(base).append("proxyHost=").append(getRootRef().getHostDomain()).append('\n');
@@ -234,7 +253,8 @@ public class ArtifactsResource extends BaseResource {
 		}
 		File file = getFile(path);
 		if (!file.exists()) {
-			// TODO 404
+			// TODO proxy download?  do not know source repo, try all?
+			getLogger().warning(path + " does not exist!");
 		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -266,17 +286,17 @@ public class ArtifactsResource extends BaseResource {
 		map.put("dependencies", getDependencies(pom));
 		map.put("isRemoteRepository", isRemote);
 		map.put("repositoryUrl", getRepositoryUrl());
-		map.put("repositoryNote", getRepositoryNote());
-		map.put("moxieSnippet", getMoxieSnippet());
-		map.put("mavenSnippet", getMavenSnippet());
-		map.put("gradleSnippet", getGradleSnippet());
+		map.put("repositoryNote", getRepositoryNote(pom));
+		map.put("moxieSnippet", getMoxieSnippet(pom));
+		map.put("mavenSnippet", getMavenSnippet(pom));
+		map.put("gradleSnippet", getGradleSnippet(pom));
 		map.put("items", getItems(file));
 		return toHtml(map, "artifacts.html");
 	}
 	
 	boolean isText(File file) {
 		String ext = file.getName().substring(file.getName().lastIndexOf('.') + 1).toLowerCase();
-		if ("xml".equals(ext) || "sha1".equals(ext) || "md5".equals(ext) || "asc".equals(ext)) {
+		if ("pom".equals(ext) || "xml".equals(ext) || "sha1".equals(ext) || "md5".equals(ext) || "asc".equals(ext)) {
 			return true;
 		}
 		return false;
