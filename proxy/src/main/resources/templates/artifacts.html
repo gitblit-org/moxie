@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <#include "/header.html">
-<body>
+<body onload="prettyPrint()">
 	<#include "/navbar.html">
 	<div class="container">
 		<#include "/breadcrumbs.html">
@@ -107,12 +107,41 @@
 					</#if>
 				</#if>
 				
-				<h5>Moxie</h5>
-				<pre>${moxieSnippet}</pre>
-				<h5>Maven</h5>
-				<pre>${mavenSnippet}</pre>
-				<h5>Gradle</h5>
-				<pre>${gradleSnippet}</pre>
+				<!-- build tool snippets-->
+				<div class="tabbable">
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#moxie" data-toggle="tab">Moxie</a></li>						
+						<li><a href="#maven" data-toggle="tab">Maven</a></li>
+						<li><a href="#gradle" data-toggle="tab">Gradle</a></li>
+						<li><a href="#grape" data-toggle="tab">Grape</a></li>
+						<li><a href="#ivy" data-toggle="tab">Ivy</a></li>
+						<li><a href="#buildr" data-toggle="tab">Buildr</a></li>
+						<li><a href="#sbt" data-toggle="tab">SBT</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="moxie">
+							<pre class="plain">${moxieSnippet}</pre>
+						</div>
+						<div class="tab-pane" id="maven">
+							<pre class="prettyprint lang-xml">${mavenSnippet}</pre>
+						</div>
+						<div class="tab-pane" id="gradle">
+							<pre class="plain">${gradleSnippet}</pre>
+						</div>
+						<div class="tab-pane" id="grape">
+							<pre class="plain">${grapeSnippet}</pre>
+						</div>
+						<div class="tab-pane" id="ivy">
+							<pre class="prettyprint lang-xml">${ivySnippet}</pre>
+						</div>
+						<div class="tab-pane" id="buildr">
+							<pre class="plain">${buildrSnippet}</pre>
+						</div>
+						<div class="tab-pane" id="sbt">
+							<pre class="plain">${sbtSnippet}</pre>
+						</div>
+					</div>
+				</div>				
 			</div>
 		</div>
 		<#include "/footer.html">

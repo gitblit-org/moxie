@@ -1,3 +1,13 @@
+a:focus {
+	outline: none;
+}
+
+pre.plain {
+	padding: 2px;
+	background-color: white;
+	border: none;
+}
+
 pre.prettyprint {
 	background-color: white;
 	border: none;

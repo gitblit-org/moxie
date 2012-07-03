@@ -154,7 +154,7 @@ public class ArtifactsResource extends BaseResource {
 			sb.append("}");
 		} else if (isRemoteRepository()) {
 			// proxy settings
-			String base = "systemProp." + getRootRef().getScheme();
+			String base = "systemProp." + getRootRef().getScheme() + ".";
 			sb.append(base).append("proxyHost=").append(getRootRef().getHostDomain()).append('\n');
 			sb.append(base).append("proxyPort=").append(getProxyConfig().getProxyPort()).append('\n');
 			sb.append(base).append("proxyUser=username").append('\n');
@@ -171,6 +171,71 @@ public class ArtifactsResource extends BaseResource {
 		return sb.toString();
 	}
 	
+	String getGrapeSnippet(Pom pom) {
+		StringBuilder sb = new StringBuilder();
+		if (pom != null) {
+			// artifact
+			sb.append("@Grapes(\n");
+			sb.append(MessageFormat.format("  @Grab(group=''{0}'',\n\tmodule=''{1}'',\n\tversion=''{2}'')\n", pom.groupId, pom.artifactId, pom.version));
+			sb.append(")");
+		} else if (isRemoteRepository()) {
+			// proxy settings
+		} else {
+			// repository settings
+			sb.append(MessageFormat.format("@GrabResolver(\n\tname=''moxieProxy'',\n\troot=''{0}'')", getRepositoryUrl()));
+		}
+		return StringUtils.escapeForHtml(sb.toString(), false);		
+	}
+
+	String getIvySnippet(Pom pom) {
+		StringBuilder sb = new StringBuilder();
+		if (pom != null) {
+			// artifact
+			sb.append(MessageFormat.format("<dependency\n\torg=\"{0}\"\n\tname=\"{1}\"\n\trev=\"{2}\" />", pom.groupId, pom.artifactId, pom.version));
+		} else if (isRemoteRepository()) {
+			// proxy settings
+			sb.append(MessageFormat.format("<setproxy\n\tproxyhost=\"{0}\"\n\tproxyport=\"{1,number,0}\"\n\tproxyuser=\"username\"\n\tproxypassword=\"password\"\n\tnonproxyhosts=\"*.nonproxyrepos.com|localhost\"/>", getRootRef().getHostDomain(), getProxyConfig().getProxyPort()));
+		} else {
+			// repository settings
+			sb.append("<resolvers>\n");
+		    sb.append(MessageFormat.format("   <ibiblio name=\"moxieProxy\" m2compatible=\"true\"\n\troot=\"{0}\" />\n", getRepositoryUrl()));
+		    sb.append("</resolvers>");
+		}
+		return StringUtils.escapeForHtml(sb.toString(), false);		
+	}
+
+	String getBuildrSnippet(Pom pom) {
+		StringBuilder sb = new StringBuilder();
+		if (pom != null) {
+			// artifact			
+			sb.append(MessageFormat.format("''{0}:{1}:{2}:{3}''", pom.groupId, pom.artifactId, pom.packaging, pom.version));
+		} else if (isRemoteRepository()) {
+			// proxy settings
+			String base = "options.proxy.";
+			sb.append(base).append("http = '").append(getProxyUrl()).append("'\n");
+			sb.append(base).append("exclude << '*.nonproxyrepos.com'\n");
+			sb.append(base).append("exclude << 'localhost'\n");
+		} else {
+			// repository settings
+			sb.append(MessageFormat.format("repositories.remote << ''{0}''", getRepositoryUrl()));
+		}
+		return StringUtils.escapeForHtml(sb.toString(), false);		
+	}
+
+	String getSBTSnippet(Pom pom) {
+		StringBuilder sb = new StringBuilder();
+		if (pom != null) {
+			// artifact			
+			sb.append(MessageFormat.format("libraryDependencies += \"{0}\" % \"{1}\" % \"{2}\"", pom.groupId, pom.artifactId, pom.version));
+		} else if (isRemoteRepository()) {
+			// proxy settings
+		} else {
+			// repository settings
+			sb.append(MessageFormat.format("def url = new java.net.URL(\"{0}\")\nval testRepo = Resolver.url(\"moxieProxy\", url)", getRepositoryUrl()));			
+		}
+		return StringUtils.escapeForHtml(sb.toString(), false);		
+	}
+
 	File getArtifactRoot() {
 		return getProxyConfig().getArtifactRoot(getBasePath());
 	}
@@ -290,6 +355,10 @@ public class ArtifactsResource extends BaseResource {
 		map.put("moxieSnippet", getMoxieSnippet(pom));
 		map.put("mavenSnippet", getMavenSnippet(pom));
 		map.put("gradleSnippet", getGradleSnippet(pom));
+		map.put("grapeSnippet", getGrapeSnippet(pom));
+		map.put("ivySnippet", getIvySnippet(pom));
+		map.put("buildrSnippet", getBuildrSnippet(pom));
+		map.put("sbtSnippet", getSBTSnippet(pom));
 		map.put("items", getItems(file));
 		return toHtml(map, "artifacts.html");
 	}
