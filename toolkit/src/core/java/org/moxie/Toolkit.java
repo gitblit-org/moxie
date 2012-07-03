@@ -41,6 +41,8 @@ public class Toolkit {
 	
 	public static final String MX_ROOT = "mx.root";
 	
+	public static final String MX_ENFORCECHECKSUMS = "mx.enforceChecksums";
+	
 	public static final String MOXIE_SETTINGS = "settings.moxie";
 	
 	public static final String MOXIE_DEFAULTS = "defaults.moxie";

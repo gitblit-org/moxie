@@ -182,6 +182,15 @@ public class Build {
 		}
 		return false;
 	}
+	
+	public boolean isFailOnChecksumError() {
+		String mxEnforceChecksums = System.getProperty(Toolkit.MX_ENFORCECHECKSUMS, null);
+		if (!StringUtils.isEmpty(mxEnforceChecksums)) {
+			// use system property to determine enforcing checksum verification
+			return Boolean.parseBoolean(mxEnforceChecksums);
+		}
+		return true;
+	}
 
 	private boolean cache() {
 		return moxie.apply(Toolkit.APPLY_CACHE) || project.apply(Toolkit.APPLY_CACHE);
