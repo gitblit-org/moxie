@@ -294,7 +294,7 @@ public class Repository {
 			if (calculateSHA1()) {
 				String calculatedSHA1 = StringUtils.getSHA1(data.content);
 				if (!StringUtils.isEmpty(expectedSHA1) && !calculatedSHA1.equals(expectedSHA1)) {
-					throw new RuntimeException("SHA1 checksum mismatch; got: " + calculatedSHA1);
+					throw new RuntimeException(MessageFormat.format("SHA1 checksum mismatch for {0}\ncalculated: {1}\nretrieved: {2}", url.toExternalForm(), calculatedSHA1, expectedSHA1));
 				}
 			}
 
