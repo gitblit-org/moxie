@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<#include "/header.html">
+<body onload="prettyPrint()">
+	<#include "/navbar.html">
+	<div class="container">
+		
+		<div class="row-fluid">
+			<div class="span7">	
+				<h3>${query!}</h3>
+				<!-- list content --> 
+				<#if (results!?size > 0)>
+				<table class="table">
+					<tbody>				
+						<#list results as item>
+							<tr>
+								<td><a href="${baseRef}/${item.path}">${item.coordinates}</a><br/>${item.name!}</td>
+								<td>${item.date!?date}<br/><span class="repository">${item.repository}</span></td>
+							</tr>
+						</#list>
+					</tbody>
+				</table>
+				</#if>
+			</div>
+			<div class="span4">
+				<h3>${rc.getString("mp.luceneHelp")}</h3>
+				<div class="alert alert-info">
+					groupid:*apache*<br/>
+					description:json<br/>
+					artifactid:*ant* AND packaging:jar
+				</div>
+			Standard query syntax is supported.<br/>
+			Please see <a href="http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/queryparsersyntax.html">Lucene Query Parser Syntax</a> for details. 
+			</div>	
+		</div>
+		
+		<#include "/footer.html">
+	</div>
+</body>
+</html>

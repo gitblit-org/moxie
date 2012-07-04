@@ -16,6 +16,8 @@
 package org.moxie;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
@@ -27,6 +29,29 @@ public class MavenCache implements IMavenCache {
 	
 	public MavenCache(File root) {
 		this.root = root;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.moxie.IMavenCache#getFiles(java.lang.String)
+	 */
+	@Override
+	public List<File> getFiles(String extension) {
+		List<File> list = new ArrayList<File>();
+		list.addAll(getFiles(root, extension));
+		return list;
+	}
+	
+	private List<File> getFiles(File folder, String extension) {
+		List<File> files = new ArrayList<File>();
+		for (File file : folder.listFiles()) {
+			if (file.isDirectory()) {
+				files.addAll(getFiles(file, extension));
+			} else if (file.getName().endsWith(extension)) {
+				files.add(file);
+			}
+		}
+		return files;
 	}
 	
 	/* (non-Javadoc)

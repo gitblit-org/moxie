@@ -1,8 +1,11 @@
 package org.moxie;
 
 import java.io.File;
+import java.util.Collection;
 
 public interface IMavenCache {
+	
+	Collection<File> getFiles(String extension);
 
 	File getArtifact(Dependency dep, String ext);
 

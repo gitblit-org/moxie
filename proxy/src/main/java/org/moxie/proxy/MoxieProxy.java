@@ -18,6 +18,7 @@ package org.moxie.proxy;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -27,6 +28,7 @@ import org.moxie.PomReader;
 import org.moxie.proxy.connection.ProxyConnectionServer;
 import org.moxie.proxy.resources.ArtifactsResource;
 import org.moxie.proxy.resources.RootResource;
+import org.moxie.proxy.resources.SearchResource;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Context;
@@ -51,6 +53,8 @@ public class MoxieProxy extends Application {
 	private final ProxyConfig config;
 
 	private Configuration configuration;
+	
+	private LuceneExecutor lucene;
 
 	public MoxieProxy(ProxyConfig config) {
 		this.config = config;
@@ -79,6 +83,9 @@ public class MoxieProxy extends Application {
 			attachBrowsing(context, router, repository.id);
 		}
 
+		// Search
+		router.attach("/search", SearchResource.class);
+		
 		// Root 
 		router.attach("/", RootResource.class);
 		router.attach("", RootResource.class);
@@ -154,6 +161,16 @@ public class MoxieProxy extends Application {
 		return null;
 	}
 	
+	void startLucene() {
+	    // start the Lucene indexer
+        lucene = new LuceneExecutor(config);
+        lucene.run();
+	}
+	
+	public List<SearchResult> search(String query) {
+		return lucene.search(query, 1, 50, "central", "restlet");
+	}
+	
 	boolean authenticate(String username, String password) {
 		// TODO authenticate here
 		return true;
@@ -226,6 +243,9 @@ public class MoxieProxy extends Application {
 		// start the http server
 		c.start();
 		
+        // start the Lucene indexer
+        app.startLucene();
+
 		// start the proxy server
         ProxyConnectionServer proxy = new ProxyConnectionServer(config);
         proxy.handleRequests();

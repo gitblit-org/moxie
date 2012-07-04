@@ -286,7 +286,23 @@ public class ProxyConfig {
 		File folder = getArtifactRoot(path);
 		return new MavenCache(folder);
 	}
-	
+
+	public IMavenCache getMavenCache(String repository) {
+		for (String repo : localRepositories) {
+			if (repo.equalsIgnoreCase(repository)) {
+				File file = new File(localArtifactsRoot, repo);
+				return new MavenCache(file);
+			}
+		}
+		if (remoteRepositoryLookup.containsKey(repository)) {
+			RemoteRepository repo = remoteRepositoryLookup.get(repository);
+			String folder = StringUtils.urlToFolder(repo.url);
+			File file = new File(remoteArtifactsRoot, folder);
+			return new MavenCache(file);
+		}
+		return null;
+	}
+
 	public DependencyLink find(Dependency dependency) {
 		String path = null;
 		for (String repository : localRepositories) {

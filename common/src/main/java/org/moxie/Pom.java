@@ -68,6 +68,7 @@ public class Pom {
 		exclusions = new TreeSet<String>();
 		antProperties = new TreeMap<String, String>();
 		licenses = new ArrayList<License>();
+		packaging = "jar";
 	}
 	
 	public void setAntProperties(Map<String, String> antProperties) {

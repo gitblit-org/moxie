@@ -22,3 +22,8 @@ span.deny {
 	color:#F00000;
 	font-weight: bold;
 }
+
+span.repository {
+	color: #aaa;
+	font-style: italic;
+}

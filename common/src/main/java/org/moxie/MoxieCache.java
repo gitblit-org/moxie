@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
@@ -60,6 +62,20 @@ public class MoxieCache implements IMavenCache {
 		return moxieRoot;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.moxie.IMavenCache#getFiles(java.lang.String)
+	 */
+	@Override
+	public List<File> getFiles(String extension) {
+		List<File> list = new ArrayList<File>();
+		return list;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.moxie.IMavenCache#getArtifact(org.moxie.Dependency, java.lang.String)
+	 */
 	@Override
 	public File getArtifact(Dependency dep, String ext) {
 		File baseFolder = localReleasesRoot;
@@ -99,6 +115,10 @@ public class MoxieCache implements IMavenCache {
 		return moxieFile;
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see org.moxie.IMavenCache#getMetadata(org.moxie.Dependency, java.lang.String)
+	 */
 	@Override
 	public File getMetadata(Dependency dep, String ext) {
 		File baseFolder = localReleasesRoot;
@@ -178,6 +198,10 @@ public class MoxieCache implements IMavenCache {
 		return file;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.moxie.IMavenCache#writeArtifact(org.moxie.Dependency, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public File writeArtifact(Dependency dep, String ext, String content) {
 		byte [] bytes = null;
@@ -206,6 +230,10 @@ public class MoxieCache implements IMavenCache {
 		return file;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.moxie.IMavenCache#writeMetadata(org.moxie.Dependency, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public File writeMetadata(Dependency dep, String ext, String content) {
 		byte [] bytes = null;
@@ -217,6 +245,10 @@ public class MoxieCache implements IMavenCache {
 		return writeMetadata(dep, ext, bytes);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.moxie.IMavenCache#writeMetadata(org.moxie.Dependency, java.lang.String, byte[])
+	 */
 	@Override
 	public File writeMetadata(Dependency dep, String ext, byte[] content) {
 		File file;
