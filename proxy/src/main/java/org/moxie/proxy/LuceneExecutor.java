@@ -291,7 +291,7 @@ public class LuceneExecutor implements Runnable {
 				if (!StringUtils.isEmpty(pom.description)) {
 					doc.add(new Field(FIELD_DESCRIPTION, pom.description, Store.YES, Index.ANALYZED));
 				}
-				doc.add(new Field(FIELD_DATE, date, Store.YES, Index.NO));
+				doc.add(new Field(FIELD_DATE, date, Store.YES, Index.ANALYZED));
 				
 				// add the pom to the index
 				writer.addDocument(doc);

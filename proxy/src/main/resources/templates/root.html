@@ -4,13 +4,21 @@
 <body>
 	<#include "/navbar.html">
 	<div class="container">
-		<div class="hero-unit">
-			<h1>${title}</h1>
-			<p>${tagline}</p>
+		<div class="row-fluid">
+			<div class="span6">
+					<div class="hero-unit">
+						<h1>${title}</h1>
+						<p>${tagline}</p>
+					</div>
+					${content}
+			</div>
+			
+			<div class="span6">
+				<h3>${rc.getString("mp.recentArtifacts")}</h3>
+				<!--  recent artifacts -->
+				<#include "/results.html">
+			</div>
 		</div>
-
-		${content}
-
 		<#include "/footer.html">
 	</div>
 </body>

@@ -18,6 +18,10 @@ package org.moxie.proxy;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -67,6 +71,7 @@ public class MoxieProxy extends Application {
 		// initialize Freemarker templates		
 		configuration = new Configuration();		
 		configuration.setTemplateLoader(new ContextTemplateLoader(context, "clap://class/templates"));
+		configuration.setDateFormat(config.getDateFormat());
 
 		// map the routes
 		Router router = new Router(context);
@@ -167,8 +172,43 @@ public class MoxieProxy extends Application {
         lucene.run();
 	}
 	
-	public List<SearchResult> search(String query) {
-		return lucene.search(query, 1, 50, "central", "restlet");
+	/**
+	 * Searches the specified repositories for the given text or query
+	 * 
+	 * @param text
+	 *            if the text is null or empty, null is returned
+	 * @param page
+	 *            the page number to retrieve. page is 1-indexed.
+	 * @param pageSize
+	 *            the number of elements to return for this page
+	 * @return a list of SearchResults in order from highest to the lowest score
+	 * 
+	 */
+	public List<SearchResult> search(String query, int page, int pageSize) {
+		return lucene.search(query, page, pageSize, getAccessibleRepositories());
+	}
+	
+	public List<SearchResult> getRecentArtifacts() {
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+		Calendar c = Calendar.getInstance();
+		String to = df.format(c.getTime());
+		c.add(Calendar.DATE, -180);
+		String from = df.format(c.getTime());
+		
+		String query = MessageFormat.format("date:[{0} TO {1}] AND NOT packaging:pom", from, to);
+		List<SearchResult> list = search(query, 1, 25);
+		Collections.sort(list);
+		return list;
+	}
+	
+	List<String> getAccessibleRepositories() {
+		// TODO filter repositories by login
+		List<String> list = new ArrayList<String>();
+		list.addAll(config.getLocalRepositories());
+		for (RemoteRepository repository : config.getRemoteRepositories()) {
+			list.add(repository.id);
+		}
+		return list;
 	}
 	
 	boolean authenticate(String username, String password) {

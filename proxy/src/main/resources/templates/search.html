@@ -9,18 +9,7 @@
 			<div class="span7">	
 				<h3>${query!}</h3>
 				<!-- list content --> 
-				<#if (results!?size > 0)>
-				<table class="table">
-					<tbody>				
-						<#list results as item>
-							<tr>
-								<td><a href="${baseRef}/${item.path}">${item.coordinates}</a><br/>${item.name!}</td>
-								<td>${item.date!?date}<br/><span class="repository">${item.repository}</span></td>
-							</tr>
-						</#list>
-					</tbody>
-				</table>
-				</#if>
+				<#include "/results.html">
 			</div>
 			<div class="span4">
 				<h3>${rc.getString("mp.luceneHelp")}</h3>

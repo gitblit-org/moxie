@@ -9,7 +9,7 @@ import java.util.Date;
  * @author James Moger
  * 
  */
-public class SearchResult implements Serializable {
+public class SearchResult implements Serializable, Comparable<SearchResult> {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -65,5 +65,10 @@ public class SearchResult implements Serializable {
 	@Override
 	public String toString() {
 		return  score + ":" + groupId + ":" + artifactId + ":" + version  + ":" + packaging;
+	}
+
+	@Override
+	public int compareTo(SearchResult o) {
+		return o.date.compareTo(date);
 	}
 }

@@ -15,13 +15,16 @@
  */
 package org.moxie.proxy.resources;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.moxie.proxy.AllowDeny;
 import org.moxie.proxy.Constants;
 import org.moxie.proxy.Redirect;
 import org.moxie.proxy.RemoteRepository;
+import org.moxie.proxy.SearchResult;
 import org.moxie.utils.StringUtils;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
@@ -93,13 +96,14 @@ public class RootResource extends BaseResource {
 		}
 		return sb.toString();
 	}
-
+	
 	@Get
 	public Representation toText() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("title", Constants.getName());
 		map.put("tagline", getTranslation().getString("mp.tagline"));
 		map.put("content", reportConfig());
+		map.put("results", getApplication().getRecentArtifacts());
 		return toHtml(map, "root.html");
 	}
 }
