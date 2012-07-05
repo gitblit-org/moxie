@@ -215,9 +215,15 @@ public class PomReader {
 	}
 	
 	private static String readStringTag(Node node) {
+		if (node == null) {
+			return null;
+		}
 		Node tagElement = node.getFirstChild();
+		if (tagElement == null) {
+			return null;
+		}
 		String content = tagElement.getTextContent();
-		return content;
+		return content;		
 	}
 
 
