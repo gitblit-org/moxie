@@ -467,9 +467,9 @@ public class Build {
 					builds.add(subProject);
 					builds.addAll(subProject.linkedProjects);
 					
-					// linked project dependencies are considered ring-0
+					// linked project dependencies are considered ring-1
 					for (Scope scope : new Scope[] { Scope.compile }) {
-						for (Dependency dep : subProject.getPom().getDependencies(scope, 0)) {
+						for (Dependency dep : subProject.getPom().getDependencies(scope, Constants.RING1)) {
 							project.getPom().addDependency(dep, scope);
 						}
 					}
@@ -490,7 +490,7 @@ public class Build {
 		console.debug("locating POMs");
 		// retrieve POMs for all dependencies in all scopes
 		for (Scope scope : project.pom.getScopes()) {
-			for (Dependency dependency : project.pom.getDependencies(scope, 0)) {
+			for (Dependency dependency : project.pom.getDependencies(scope, Constants.RING1)) {
 				retrievePOM(dependency);
 			}
 		}
@@ -501,7 +501,7 @@ public class Build {
 			console.debug("importing dependency management");
 
 			// This Moxie project imports a pom's dependencyManagement list.
-			for (Dependency dependency : project.pom.getDependencies(Scope.imprt, 0)) {
+			for (Dependency dependency : project.pom.getDependencies(Scope.imprt, Constants.RING1)) {
 				Pom pom = PomReader.readPom(moxieCache, dependency);
 				project.pom.importManagedDependencies(pom);
 			}
@@ -514,7 +514,7 @@ public class Build {
 			console.debug("assimilating dependencies");
 			
 			// This Moxie project integrates a pom's dependency list.
-			for (Dependency dependency : project.pom.getDependencies(Scope.assimilate, 0)) {
+			for (Dependency dependency : project.pom.getDependencies(Scope.assimilate, Constants.RING1)) {
 				Pom pom = PomReader.readPom(moxieCache, dependency);
 				for (Scope scope : pom.getScopes()) {
 					if (!assimilate.containsKey(scope)) {
@@ -571,7 +571,7 @@ public class Build {
 		// assemble the flat, ordered list of dependencies
 		// this list may have duplicates/conflicts
 		List<Dependency> all = new ArrayList<Dependency>();
-		for (Dependency dependency : project.pom.getDependencies(solutionScope, 0)) {
+		for (Dependency dependency : project.pom.getDependencies(solutionScope, Constants.RING1)) {
 			console.debug(dependency.getDetailedCoordinates());
 			all.add(dependency);
 			all.addAll(solve(solutionScope, dependency));
@@ -944,7 +944,7 @@ public class Build {
 			pom.addDependency(dependency, Scope.compile);
 		}
 		Set<Dependency> solution = new LinkedHashSet<Dependency>();
-		for (Dependency dependency : pom.getDependencies(Scope.compile, 0)) {
+		for (Dependency dependency : pom.getDependencies(Scope.compile, Constants.RING1)) {
 			solution.add(dependency);
 			solution.addAll(solve(Scope.compile, dependency));
 		}		

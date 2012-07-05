@@ -325,17 +325,17 @@ public class Pom {
 	}
 	
 	public List<Dependency> getDependencies(Scope scope) {
-		return getDependencies(scope, 0);
+		return getDependencies(scope, Constants.RING1);
 	}
 	
 	public List<Dependency> getDependencies(Scope scope, int ring) {
 		Set<Dependency> set = new LinkedHashSet<Dependency>();		
 		for (Scope dependencyScope : dependencies.keySet()) {
 			boolean includeScope = false;
-			if (ring == 0) {
+			if (ring == Constants.RING1) {
 				// project-specified dependency
 				includeScope = scope.includeOnClasspath(dependencyScope);
-			} else if (ring > 0) {
+			} else if (ring > Constants.RING1) {
 				// transitive dependencies
 				Scope transitiveScope = scope.getTransitiveScope(dependencyScope);
 				includeScope = scope.includeOnClasspath(transitiveScope);

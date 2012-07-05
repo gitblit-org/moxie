@@ -35,6 +35,8 @@ public class Constants {
 	
 	public static final String REMOTE = "remote";
 	
+	public static final int RING1 = 1;
+	
 	public static enum Key {
 		name, description, url, organization, scope, groupId, artifactId, version,
 		type, classifier, optional, dependencies, lastChecked, lastUpdated, lastSolved,

@@ -253,7 +253,6 @@ public class MxDoc extends MxTask {
 		
 		DepNode(Dependency dep) {
 			this(dep, null);
-			dep.ring = -1;
 		}
 		DepNode(Dependency dep, DepNode parent) {
 			this.dep = dep;

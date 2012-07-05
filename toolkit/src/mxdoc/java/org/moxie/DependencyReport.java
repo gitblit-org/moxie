@@ -59,13 +59,13 @@ public class DependencyReport implements MoxieReport {
 				Pom depPom = build.getPom(dep);
 				String badge;
 				switch (dep.ring){
-					case 0:
+					case 1:
 						badge = "badge-success";
 						break;
-					case 1:
+					case 2:
 						badge = "badge-info";
 						break;
-					case 2:
+					case 3:
 						badge = "badge-inverse";
 						break;
 					default:
