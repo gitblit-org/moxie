@@ -17,8 +17,10 @@ package org.moxie.ant;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -33,9 +35,11 @@ import org.moxie.Logo;
 import org.moxie.NoMarkdown;
 import org.moxie.Prop;
 import org.moxie.Regex;
+import org.moxie.Scope;
 import org.moxie.Substitute;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.LessUtils;
+import org.moxie.utils.StringUtils;
 
 
 public class MxDoc extends MxTask {
@@ -157,6 +161,8 @@ public class MxDoc extends MxTask {
 		}
 		
 		Docs.execute(build, doc, isVerbose());
+		
+		writeDependenciesAsJson();
 
 		for (org.moxie.Resource resource : resources) {
 			try {
@@ -193,6 +199,9 @@ public class MxDoc extends MxTask {
 		extractResource(outputFolder, "bootstrap/js/jquery.js");
 		extractResource(outputFolder, "bootstrap/img/glyphicons-halflings.png");
 		extractResource(outputFolder, "bootstrap/img/glyphicons-halflings-white.png");
+		extractResource(outputFolder, "d3/d3.js");
+		extractResource(outputFolder, "d3/rings.css");
+		extractResource(outputFolder, "d3/rings.js");
 
 		// write build's LESS as custom.less
 		Build build = getBuild();
@@ -208,6 +217,85 @@ public class MxDoc extends MxTask {
 					new File(outputFolder, "bootstrap/css/bootstrap.css"), false);
 		} catch (Exception e) {
 			build.console.error(e,  "Failed to compile LESS!");
+		}
+	}
+	
+	void writeDependenciesAsJson() {
+		DepNode root = new DepNode(new Dependency(getBuild().getPom().getCoordinates()));
+		Set<Dependency> dependencies = getBuild().getDependencies(Scope.test);
+		DepNode currRoot = root;
+		for (Dependency dep : dependencies) {
+			if (currRoot.dep.ring == dep.ring) {
+				// dep is at same ring as curr root, add to parent
+				currRoot = currRoot.parent.add(dep);
+			} else if (dep.ring > currRoot.dep.ring) {
+				// dep is one ring lower then curr root, add to curr root
+				// and reset curr root
+				currRoot = currRoot.add(dep);
+			} else if (dep.ring < currRoot.dep.ring) {
+				// find the parent node for this dep
+				currRoot = currRoot.parentAt(dep.ring - 1);
+				// add dep to the parent node
+				currRoot = currRoot.add(dep);
+			}
+		}
+		String json = root.asJSON();
+		File file  = new File(getBuild().getSiteOutputFolder(), "moxie-dependencies.json");
+		FileUtils.writeContent(file, json);
+	}
+	
+	private class DepNode {
+		DepNode parent;
+		Dependency dep;
+		
+		
+		List<DepNode> children;
+		
+		DepNode(Dependency dep) {
+			this(dep, null);
+			dep.ring = -1;
+		}
+		DepNode(Dependency dep, DepNode parent) {
+			this.dep = dep;
+			this.parent = parent;
+			children = new ArrayList<DepNode>();
+		}
+		
+		DepNode add(Dependency dep) {
+			DepNode node = new DepNode(dep, this);
+			children.add(node);
+			return node;
+		}
+		
+		DepNode parentAt(int ring) {
+			DepNode node = this;
+			while (node != null && node.dep.ring >= ring) {
+				if (node.parent == null) {
+					break;
+				}
+				node = node.parent;
+			}
+			return node;
+		}
+		
+		String asJSON() {
+			StringBuilder sb = new StringBuilder("{\n");
+			sb.append(MessageFormat.format("    \"ring\" : \"{0}\",\n", dep.ring));
+			sb.append(MessageFormat.format("    \"name\" : \"{0} {1}\"", dep.artifactId, dep.version));
+			if (children.size() == 0) {
+				//sb.append(MessageFormat.format(",\n    \"colour\" : \"{0}\"", "#"));
+			} else if (children.size() > 0) {
+				sb.append(",\n    \"children\" : [\n");
+				for (DepNode node : children) {
+					sb.append(StringUtils.insertTab(node.asJSON()));
+					sb.append(",\n");
+				}
+				// trim trailing comma,newline
+				sb.setLength(sb.length() - 2);
+				sb.append("\n    ]\n");
+			}
+			sb.append("\n}\n");
+			return sb.toString();
 		}
 	}
 }

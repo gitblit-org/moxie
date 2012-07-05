@@ -35,6 +35,8 @@ public class DependencyReport implements MoxieReport {
 			}
 		}
 		
+		// rings tab
+		sb.append(MessageFormat.format("<li><a href=\"#{0}\" data-toggle=\"tab\">{0} </a></li>\n", "rings"));
 		sb.append("</ul><div class=\"tab-content\">\n");
 		
 		// define tab content
@@ -106,6 +108,13 @@ public class DependencyReport implements MoxieReport {
 			sb.append("</tbody></table></div></div>\n");
 		}
 		
+		// rings tab
+		sb.append("<div class=\"tab-pane\" id=\"rings\">\n");
+		sb.append("<center><div id='chart'></div></center>\n");
+		sb.append("<script src='./d3/d3.js' type='text/javascript'></script>\n");
+		sb.append("<link href='./d3/rings.css' rel='stylesheet' type='text/css' />\n");
+		sb.append("<script src='./d3/rings.js' type='text/javascript'></script>\n");
+		sb.append("</div>\n");
 		sb.append("</div>\n");
 		
 		return sb.toString();
