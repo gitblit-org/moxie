@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,7 @@ public class Config implements Serializable {
 				new SourceFolder("src/main/resources", Scope.compile),
 				new SourceFolder("src/test/java", Scope.test),
 				new SourceFolder("src/test/resources", Scope.test),
+				new SourceFolder("src/site", Scope.site));
 		outputFolder = new File("build");
 		targetFolder = new File("target");
 		linkedProjects = new ArrayList<LinkedProject>();
@@ -528,7 +530,11 @@ public class Config implements Serializable {
 		// resolve source folders
 		List<SourceFolder> resolved = new ArrayList<SourceFolder>();
 		for (SourceFolder sf : values) {
-			if (sf.resolve(baseFolder, outputFolder)) {
+			File base = baseFolder;
+			if (Scope.site.equals(sf.scope)) {
+				base = targetFolder;
+			}
+			if (sf.resolve(base, outputFolder)) {
 				resolved.add(sf);
 			}			
 		}

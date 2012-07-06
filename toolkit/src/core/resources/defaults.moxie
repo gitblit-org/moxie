@@ -11,6 +11,7 @@ sourceFolders:
 - compile src/main/resources
 - test src/test/java
 - test src/test/resources
+- site src/site
 
 # Default base folder within the project for compiled classes.
 # Consider NOT sharing the output folder with your IDE.

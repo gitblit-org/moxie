@@ -1036,10 +1036,22 @@ public class Build {
 	}
 	
 	public File getSiteSourceFolder() {
+		for (SourceFolder sourceFolder : project.sourceFolders) {
+			if (Scope.site.equals(sourceFolder.scope)) {
+				return sourceFolder.getSources();
+			}
+		}
+		// default site sources folder
 		return new File(projectFolder, "src/site");
 	}
 
 	public File getSiteOutputFolder() {
+		for (SourceFolder sourceFolder : project.sourceFolders) {
+			if (Scope.site.equals(sourceFolder.scope)) {
+				return sourceFolder.getOutputFolder();
+			}
+		}
+		// default site output folder
 		return new File(getTargetFolder(), "site");
 	}
 	
@@ -1048,6 +1060,9 @@ public class Build {
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<classpath>\n");
 		for (SourceFolder sourceFolder : project.sourceFolders) {
+			if (Scope.site.equals(sourceFolder.scope)) {
+				continue;
+			}
 			if (sourceFolder.scope.isDefault()) {
 				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources())));
 			} else {

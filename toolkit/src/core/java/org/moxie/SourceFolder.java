@@ -40,7 +40,21 @@ public class SourceFolder implements Serializable {
 	boolean resolve(File projectFolder, File outputFolder) {
 		sources = new File(projectFolder, name);
 		if (sources.exists()) {
-			classes = new File(outputFolder, scope.equals(Scope.compile) ? "classes":"test-classes");
+			String folder = null;
+			switch (scope) {
+			case compile:
+				folder = "classes";
+				break;
+			case test:
+				folder = "test-classes";
+				break;
+			case site:
+				folder = "site";
+				break;
+			default:
+				break;
+			}
+			classes = new File(outputFolder, folder);
 			return true;
 		}
 		return false;

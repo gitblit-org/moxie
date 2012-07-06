@@ -16,7 +16,7 @@
 package org.moxie;
 
 public enum Scope {
-	compile, provided, runtime, test, system, imprt, assimilate, build;
+	compile, provided, runtime, test, system, imprt, assimilate, site, build;
 	
 	public static final Scope defaultScope = compile;
 	
@@ -27,6 +27,9 @@ public enum Scope {
 	// http://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope		
 	public boolean includeOnClasspath(Scope dependencyScope) {
 		if (dependencyScope == null) {
+			return false;
+		}
+		if (site.equals(this)) {
 			return false;
 		}
 		if (build.equals(this)) {
@@ -65,6 +68,7 @@ public enum Scope {
 		case test:
 			// test classpath
 			switch (dependencyScope) {
+			case site:
 			case build:
 				return false;
 			}
@@ -139,6 +143,7 @@ public enum Scope {
 		switch(this) {
 		case compile:
 		case test:
+		case site:
 			return true;
 		default:
 			return false;
@@ -146,6 +151,6 @@ public enum Scope {
 	}
 	
 	public boolean isMavenScope() {
-		return !this.equals(assimilate) && !this.equals(build);
+		return !this.equals(assimilate) && !this.equals(site) && !this.equals(build);
 	}
 }

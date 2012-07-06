@@ -30,6 +30,7 @@ public class ScopeTest extends Assert {
 		assertFalse(Scope.compile.includeOnClasspath(Scope.runtime));
 		assertFalse(Scope.compile.includeOnClasspath(Scope.test));
 		assertTrue(Scope.compile.includeOnClasspath(Scope.system));
+		assertFalse(Scope.compile.includeOnClasspath(Scope.site));
 		assertFalse(Scope.compile.includeOnClasspath(Scope.build));
 		
 		// provided classpath (unused)
@@ -38,6 +39,7 @@ public class ScopeTest extends Assert {
 		assertFalse(Scope.provided.includeOnClasspath(Scope.runtime));
 		assertFalse(Scope.provided.includeOnClasspath(Scope.test));
 		assertTrue(Scope.provided.includeOnClasspath(Scope.system));
+		assertFalse(Scope.provided.includeOnClasspath(Scope.site));
 		assertFalse(Scope.provided.includeOnClasspath(Scope.build));
 		
 		// runtime classpath
@@ -46,6 +48,7 @@ public class ScopeTest extends Assert {
 		assertTrue(Scope.runtime.includeOnClasspath(Scope.runtime));
 		assertFalse(Scope.runtime.includeOnClasspath(Scope.test));
 		assertTrue(Scope.runtime.includeOnClasspath(Scope.system));
+		assertFalse(Scope.runtime.includeOnClasspath(Scope.site));
 		assertFalse(Scope.runtime.includeOnClasspath(Scope.build));
 		
 		// test classpath
@@ -54,6 +57,7 @@ public class ScopeTest extends Assert {
 		assertTrue(Scope.test.includeOnClasspath(Scope.runtime));
 		assertTrue(Scope.test.includeOnClasspath(Scope.test));
 		assertTrue(Scope.test.includeOnClasspath(Scope.system));
+		assertFalse(Scope.test.includeOnClasspath(Scope.site));
 		assertFalse(Scope.test.includeOnClasspath(Scope.build));
 
 		// build classpath
@@ -62,6 +66,7 @@ public class ScopeTest extends Assert {
 		assertFalse(Scope.build.includeOnClasspath(Scope.runtime));
 		assertFalse(Scope.build.includeOnClasspath(Scope.test));
 		assertFalse(Scope.build.includeOnClasspath(Scope.system));
+		assertFalse(Scope.build.includeOnClasspath(Scope.site));
 		assertTrue(Scope.build.includeOnClasspath(Scope.build));
 
 		// check nulls
@@ -70,6 +75,7 @@ public class ScopeTest extends Assert {
 		assertFalse(Scope.runtime.includeOnClasspath(null));
 		assertFalse(Scope.test.includeOnClasspath(null));
 		assertFalse(Scope.system.includeOnClasspath(null));
+		assertFalse(Scope.site.includeOnClasspath(null));
 		assertFalse(Scope.build.includeOnClasspath(null));
 	}
 	
@@ -122,5 +128,16 @@ public class ScopeTest extends Assert {
 		assertEquals(Scope.build, Scope.build.getTransitiveScope(Scope.provided));
 		assertEquals(Scope.build, Scope.build.getTransitiveScope(Scope.runtime));
 		assertEquals(null, Scope.build.getTransitiveScope(Scope.test));
+
+		// site dependency
+		assertEquals(null, Scope.compile.getTransitiveScope(Scope.site));
+		assertEquals(null, Scope.provided.getTransitiveScope(Scope.site));
+		assertEquals(null, Scope.runtime.getTransitiveScope(Scope.site));
+		assertEquals(null, Scope.test.getTransitiveScope(Scope.site));
+
+		assertEquals(null, Scope.site.getTransitiveScope(Scope.compile));
+		assertEquals(null, Scope.site.getTransitiveScope(Scope.provided));
+		assertEquals(null, Scope.site.getTransitiveScope(Scope.runtime));
+		assertEquals(null, Scope.site.getTransitiveScope(Scope.test));
 	}
 }
