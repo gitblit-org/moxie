@@ -55,6 +55,7 @@ public class ProxyConfig {
 	private File remoteArtifactsRoot;
 	private int httpPort;
 	private int proxyPort;
+	private List<String> bindAddresses;
 	private boolean accesslog;
 	private String dateFormat;
 
@@ -70,6 +71,7 @@ public class ProxyConfig {
 		httpPort = 8080;
 		proxyPort = 8081;
 		dateFormat = "yyyy-MM-dd";
+		bindAddresses = Collections.emptyList();
 		proxies = Collections.emptyList();
 		redirects = Collections.emptyList();
 		allowDeny = Collections.emptyList();
@@ -121,6 +123,7 @@ public class ProxyConfig {
 					// only read these settings on a cold start
 					httpPort = map.getInt("httpPort", httpPort);
 					proxyPort = map.getInt("proxyPort", proxyPort);
+					bindAddresses = map.getStrings("bindAddresses", bindAddresses);
 					moxieRoot = new File(map.getString("rootFolder", "moxie"));
 					setMoxieRoot(moxieRoot);
 					localRepositories = map.getStrings("localRepositories", localRepositories);
@@ -154,6 +157,7 @@ public class ProxyConfig {
 		return remotes;
 	}
 	
+	@SuppressWarnings("unchecked")
 	List<Proxy> parseProxies(MaxmlMap map) {
 		List<Proxy> list = new ArrayList<Proxy>();
 		if (map.containsKey("proxies")) {
@@ -176,6 +180,7 @@ public class ProxyConfig {
 		return list;
 	}
 	
+	@SuppressWarnings("unchecked")
 	List<Redirect> parseRedirects(MaxmlMap map) {
 		List<Redirect> list = new ArrayList<Redirect>();
 		if (map.containsKey("redirects")) {
@@ -225,6 +230,10 @@ public class ProxyConfig {
 
 	public void setProxyPort(int val) {
 		this.proxyPort = val;
+	}
+	
+	public List<String> getBindAddresses() {
+		return bindAddresses;
 	}
 
 	public boolean getAccessLog() {

@@ -4,6 +4,8 @@ httpPort : 8080
 # On which port to proxy Maven client requests
 proxyPort : 8081
 
+bindAddresses : localhost
+
 # Base folder for all artifacts, metadata, etc
 rootFolder : moxie
 

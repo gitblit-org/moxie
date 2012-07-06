@@ -265,7 +265,13 @@ public class MoxieProxy extends Application {
 		c.getLogService().setEnabled(config.getAccessLog());
 
 		// create a Restlet server
-		c.getServers().add(Protocol.HTTP, config.getHttpPort());
+		if (config.getBindAddresses().size() == 0) {
+			c.getServers().add(Protocol.HTTP, config.getHttpPort());
+		} else {
+			for (String address : config.getBindAddresses()) {
+				c.getServers().add(Protocol.HTTP, address, config.getHttpPort());	
+			}
+		}
 
 		// add client classpath protocol to enable resource loading from the jar
 		c.getClients().add(Protocol.CLAP);
