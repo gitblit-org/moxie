@@ -2980,7 +2980,7 @@ input[type="submit"].btn.btn-mini {
   margin-bottom: 18px;
 }
 .navbar-inner {
-  min-height: 60px;
+  min-height: 50px;
   padding-left: 20px;
   padding-right: 20px;
   background-color: #410041;
@@ -3014,7 +3014,7 @@ input[type="submit"].btn.btn-mini {
 .navbar .brand {
   float: left;
   display: block;
-  padding: 18px 20px 22px;
+  padding: 13px 20px 17px;
   margin-left: -20px;
   font-size: 20px;
   font-weight: 200;
@@ -3023,7 +3023,7 @@ input[type="submit"].btn.btn-mini {
 }
 .navbar .navbar-text {
   margin-bottom: 0;
-  line-height: 60px;
+  line-height: 50px;
 }
 .navbar .navbar-link {
   color: #cccccc;
@@ -3033,7 +3033,7 @@ input[type="submit"].btn.btn-mini {
 }
 .navbar .btn,
 .navbar .btn-group {
-  margin-top: 15px;
+  margin-top: 10px;
 }
 .navbar .btn-group .btn {
   margin: 0;
@@ -3054,7 +3054,7 @@ input[type="submit"].btn.btn-mini {
 .navbar-form select,
 .navbar-form .radio,
 .navbar-form .checkbox {
-  margin-top: 15px;
+  margin-top: 10px;
 }
 .navbar-form input,
 .navbar-form select {
@@ -3078,7 +3078,7 @@ input[type="submit"].btn.btn-mini {
 .navbar-search {
   position: relative;
   float: left;
-  margin-top: 16px;
+  margin-top: 11px;
   margin-bottom: 0;
 }
 .navbar-search .search-query {
@@ -3162,7 +3162,7 @@ input[type="submit"].btn.btn-mini {
 }
 .navbar .nav > li > a {
   float: none;
-  padding: 19px 10px 21px;
+  padding: 14px 10px 16px;
   line-height: 19px;
   color: #cccccc;
   text-decoration: none;
@@ -3171,12 +3171,12 @@ input[type="submit"].btn.btn-mini {
 .navbar .btn {
   display: inline-block;
   padding: 4px 10px 4px;
-  margin: 15px 5px 16px;
+  margin: 10px 5px 11px;
   line-height: 18px;
 }
 .navbar .btn-group {
   margin: 0;
-  padding: 15px 5px 16px;
+  padding: 10px 5px 11px;
 }
 .navbar .nav > li > a:hover {
   background-color: transparent;
@@ -3190,7 +3190,7 @@ input[type="submit"].btn.btn-mini {
   background-color: transparent;
 }
 .navbar .divider-vertical {
-  height: 60px;
+  height: 50px;
   width: 1px;
   margin: 0 9px;
   overflow: hidden;
@@ -4210,12 +4210,12 @@ a.badge:hover {
   margin: 0px;
 }
 .navbar .brand {
-  padding: 10px 20px;
+  padding: 10px 15px;
 }
 body {
-  padding-top: 80px;
+  padding-top: 65px;
 }
-/* 60px to make the container go all the way to the bottom of the topbar */
+/* 50px to make the container go all the way to the bottom of the topbar */
 footer {
   margin-top: 25px;
   padding: 15px 0 16px;
@@ -4223,4 +4223,7 @@ footer {
 }
 pre.prettyprint {
   overflow: hidden;
+}
+a:focus {
+  outline: none;
 }

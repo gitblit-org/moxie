@@ -22,7 +22,7 @@
 
 // Navbar
 // -------------------------
-@navbarHeight:                    60px;
+@navbarHeight:                    50px;
 @navbarBackground:                @purpleDarker;
 @navbarBackgroundHighlight:       @purpleDark;
 @navbarText:                      @standardGray;
@@ -41,11 +41,12 @@
 	}
 
 	.brand {
-		@elementHeight: 40px;
-		padding: 10px 20px;
+		@elementHeight: 30px;
+		padding: 10px 15px;
 	}
 }
 
-body { padding-top: @navbarHeight + 20 } /* 60px to make the container go all the way to the bottom of the topbar */
+body { padding-top: @navbarHeight + 15 } /* 50px to make the container go all the way to the bottom of the topbar */
 footer { margin-top: 25px; padding: 15px 0 16px; border-top: 1px solid #E5E5E5; }
 pre.prettyprint { overflow: hidden; }
+a:focus { outline: none; }
