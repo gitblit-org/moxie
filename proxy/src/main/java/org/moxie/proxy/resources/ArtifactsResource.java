@@ -204,38 +204,6 @@ public class ArtifactsResource extends BaseResource {
 		return StringUtils.escapeForHtml(sb.toString(), false);		
 	}
 
-	String getBuildrSnippet(Pom pom) {
-		StringBuilder sb = new StringBuilder();
-		if (pom != null) {
-			// artifact			
-			sb.append(MessageFormat.format("''{0}:{1}:{2}:{3}''", pom.groupId, pom.artifactId, pom.packaging, pom.version));
-		} else if (isRemoteRepository()) {
-			// proxy settings
-			String base = "options.proxy.";
-			sb.append(base).append("http = '").append(getProxyUrl()).append("'\n");
-			sb.append(base).append("exclude << '*.nonproxyrepos.com'\n");
-			sb.append(base).append("exclude << 'localhost'\n");
-		} else {
-			// repository settings
-			sb.append(MessageFormat.format("repositories.remote << ''{0}''", getRepositoryUrl()));
-		}
-		return StringUtils.escapeForHtml(sb.toString(), false);		
-	}
-
-	String getSBTSnippet(Pom pom) {
-		StringBuilder sb = new StringBuilder();
-		if (pom != null) {
-			// artifact			
-			sb.append(MessageFormat.format("libraryDependencies += \"{0}\" % \"{1}\" % \"{2}\"", pom.groupId, pom.artifactId, pom.version));
-		} else if (isRemoteRepository()) {
-			// proxy settings
-		} else {
-			// repository settings
-			sb.append(MessageFormat.format("def url = new java.net.URL(\"{0}\")\nval testRepo = Resolver.url(\"moxieProxy\", url)", getRepositoryUrl()));			
-		}
-		return StringUtils.escapeForHtml(sb.toString(), false);		
-	}
-
 	File getArtifactRoot() {
 		return getProxyConfig().getArtifactRoot(getBasePath());
 	}
@@ -357,8 +325,6 @@ public class ArtifactsResource extends BaseResource {
 		map.put("gradleSnippet", getGradleSnippet(pom));
 		map.put("grapeSnippet", getGrapeSnippet(pom));
 		map.put("ivySnippet", getIvySnippet(pom));
-		map.put("buildrSnippet", getBuildrSnippet(pom));
-		map.put("sbtSnippet", getSBTSnippet(pom));
 		map.put("items", getItems(file));
 		return toHtml(map, "artifacts.html");
 	}
