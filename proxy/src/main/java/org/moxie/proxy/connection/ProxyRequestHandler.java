@@ -157,8 +157,10 @@ public class ProxyRequestHandler extends Thread {
 		}
 
 		println("HTTP/1.1 200 OK");
-		print("Date: ");
 		Date d = new Date(f.lastModified());
+		print("Date: ");
+		println(INTERNET_FORMAT.format(d));
+		print("Last-modified: ");
 		println(INTERNET_FORMAT.format(d));
 		print("Content-length: ");
 		println(String.valueOf(f.length()));

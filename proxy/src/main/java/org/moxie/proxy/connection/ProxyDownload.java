@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.util.DateUtil;
 import org.moxie.Proxy;
 import org.moxie.proxy.ProxyConfig;
 
@@ -125,6 +127,17 @@ public class ProxyDownload {
 				dest.delete();
 			}
 			dl.renameTo(dest);
+			
+			// preserve last-modified, if possible
+			try {
+				Header lastModified = get.getResponseHeader("Last-Modified");
+				if (lastModified != null) {				
+					Date date = DateUtil.parseDate(lastModified.getValue());				
+					dest.setLastModified(date.getTime());
+				}
+			} catch (Exception e) {
+				log.log(Level.WARNING, "could not parse \"last-modified\" for " + url, e);
+			}
 		} finally {
 			get.releaseConnection();
 		}
