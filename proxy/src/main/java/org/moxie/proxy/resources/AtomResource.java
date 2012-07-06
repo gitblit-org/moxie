@@ -32,8 +32,8 @@ public class AtomResource extends BaseResource {
 	}
 	
 	@Get
-	public Representation getFeed() {
-		AtomFeed generator = new AtomFeed(getApplication());
+	public Representation getFeed() {		
+		AtomFeed generator = new AtomFeed(getApplication(), getRootRef().toString());
 		return generator.getFeed();
 	}
 }

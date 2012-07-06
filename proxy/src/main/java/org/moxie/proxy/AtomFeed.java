@@ -37,9 +37,11 @@ import org.restlet.representation.StringRepresentation;
 public class AtomFeed {
 
 	final MoxieProxy app;
-
-	public AtomFeed(MoxieProxy app) {
+	final String baseUrl;
+	
+	public AtomFeed(MoxieProxy app, String baseUrl) {
 		this.app = app;
+		this.baseUrl = baseUrl;
 	}
 
 	public Feed getFeed() {
@@ -71,7 +73,7 @@ public class AtomFeed {
 		entry.setPublished(result.date);
 		entry.setTitle(new Text(MediaType.TEXT_PLAIN, result.getCoordinates()));
 		entry.setSummary(result.getName());
-		entry.getLinks().add(newLink("http://localhost/" + result.getPath()));
+		entry.getLinks().add(newLink(result.getPath()));
 		return entry;
 	}
 	
@@ -81,9 +83,9 @@ public class AtomFeed {
 		return c;
 	}
 	
-	private Link newLink(String url) {
+	private Link newLink(String path) {
 		Link l = new Link();
-		l.setHref(new Reference(url));
+		l.setHref(new Reference(baseUrl + "/" + path));
 		l.setRel(Relation.VIA);
 		return l;
 	}
