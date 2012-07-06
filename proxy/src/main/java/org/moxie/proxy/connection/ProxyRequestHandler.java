@@ -134,7 +134,10 @@ public class ProxyRequestHandler extends Thread {
 		if (!"http".equals(url.getProtocol()))
 			throw new IOException("Can only handle HTTP requests, got " + downloadURL);
 
-		File f = config.getRemoteFile(url);
+		File f = config.getRemoteArtifact(url);
+		if (f == null) {
+			throw new IOException("Unregistered remote repository, got " + downloadURL);
+		}		
 
 		if (!f.exists()) {
 			ProxyDownload d = new ProxyDownload(config, url, f);

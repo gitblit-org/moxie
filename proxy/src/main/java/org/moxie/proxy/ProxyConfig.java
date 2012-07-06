@@ -286,10 +286,17 @@ public class ProxyConfig {
 		return remoteRepositoryLookup.get(repository);
 	}
 	
-	public File getRemoteFile(URL url) {
-		String remote = StringUtils.urlToFolder(url.toString());
-		File remoteFolder = new File(remoteArtifactsRoot, remote);
-		return new File(remoteFolder, url.getPath());
+	public File getRemoteArtifact(URL artifactUrl) {
+		String url = artifactUrl.toExternalForm();
+		for (RemoteRepository repository : remoteRepositories) {
+			if (url.startsWith(repository.url)) {
+				String remote = StringUtils.urlToFolder(repository.url.toString());
+				File remoteFolder = new File(remoteArtifactsRoot, remote);
+				String path = StringUtils.getRelativePath(repository.url, url);
+				return new File(remoteFolder, path);
+			}
+		}
+		return null;
 	}
 	
 	public IMavenCache getMavenCache(File file) {
