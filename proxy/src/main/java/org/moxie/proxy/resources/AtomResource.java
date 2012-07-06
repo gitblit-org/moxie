@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.moxie.proxy;
+package org.moxie.proxy.resources;
 
-import java.io.Serializable;
+import org.moxie.proxy.AtomFeed;
+import org.restlet.representation.Representation;
+import org.restlet.resource.Get;
 
-import org.moxie.utils.StringUtils;
+public class AtomResource extends BaseResource {
 
-public class RemoteRepository implements Serializable {
-
-	private static final long serialVersionUID = 1L;
-
-	public final String id;
-	public final String url;
-
-	public RemoteRepository(String id, String url) {
-		this.id = id;
-		this.url = url;
+	@Override
+	protected String getBasePath() {
+		return "atom";
 	}
 
-	public String getHost() {
-		return StringUtils.getHost(url);
+	@Override
+	protected String getBasePathName() {
+		return getTranslation().getString("mp.recentArtifacts");
+	}
+	
+	@Get
+	public Representation getFeed() {
+		AtomFeed generator = new AtomFeed(getApplication());
+		return generator.getFeed();
 	}
 }

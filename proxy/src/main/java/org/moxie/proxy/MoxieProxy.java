@@ -31,6 +31,7 @@ import org.moxie.Pom;
 import org.moxie.PomReader;
 import org.moxie.proxy.connection.ProxyConnectionServer;
 import org.moxie.proxy.resources.ArtifactsResource;
+import org.moxie.proxy.resources.AtomResource;
 import org.moxie.proxy.resources.RootResource;
 import org.moxie.proxy.resources.SearchResource;
 import org.restlet.Application;
@@ -56,12 +57,13 @@ public class MoxieProxy extends Application {
 
 	private final ProxyConfig config;
 
+	private final LuceneExecutor lucene;
+
 	private Configuration configuration;
 	
-	private LuceneExecutor lucene;
-
 	public MoxieProxy(ProxyConfig config) {
 		this.config = config;
+		this.lucene = new LuceneExecutor(config);
 	}
 	
 	@Override
@@ -90,6 +92,9 @@ public class MoxieProxy extends Application {
 
 		// Search
 		router.attach("/search", SearchResource.class);
+		
+		// Atom feed
+		router.attach("/atom", AtomResource.class);
 		
 		// Root 
 		router.attach("/", RootResource.class);
@@ -168,7 +173,6 @@ public class MoxieProxy extends Application {
 	
 	void startLucene() {
 	    // start the Lucene indexer
-        lucene = new LuceneExecutor(config);
         lucene.run();
 	}
 	
@@ -188,15 +192,16 @@ public class MoxieProxy extends Application {
 		return lucene.search(query, page, pageSize, getAccessibleRepositories());
 	}
 	
-	public List<SearchResult> getRecentArtifacts() {
+	public List<SearchResult> getRecentArtifacts(int page, int pageSize) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		Calendar c = Calendar.getInstance();
+		c.add(Calendar.DATE, 1);
 		String to = df.format(c.getTime());
 		c.add(Calendar.DATE, -180);
 		String from = df.format(c.getTime());
-		
+
 		String query = MessageFormat.format("date:[{0} TO {1}] AND NOT packaging:pom", from, to);
-		List<SearchResult> list = search(query, 1, 10);
+		List<SearchResult> list = search(query, page, pageSize);
 		Collections.sort(list);
 		return list;
 	}

@@ -103,7 +103,7 @@ public class RootResource extends BaseResource {
 		map.put("title", Constants.getName());
 		map.put("tagline", getTranslation().getString("mp.tagline"));
 		map.put("content", reportConfig());
-		map.put("results", getApplication().getRecentArtifacts());
+		map.put("results", getApplication().getRecentArtifacts(1, 10));
 		return toHtml(map, "root.html");
 	}
 }
