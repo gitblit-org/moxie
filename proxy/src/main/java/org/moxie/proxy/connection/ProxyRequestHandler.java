@@ -137,9 +137,10 @@ public class ProxyRequestHandler extends Thread {
 		File f = config.getRemoteArtifact(url);
 		if (f == null) {
 			throw new IOException("Unregistered remote repository, got " + downloadURL);
-		}		
+		}
+		String name = f.getName();
 
-		if (!f.exists()) {
+		if (name.contains("-SNAPSHOT") || name.contains("maven-metadata") || !f.exists()) {
 			ProxyDownload d = new ProxyDownload(config, url, f);
 			try {
 				d.download();

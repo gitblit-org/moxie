@@ -120,6 +120,9 @@ public class ProxyDownload {
 			OutputStream out = new BufferedOutputStream(new FileOutputStream(dl));
 			copy(get.getResponseBodyAsStream(), out);
 			out.close();
+			if (dest.exists()) {
+				dest.delete();
+			}
 			dl.renameTo(dest);
 		} finally {
 			get.releaseConnection();
