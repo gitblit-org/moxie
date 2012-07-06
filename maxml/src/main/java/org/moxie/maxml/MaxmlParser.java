@@ -44,6 +44,7 @@ public class MaxmlParser {
 	Pattern datePattern = Pattern.compile("^[0-9]{4}-[0-9]{2}-[0-9]{2}");
 	Pattern wholePattern = Pattern.compile("^\\d{1,3}(,\\d{1,3})*$");
 	DecimalFormat wholeFormat = new DecimalFormat("#,###,###,###,###,###,###");
+	String csvPattern = ",(?=(?:[^\\\"]*\\\"[^\\\"]*[\\\"^,]*\\\")*(?![^\\\"]*\\\"))";
 
 	/**
 	 * Recursive method to parse an Maxml document.
@@ -189,7 +190,7 @@ public class MaxmlParser {
 			String inside = value.substring(1, value.length() - 1).trim();
 			// http://www.programmersheaven.com/user/Jonathan/blog/73-Splitting-CSV-with-regex
 			for (String field : inside
-					.split(",(?=(?:[^\\\"]*\\\"[^\\\"]*[\\\"^,]*\\\")*(?![^\\\"]*\\\"))")) {
+					.split(csvPattern)) {
 				Object object = parseValue(field);
 				array.add(object);
 			}
@@ -199,7 +200,7 @@ public class MaxmlParser {
 			// inline map
 			MaxmlMap map = new MaxmlMap();
 			String inside = value.substring(1, value.length() - 1).trim();
-			for (String kvp : inside.split(",")) {
+			for (String kvp : inside.split(csvPattern)) {
 				int colon = kvp.indexOf(':');
 				if (colon < 0) {
 					throw new MaxmlException(

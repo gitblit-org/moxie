@@ -15,6 +15,7 @@
  */
 package org.moxie.maxml;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -84,7 +85,11 @@ public class MaxmlMap extends LinkedHashMap<String, Object> {
 			if (o instanceof List<?>) {
 				return (List<String>) o;
 			} else if (o instanceof String) {
-				return Arrays.asList(o.toString());
+				List<String> strings = new ArrayList<String>();
+				for (String value : o.toString().split(",")) {
+					strings.add(value.trim());
+				}
+				return strings;
 			}
 		}
 		return defaultValue;
@@ -110,5 +115,15 @@ public class MaxmlMap extends LinkedHashMap<String, Object> {
 			}
 		}
 		return defaultValue;
+	}
+	
+	public MaxmlMap getMap(String key) {
+		if (containsKey(key)) {
+			Object o = get(key);
+			if (o instanceof MaxmlMap) {
+				return (MaxmlMap) o;
+			}
+		}
+		return null;
 	}
 }
