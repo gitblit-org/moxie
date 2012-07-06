@@ -20,10 +20,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import org.moxie.RemoteRepository;
 import org.moxie.proxy.Constants;
 import org.moxie.proxy.MoxieProxy;
 import org.moxie.proxy.ProxyConfig;
-import org.moxie.proxy.RemoteRepository;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;

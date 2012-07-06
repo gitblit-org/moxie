@@ -53,15 +53,6 @@ import org.moxie.utils.StringUtils;
  */
 public class Build {
 
-	public static final Repository MAVENCENTRAL = new Repository("MavenCentral", "http://repo1.maven.org/maven2");
-	public static final Repository CENTRAL = new Repository("Central", "http://repo1.maven.org/maven2");
-	public static final Repository CODEHAUS = new Repository("Codehaus", "http://repository.codehaus.org");
-	public static final Repository JAVANET = new Repository("Java.net", "http://download.java.net/maven/2");
-	public static final Repository RESTLET = new Repository("Restlet", "http://maven.restlet.org");
-	public static final Repository GOOGLECODE = new GoogleCode();
-	
-	public static final Repository [] REPOSITORIES = { MAVENCENTRAL, CENTRAL, CODEHAUS, JAVANET, RESTLET, GOOGLECODE };
-	
 	public final Set<Proxy> proxies;
 	public final Set<Repository> repositories;
 	public final Config moxie;
@@ -231,28 +222,26 @@ public class Build {
 	}
 	
 	private void determineRepositories() {
-		List<String> urls = new ArrayList<String>();
-		urls.addAll(project.repositoryUrls);
-		urls.addAll(moxie.repositoryUrls);
+		List<RemoteRepository> registrations = new ArrayList<RemoteRepository>();
+		registrations.addAll(project.registeredRepositories);
+		registrations.addAll(moxie.registeredRepositories);
 		
-		for (String url : urls) {
-			boolean identified = false;
-			for (Repository repository : REPOSITORIES) {
-				if (repository.repositoryUrl.equalsIgnoreCase(url) || repository.name.equalsIgnoreCase(url)) {
-					repositories.add(repository);
-					identified = true;
+		for (String url : project.repositories) {
+			if (url.equalsIgnoreCase("googlecode")) {
+				// GoogleCode-sourced artifact
+				repositories.add(new GoogleCode());
+				continue;
+			}
+			for (RemoteRepository definition : registrations) {
+				if (definition.url.equalsIgnoreCase(url) || definition.id.equalsIgnoreCase(url)) {
+					repositories.add(new Repository(definition.id, definition.url));
 					break;
 				}	
 			}
-			if (!identified) {
-				// unidentified repository
-				repositories.add(new Repository(null, url));
-			}
 		}
 
-		// default to central
 		if (repositories.size() == 0) {
-			repositories.add(MAVENCENTRAL);
+			console.warn("No dependency repositories have been defined!");
 		}
 	}
 	
@@ -340,21 +329,21 @@ public class Build {
 		return repositories;
 	}
 	
-	public java.net.Proxy getProxy(String url) {
+	public java.net.Proxy getProxy(String repositoryId, String url) {
 		if (proxies.size() == 0) {
 			return java.net.Proxy.NO_PROXY;
 		}
 		for (Proxy proxy : proxies) {
-			if (proxy.active && proxy.matches(url)) {
+			if (proxy.active && proxy.matches(repositoryId, url)) {
 				return new java.net.Proxy(java.net.Proxy.Type.HTTP, proxy.getSocketAddress());
 			}
 		}
 		return java.net.Proxy.NO_PROXY;
 	}
 	
-	public String getProxyAuthorization(String url) {
+	public String getProxyAuthorization(String repositoryId, String url) {
 		for (Proxy proxy : proxies) {
-			if (proxy.active && proxy.matches(url)) {
+			if (proxy.active && proxy.matches(repositoryId, url)) {
 				return "Basic " + Base64.encodeBytes((proxy.username + ":" + proxy.password).getBytes());
 			}
 		}

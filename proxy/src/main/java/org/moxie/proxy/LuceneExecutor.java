@@ -57,6 +57,7 @@ import org.apache.lucene.util.Version;
 import org.moxie.IMavenCache;
 import org.moxie.Pom;
 import org.moxie.PomReader;
+import org.moxie.RemoteRepository;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 

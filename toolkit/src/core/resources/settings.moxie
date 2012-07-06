@@ -1,9 +1,28 @@
 # settings.moxie
 #
 # This file contains settings for controlling Moxie's behavior.
+
+# Define network proxies and/or artifact proxies.
 proxies:
+# example standard network proxy configuration
 - { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }
-repositories : mavencentral
+
+# example Moxie Proxy configuration
+# only the identified repositories are proxied through this connection
+- { id: moxieProxy, active: false,	protocol: http, host: moxie.somewhere.com, port: 8080, username: proxyuser, password: somepassword, repositories: "central, mavencentral, restlet, codehaus" }
+
+# Registered Maven 2 repositories.  This section is used to define id-url
+# pairs so that project descriptors can specify an repository id, rather than
+# a complete url.
+registeredRepositories:
+- { id: central, url: "http://repo1.maven.org/maven2" }
+- { id: mavencentral, url: "http://repo1.maven.org/maven2" }
+- { id: restlet, url: "http://maven.restlet.org" }
+- { id: codehaus, url: "http://repository.codehaus.org" }
+
+# Default repositories for dependency retrieval
+repositories: central
+
 apply: color, #debug
 
 # Managed dependencies are used to specify versions of dependencies

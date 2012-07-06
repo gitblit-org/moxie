@@ -15,16 +15,13 @@
  */
 package org.moxie.proxy.resources;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.moxie.RemoteRepository;
 import org.moxie.proxy.AllowDeny;
 import org.moxie.proxy.Constants;
 import org.moxie.proxy.Redirect;
-import org.moxie.proxy.RemoteRepository;
-import org.moxie.proxy.SearchResult;
 import org.moxie.utils.StringUtils;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;

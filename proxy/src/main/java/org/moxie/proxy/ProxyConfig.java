@@ -34,6 +34,7 @@ import org.moxie.Dependency;
 import org.moxie.IMavenCache;
 import org.moxie.MavenCache;
 import org.moxie.Proxy;
+import org.moxie.RemoteRepository;
 import org.moxie.maxml.Maxml;
 import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.FileUtils;
@@ -166,6 +167,7 @@ public class ProxyConfig {
 				proxy.port = definition.getInt("port", 80);
 				proxy.username = definition.getString("username", "");
 				proxy.password = definition.getString("password", "");
+				proxy.repositories = definition.getStrings("repositories", new ArrayList<String>());
 				proxy.proxyHosts = definition.getStrings("proxyHosts", new ArrayList<String>());
 				proxy.nonProxyHosts = definition.getStrings("nonProxyHosts", new ArrayList<String>());
 				list.add(proxy);
@@ -357,7 +359,7 @@ public class ProxyConfig {
 
 	public boolean useProxy(URL url) {
 		for (Proxy proxy : proxies) {
-			if (proxy.active && proxy.matches(url.toExternalForm())) {
+			if (proxy.active && proxy.matches(null, url.toExternalForm())) {
 				return true;
 			}
 		}
@@ -366,7 +368,7 @@ public class ProxyConfig {
 
 	public Proxy getProxy(URL url) {
 		for (Proxy proxy : proxies) {
-			if (proxy.active && proxy.matches(url.toExternalForm())) {
+			if (proxy.active && proxy.matches(null, url.toExternalForm())) {
 				return proxy;
 			}
 		}

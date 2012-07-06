@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import org.moxie.IMavenCache;
 import org.moxie.Pom;
 import org.moxie.PomReader;
+import org.moxie.RemoteRepository;
 import org.moxie.proxy.connection.ProxyConnectionServer;
 import org.moxie.proxy.resources.ArtifactsResource;
 import org.moxie.proxy.resources.AtomResource;

@@ -26,10 +26,10 @@ import java.util.Map;
 
 import org.moxie.Dependency;
 import org.moxie.Pom;
+import org.moxie.RemoteRepository;
 import org.moxie.Scope;
 import org.moxie.proxy.Constants;
 import org.moxie.proxy.DependencyLink;
-import org.moxie.proxy.RemoteRepository;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 import org.restlet.representation.Representation;

@@ -54,7 +54,8 @@ public class Config implements Serializable {
 	
 	List<Proxy> proxies;
 	List<LinkedProject> linkedProjects;
-	List<String> repositoryUrls;	
+	List<String> repositories;
+	List<RemoteRepository> registeredRepositories;
 	
 	File dependencyFolder;
 	List<SourceFolder> sourceFolders;
@@ -76,11 +77,12 @@ public class Config implements Serializable {
 				new SourceFolder("src/main/webapp", Scope.compile),
 				new SourceFolder("src/main/resources", Scope.compile),
 				new SourceFolder("src/test/java", Scope.test),
-				new SourceFolder("src/test/resources", Scope.test));
+				new SourceFolder("src/test/resources", Scope.test),
 		outputFolder = new File("build");
 		targetFolder = new File("target");
 		linkedProjects = new ArrayList<LinkedProject>();
-		repositoryUrls = new ArrayList<String>();		
+		repositories = Arrays.asList("central");
+		registeredRepositories = Arrays.asList(new RemoteRepository("central", "http://repo1.maven.org/maven2"));		
 		pom = new Pom();
 		dependencyFolder = null;
 		apply = new TreeSet<String>();
@@ -138,7 +140,7 @@ public class Config implements Serializable {
 	
 	
 	Config parse(String content, String defaultResource) throws IOException, MaxmlException {
-		Map<String, Object> map = Maxml.parse(content);
+		MaxmlMap map = Maxml.parse(content);
 		
 		if (!StringUtils.isEmpty(defaultResource)) {
 			// build.moxie inheritance
@@ -184,8 +186,8 @@ public class Config implements Serializable {
 		// build parameters
 		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(), true));
 		outputFolder = readFile(map, Key.outputFolder, new File(baseFolder, "build"));
-		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);		
 		targetFolder = readFile(map, Key.targetFolder, new File(baseFolder, "target"));
+		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);		
 		linkedProjects = readLinkedProjects(map, Key.linkedProjects);
 		dependencyFolder = readFile(map, Key.dependencyFolder, null);
 		
@@ -203,7 +205,7 @@ public class Config implements Serializable {
 		}
 		
 		if (map.containsKey(Key.properties.name())) {
-			MaxmlMap props = (MaxmlMap) map.get(Key.properties);
+			MaxmlMap props = map.getMap(Key.properties.name());
 			for (String key : props.keySet()) {				
 				pom.setProperty(key, props.getString(key, null));
 			}
@@ -215,7 +217,8 @@ public class Config implements Serializable {
 			pom.addManagedDependency(dep, null);
 		}
 
-		repositoryUrls = readStrings(map, Key.repositories, repositoryUrls);
+		registeredRepositories = parseRemoteRepositories(map, Key.registeredRepositories, registeredRepositories);
+		repositories = map.getStrings(Key.repositories.name(), repositories);
 		parseDependencyAliases(map, Key.dependencyAliases);
 		parseDependencies(map, Key.dependencies);
 		parseDependencyOverrides(map, Key.dependencyOverrides);
@@ -224,13 +227,13 @@ public class Config implements Serializable {
 		pom.addExclusions(readStrings(map, Key.exclusions, new ArrayList<String>(), true));
 
 		if (map.containsKey(Key.mxjavac.name())) {
-			mxjavac.putAll((MaxmlMap) map.get(Key.mxjavac.name()));
+			mxjavac.putAll(map.getMap(Key.mxjavac.name()));
 		}
 		if (map.containsKey(Key.mxjar.name())) {
-			mxjar.putAll((MaxmlMap) map.get(Key.mxjar.name()));
+			mxjar.putAll(map.getMap(Key.mxjar.name()));
 		}
 		if (map.containsKey(Key.mxreport.name())) {
-			mxreport.putAll((MaxmlMap) map.get(Key.mxreport.name()));
+			mxreport.putAll(map.getMap(Key.mxreport.name()));
 		}
 		
 		// maxml build properties
@@ -239,9 +242,9 @@ public class Config implements Serializable {
 		return this;
 	}
 	
-	void parseDependencyAliases(Map<String, Object> map, Key key) {
+	void parseDependencyAliases(MaxmlMap map, Key key) {
 		if (map.containsKey(key.name())) {
-			MaxmlMap aliases = (MaxmlMap) map.get(key.name());
+			MaxmlMap aliases = map.getMap(key.name());
 			for (Map.Entry<String, Object> entry : aliases.entrySet()) {
 				String definition = entry.getValue().toString();
 				Dependency dep = new Dependency(definition);
@@ -250,9 +253,9 @@ public class Config implements Serializable {
 		}
 	}
 
-	void parseDependencies(Map<String, Object> map, Key key) {
+	void parseDependencies(MaxmlMap map, Key key) {
 		if (map.containsKey(key.name())) {
-			List<?> values = (List<?>) map.get(key.name());
+			List<?> values = map.getList(key.name(), null);
 			for (Object definition : values) {
 				if (definition instanceof String) {
 					processDependency(definition.toString(), pom);
@@ -263,9 +266,9 @@ public class Config implements Serializable {
 		}		
 	}
 	
-	void parseDependencyOverrides(Map<String, Object> map, Key key) {
+	void parseDependencyOverrides(MaxmlMap map, Key key) {
 		if (map.containsKey(key.name())) {
-			MaxmlMap poms = (MaxmlMap) map.get(key.name());
+			MaxmlMap poms = map.getMap(key.name());
 			for (Map.Entry<String, Object> entry: poms.entrySet()) {
 				String definition = entry.getKey();
 				if (entry.getValue() instanceof MaxmlMap) {
@@ -332,9 +335,29 @@ public class Config implements Serializable {
 		pom.addDependency(dep, scope);
 	}
 	
-	void parseProxies(Map<String, Object> map, Key key) {
+	List<RemoteRepository> parseRemoteRepositories(MaxmlMap map, Key key, List<RemoteRepository> defaultsValue) {
+		List<RemoteRepository> remotes = new ArrayList<RemoteRepository>();
 		if (map.containsKey(key.name())) {
-			List<MaxmlMap> values = (List<MaxmlMap>) map.get(key.name());
+			for (Object o : map.getList(key.name(), Collections.emptyList())) {
+				if (o instanceof String) {
+					remotes.add(new RemoteRepository("", o.toString()));
+				} else if (o instanceof MaxmlMap) {
+					MaxmlMap repoMap = (MaxmlMap) o;
+					String id = repoMap.getString("id", null);
+					String url = repoMap.getString("url", null);
+					RemoteRepository repo = new RemoteRepository(id, url);
+					remotes.add(repo);
+				}
+			}
+			return remotes;
+		}
+		return defaultsValue;
+	}
+	
+	@SuppressWarnings("unchecked")
+	void parseProxies(MaxmlMap map, Key key) {
+		if (map.containsKey(key.name())) {
+			List<MaxmlMap> values = (List<MaxmlMap>) map.getList(key.name(), null);
 			List<Proxy> ps = new ArrayList<Proxy>();
 			for (MaxmlMap definition : values) {
 				Proxy proxy = new Proxy();
@@ -345,6 +368,7 @@ public class Config implements Serializable {
 				proxy.port = definition.getInt("port", 80);
 				proxy.username = definition.getString("username", "");
 				proxy.password = definition.getString("password", "");
+				proxy.repositories = definition.getStrings("repositories", new ArrayList<String>());
 				proxy.proxyHosts = definition.getStrings("proxyHosts", new ArrayList<String>());
 				proxy.nonProxyHosts = definition.getStrings("nonProxyHosts", new ArrayList<String>());
 				ps.add(proxy);
@@ -353,7 +377,7 @@ public class Config implements Serializable {
 		}
 	}
 
-	String readRequiredString(Map<String, Object> map, Key key) {
+	String readRequiredString(MaxmlMap map, Key key) {
 		Object o = map.get(key.name());
 		if (o != null && !StringUtils.isEmpty(o.toString())) {
 			return o.toString();
@@ -363,7 +387,7 @@ public class Config implements Serializable {
 		}
 	}
 
-	String readString(Map<String, Object> map, Key key, String defaultValue) {
+	String readString(MaxmlMap map, Key key, String defaultValue) {
 		Object o = map.get(key.name());
 		if (o != null && !StringUtils.isEmpty(o.toString())) {
 			return o.toString();
@@ -372,12 +396,12 @@ public class Config implements Serializable {
 		}
 	}
 
-	List<String> readStrings(Map<String, Object> map, Key key, List<String> defaultValue) {
+	List<String> readStrings(MaxmlMap map, Key key, List<String> defaultValue) {
 		return readStrings(map, key, defaultValue, false);
 	}
 	
 	@SuppressWarnings("unchecked")
-	List<String> readStrings(Map<String, Object> map, Key key, List<String> defaultValue, boolean toLowerCase) {
+	List<String> readStrings(MaxmlMap map, Key key, List<String> defaultValue, boolean toLowerCase) {
 		if (map.containsKey(key.name())) {
 			List<String> strings = new ArrayList<String>();
 			Object o = map.get(key.name());
@@ -411,7 +435,7 @@ public class Config implements Serializable {
 		return defaultValue;
 	}
 
-	boolean readBoolean(Map<String, Object> map, Key key, boolean defaultValue) {
+	boolean readBoolean(MaxmlMap map, Key key, boolean defaultValue) {
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());
 			if (StringUtils.isEmpty(o.toString())) {
@@ -423,7 +447,7 @@ public class Config implements Serializable {
 		return defaultValue;
 	}
 
-	File readFile(Map<String, Object> map, Key key, File defaultValue) {
+	File readFile(MaxmlMap map, Key key, File defaultValue) {
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());
 			if (!(o instanceof String)) {
@@ -442,7 +466,7 @@ public class Config implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	List<SourceFolder> readSourceFolders(Map<String, Object> map, Key key, List<SourceFolder> defaultValue) {
+	List<SourceFolder> readSourceFolders(MaxmlMap map, Key key, List<SourceFolder> defaultValue) {
 		List<SourceFolder> values = new ArrayList<SourceFolder>();
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());
@@ -470,8 +494,8 @@ public class Config implements Serializable {
 								values.add(new SourceFolder(dir, scope));
 							}
 						}
-					} else if (value instanceof Map) {
-						Map<String, Object> dirMap = (Map<String, Object>) value;
+					} else if (value instanceof MaxmlMap) {
+						MaxmlMap dirMap = (MaxmlMap) value;
 						String dir = readRequiredString(dirMap, Key.folder);
 						Scope scope = Scope.fromString(readRequiredString(dirMap, Key.scope));
 						if (scope == null) {
@@ -511,7 +535,7 @@ public class Config implements Serializable {
 		return resolved;
 	}
 	
-	List<LinkedProject> readLinkedProjects(Map<String, Object> map, Key key) {
+	List<LinkedProject> readLinkedProjects(MaxmlMap map, Key key) {
 		List<LinkedProject> list = new ArrayList<LinkedProject>();
 		for (String def : readStrings(map, key, new ArrayList<String>())) {
 			LinkedProject project = new LinkedProject(def);
@@ -526,6 +550,10 @@ public class Config implements Serializable {
 	
 	public List<SourceFolder> getSourceFolders() {
 		return sourceFolders;
+	}
+	
+	public List<Proxy> getProxies() {
+		return proxies;
 	}
 	
 	boolean apply(String value) {
@@ -576,7 +604,8 @@ public class Config implements Serializable {
 
 		proxies = parent.proxies;
 		linkedProjects = parent.linkedProjects;
-		repositoryUrls = parent.repositoryUrls;
+		repositories = parent.repositories;
+		registeredRepositories = parent.registeredRepositories;
 
 		dependencyFolder = parent.dependencyFolder;
 		sourceFolders = parent.sourceFolders;

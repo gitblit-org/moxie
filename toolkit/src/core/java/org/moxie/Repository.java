@@ -355,10 +355,10 @@ public class Repository {
 		long lastModified = System.currentTimeMillis();
 		ByteArrayOutputStream buff = new ByteArrayOutputStream();
 
-		java.net.Proxy proxy = build.getProxy(repositoryUrl);
+		java.net.Proxy proxy = build.getProxy(name, repositoryUrl);
 		URLConnection conn = url.openConnection(proxy);
 		if (java.net.Proxy.Type.DIRECT != proxy.type()) {
-			String auth = build.getProxyAuthorization(repositoryUrl);
+			String auth = build.getProxyAuthorization(name, repositoryUrl);
 			conn.setRequestProperty("Proxy-Authorization", auth);
 		}
 		// try to get the server-specified last-modified date of this artifact

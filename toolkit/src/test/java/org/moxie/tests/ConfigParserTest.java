@@ -16,9 +16,17 @@ import org.moxie.Config;
 public class ConfigParserTest extends Assert {
 
 	@Test
-	public void testConfig() throws Exception {
+	public void testBuildMoxie() throws Exception {
 		Config config = new Config(new File("build.moxie"), null, null);
-		assertEquals("Moxie", config.getPom().name);
+		assertEquals("Moxie-Toolkit", config.getPom().name);
 		assertEquals(8, config.getSourceFolders().size());
 	}
+	
+	@Test
+	public void testSettingsMoxie() throws Exception {
+		Config config = new Config(new File("src/core/resources/settings.moxie"), null, null);
+		assertEquals(2, config.getProxies().size());
+		assertTrue(config.getProxies().get(1).matches("central", null));
+	}
+
 }

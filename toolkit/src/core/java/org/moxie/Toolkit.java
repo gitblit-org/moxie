@@ -57,7 +57,7 @@ public class Toolkit {
 		proxies, parent, exclusions, mxjar, mxjavac, compilerArgs, excludes, includes,
 		dependencyManagement, mxreport, outputFile, verbose, build_classpath, reportsFolder,
 		dependencyOverrides, dependencyAliases, updatePolicy, lastChecked, lastUpdated, lastSolved,
-		lastDownloaded, origin, release, latest, revision, packaging;
+		lastDownloaded, origin, release, latest, revision, packaging, registeredRepositories;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

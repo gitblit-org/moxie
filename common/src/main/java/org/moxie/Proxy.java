@@ -37,10 +37,14 @@ public class Proxy {
 	public int port;
 	public String username;
 	public String password;
+	public List<String> repositories = Collections.emptyList();
 	public List<String> proxyHosts = Collections.emptyList();
 	public List<String> nonProxyHosts = Collections.emptyList();
 
-	public boolean matches(String url) {
+	public boolean matches(String repositoryId, String url) {
+		if (!StringUtils.isEmpty(repositoryId) && repositories.contains(repositoryId)) {
+			return true;
+		}
 		if (url.startsWith(protocol)) {
 			String host = StringUtils.getHost(url);
 
