@@ -79,9 +79,6 @@ public class ProxyDownload {
 					+ " Download denied by rule in Moxie Proxy config");
 		}
 
-		File parent = dest.getParentFile();
-		parent.mkdirs();
-
 		HttpClient client = new HttpClient();
 
 		String msg = "";
@@ -120,6 +117,10 @@ public class ProxyDownload {
 			OutputStream out = new BufferedOutputStream(new FileOutputStream(dl));
 			copy(get.getResponseBodyAsStream(), out);
 			out.close();
+			
+			// create folder structure after successful download
+			dest.getParentFile().mkdirs();
+
 			if (dest.exists()) {
 				dest.delete();
 			}
