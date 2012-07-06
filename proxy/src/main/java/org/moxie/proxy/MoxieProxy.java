@@ -196,7 +196,7 @@ public class MoxieProxy extends Application {
 		String from = df.format(c.getTime());
 		
 		String query = MessageFormat.format("date:[{0} TO {1}] AND NOT packaging:pom", from, to);
-		List<SearchResult> list = search(query, 1, 25);
+		List<SearchResult> list = search(query, 1, 10);
 		Collections.sort(list);
 		return list;
 	}

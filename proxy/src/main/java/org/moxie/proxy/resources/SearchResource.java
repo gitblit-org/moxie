@@ -47,9 +47,6 @@ public class SearchResource extends BaseResource {
 		List<SearchResult> results = null;
 		if (!StringUtils.isEmpty(query)) {
 			results = getApplication().search(query, 1, 50);
-			for (SearchResult result : results) {
-				System.out.println(result);
-			}
 		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
