@@ -6,6 +6,12 @@ proxyPort : 8081
 
 bindAddresses : localhost
 
+# Default count of entries in an atom feed
+atomCount : 50
+
+# Default count of results in a search
+searchCount : 50
+
 # Base folder for all artifacts, metadata, etc
 rootFolder : moxie
 

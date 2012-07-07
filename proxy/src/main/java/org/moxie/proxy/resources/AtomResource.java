@@ -16,7 +16,6 @@
 package org.moxie.proxy.resources;
 
 import org.moxie.proxy.AtomFeed;
-import org.moxie.utils.StringUtils;
 import org.restlet.representation.Representation;
 import org.restlet.resource.Get;
 
@@ -35,7 +34,7 @@ public class AtomResource extends BaseResource {
 	@Get
 	public Representation getFeed() {
 		String repository = getRequestAttribute("repository");
-		int count = getQueryValue("count", 50);
+		int count = getQueryValue("count", getProxyConfig().getAtomCount());
 		AtomFeed generator = new AtomFeed(getApplication(), getRootRef().toString());
 		return generator.getFeed(repository, count);
 	}

@@ -58,6 +58,8 @@ public class ProxyConfig {
 	private List<String> bindAddresses;
 	private boolean accesslog;
 	private String dateFormat;
+	private int atomCount;
+	private int searchCount;
 
 	private List<String> localRepositories;
 	private List<RemoteRepository> remoteRepositories;
@@ -78,6 +80,8 @@ public class ProxyConfig {
 		localRepositories = Collections.emptyList();
 		remoteRepositories = Collections.emptyList();
 		remoteRepositoryLookup = new HashMap<String, RemoteRepository>();
+		atomCount = 50;
+		searchCount = 50;
 	}
 	
 	public void setUserDefaults() {		
@@ -137,6 +141,8 @@ public class ProxyConfig {
 				dateFormat = map.getString("dateFormat", dateFormat);
 				redirects = parseRedirects(map);
 				allowDeny = parseAllowDeny(map);
+				atomCount = map.getInt("atomCount", atomCount);
+				searchCount = map.getInt("searchCount", searchCount);
 			} catch (Exception e) {
 				log.log(Level.SEVERE, "failed to parse " + configFile, e);
 			}
@@ -214,6 +220,14 @@ public class ProxyConfig {
 			}			
 		}
 		return list;
+	}
+
+	public int getAtomCount() {
+		return atomCount;
+	}
+
+	public int getSearchCount() {
+		return searchCount;
 	}
 
 	public int getHttpPort() {

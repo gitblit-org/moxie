@@ -40,16 +40,21 @@ public class SearchResource extends BaseResource {
 	@Get
 	public Representation toText() {
 		String query = getQueryValue("query", null);
-		
+		int page = Math.max(1, getQueryValue("page", 1));
+		int count = getQueryValue("count", getProxyConfig().getSearchCount());
+
 		List<SearchResult> results = null;
 		if (!StringUtils.isEmpty(query)) {
-			results = getApplication().search(query, 1, 50);
+			results = getApplication().search(query, page, count);
 		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("title", Constants.getName());
 		map.put("query", query);
 		map.put("results", results);
+		map.put("pageSize", count);
+		map.put("prevPage", page - 1);
+		map.put("nextPage", page + 1);
 		return toHtml(map, "search.html");
 	}
 }
