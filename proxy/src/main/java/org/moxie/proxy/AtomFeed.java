@@ -44,9 +44,9 @@ public class AtomFeed {
 		this.baseUrl = baseUrl;
 	}
 
-	public Feed getFeed() {
+	public Feed getFeed(String repository, int count) {
 		Feed feed = getConfiguredFeed();
-		List<SearchResult> results = app.getRecentArtifacts(1, 100);
+		List<SearchResult> results = app.getRecentArtifacts(repository, 1, count);
 		for (SearchResult result : results) {
 			Entry entry = toEntry(result);
 			feed.getEntries().add(entry);
@@ -55,12 +55,9 @@ public class AtomFeed {
 		return feed;
 	}
 
-	/******************************** UTILITIES FOR DEFINING THE FEED ***********************************/
-
 	private Feed getConfiguredFeed() {
 		Feed feed = new Feed();
 		feed.setGenerator(getGenerator());
-//		feed.setId(feedId);
 		feed.setTitle(new Text(MediaType.TEXT_PLAIN, "Recent Artifacts"));
 		return feed;
 	}
@@ -69,7 +66,6 @@ public class AtomFeed {
 		Entry entry = new Entry();
 		entry.getCategories().add(newCategory(result.repository));
 		entry.setContent(getContent(result.getDescription()));
-//		entry.setId("entry#" + categories.size());
 		entry.setPublished(result.date);
 		entry.setTitle(new Text(MediaType.TEXT_PLAIN, result.getCoordinates()));
 		entry.setSummary(result.getName());

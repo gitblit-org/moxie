@@ -35,6 +35,7 @@ import org.moxie.proxy.resources.ArtifactsResource;
 import org.moxie.proxy.resources.AtomResource;
 import org.moxie.proxy.resources.RootResource;
 import org.moxie.proxy.resources.SearchResource;
+import org.moxie.utils.StringUtils;
 import org.restlet.Application;
 import org.restlet.Component;
 import org.restlet.Context;
@@ -95,6 +96,7 @@ public class MoxieProxy extends Application {
 		router.attach("/search", SearchResource.class);
 		
 		// Atom feed
+		router.attach("/atom/{repository}", AtomResource.class);
 		router.attach("/atom", AtomResource.class);
 		
 		// Root 
@@ -193,7 +195,7 @@ public class MoxieProxy extends Application {
 		return lucene.search(query, page, pageSize, getAccessibleRepositories());
 	}
 	
-	public List<SearchResult> getRecentArtifacts(int page, int pageSize) {
+	public List<SearchResult> getRecentArtifacts(String repository, int page, int pageSize) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
 		Calendar c = Calendar.getInstance();
 		c.add(Calendar.DATE, 1);
@@ -202,7 +204,15 @@ public class MoxieProxy extends Application {
 		String from = df.format(c.getTime());
 
 		String query = MessageFormat.format("date:[{0} TO {1}] AND NOT packaging:pom", from, to);
-		List<SearchResult> list = search(query, page, pageSize);
+		
+		List<SearchResult> list;
+		if (StringUtils.isEmpty(repository)) {
+			// all accessible repositories
+			list = lucene.search(query, page, pageSize, getAccessibleRepositories());
+		} else {
+			// specified repository
+			list = lucene.search(query, page, pageSize, repository);
+		}
 		Collections.sort(list);
 		return list;
 	}

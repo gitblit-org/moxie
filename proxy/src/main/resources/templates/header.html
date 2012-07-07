@@ -10,5 +10,11 @@
 	<link rel="stylesheet" href="${baseRef}/prettify/prettify.css" />
 	<link rel="stylesheet" href="${baseRef}/application.css" />
 	<link rel="shortcut icon" href="${baseRef}/favicon.ico" />
-	<link rel="alternate" type="application/rss+xml" title="${rc.getString("mp.recentArtifacts")}" href="${baseRef}/atom" />
+	<#if crumbsRoot??>
+		<!-- specific repository -->
+		<link rel="alternate" type="application/rss+xml" title="${crumbsRoot!} ${rc.getString("mp.recentArtifacts")}" href="${baseRef}/atom/${crumbsRoot!}" />
+	<#else>
+		<!-- all repositories -->
+		<link rel="alternate" type="application/rss+xml" title="${rc.getString("mp.recentArtifacts")}" href="${baseRef}/atom" />
+	</#if>
 </head>

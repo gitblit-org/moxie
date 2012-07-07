@@ -24,6 +24,7 @@ import org.moxie.RemoteRepository;
 import org.moxie.proxy.Constants;
 import org.moxie.proxy.MoxieProxy;
 import org.moxie.proxy.ProxyConfig;
+import org.moxie.utils.StringUtils;
 import org.restlet.data.CharacterSet;
 import org.restlet.data.Language;
 import org.restlet.data.MediaType;
@@ -47,6 +48,32 @@ public abstract class BaseResource extends ServerResource {
 		return "";
 	}
 	
+	protected String getRequestAttribute(String attribute) {
+		String value = null;
+		if (getRequestAttributes().containsKey(attribute)) {
+			value = getRequestAttributes().get(attribute).toString();
+		}
+		return value;
+	}
+	
+	protected int getQueryValue(String parameter, int defaultValue) {
+		if (!StringUtils.isEmpty(getQueryValue(parameter))) {
+			String val = getQueryValue(parameter);
+			try {
+				return (int) Double.parseDouble(val);
+			} catch (Exception e) {
+			}
+		}
+		return defaultValue;
+	}
+
+	protected String getQueryValue(String parameter, String defaultValue) {
+		if (!StringUtils.isEmpty(getQueryValue(parameter))) {
+			return getQueryValue(parameter);
+		}
+		return defaultValue;
+	}
+
 	@Override
 	public Representation handle() {
 		getProxyConfig().reload();

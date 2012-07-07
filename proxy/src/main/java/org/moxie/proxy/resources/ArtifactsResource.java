@@ -280,10 +280,7 @@ public class ArtifactsResource extends BaseResource {
 
 	@Get
 	public Representation toText() {
-		String path = null;
-		if (getRequestAttributes().containsKey("path")) {
-			path = getRequestAttributes().get("path").toString();
-		}
+		String path = getRequestAttribute("path");
 		File file = getFile(path);
 		if (!file.exists()) {
 			// TODO proxy download?  do not know source repo, try all?

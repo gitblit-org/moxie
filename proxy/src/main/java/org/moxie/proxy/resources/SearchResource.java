@@ -39,10 +39,7 @@ public class SearchResource extends BaseResource {
 
 	@Get
 	public Representation toText() {
-		String query = null;
-		if (getQueryValue("query") != null) {
-			query = getQueryValue("query");
-		}
+		String query = getQueryValue("query", null);
 		
 		List<SearchResult> results = null;
 		if (!StringUtils.isEmpty(query)) {

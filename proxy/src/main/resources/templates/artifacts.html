@@ -101,10 +101,13 @@
 				
 				<#if repositoryNote??>
 					<#if isRemoteRepository>
-						<div class="alert alert-success"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
+						<div class="alert alert-success">
 					<#else>
-						<div class="alert alert-info"><h4>${repositoryUrl}</h4><br/>${repositoryNote}</div>
+						<div class="alert alert-info">
 					</#if>
+					<h4>${repositoryUrl} <span class="pull-right"><a href="${baseRef}/atom/${crumbsRoot}"><img style="margin-top:-2px;" src="${baseRef}/feed_16x16.png"/></a></span></h4><br/>
+					${repositoryNote}</div>
+					
 				</#if>
 				
 				<!-- build tool snippets-->
