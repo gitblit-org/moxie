@@ -290,6 +290,7 @@ public class ArtifactsResource extends BaseResource {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("title", Constants.getName());
 		map.put("crumbsRoot", getBasePathName());
+		map.put("repository", getBasePath());
 		map.put("crumbs", getCrumbs(file));
 		
 		boolean isRemote = isRemoteRepository();

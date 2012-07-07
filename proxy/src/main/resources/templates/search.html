@@ -10,6 +10,8 @@
 				<!-- list content -->
 				<h3>${query!}</h3>
 				<#include "/results.html">
+				
+				<#if ((prevPage > 0) || (results?size = pageSize)) >
 				<ul class="pager">
 					<#if (prevPage > 0) >
   						<li class="previous"><a href="${pageRef}?query=${query}&page=${prevPage}">&larr; ${rc.getString("mp.previous")}</a></li>
@@ -18,6 +20,7 @@
 						<li class="next"><a href="${pageRef}?query=${query}&page=${nextPage}">${rc.getString("mp.next")} &rarr;</a></li>
 					</#if>
   				</ul>
+				</#if>
 			</div>
 			<div class="span4">
 				<h3>${rc.getString("mp.luceneHelp")}</h3>

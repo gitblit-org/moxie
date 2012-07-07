@@ -48,6 +48,7 @@ public class RecentResource extends BaseResource {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("title", Constants.getName());		
 		map.put("pageTitle", (StringUtils.isEmpty(repository) ? "" : (repository + " ")) + getTranslation().getString("mp.recentArtifacts"));
+		map.put("repository", repository);
 		map.put("results", results);
 		map.put("pageSize", count);
 		map.put("prevPage", page - 1);
