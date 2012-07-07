@@ -12,10 +12,10 @@
 				<#include "/results.html">
 				<ul class="pager">
 					<#if (prevPage > 0) >
-  						<li class="previous"><a href="${baseRef}/search?query=${query}&page=${prevPage}">&larr; ${rc.getString("mp.previous")}</a></li>
+  						<li class="previous"><a href="${pageRef}?query=${query}&page=${prevPage}">&larr; ${rc.getString("mp.previous")}</a></li>
   					</#if>
   					<#if (results?size = pageSize) >
-						<li class="next"><a href="${baseRef}/search?query=${query}&page=${nextPage}">${rc.getString("mp.next")} &rarr;</a></li>
+						<li class="next"><a href="${pageRef}?query=${query}&page=${nextPage}">${rc.getString("mp.next")} &rarr;</a></li>
 					</#if>
   				</ul>
 			</div>
@@ -27,7 +27,7 @@
 					artifactid:*ant* AND packaging:jar
 				</div>
 			Standard query syntax is supported.<br/>
-			Please see <a href="http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/queryparsersyntax.html">Lucene Query Parser Syntax</a> for details. 
+			Please see <a target="_blank" href="http://lucene.apache.org/core/old_versioned_docs/versions/3_5_0/queryparsersyntax.html">Lucene Query Parser Syntax</a> for details. 
 			</div>	
 		</div>
 		

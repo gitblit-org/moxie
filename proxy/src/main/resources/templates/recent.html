@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<#include "/header.html">
+<body onload="prettyPrint()">
+	<#include "/navbar.html">
+	<div class="container">
+		
+		<div class="row-fluid">
+			<div class="span7">	
+				<!-- list content -->
+				<h3>${pageTitle!}</h3>
+				<#include "/results.html">
+				<ul class="pager">
+					<#if (prevPage > 0) >
+  						<li class="previous"><a href="${pageRef}?page=${prevPage}">&larr; ${rc.getString("mp.previous")}</a></li>
+  					</#if>
+  					<#if (results?size = pageSize) >
+						<li class="next"><a href="${pageRef}?page=${nextPage}">${rc.getString("mp.next")} &rarr;</a></li>
+					</#if>
+  				</ul>
+			</div>
+		</div>
+		
+		<#include "/footer.html">
+	</div>
+</body>
+</html>

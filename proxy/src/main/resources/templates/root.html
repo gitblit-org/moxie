@@ -17,6 +17,11 @@
 				<h3>${rc.getString("mp.recentArtifacts")} <span class="pull-right"><a style="vertical-align:top;" href="${baseRef}/atom"><img src="${baseRef}/feed_16x16.png"/></a></span></h3>
 				<!--  recent artifacts -->
 				<#include "/results.html">
+				<ul class="pager">
+  					<#if (results?size > 0) >
+						<li class="next"><a href="${baseRef}/recent">${rc.getString("mp.more")} &rarr;</a></li>
+					</#if>
+  				</ul>
 			</div>
 		</div>
 		<#include "/footer.html">

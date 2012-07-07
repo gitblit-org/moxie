@@ -33,6 +33,7 @@ import org.moxie.RemoteRepository;
 import org.moxie.proxy.connection.ProxyConnectionServer;
 import org.moxie.proxy.resources.ArtifactsResource;
 import org.moxie.proxy.resources.AtomResource;
+import org.moxie.proxy.resources.RecentResource;
 import org.moxie.proxy.resources.RootResource;
 import org.moxie.proxy.resources.SearchResource;
 import org.moxie.utils.StringUtils;
@@ -92,10 +93,14 @@ public class MoxieProxy extends Application {
 			attachBrowsing(context, router, repository.id);
 		}
 
-		// Search
+		// Search artifacts
 		router.attach("/search", SearchResource.class);
-		
-		// Atom feed
+
+		// Recent artifacts
+		router.attach("/recent/{repository}", RecentResource.class);
+		router.attach("/recent", RecentResource.class);
+
+		// Atom artifacts feed
 		router.attach("/atom/{repository}", AtomResource.class);
 		router.attach("/atom", AtomResource.class);
 		
