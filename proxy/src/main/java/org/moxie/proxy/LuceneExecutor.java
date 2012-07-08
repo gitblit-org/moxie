@@ -50,7 +50,9 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
-import org.apache.lucene.search.TopScoreDocCollector;
+import org.apache.lucene.search.Sort;
+import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.TopFieldDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -329,11 +331,10 @@ public class LuceneExecutor implements Runnable {
 		return false;
 	}
 
-	private SearchResult createSearchResult(Document doc, float score, int hitId, int totalHits) throws ParseException {
+	private SearchResult createSearchResult(Document doc, int hitId, int totalHits) throws ParseException {
 		SearchResult result = new SearchResult();
 		result.hitId = hitId;
 		result.totalHits = totalHits;
-		result.score = score;
 		result.date = DateTools.stringToDate(doc.get(FIELD_DATE));
 		result.groupId = doc.get(FIELD_GROUPID);		
 		result.artifactId = doc.get(FIELD_ARTIFACTID);
@@ -468,25 +469,27 @@ public class LuceneExecutor implements Runnable {
 				searcher = new IndexSearcher(reader);
 			}
 			Query rewrittenQuery = searcher.rewrite(query);
-			TopScoreDocCollector collector = TopScoreDocCollector.create(5000, true);
-			searcher.search(rewrittenQuery, collector);
+			Sort sort = new Sort(new SortField(FIELD_DATE, SortField.STRING, true));
+			TopFieldDocs topDocs = searcher.search(rewrittenQuery, 10000, sort);
 			int offset = Math.max(0, (page - 1) * pageSize);
-			ScoreDoc[] hits = collector.topDocs(offset, pageSize).scoreDocs;
-			int totalHits = collector.getTotalHits();
-			for (int i = 0; i < hits.length; i++) {
-				int docId = hits[i].doc;
-				Document doc = searcher.doc(docId);
-				SearchResult result = createSearchResult(doc, hits[i].score, offset + i + 1, totalHits);
-				if (repositories.length == 1) {
-					// single repository search
-					result.repository = repositories[0];
-				} else {
-					// multi-repository search
-					MultiSourceReader reader = (MultiSourceReader) searcher.getIndexReader();
-					int index = reader.getSourceIndex(docId);
-					result.repository = repositories[index];
+			ScoreDoc[] hits = topDocs.scoreDocs;
+			int totalHits = topDocs.totalHits;
+			if (totalHits > offset) {
+				for (int i = offset, len = Math.min(offset + pageSize, hits.length); i < len; i++) {
+					int docId = hits[i].doc;
+					Document doc = searcher.doc(docId);
+					SearchResult result = createSearchResult(doc, i + 1, totalHits);
+					if (repositories.length == 1) {
+						// single repository search
+						result.repository = repositories[0];
+					} else {
+						// multi-repository search
+						MultiSourceReader reader = (MultiSourceReader) searcher.getIndexReader();
+						int index = reader.getSourceIndex(docId);
+						result.repository = repositories[index];
+					}
+					results.add(result);
 				}
-				results.add(result);
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, MessageFormat.format("Exception while searching for {0}", text), e);
