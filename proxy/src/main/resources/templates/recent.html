@@ -9,9 +9,9 @@
 			<div class="span7">	
 				<!-- list content -->
 				<#if repository??>
-					<h3>${pageTitle!} <span class="pull-right"><a style="vertical-align:top;" href="${baseRef}/atom/${repository}"><img src="${baseRef}/feed_16x16.png"/></a></span></h3>
+					<h3>${pageTitle!} <span class="pull-right hidden-phone"><a style="vertical-align:top;" href="${baseRef}/atom/${repository}"><img src="${baseRef}/feed_16x16.png"/></a></span></h3>
 				<#else>
-					<h3>${pageTitle!} <span class="pull-right"><a style="vertical-align:top;" href="${baseRef}/atom"><img src="${baseRef}/feed_16x16.png"/></a></span></h3>
+					<h3>${pageTitle!} <span class="pull-right hidden-phone"><a style="vertical-align:top;" href="${baseRef}/atom"><img src="${baseRef}/feed_16x16.png"/></a></span></h3>
 				</#if>
 				<#include "/results.html">
 				

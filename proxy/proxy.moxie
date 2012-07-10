@@ -1,9 +1,39 @@
 # On which port to serve web interface
+# If port <= 0, connector will be disabled
+#
+# RESTART REQUIRED
 httpPort : 8080
 
+# On which secure port to serve the web interface
+# If port <= 0, connector will be disabled
+#
+# RESTART REQUIRED
+httpsPort : 8443
+
 # On which port to proxy Maven client requests
+# If port <= 0, connector will be disabled
+#
+# RESTART REQUIRED
 proxyPort : 8081
 
+# On which port to listen for shutdown requests
+# If port <= 0, connector will be disabled
+#
+# RESTART REQUIRED
+shutdownPort : 8079
+
+# Password for SSL keystore.
+# Keystore password and certificate password must match.
+# This is provided for convenience, its probably more secure to set this value
+# using the --storePassword command line parameter.
+#
+# RESTART REQUIRED
+keystorePassword : gitblit
+
+# Address of local interfaces to bind ports for Moxie Proxy.
+# If blank, all local addresses will serve
+#
+# RESTART REQUIRED
 bindAddresses : localhost
 
 # Default count of entries in an atom feed
@@ -13,14 +43,20 @@ atomCount : 50
 searchCount : 50
 
 # Base folder for all artifacts, metadata, etc
+#
+# RESTART REQUIRED
 rootFolder : moxie
 
 # Local artifact repositories relative to rootFolder
+#
+# RESTART REQUIRED
 localRepositories :
 - releases
 - snapshots
 
 # Remote Maven 2 Repositories which will be proxied on-demand
+#
+# RESTART REQUIRED
 remoteRepositories :
 - { id: central, url: "http://repo1.maven.org/maven2" }
 - {	id: restlet, url: "http://maven.restlet.org" }

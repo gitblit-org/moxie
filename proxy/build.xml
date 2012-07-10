@@ -3,7 +3,7 @@
 
 	<!-- Moxie tasks -->
 	<include>
-		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie-0.5.0-SNAPSHOT-all.jar" />
+		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie.jar" />
 	</include>
 	
 	<target name="main">
@@ -15,7 +15,7 @@
 				<exclude name="org.xml." />
 				<exclude name="org.zeroturnaround." />
 			</classfilter>
-			<mainclass name="org.moxie.proxy.MoxieProxy" />
+			<mainclass name="org.moxie.proxy.Launcher" />
 		</mx:jar>
 	</target>
 </project>

@@ -34,6 +34,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         </dependency>
         <dependency>
             <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet.ext.ssl</artifactId>
+            <version>2.1-RC5</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
             <artifactId>org.restlet.ext.atom</artifactId>
             <version>2.1-RC5</version>
             <type>jar</type>

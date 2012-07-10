@@ -15,6 +15,7 @@
  */
 package org.moxie.proxy.resources;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,8 +46,9 @@ public class RootResource extends BaseResource {
 		if (getProxyConfig().getLocalRepositories().size() > 0) {
 			sb.append(StringUtils.toXML("h3", getTranslation().getString("mp.localRepositories")));
 			sb.append("<ul class=\"unstyled\">\n");
-			for (String repository : getProxyConfig().getLocalRepositories()) {
-				sb.append("<li>").append(repository).append("</li>\n");
+			String pattern = "<li>{0} ({1})</li>\n";
+			for (String repository : getProxyConfig().getLocalRepositories()) {				
+				sb.append(MessageFormat.format(pattern, repository, getApplication().getArtifactCount(repository)));
 			}
 			sb.append("</ul>\n");
 		}
@@ -55,8 +57,9 @@ public class RootResource extends BaseResource {
 		if (getProxyConfig().getRemoteRepositories().size() > 0) {
 			sb.append(StringUtils.toXML("h3", getTranslation().getString("mp.remoteRepositories")));
 			sb.append("<ul class=\"unstyled\">\n");
+			String pattern = "<li>{0} ({1}) => {2}</li>\n";
 			for (RemoteRepository repository : getProxyConfig().getRemoteRepositories()) {
-				sb.append("<li>").append(repository.id).append(" &nbsp; => &nbsp; ").append(repository.url).append("</li>\n");
+				sb.append(MessageFormat.format(pattern, repository.id, getApplication().getArtifactCount(repository.id), repository.url));
 			}
 			sb.append("</ul>\n");
 		}

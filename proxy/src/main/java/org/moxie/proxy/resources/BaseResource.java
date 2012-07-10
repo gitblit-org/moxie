@@ -108,28 +108,35 @@ public abstract class BaseResource extends ServerResource {
 				name = getTranslation().getString("mp." + folder);
 			} catch (Exception e) {				
 			}
-			sb.append(url(folder, name, false));
+			sb.append(menuItem(folder, name, false));
 		}
-		for (RemoteRepository remote : getProxyConfig().getRemoteRepositories()) {
-			sb.append(url(remote.id, remote.id, true));
+		if (getProxyConfig().isProxyEnabled()) {
+			for (RemoteRepository remote : getProxyConfig().getRemoteRepositories()) {
+				sb.append(menuItem(remote.id, remote.id, true));
+			}
 		}
+		sb.append(menuItem("search", getTranslation().getString("mp.search"), "", "<i class=\"icon-search icon-white\"></i>", "hidden-desktop"));		
 		sb.append("</ul>\n");
 		return sb.toString();
 	}
 
-	protected String url(String basePath, String name, boolean isRemote) {
+	protected String menuItem(String basePath, String name, boolean isRemote) {
 		String icon = "";
 		String tooltip = getTranslation().getString("mp.localRepository");
 		if (isRemote) {
 			icon = "<i class=\"icon-download-alt icon-white\"></i>";
 			tooltip = getTranslation().getString("mp.remoteRepository");
 		}
+		return menuItem(basePath, name, tooltip, icon, "");
+	}
+
+	protected String menuItem(String basePath, String name, String tooltip, String icon, String cssClass) {
 		if (basePath.equals(getBasePath())) {
-			return MessageFormat.format("\t\t<li class='active'><a title=''{4}'' href=''{0}/{1}''>{2} {3}</a></li>\n",
-					getRootRef(), basePath, name, icon, tooltip);
+			return MessageFormat.format("\t\t<li class=''active {5}''><a title=''{4}'' href=''{0}/{1}''>{2} {3}</a></li>\n",
+					getRootRef(), basePath, name, icon, tooltip, cssClass);
 		}
-		return MessageFormat.format("\t\t<li><a title=''{4}'' href=''{0}/{1}''>{2} {3}</a></li>\n", getRootRef(), basePath,
-				name, icon, tooltip);
+		return MessageFormat.format("\t\t<li class=''{5}''><a title=''{4}'' href=''{0}/{1}''>{2} {3}</a></li>\n", getRootRef(), basePath,
+				name, icon, tooltip, cssClass);
 	}
 
 	protected ResourceBundle getTranslation() {

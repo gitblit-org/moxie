@@ -17,6 +17,10 @@ package org.moxie.proxy;
 
 public class Constants {
 
+	public static String MESSAGE_STARTUP = "Starting the internal [{0}] server on port {1,number,0}";
+
+	public static String MESSAGE_SHUTDOWN = "Stopping the internal [{0}] server";
+
 	public static String getName() {
 		return "Moxie Proxy";
 	}

@@ -19,9 +19,12 @@ package org.moxie.proxy.connection;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.moxie.proxy.LuceneExecutor;
 import org.moxie.proxy.ProxyConfig;
 
 /**
@@ -31,43 +34,58 @@ import org.moxie.proxy.ProxyConfig;
  * @author digulla
  * 
  */
-public class ProxyConnectionServer {
+public class ProxyConnectionServer extends Thread {
 	public static final Logger log = Logger.getLogger(ProxyConnectionServer.class.getSimpleName());
 
 	private final ProxyConfig config;
-	private int port;
+	private final LuceneExecutor lucene;
+	private final int port;
 	private ServerSocket socket;
 
-	public ProxyConnectionServer(ProxyConfig config) {
+	public ProxyConnectionServer(ProxyConfig config, LuceneExecutor lucene) {
 		this.config = config;
-		port = config.getProxyPort();
+		this.lucene = lucene;
+		this.port = config.getProxyPort();
+		
+		setDaemon(true);
+		setName("internal [PROXY] server");
+	}
+
+	private final AtomicBoolean run = new AtomicBoolean();
+
+	public void shutdown() {
+		run.set(false);
+	}
+
+	@Override
+	public void run() {
+		if (!config.isProxyEnabled()) {
+			return;
+		}
+		
+		run.set(true);
+		
 		try {
 			socket = new ServerSocket(port);
+			socket.setSoTimeout(500);
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
-	}
-
-	private static boolean run = true;
-
-	public void terminateAll() {
-		// TODO Implement a way to gracefully stop the proxy
-		run = false;
-	}
-
-	public void handleRequests() {
-		while (run) {
+		
+		while (run.get()) {
 			Socket clientSocket;
 
 			try {
 				clientSocket = socket.accept();
+			} catch (SocketTimeoutException e) {
+				continue;
 			} catch (IOException e) {
 				log.log(Level.SEVERE, "Error acception connection from client", e);
 				continue;
 			}
 
 			config.reload();
-			Thread t = new ProxyRequestHandler(config, clientSocket);
+			Thread t = new ProxyRequestHandler(config, lucene, clientSocket);
 			t.start();
 		}
 

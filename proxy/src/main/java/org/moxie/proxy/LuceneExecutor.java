@@ -23,12 +23,15 @@ import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -70,8 +73,7 @@ import org.moxie.utils.StringUtils;
  * 
  */
 public class LuceneExecutor implements Runnable {
-	
-		
+
 	private static final int INDEX_VERSION = 1;
 
 	private static final String FIELD_PACKAGING = "type";
@@ -84,36 +86,72 @@ public class LuceneExecutor implements Runnable {
 
 	private static final String LUCENE_DIR = "lucene";
 	private static final String CONF_VERSION = "version";
-		
+
 	private static final Version LUCENE_VERSION = Version.LUCENE_35;
-	
+
 	private final Logger logger = Logger.getLogger(LuceneExecutor.class.getSimpleName());
-	
+
 	private final ProxyConfig config;
 	private final File indexesFolder;
-	
+
 	private final Map<String, IndexSearcher> searchers = new ConcurrentHashMap<String, IndexSearcher>();
 	private final Map<String, IndexWriter> writers = new ConcurrentHashMap<String, IndexWriter>();
-	
+
+	private final Queue<IndexPom> queue;
+
 	public LuceneExecutor(ProxyConfig config) {
 		this.config = config;
 		this.indexesFolder = new File(config.getMoxieRoot(), LUCENE_DIR);
+		queue = new ConcurrentLinkedQueue<IndexPom>();
 	}
 
 	/**
-	 * Run is executed by the Moxie Proxy executor service.  Because this is called 
-	 * by an executor service, calls will queue - i.e. there can never be
-	 * concurrent execution of repository index updates.
+	 * Reindex is a blocking call which synchronously rebuilds each repository's
+	 * Lucene index.
 	 */
-	@Override
-	public void run() {
+	public synchronized void reindex() {
 		for (String repository : config.getLocalRepositories()) {
-			index(repository);				
+			index(repository);
 		}
 		for (RemoteRepository repository : config.getRemoteRepositories()) {
 			index(repository.id);
 		}
 		System.gc();
+	}
+
+	/**
+	 * Run is executed by a scheduled executor service at a fixed rate. This
+	 * guarantees no concurrent repository index updates.  Index updates are
+	 * queued and processed asynchronously by the executor service.
+	 */
+	@Override
+	public void run() {
+		if (queue.isEmpty()) {
+			return;
+		}
+		
+		long minDiff = 60*1000L; // 1 min
+		while(!queue.isEmpty()) {
+			IndexPom pom = queue.peek();
+			// Wait till oldest element has been in queue for minimum time.
+			// 
+			// This is a practical workaround for expecting parent pom files
+			// to have been retrieved.  The alternative is to make the proxy
+			// smart enough to identify and retrieve parent poms.  The current
+			// design relies on the client instructing the proxy to retrieve
+			// parent poms.
+			while ((System.currentTimeMillis() - pom.date.getTime()) < minDiff) {
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// ignore
+				}
+			}
+			
+			queue.poll();
+			logger.info("indexing " + pom.file);
+			incrementalIndex(pom.file);
+		}
 	}
 
 	/**
@@ -156,7 +194,8 @@ public class LuceneExecutor implements Runnable {
 				if (result.success) {
 					if (result.artifactCount > 0) {
 						String msg = "Built {0} Lucene index from {1} artifacts in {2} secs";
-						logger.info(MessageFormat.format(msg, repository, result.artifactCount, result.duration()));
+						logger.info(MessageFormat.format(msg, repository, result.artifactCount,
+								result.duration()));
 					}
 				} else {
 					String msg = "Could not build {0} Lucene index!";
@@ -168,7 +207,8 @@ public class LuceneExecutor implements Runnable {
 				if (result.success) {
 					if (result.artifactCount > 0) {
 						String msg = "Updated {0} Lucene index with {1} artifacts in {42 secs";
-						logger.info(MessageFormat.format(msg, repository, result.artifactCount, result.duration()));
+						logger.info(MessageFormat.format(msg, repository, result.artifactCount,
+								result.duration()));
 					}
 				} else {
 					String msg = "Could not update {0} Lucene index!";
@@ -190,7 +230,7 @@ public class LuceneExecutor implements Runnable {
 		IndexResult result = new IndexResult();
 		return result;
 	}
-	
+
 	/**
 	 * Close the writer/searcher objects for a repository.
 	 * 
@@ -205,7 +245,7 @@ public class LuceneExecutor implements Runnable {
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Failed to close index searcher for " + repositoryName, e);
 		}
-		
+
 		try {
 			IndexWriter writer = writers.remove(repositoryName);
 			if (writer != null) {
@@ -213,7 +253,7 @@ public class LuceneExecutor implements Runnable {
 			}
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Failed to close index writer for " + repositoryName, e);
-		}		
+		}
 	}
 
 	/**
@@ -242,7 +282,6 @@ public class LuceneExecutor implements Runnable {
 		searchers.clear();
 	}
 
-	
 	/**
 	 * Deletes the Lucene index for the specified repository.
 	 * 
@@ -261,7 +300,6 @@ public class LuceneExecutor implements Runnable {
 		return true;
 	}
 
-
 	/**
 	 * This completely indexes the repository and will destroy any existing
 	 * index.
@@ -270,7 +308,7 @@ public class LuceneExecutor implements Runnable {
 	 * @return IndexResult
 	 */
 	public IndexResult reindex(String repository) {
-		IndexResult result = new IndexResult();		
+		IndexResult result = new IndexResult();
 		if (!deleteIndex(repository)) {
 			return result;
 		}
@@ -295,13 +333,13 @@ public class LuceneExecutor implements Runnable {
 					doc.add(new Field(FIELD_DESCRIPTION, pom.description, Store.YES, Index.ANALYZED));
 				}
 				doc.add(new Field(FIELD_DATE, date, Store.YES, Index.ANALYZED));
-				
+
 				// add the pom to the index
 				writer.addDocument(doc);
-				
+
 				result.artifactCount++;
 			}
-			
+
 			writer.commit();
 			resetIndexSearcher(repository);
 			result.success();
@@ -310,25 +348,51 @@ public class LuceneExecutor implements Runnable {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Incrementally index an object for the repository.
+	 * Incrementally update the index.
 	 * 
-	 * @param repositoryName
-	 * @param doc
-	 * @return true, if successful
+	 * @return pomFile
 	 */
-	private boolean index(String repository, Document doc) {
-		try {			
+	public void index(File pomFile) {
+		queue.add(new IndexPom(pomFile));
+	}
+
+	/**
+	 * Incrementally update the index.
+	 * 
+	 * @return pomFile
+	 */
+	private void incrementalIndex(File pomFile) {
+		try {
+			String repository = config.getRepositoryId(pomFile);
+			IMavenCache cache = config.getMavenCache(repository);
 			IndexWriter writer = getIndexWriter(repository);
+
+			Pom pom = PomReader.readPom(cache, pomFile);
+			String date = DateTools.timeToString(pomFile.lastModified(), Resolution.MINUTE);
+
+			Document doc = new Document();
+			doc.add(new Field(FIELD_PACKAGING, pom.packaging, Store.YES, Index.NOT_ANALYZED_NO_NORMS));
+			doc.add(new Field(FIELD_GROUPID, pom.groupId, Store.YES, Index.ANALYZED));
+			doc.add(new Field(FIELD_ARTIFACTID, pom.artifactId, Store.YES, Index.ANALYZED));
+			doc.add(new Field(FIELD_VERSION, pom.version, Store.YES, Index.ANALYZED));
+			if (!StringUtils.isEmpty(pom.name)) {
+				doc.add(new Field(FIELD_NAME, pom.name, Store.YES, Index.ANALYZED));
+			}
+			if (!StringUtils.isEmpty(pom.description)) {
+				doc.add(new Field(FIELD_DESCRIPTION, pom.description, Store.YES, Index.ANALYZED));
+			}
+			doc.add(new Field(FIELD_DATE, date, Store.YES, Index.ANALYZED));
+
+			// add the pom to the index
 			writer.addDocument(doc);
+
 			writer.commit();
 			resetIndexSearcher(repository);
-			return true;
 		} catch (Exception e) {
-			logger.log(Level.SEVERE, MessageFormat.format("Exception while incrementally updating {0} Lucene index", repository), e);
+			logger.log(Level.SEVERE, "Exception while indexing " + pomFile, e);
 		}
-		return false;
 	}
 
 	private SearchResult createSearchResult(Document doc, int hitId, int totalHits) throws ParseException {
@@ -336,7 +400,7 @@ public class LuceneExecutor implements Runnable {
 		result.hitId = hitId;
 		result.totalHits = totalHits;
 		result.date = DateTools.stringToDate(doc.get(FIELD_DATE));
-		result.groupId = doc.get(FIELD_GROUPID);		
+		result.groupId = doc.get(FIELD_GROUPID);
 		result.artifactId = doc.get(FIELD_ARTIFACTID);
 		result.version = doc.get(FIELD_VERSION);
 		result.packaging = doc.get(FIELD_PACKAGING);
@@ -378,9 +442,9 @@ public class LuceneExecutor implements Runnable {
 	 * @throws IOException
 	 */
 	private IndexWriter getIndexWriter(String repository) throws IOException {
-		IndexWriter indexWriter = writers.get(repository);				
+		IndexWriter indexWriter = writers.get(repository);
 		File indexFolder = new File(indexesFolder, repository);
-		Directory directory = FSDirectory.open(indexFolder);		
+		Directory directory = FSDirectory.open(indexFolder);
 
 		if (indexWriter == null) {
 			if (!indexFolder.exists()) {
@@ -416,7 +480,7 @@ public class LuceneExecutor implements Runnable {
 		}
 		return search(text, page, pageSize, repositories.toArray(new String[0]));
 	}
-	
+
 	/**
 	 * Searches the specified repositories for the given text or query
 	 * 
@@ -474,6 +538,9 @@ public class LuceneExecutor implements Runnable {
 			int offset = Math.max(0, (page - 1) * pageSize);
 			ScoreDoc[] hits = topDocs.scoreDocs;
 			int totalHits = topDocs.totalHits;
+			if (pageSize <= 0) {
+				pageSize = totalHits;
+			}
 			if (totalHits > offset) {
 				for (int i = offset, len = Math.min(offset + pageSize, hits.length); i < len; i++) {
 					int docId = hits[i].doc;
@@ -496,40 +563,36 @@ public class LuceneExecutor implements Runnable {
 		}
 		return new ArrayList<SearchResult>(results);
 	}
-	
+
 	/**
-	 * Simple class to track the results of an index update. 
+	 * Simple class to track the results of an index update.
 	 */
 	private class IndexResult {
 		long startTime = System.currentTimeMillis();
 		long endTime = startTime;
 		boolean success;
 		int artifactCount;
-		
-		void add(IndexResult result) {
-			this.artifactCount += result.artifactCount;			
-		}
-		
+
 		void success() {
 			success = true;
 			endTime = System.currentTimeMillis();
 		}
-		
+
 		float duration() {
-			return (endTime - startTime)/1000f;
+			return (endTime - startTime) / 1000f;
 		}
 	}
-	
+
 	/**
 	 * Custom subclass of MultiReader to identify the source index for a given
-	 * doc id.  This would not be necessary of there was a public method to
+	 * doc id. This would not be necessary of there was a public method to
 	 * obtain this information.
-	 *  
+	 * 
 	 */
 	private class MultiSourceReader extends MultiReader {
-		
+
 		final Method method;
-		
+
 		MultiSourceReader(IndexReader[] subReaders) {
 			super(subReaders);
 			Method m = null;
@@ -541,7 +604,7 @@ public class LuceneExecutor implements Runnable {
 			}
 			method = m;
 		}
-		
+
 		int getSourceIndex(int docId) {
 			int index = -1;
 			try {
@@ -551,6 +614,16 @@ public class LuceneExecutor implements Runnable {
 				logger.log(Level.SEVERE, "Error getting source index", e);
 			}
 			return index;
+		}
+	}
+	
+	private class IndexPom {
+		final File file;
+		final Date date;
+		
+		IndexPom(File file) {
+			this.file = file;
+			this.date = new Date();
 		}
 	}
 }

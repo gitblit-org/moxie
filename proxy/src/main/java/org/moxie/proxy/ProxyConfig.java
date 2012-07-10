@@ -54,12 +54,15 @@ public class ProxyConfig {
 	private File localArtifactsRoot;
 	private File remoteArtifactsRoot;
 	private int httpPort;
+	private int httpsPort;
 	private int proxyPort;
+	private int shutdownPort;
 	private List<String> bindAddresses;
 	private boolean accesslog;
 	private String dateFormat;
 	private int atomCount;
 	private int searchCount;
+	private String keystorePassword;
 
 	private List<String> localRepositories;
 	private List<RemoteRepository> remoteRepositories;
@@ -70,7 +73,9 @@ public class ProxyConfig {
 	private List<AllowDeny> allowDeny;	
 
 	public ProxyConfig() {
+		shutdownPort = 8079;
 		httpPort = 8080;
+		httpsPort = 8443;
 		proxyPort = 8081;
 		dateFormat = "yyyy-MM-dd";
 		bindAddresses = Collections.emptyList();
@@ -82,6 +87,7 @@ public class ProxyConfig {
 		remoteRepositoryLookup = new HashMap<String, RemoteRepository>();
 		atomCount = 50;
 		searchCount = 50;
+		keystorePassword = "";
 	}
 	
 	public void setUserDefaults() {		
@@ -105,6 +111,9 @@ public class ProxyConfig {
 			remoteRepositoryLookup.put(repository.id, repository);
 			remoteRepositoryLookup.put(StringUtils.urlToFolder(repository.url), repository);
 		}
+		
+		// default ssl keystore password
+		keystorePassword = "moxieproxy";
 	}
 
 	public void parse(File file) {
@@ -126,8 +135,11 @@ public class ProxyConfig {
 				if (!isLoaded) {
 					// only read these settings on a cold start
 					httpPort = map.getInt("httpPort", httpPort);
+					httpsPort = map.getInt("httpsPort", httpPort);
 					proxyPort = map.getInt("proxyPort", proxyPort);
+					shutdownPort = map.getInt("shutdownPort", shutdownPort);
 					bindAddresses = map.getStrings("bindAddresses", bindAddresses);
+					keystorePassword = map.getString("keystorePassword", keystorePassword);
 					moxieRoot = new File(map.getString("rootFolder", "moxie"));
 					setMoxieRoot(moxieRoot);
 					localRepositories = map.getStrings("localRepositories", localRepositories);
@@ -136,6 +148,9 @@ public class ProxyConfig {
 						remoteRepositoryLookup.put(repository.id, repository);
 						remoteRepositoryLookup.put(StringUtils.urlToFolder(repository.url), repository);
 					}
+					
+					// do not reload these immutable settings
+					isLoaded = true;
 				}
 				proxies = parseProxies(map);
 				dateFormat = map.getString("dateFormat", dateFormat);
@@ -238,12 +253,32 @@ public class ProxyConfig {
 		this.httpPort = val;
 	}
 
+	public int getHttpsPort() {
+		return httpsPort;
+	}
+
+	public void setHttpsPort(int val) {
+		this.httpsPort = val;
+	}
+
 	public int getProxyPort() {
 		return proxyPort;
 	}
 
 	public void setProxyPort(int val) {
 		this.proxyPort = val;
+	}
+	
+	public boolean isProxyEnabled() {
+		return proxyPort > 0;
+	}
+	
+	public int getShutdownPort() {
+		return shutdownPort;
+	}
+
+	public void setShutdownPort(int val) {
+		this.shutdownPort = val;
 	}
 	
 	public List<String> getBindAddresses() {
@@ -260,6 +295,14 @@ public class ProxyConfig {
 	
 	public String getDateFormat() {
 		return dateFormat;
+	}
+
+	public String getKeystorePassword() {
+		return keystorePassword;
+	}
+
+	public void setStorePassword(String val) {
+		this.keystorePassword = val;
 	}
 
 	public File getMoxieRoot() {
@@ -298,6 +341,27 @@ public class ProxyConfig {
 	
 	public RemoteRepository getRemoteRepository(String repository) {
 		return remoteRepositoryLookup.get(repository);
+	}
+	
+	public String getRepositoryId(File artifactFile) {
+		for (RemoteRepository repository : remoteRepositories) {
+			String remote = StringUtils.urlToFolder(repository.url.toString());
+			File remoteFolder = new File(remoteArtifactsRoot, remote);
+			if (artifactFile.getAbsolutePath().startsWith(remoteFolder.getAbsolutePath())) {
+				return repository.id;
+			}
+		}
+		return null;
+	}
+	
+	public String getRepositoryId(URL artifactUrl) {
+		String url = artifactUrl.toExternalForm();
+		for (RemoteRepository repository : remoteRepositories) {
+			if (url.startsWith(repository.url)) {
+				return repository.id;
+			}
+		}
+		return null;
 	}
 	
 	public File getRemoteArtifact(URL artifactUrl) {

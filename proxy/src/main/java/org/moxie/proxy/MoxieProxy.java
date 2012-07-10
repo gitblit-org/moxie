@@ -15,8 +15,11 @@
  */
 package org.moxie.proxy;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.InputStream;
+import java.security.ProtectionDomain;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,6 +27,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.moxie.IMavenCache;
@@ -38,21 +44,13 @@ import org.moxie.proxy.resources.RootResource;
 import org.moxie.proxy.resources.SearchResource;
 import org.moxie.utils.StringUtils;
 import org.restlet.Application;
-import org.restlet.Component;
 import org.restlet.Context;
 import org.restlet.Restlet;
-import org.restlet.data.Protocol;
-import org.restlet.engine.Engine;
 import org.restlet.ext.freemarker.ContextTemplateLoader;
 import org.restlet.resource.Directory;
 import org.restlet.routing.Router;
 import org.restlet.routing.TemplateRoute;
 import org.restlet.routing.Variable;
-import org.restlet.routing.VirtualHost;
-
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
-import com.beust.jcommander.Parameters;
 
 import freemarker.template.Configuration;
 
@@ -61,12 +59,18 @@ public class MoxieProxy extends Application {
 	private final ProxyConfig config;
 
 	private final LuceneExecutor lucene;
+	
+	private final ProxyConnectionServer proxy;
+	
+	private final ScheduledExecutorService executorService;
 
 	private Configuration configuration;
 	
 	public MoxieProxy(ProxyConfig config) {
 		this.config = config;
 		this.lucene = new LuceneExecutor(config);
+		this.proxy = new ProxyConnectionServer(config, lucene);
+		this.executorService = Executors.newSingleThreadScheduledExecutor();
 	}
 	
 	@Override
@@ -114,11 +118,10 @@ public class MoxieProxy extends Application {
 		dir.setDeeplyAccessible(true);
 		router.attach("/", dir);
 
-		getLogger().info(MessageFormat.format("Serving http on port {0,number,#####}.", config.getHttpPort()));
 		if (config.getProxyPort() > 0) {
-			getLogger().info(MessageFormat.format("Proxying on port {0,number,#####}.", config.getProxyPort()));
+			getLogger().info(MessageFormat.format(Constants.MESSAGE_STARTUP, "PROXY", config.getProxyPort()));
 		}
-		getLogger().info(MessageFormat.format("Root is {0}", config.getMoxieRoot()));
+		getLogger().info(MessageFormat.format("Moxie root is {0}", config.getMoxieRoot()));
 		getLogger().info(MessageFormat.format("{0} is ready.", Constants.getName()));
 		return router;
 	}
@@ -152,6 +155,45 @@ public class MoxieProxy extends Application {
 		router.attach("/" + folder, ArtifactsResource.class);
 	}
 	
+	/**
+	 * Start the Moxie Proxy app.
+	 * 
+	 * @throws Exception
+	 */
+	@Override
+	public void start() throws Exception {		
+		super.start();
+		
+        // reindex all artifacts
+        lucene.reindex();
+
+        // setup asynchronous incremental updates
+        //
+        // We could sychronously update indexes on pom retrieval BUT we run
+        // into complications with parsing parent poms which we might not have
+        // at index time.  So instead we queue poms to index and process
+        // them after a modest delay most likely sufficient to have realized the
+        // retrieval of the parent poms.
+		executorService.scheduleAtFixedRate(lucene, 2, 2, TimeUnit.MINUTES);
+
+		// start the proxy server
+		if (config.isProxyEnabled()) {
+			proxy.start();
+		}
+	}
+	
+	/**
+	 * Stop the Moxie Proxy app.
+	 * 
+	 * @throws Exception
+	 */
+	public void stop() throws Exception {
+		super.stop();
+		
+		executorService.shutdown();
+		proxy.shutdown();
+	}
+	
 	public Configuration getFreemarkerConfiguration() {
 		return configuration;
 	}
@@ -178,12 +220,7 @@ public class MoxieProxy extends Application {
 		}
 		return null;
 	}
-	
-	void startLucene() {
-	    // start the Lucene indexer
-        lucene.run();
-	}
-	
+		
 	/**
 	 * Searches the specified repositories for the given text or query
 	 * 
@@ -222,6 +259,11 @@ public class MoxieProxy extends Application {
 		return list;
 	}
 	
+	public int getArtifactCount(String repository) {
+		List<SearchResult> list = lucene.search("*", 1, 0, repository);
+		return list.size();
+	}
+	
 	List<String> getAccessibleRepositories() {
 		// TODO filter repositories by login
 		List<String> list = new ArrayList<String>();
@@ -235,109 +277,5 @@ public class MoxieProxy extends Application {
 	boolean authenticate(String username, String password) {
 		// TODO authenticate here
 		return true;
-	}
-	
-	public static void main(String[] args) throws Exception {
-		Params params = new Params();
-		JCommander jc = new JCommander(params);
-		try {
-			jc.parse(args);
-		} catch (Exception e) {
-			e.printStackTrace();
-			jc.usage();
-			System.exit(-1);
-		}
-		
-		ProxyConfig config = new ProxyConfig();
-				
-		// parse config file, allow override
-		if (params.moxieConfig.exists()) {
-			config.parse(params.moxieConfig);
-		} else {
-			// default to user directory
-			config.setUserDefaults();			
-		}
-
-		// override defaults from command-line
-		if (params.httpPort != null) {
-			config.setHttpPort(params.httpPort);
-		}
-		if (params.proxyPort != null) {
-			config.setProxyPort(params.proxyPort);
-		}
-		if (params.accesslog != null) {
-			config.setAccessLog(params.accesslog);
-		}
-		if (params.moxieRoot != null) {
-			config.setMoxieRoot(params.moxieRoot);
-		}
-
-		Engine.setRestletLogLevel(Level.INFO);
-
-		Component c = new Component();
-		
-		// turn off Restlet url access logging
-		c.getLogService().setEnabled(config.getAccessLog());
-
-		// create a Restlet server
-		if (config.getBindAddresses().size() == 0) {
-			c.getServers().add(Protocol.HTTP, config.getHttpPort());
-		} else {
-			for (String address : config.getBindAddresses()) {
-				c.getServers().add(Protocol.HTTP, address, config.getHttpPort());	
-			}
-		}
-
-		// add client classpath protocol to enable resource loading from the jar
-		c.getClients().add(Protocol.CLAP);
-
-		// add client file protocol to enable serving artifacts from filesystem
-		c.getClients().add(Protocol.FILE);
-
-		// override the default error pages
-		c.setStatusService(new ErrorStatusService(c.getContext()));
-
-		// get the default virtual host
-		VirtualHost host = c.getDefaultHost();		
-
-		MoxieProxy app = new MoxieProxy(config);
-
-		// Guard Moxie Proxy with BASIC authentication.
-		Authenticator guard = new Authenticator(app);
-		host.attachDefault(guard);
-		guard.setNext(app);		
-
-		// start the http server
-		c.start();
-		
-        // start the Lucene indexer
-        app.startLucene();
-
-		// start the proxy server
-        ProxyConnectionServer proxy = new ProxyConnectionServer(config);
-        proxy.handleRequests();
-	}
-
-	/**
-	 * JCommander Parameters class.
-	 */
-	@Parameters(separators = " ")
-	private static class Params {
-
-		@Parameter(names = { "--httpPort" }, description = "port for serving web interface", required = false)
-		public Integer httpPort;
-
-		@Parameter(names = { "--proxyPort" }, description = "port for processing proxy requests", required = false)
-		public Integer proxyPort;
-
-		@Parameter(names = { "--accesslog" }, description = "log all url requests", required = false)
-		public Boolean accesslog;
-
-		@Parameter(names = { "--root" }, description = "folder for Moxie metadata and artifacts", required = false)
-		public File moxieRoot;
-
-		@Parameter(names = { "--config" }, description = "config file for Moxie Proxy", required = false)
-		public File moxieConfig = new File("proxy.moxie");
-
 	}
 }

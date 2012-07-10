@@ -101,23 +101,23 @@
 				
 				<#if repositoryNote??>
 					<#if isRemoteRepository>
-						<div class="alert alert-success">
+						<div class="hidden-phone alert alert-success">
 					<#else>
-						<div class="alert alert-info">
+						<div class="hidden-phone alert alert-info">
 					</#if>
-					<h4>${repositoryUrl} <span class="pull-right"><a href="${baseRef}/atom/${crumbsRoot}"><img style="margin-top:-2px;" src="${baseRef}/feed_16x16.png"/></a></span></h4><br/>
+					<h4>${repositoryUrl} <span class="pull-right hidden-phone"><a href="${baseRef}/atom/${crumbsRoot}"><img style="margin-top:-2px;" src="${baseRef}/feed_16x16.png"/></a></span></h4><br/>
 					${repositoryNote}</div>
 					
 				</#if>
 				
 				<!-- build tool snippets-->
-				<div class="tabbable">
+				<div class="tabbable hidden-phone">
 					<ul class="nav nav-tabs">
 						<li class="active"><a href="#moxie" data-toggle="tab">Moxie</a></li>						
 						<li><a href="#maven" data-toggle="tab">Maven</a></li>
 						<li><a href="#gradle" data-toggle="tab">Gradle</a></li>
-						<li><a href="#grape" data-toggle="tab">Grape</a></li>
-						<li><a href="#ivy" data-toggle="tab">Ivy</a></li>
+						<li class="hidden-tablet"><a href="#grape" data-toggle="tab">Grape</a></li>
+						<li class="hidden-tablet"><a href="#ivy" data-toggle="tab">Ivy</a></li>
 					</ul>
 					<div class="tab-content">
 						<div class="tab-pane active" id="moxie">
@@ -129,10 +129,10 @@
 						<div class="tab-pane" id="gradle">
 							<pre class="plain">${gradleSnippet}</pre>
 						</div>
-						<div class="tab-pane" id="grape">
+						<div class="hidden-tablet tab-pane" id="grape">
 							<pre class="plain">${grapeSnippet}</pre>
 						</div>
-						<div class="tab-pane" id="ivy">
+						<div class="hidden-tablet tab-pane" id="ivy">
 							<pre class="prettyprint lang-xml">${ivySnippet}</pre>
 						</div>
 					</div>

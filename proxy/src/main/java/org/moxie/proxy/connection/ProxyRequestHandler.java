@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.moxie.Constants;
+import org.moxie.proxy.LuceneExecutor;
 import org.moxie.proxy.ProxyConfig;
 
 /**
@@ -43,11 +45,13 @@ import org.moxie.proxy.ProxyConfig;
 public class ProxyRequestHandler extends Thread {
 	public static final Logger log = Logger.getLogger(ProxyRequestHandler.class.getSimpleName());
 
-	private ProxyConfig config;
+	private final ProxyConfig config;
+	private final LuceneExecutor lucene;
 	private Socket clientSocket;
 
-	public ProxyRequestHandler(ProxyConfig config, Socket clientSocket) {
+	public ProxyRequestHandler(ProxyConfig config, LuceneExecutor lucene, Socket clientSocket) {
 		this.config = config;
+		this.lucene = lucene;
 		this.clientSocket = clientSocket;
 	}
 
@@ -144,6 +148,11 @@ public class ProxyRequestHandler extends Thread {
 			ProxyDownload d = new ProxyDownload(config, url, f);
 			try {
 				d.download();
+				
+				// index this artifact's pom
+				if (name.toLowerCase().endsWith(Constants.POM)) {
+					lucene.index(f);
+				}
 			} catch (DownloadFailed e) {
 				log.severe(e.getMessage());
 

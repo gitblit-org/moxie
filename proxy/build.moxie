@@ -17,6 +17,7 @@ properties: {
 }
 dependencies :
 - compile org.apache.lucene:lucene-core:3.5.0
+- compile org.restlet.jse:org.restlet.ext.ssl:${restlet.version}
 - compile org.restlet.jse:org.restlet.ext.atom:${restlet.version}
 - compile org.restlet.jse:org.restlet.ext.freemarker:${restlet.version}
 - compile commons-httpclient:commons-httpclient:3.1
