@@ -9,7 +9,7 @@ proxies:
 
 # example Moxie Proxy configuration
 # only the identified repositories are proxied through this connection
-- { id: moxieProxy, active: false,	protocol: http, host: moxie.somewhere.com, port: 8080, username: proxyuser, password: somepassword, repositories: "central, mavencentral, restlet, codehaus" }
+- { id: moxieProxy, active: false,	protocol: http, host: moxie.somewhere.com, port: 8081, username: proxyuser, password: somepassword, repositories: "central, mavencentral, restlet, codehaus" }
 
 # Registered Maven 2 repositories.  This section is used to define id-url
 # pairs so that project descriptors can specify an repository id, rather than
