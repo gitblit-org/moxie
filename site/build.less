@@ -9,8 +9,8 @@
 
 // GLOBAL VALUES
 // --------------------------------------------------
-@purpleDarker:				#220022;
-@purpleDark:				#550055;
+@purpleDarker:				#200020;
+@purpleDark:				#500050;
 @standardGray:				#ccc;
 @yellow:					#ffc40d;
 @white:						#fff;
@@ -22,7 +22,7 @@
 
 // Navbar
 // -------------------------
-@navbarHeight:                    50px;
+@navbarHeight:                    45px;
 @navbarBackground:                @purpleDarker;
 @navbarBackgroundHighlight:       @purpleDark;
 @navbarText:                      @standardGray;
@@ -37,16 +37,17 @@
 	}
 	
 	.nav > li > a {
+		padding-top: 13px;
 		@elementHeight: 20px;
 	}
 
 	.brand {
-		@elementHeight: 30px;
-		padding: 10px 15px;
+		@elementHeight: 27px;
+		padding: 10px 14px;
 	}
 }
 
-body { padding-top: @navbarHeight + 15 } /* 50px to make the container go all the way to the bottom of the topbar */
+body { padding-top: @navbarHeight + 15 } /* 60px to make the container go all the way to the bottom of the topbar */
 footer { margin-top: 25px; padding: 15px 0 16px; border-top: 1px solid #E5E5E5; }
 pre.prettyprint { overflow: hidden; }
 a:focus { outline: none; }
