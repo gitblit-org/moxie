@@ -15,6 +15,7 @@
  */
 package org.moxie.proxy.resources;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,12 +40,14 @@ public class SearchResource extends BaseResource {
 
 	@Get
 	public Representation toText() {
-		String query = getQueryValue("query", null);
+		String query = getQueryValue("query", "");
 		int page = Math.max(1, getQueryValue("page", 1));
 		int count = getQueryValue("count", getProxyConfig().getSearchCount());
 
-		List<SearchResult> results = null;
-		if (!StringUtils.isEmpty(query)) {
+		List<SearchResult> results;
+		if (StringUtils.isEmpty(query)) {
+			results = new ArrayList<SearchResult>();
+		} else {
 			results = getApplication().search(query, page, count);
 		}
 		
