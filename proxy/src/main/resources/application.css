@@ -31,3 +31,35 @@ span.repository {
 	color: #aaa;
 	font-style: italic;
 }
+span.search {
+    height: 40px;
+    padding-top: 2px;
+}
+span.search input {
+    background: url("search-icon.png") no-repeat scroll 4px center transparent;
+    border: 1px solid transparent;
+    border-radius: 0 0 0 0;
+    color: #DDDDDD;
+    margin: 0;
+    outline: medium none;
+    padding: 2px 2px 2px 22px;
+    text-shadow: none;
+    vertical-align: top;
+}
+span.search input:hover, span.search input:focus {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: transparent;
+    border-color: transparent transparent #FF9900;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: none;
+    color: #DDDDDD;
+    padding: 2px 2px 2px 22px;
+}
+span.search input:focus {
+    color: white;
+}

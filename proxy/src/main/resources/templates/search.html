@@ -4,6 +4,12 @@
 <body onload="prettyPrint()">
 	<#include "/navbar.html">
 	<div class="container">
+		<div class="hidden-desktop row-fluid">
+			<form class="form-inline" action="${baseRef}/search" method="get">
+				<input name="query" type="text" value="${query!}" placeholder="${rc.getString("mp.search")}">
+				<input type="submit" class="btn btn-primary" value="${rc.getString("mp.search")}">				
+			</form>
+		</div>
 		
 		<div class="row-fluid">
 			<div class="span7">	

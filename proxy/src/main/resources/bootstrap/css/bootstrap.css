@@ -1999,7 +1999,7 @@ table .span24 {
 .dropdown-menu .active > a:hover {
   color: #ffffff;
   text-decoration: none;
-  background-color: #550055;
+  background-color: #500050;
 }
 .open {
   *z-index: 1000;
@@ -2980,18 +2980,18 @@ input[type="submit"].btn.btn-mini {
   margin-bottom: 18px;
 }
 .navbar-inner {
-  min-height: 50px;
+  min-height: 45px;
   padding-left: 20px;
   padding-right: 20px;
-  background-color: #410041;
-  background-image: -moz-linear-gradient(top, #550055, #220022);
-  background-image: -ms-linear-gradient(top, #550055, #220022);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#550055), to(#220022));
-  background-image: -webkit-linear-gradient(top, #550055, #220022);
-  background-image: -o-linear-gradient(top, #550055, #220022);
-  background-image: linear-gradient(top, #550055, #220022);
+  background-color: #3d003d;
+  background-image: -moz-linear-gradient(top, #500050, #200020);
+  background-image: -ms-linear-gradient(top, #500050, #200020);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#500050), to(#200020));
+  background-image: -webkit-linear-gradient(top, #500050, #200020);
+  background-image: -o-linear-gradient(top, #500050, #200020);
+  background-image: linear-gradient(top, #500050, #200020);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#550055', endColorstr='#220022', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#500050', endColorstr='#200020', GradientType=0);
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
@@ -3014,7 +3014,7 @@ input[type="submit"].btn.btn-mini {
 .navbar .brand {
   float: left;
   display: block;
-  padding: 13px 20px 17px;
+  padding: 10.5px 20px 14.5px;
   margin-left: -20px;
   font-size: 20px;
   font-weight: 200;
@@ -3023,7 +3023,7 @@ input[type="submit"].btn.btn-mini {
 }
 .navbar .navbar-text {
   margin-bottom: 0;
-  line-height: 50px;
+  line-height: 45px;
 }
 .navbar .navbar-link {
   color: #cccccc;
@@ -3033,7 +3033,7 @@ input[type="submit"].btn.btn-mini {
 }
 .navbar .btn,
 .navbar .btn-group {
-  margin-top: 10px;
+  margin-top: 7.5px;
 }
 .navbar .btn-group .btn {
   margin: 0;
@@ -3054,7 +3054,7 @@ input[type="submit"].btn.btn-mini {
 .navbar-form select,
 .navbar-form .radio,
 .navbar-form .checkbox {
-  margin-top: 10px;
+  margin-top: 7.5px;
 }
 .navbar-form input,
 .navbar-form select {
@@ -3078,7 +3078,7 @@ input[type="submit"].btn.btn-mini {
 .navbar-search {
   position: relative;
   float: left;
-  margin-top: 11px;
+  margin-top: 8.5px;
   margin-bottom: 0;
 }
 .navbar-search .search-query {
@@ -3088,8 +3088,8 @@ input[type="submit"].btn.btn-mini {
   font-weight: normal;
   line-height: 1;
   color: #ffffff;
-  background-color: #a200a1;
-  border: 1px solid #080008;
+  background-color: #a0009f;
+  border: 1px solid #070007;
   -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
   -moz-box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
   box-shadow: inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15);
@@ -3162,7 +3162,7 @@ input[type="submit"].btn.btn-mini {
 }
 .navbar .nav > li > a {
   float: none;
-  padding: 14px 10px 16px;
+  padding: 11.5px 10px 13.5px;
   line-height: 19px;
   color: #cccccc;
   text-decoration: none;
@@ -3171,12 +3171,12 @@ input[type="submit"].btn.btn-mini {
 .navbar .btn {
   display: inline-block;
   padding: 4px 10px 4px;
-  margin: 10px 5px 11px;
+  margin: 7.5px 5px 8.5px;
   line-height: 18px;
 }
 .navbar .btn-group {
   margin: 0;
-  padding: 10px 5px 11px;
+  padding: 7.5px 5px 8.5px;
 }
 .navbar .nav > li > a:hover {
   background-color: transparent;
@@ -3190,12 +3190,12 @@ input[type="submit"].btn.btn-mini {
   background-color: transparent;
 }
 .navbar .divider-vertical {
-  height: 50px;
+  height: 45px;
   width: 1px;
   margin: 0 9px;
   overflow: hidden;
-  background-color: #220022;
-  border-right: 1px solid #550055;
+  background-color: #200020;
+  border-right: 1px solid #500050;
 }
 .navbar .nav.pull-right {
   margin-left: 10px;
@@ -3207,18 +3207,18 @@ input[type="submit"].btn.btn-mini {
   padding: 7px 10px;
   margin-left: 5px;
   margin-right: 5px;
-  background-color: #410041;
-  background-image: -moz-linear-gradient(top, #550055, #220022);
-  background-image: -ms-linear-gradient(top, #550055, #220022);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#550055), to(#220022));
-  background-image: -webkit-linear-gradient(top, #550055, #220022);
-  background-image: -o-linear-gradient(top, #550055, #220022);
-  background-image: linear-gradient(top, #550055, #220022);
+  background-color: #3d003d;
+  background-image: -moz-linear-gradient(top, #500050, #200020);
+  background-image: -ms-linear-gradient(top, #500050, #200020);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#500050), to(#200020));
+  background-image: -webkit-linear-gradient(top, #500050, #200020);
+  background-image: -o-linear-gradient(top, #500050, #200020);
+  background-image: linear-gradient(top, #500050, #200020);
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#550055', endColorstr='#220022', GradientType=0);
-  border-color: #220022 #220022 #000000;
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#500050', endColorstr='#200020', GradientType=0);
+  border-color: #200020 #200020 #000000;
   border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-  *background-color: #220022;
+  *background-color: #200020;
   /* Darken IE7 buttons by default so they stand out more given they won't have borders */
 
   filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
@@ -3231,8 +3231,8 @@ input[type="submit"].btn.btn-mini {
 .navbar .btn-navbar.active,
 .navbar .btn-navbar.disabled,
 .navbar .btn-navbar[disabled] {
-  background-color: #220022;
-  *background-color: #080008;
+  background-color: #200020;
+  *background-color: #060006;
 }
 .navbar .btn-navbar:active,
 .navbar .btn-navbar.active {
@@ -4209,13 +4209,16 @@ a.badge:hover {
 .navbar .nav {
   margin: 0px;
 }
+.navbar .nav > li > a {
+  padding-top: 13px;
+}
 .navbar .brand {
-  padding: 10px 15px;
+  padding: 10px 14px;
 }
 body {
-  padding-top: 65px;
+  padding-top: 60px;
 }
-/* 50px to make the container go all the way to the bottom of the topbar */
+/* 60px to make the container go all the way to the bottom of the topbar */
 footer {
   margin-top: 25px;
   padding: 15px 0 16px;
