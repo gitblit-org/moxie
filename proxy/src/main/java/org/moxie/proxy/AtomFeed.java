@@ -38,10 +38,12 @@ public class AtomFeed {
 
 	final MoxieProxy app;
 	final String baseUrl;
+	final String title;
 	
-	public AtomFeed(MoxieProxy app, String baseUrl) {
+	public AtomFeed(MoxieProxy app, String baseUrl, String title) {
 		this.app = app;
 		this.baseUrl = baseUrl;
+		this.title = title;
 	}
 
 	public Feed getFeed(String repository, int count) {
@@ -58,7 +60,7 @@ public class AtomFeed {
 	private Feed getConfiguredFeed() {
 		Feed feed = new Feed();
 		feed.setGenerator(getGenerator());
-		feed.setTitle(new Text(MediaType.TEXT_PLAIN, "Recent Artifacts"));
+		feed.setTitle(new Text(MediaType.TEXT_PLAIN, title));
 		return feed;
 	}
 	
