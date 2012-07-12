@@ -19,6 +19,7 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -231,12 +232,14 @@ public class ArtifactsResource extends BaseResource {
 		for (File file : folder.listFiles()) {
 			String relativePath= StringUtils.getRelativePath(rootPath, file.getAbsolutePath());
 			ListItem item = new ListItem(file.getName(), relativePath, file.isFile() && !isText(file));
+			item.isDirectory = file.isDirectory();
 			if (file.isFile()) {
 				item.size = FileUtils.formatSize(file.length());
 				item.date = df.format(new Date(file.lastModified()));
 			}
 			list.add(item);
 		}
+		Collections.sort(list);
 		return list;
 	}
 	

@@ -17,13 +17,14 @@ package org.moxie.proxy.resources;
 
 import java.io.Serializable;
 
-public class ListItem implements Serializable {
+public class ListItem implements Serializable, Comparable<ListItem> {
 
 	private static final long serialVersionUID = 1L;
 
 	final String name;
 	final String path;
 	final boolean isDownload;
+	boolean isDirectory;
 	String size;
 	String date;
 
@@ -51,5 +52,21 @@ public class ListItem implements Serializable {
 	
 	public boolean isDownload() {
 		return isDownload;
+	}
+
+	@Override
+	public int compareTo(ListItem arg0) {
+		if (isDirectory && arg0.isDirectory) {
+			// sort directories by name
+			return name.compareTo(arg0.name);
+		} else if (isDirectory) {
+			// sort directories first
+			return 0;
+		} else if (arg0.isDirectory) {
+			// sort directories first
+			return 1;
+		}
+		// sort filenames
+		return name.compareTo(arg0.name);
 	}
 }
