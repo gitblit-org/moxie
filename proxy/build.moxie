@@ -16,6 +16,8 @@ properties: {
 	restlet.version : 2.1-RC5
 }
 dependencies :
+- compile org.bouncycastle:bcprov-jdk16:1.46
+- compile org.bouncycastle:bcmail-jdk16:1.46
 - compile org.apache.lucene:lucene-core:3.5.0
 - compile org.restlet.jse:org.restlet.ext.ssl:${restlet.version}
 - compile org.restlet.jse:org.restlet.ext.atom:${restlet.version}

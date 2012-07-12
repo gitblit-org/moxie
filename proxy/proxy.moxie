@@ -28,7 +28,7 @@ shutdownPort : 8079
 # using the --storePassword command line parameter.
 #
 # RESTART REQUIRED
-keystorePassword : gitblit
+keystorePassword : moxieproxy
 
 # Address of local interfaces to bind ports for Moxie Proxy.
 # If blank, all local addresses will serve

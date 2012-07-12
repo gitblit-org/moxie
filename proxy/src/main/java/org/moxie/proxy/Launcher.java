@@ -187,8 +187,15 @@ public class Launcher {
 	 * @param server
 	 */
 	static void configureHttps(Server server, ProxyConfig config) {
+		File keystore = new File("keystore");
+		if (!keystore.exists()) {
+			server.getLogger().info("Generating self-signed SSL certificate for localhost");
+			MakeCertificate.generateSelfSignedCertificate("localhost", keystore,
+					config.getKeystorePassword());
+		}
+
 		Series<org.restlet.data.Parameter> parameters = server.getContext().getParameters();
-		parameters.add("keystorePath", "keystore");
+		parameters.add("keystorePath", keystore.getAbsolutePath());
 		parameters.add("keystorePassword", config.getKeystorePassword());
 	}
 
