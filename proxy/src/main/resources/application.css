@@ -63,3 +63,6 @@ span.search input:hover, span.search input:focus {
 span.search input:focus {
     color: white;
 }
+td.nowrap {
+	white-space:nowrap;
+}

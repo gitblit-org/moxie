@@ -21,12 +21,12 @@
 									<!-- viewable artifact -->
 									<td><a href="${pageRef}/${item.path}">${item.name}</a></td>
 								</#if>
-								<td>
+								<td class="nowrap">
 									<#if item.date??>
 									${item.date}
 									</#if>
 								</td>
-								<td>
+								<td class="nowrap">
 									<#if item.size??>
 									${item.size}
 									</#if>
@@ -61,9 +61,6 @@
 						</#if>
 						<#if pom.url??>
 							<li><a target="_blank" href="${pom.url}">${pom.url}</a></li>
-						</#if>
-						<#if pom.issuesUrl??>
-							<li style="padding-top:20px"><a target="_blank" href="${pom.issuesUrl}">${rc.getString("mp.issueTracker")}</a></li>
 						</#if>
 					</ul>
 
