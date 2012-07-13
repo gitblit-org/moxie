@@ -317,7 +317,7 @@ public class Repository {
 			
 			Date now = new Date();
 			if (Constants.POM.equals(ext)) {
-				Pom pom = PomReader.readPom(build.getMoxieCache(), dep);
+				Pom pom = PomReader.readPom(build.getMoxieCache(), file);
 				if (pom.isPOM()) {
 					// POM packaging, so no subsequent download check to mess up
 					moxiedata.setLastDownloaded(now);

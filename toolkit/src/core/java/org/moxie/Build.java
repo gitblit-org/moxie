@@ -785,37 +785,14 @@ public class Build {
 						break;
 					}
 				}
-			} else {
-				console.debug(1, "reading maven-metadata.xml for {0}", dependency.getManagementId());
-			}
-
-			// read SNAPSHOT, LATEST, or RELEASE from metadata
-			if (metadataFile != null && metadataFile.exists()) {
-				Metadata metadata = MetadataReader.readMetadata(metadataFile);
-				String version;
-				String revision;
-				if (Constants.RELEASE.equalsIgnoreCase(dependency.version)) {
-					version = metadata.release;
-					revision = version;
-				} else if (Constants.LATEST.equalsIgnoreCase(dependency.version)) {
-					version = metadata.latest;
-					revision = version;
-				} else {
-					// SNAPSHOT
-					version = dependency.version;
-					revision = metadata.getSnapshotRevision();
-				}
-				console.debug(1, "{0} = {1}", dependency.getCoordinates(), revision);
-				dependency.version = version;
-				dependency.revision = revision;
-			}
-			
-			if (updateRequired && isOnline()) {
+				
 				// reset last checked date for next update check
 				// after we have resolved RELEASE, LATEST, or SNAPSHOT
 				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
 				moxiedata.setLastChecked(new Date());
 				moxieCache.writeMoxieData(dependency, moxiedata);
+			} else {
+				console.debug(1, "reading maven-metadata.xml for {0}", dependency.getManagementId());
 			}
 		}
 		
@@ -840,7 +817,7 @@ public class Build {
 		// Read POM
 		if (pomFile.exists()) {
 			try {
-				Pom pom = PomReader.readPom(moxieCache, dependency);
+				Pom pom = PomReader.readPom(moxieCache, pomFile);
 				// retrieve parent POM
 				if (pom.hasParentDependency()) {			
 					Dependency parent = pom.getParentDependency();

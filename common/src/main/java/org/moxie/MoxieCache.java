@@ -71,6 +71,39 @@ public class MoxieCache implements IMavenCache {
 		List<File> list = new ArrayList<File>();
 		return list;
 	}
+	
+	protected Dependency resolveRevision(Dependency dependency) {
+		if ((dependency.isSnapshot() && StringUtils.isEmpty(dependency.revision))
+				|| dependency.version.equalsIgnoreCase(Constants.RELEASE)
+				|| dependency.version.equalsIgnoreCase(Constants.LATEST)) {
+			// Support SNAPSHOT, RELEASE and LATEST versions
+			File metadataFile = getMetadata(dependency, Constants.XML);
+			
+			// read SNAPSHOT, LATEST, or RELEASE from metadata
+			if (metadataFile != null && metadataFile.exists()) {
+				Metadata metadata = MetadataReader.readMetadata(metadataFile);
+				String version;
+				String revision;
+				if (Constants.RELEASE.equalsIgnoreCase(dependency.version)) {
+					version = metadata.release;
+					revision = version;
+				} else if (Constants.LATEST.equalsIgnoreCase(dependency.version)) {
+					version = metadata.latest;
+					revision = version;
+				} else {
+					// SNAPSHOT
+					version = dependency.version;
+					revision = metadata.getSnapshotRevision();
+				}
+				
+				dependency.version = version;
+				dependency.revision = revision;
+			}
+		}
+
+		// standard release
+		return dependency;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -79,18 +112,21 @@ public class MoxieCache implements IMavenCache {
 	@Override
 	public File getArtifact(Dependency dep, String ext) {
 		File baseFolder = localReleasesRoot;
-		Dependency dcopy = DeepCopier.copy(dep);
-		if (dcopy.isSnapshot()) {
-			// in artifact cache we store as a.b-SNAPSHOT
-			// not a.b.20120618.134509-5
-			dcopy.revision = null;
+		Dependency original = DeepCopier.copy(dep);
+		resolveRevision(dep);
+		if (dep.isSnapshot()) {
 			baseFolder = localSnapshotsRoot;
 		}
 
-		String path = Dependency.getMavenPath(dcopy, ext, Constants.MAVEN2_PATTERN);
-	
+		String path = Dependency.getMavenPath(original, ext, Constants.MAVEN2_PATTERN);
 		File moxieFile = new File(baseFolder, path);
-
+		
+		if (!moxieFile.exists() && dep.isSnapshot()) {
+			// try fully qualified revision, if snapshot 
+			path = Dependency.getMavenPath(dep, ext, Constants.MAVEN2_PATTERN);
+			moxieFile = new File(baseFolder, path);
+		}
+		
 		if (!moxieFile.exists()) {
 			// search in downloaded artifact folders
 			File downloaded = findDownloadedArtifact(path);
@@ -172,9 +208,9 @@ public class MoxieCache implements IMavenCache {
 		if (!dep.isMavenObject()) {
 			return null;
 		}
-		
+		resolveRevision(dep);
 		String path = Dependency.getMavenPath(dep, "moxie", Constants.MAVEN2_PATTERN);
-		// artifactId-version.moxie
+		// artifactId-version-revision.moxie
 		File moxieFile = new File(moxiedataRoot, path);
 		// metadata.moxie
 		moxieFile = new File(moxieFile.getParentFile(), "metadata.moxie");

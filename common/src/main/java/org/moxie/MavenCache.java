@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
+import org.moxie.utils.StringUtils;
 
 
 public class MavenCache implements IMavenCache {
@@ -29,6 +30,39 @@ public class MavenCache implements IMavenCache {
 	
 	public MavenCache(File root) {
 		this.root = root;
+	}
+	
+	protected Dependency resolveRevision(Dependency dependency) {
+		if ((dependency.isSnapshot() && StringUtils.isEmpty(dependency.revision))
+				|| dependency.version.equalsIgnoreCase(Constants.RELEASE)
+				|| dependency.version.equalsIgnoreCase(Constants.LATEST)) {
+			// Support SNAPSHOT, RELEASE and LATEST versions
+			File metadataFile = getMetadata(dependency, Constants.XML);
+			
+			// read SNAPSHOT, LATEST, or RELEASE from metadata
+			if (metadataFile != null && metadataFile.exists()) {
+				Metadata metadata = MetadataReader.readMetadata(metadataFile);
+				String version;
+				String revision;
+				if (Constants.RELEASE.equalsIgnoreCase(dependency.version)) {
+					version = metadata.release;
+					revision = version;
+				} else if (Constants.LATEST.equalsIgnoreCase(dependency.version)) {
+					version = metadata.latest;
+					revision = version;
+				} else {
+					// SNAPSHOT
+					version = dependency.version;
+					revision = metadata.getSnapshotRevision();
+				}
+				
+				dependency.version = version;
+				dependency.revision = revision;
+			}
+		}
+
+		// standard release
+		return dependency;
 	}
 	
 	/*
@@ -59,13 +93,8 @@ public class MavenCache implements IMavenCache {
 	 */
 	@Override
 	public File getArtifact(Dependency dep, String ext) {
-		Dependency dcopy = DeepCopier.copy(dep);
-		if (dcopy.isSnapshot()) {
-			// in artifact cache we store as a.b-SNAPSHOT
-			// not a.b.20120618.134509-5
-			dcopy.revision = null;
-		}
-		String path = Dependency.getMavenPath(dcopy,  ext, Constants.MAVEN2_PATTERN);
+		resolveRevision(dep);
+		String path = Dependency.getMavenPath(dep,  ext, Constants.MAVEN2_PATTERN);
 		return new File(root, path);
 	}
 
