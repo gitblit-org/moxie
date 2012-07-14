@@ -35,6 +35,7 @@ span.search {
     height: 40px;
     padding-top: 2px;
 }
+
 span.search input {
     background: url("search-icon.png") no-repeat scroll 4px center transparent;
     border: 1px solid transparent;
@@ -46,6 +47,7 @@ span.search input {
     text-shadow: none;
     vertical-align: top;
 }
+
 span.search input:hover, span.search input:focus {
     -moz-border-bottom-colors: none;
     -moz-border-image: none;
@@ -60,9 +62,17 @@ span.search input:hover, span.search input:focus {
     color: #DDDDDD;
     padding: 2px 2px 2px 22px;
 }
+
 span.search input:focus {
     color: white;
 }
+
 td.nowrap {
-	white-space:nowrap;
+	white-space: nowrap;
+}
+
+span.size {
+	white-space: nowrap;
+	font-style: italic;
+	color: #aaa;
 }

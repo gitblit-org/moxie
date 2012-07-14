@@ -54,6 +54,10 @@ public class ListItem implements Serializable, Comparable<ListItem> {
 		return isDownload;
 	}
 
+	public boolean isDirectory() {
+		return isDirectory;
+	}
+
 	@Override
 	public int compareTo(ListItem arg0) {
 		if (isDirectory && arg0.isDirectory) {

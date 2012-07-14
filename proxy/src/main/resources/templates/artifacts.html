@@ -14,22 +14,29 @@
 					<tbody>				
 						<#list items as item>
 							<tr>
-								<#if item.download>
-									<!-- downloadable artifact -->
-									<td><a href="${repositoryUrl}/${item.path}">${item.name}</a></td>
-								<#else>
-									<!-- viewable artifact -->
-									<td><a href="${pageRef}/${item.path}">${item.name}</a></td>
-								</#if>
+								<td>
+									<#if item.download>
+										<!-- downloadable artifact -->
+										<a href="${repositoryUrl}/${item.path}">${item.name}</a>
+									<#else>
+										<!-- viewable artifact -->
+										<a href="${pageRef}/${item.path}">${item.name}</a>
+									</#if>
+								</td>
+								<td class="hidden-phone hidden-tablet">
+									<#if item.size??>
+									<span class="size">${item.size}</span>									
+									</#if>
+								</td>
 								<td class="nowrap">
 									<#if item.date??>
 									${item.date}
 									</#if>
-								</td>
-								<td class="nowrap">
-									<#if item.size??>
-									${item.size}
-									</#if>
+									<div class="hidden-desktop">
+										<#if item.size??>
+										<span class="size">${item.size}</span>
+										</#if>
+									</div>
 								</td>
 							</tr>
 						</#list>
