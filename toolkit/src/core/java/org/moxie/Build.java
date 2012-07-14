@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -393,9 +394,12 @@ public class Build {
 			for (Map.Entry<Scope, Set<Dependency>> entry : solutions.entrySet()) {
 				all.addAll(entry.getValue());
 			}
+			Set<Dependency> retrieved = new HashSet<Dependency>();
 			for (Dependency dep : all) {
-				retrievePOM(dep);
-				retrieveArtifact(dep, true);
+				if (!retrieved.contains(dep)) {
+					retrievePOM(dep, retrieved);
+					retrieveArtifact(dep, true);
+				}
 			}
 		}
 	}
@@ -478,9 +482,10 @@ public class Build {
 	private void retrievePOMs() {
 		console.debug("locating POMs");
 		// retrieve POMs for all dependencies in all scopes
+		Set<Dependency> downloaded = new HashSet<Dependency>(); 
 		for (Scope scope : project.pom.getScopes()) {
 			for (Dependency dependency : project.pom.getDependencies(scope, Constants.RING1)) {
-				retrievePOM(dependency);
+				retrievePOM(dependency, downloaded);
 			}
 		}
 	}
@@ -592,7 +597,7 @@ public class Build {
 		if (!dependency.resolveDependencies) {
 			return resolved;
 		}
-		File pomFile = retrievePOM(dependency);
+		File pomFile = moxieCache.getArtifact(dependency, Constants.POM);
 		if (pomFile == null || !pomFile.exists()) {
 			return resolved;
 		}
@@ -734,14 +739,16 @@ public class Build {
 		}
 	}
 	
-	private File retrievePOM(Dependency dependency) {
+	private File retrievePOM(Dependency dependency, Set<Dependency> retrieved) {
 		if (!dependency.isMavenObject()) {
 			return null;
 		}
 		if (StringUtils.isEmpty(dependency.version)) {
 			return null;
 		}
-		
+		if (retrieved != null && retrieved.contains(dependency)) {
+			return null;
+		}
 		if (dependency.isSnapshot()
 				|| dependency.version.equalsIgnoreCase(Constants.RELEASE)
 				|| dependency.version.equalsIgnoreCase(Constants.LATEST)) {
@@ -816,19 +823,25 @@ public class Build {
 
 		// Read POM
 		if (pomFile.exists()) {
+
+			// mark as retrieved so we do not re-retrieve
+			if (retrieved != null) {
+				retrieved.add(dependency);
+			}
+
 			try {
 				Pom pom = PomReader.readPom(moxieCache, pomFile);
 				// retrieve parent POM
 				if (pom.hasParentDependency()) {			
 					Dependency parent = pom.getParentDependency();
 					parent.ring = dependency.ring;
-					retrievePOM(parent);
+					retrievePOM(parent, retrieved);
 				}
 				
 				// retrieve all dependent POMs
 				for (Scope scope : pom.getScopes()) {
 					for (Dependency dep : pom.getDependencies(scope, dependency.ring + 1)) {
-						retrievePOM(dep);
+						retrievePOM(dep, retrieved);
 					}
 				}
 			} catch (Exception e) {
@@ -904,9 +917,10 @@ public class Build {
 	public void loadDependency(Dependency... dependencies) {		
 		// solve the classpath solution for the Moxie runtime dependencies
 		Pom pom = new Pom();
+		Set<Dependency> retrieved = new HashSet<Dependency>();
 		for (Dependency dependency : dependencies) {
 			resolveAliasedDependencies(dependency);
-			retrievePOM(dependency);
+			retrievePOM(dependency, retrieved);
 			pom.addDependency(dependency, Scope.compile);
 		}
 		Set<Dependency> solution = new LinkedHashSet<Dependency>();
