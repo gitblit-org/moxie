@@ -95,6 +95,13 @@ public class MxDoc extends MxTask {
 		doc.logo = logo;
 		return logo;
 	}
+	
+	public Logo createFavicon() {
+		Logo logo = new Logo();
+		doc.favicon = logo;
+		return logo;
+	}
+
 
 	public void setName(String name) {
 		doc.name = name;
@@ -157,6 +164,14 @@ public class MxDoc extends MxTask {
 				FileUtils.copy(doc.outputFolder, doc.logo.getFile());
 			} catch (IOException e) {
 				build.console.error(e, "Failed to copy logo file!");
+			}
+		}
+		
+		if (doc.favicon != null) {
+			try {
+				FileUtils.copy(doc.outputFolder, doc.favicon.getFile());
+			} catch (IOException e) {
+				build.console.error(e, "Failed to copy favicon file!");
 			}
 		}
 		

@@ -70,6 +70,7 @@
 			
 			<!-- Set the logo from the mx:doc resources -->
 			<logo file="${basedir}/../toolkit/src/mxdoc/resources/moxie.png" />
+			<favicon file="${basedir}/../toolkit/src/mxdoc/resources/moxie-favicon.png" />
 		</mx:doc>
 	</target>
 

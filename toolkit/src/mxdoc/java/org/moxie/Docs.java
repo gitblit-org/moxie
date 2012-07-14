@@ -327,7 +327,7 @@ public class Docs {
 				linksHtml = linksHtml.replace("%PROJECTNAME%", projectName);
 				linksHtml = linksHtml.replace("%PROJECTLINKS%", links);
 				if (doc.logo != null && doc.logo.file != null) {
-					linksHtml = linksHtml.replace("%PROJECTLOGO%", new File(doc.logo.file).getName());
+					linksHtml = linksHtml.replace("%PROJECTLOGO%", doc.logo.getFile().getName());
 				}
 				links = linksHtml;
 
@@ -579,9 +579,9 @@ public class Docs {
 					"<meta name=\"keywords\" content=\"{0}\" />\n", keywords));
 		}
 
-		if (!StringUtils.isEmpty(doc.favicon)) {
+		if (doc.favicon != null) {
 			sb.append("\n<link rel='shortcut icon' type='image/png' href='./"
-					+ doc.favicon + "' />");
+					+ doc.favicon.getFile().getName() + "' />");
 		}
 
 		if (doc.injectPrettify) {

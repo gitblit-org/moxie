@@ -39,8 +39,6 @@ public class Doc implements Serializable {
 
 	public File footer;
 
-	public String favicon;
-
 	public String googleAnalyticsId;
 
 	public String googlePlusId;
@@ -68,6 +66,8 @@ public class Doc implements Serializable {
 	public List<Regex> regexes = new ArrayList<Regex>();
 	
 	public Logo logo;
+	
+	public Logo favicon;
 
 	public List<File> getSources() {
 		List<File> files = new ArrayList<File>();
