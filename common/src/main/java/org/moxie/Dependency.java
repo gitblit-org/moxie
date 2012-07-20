@@ -119,6 +119,10 @@ public class Dependency implements Serializable {
 		return version.contains("-SNAPSHOT");
 	}
 	
+	public boolean isMetaVersion() {
+		return isSnapshot() || version.equalsIgnoreCase(Constants.RELEASE) || version.equalsIgnoreCase(Constants.LATEST);
+	}
+
 	public Dependency getSourcesArtifact() {
 		Dependency sources = new Dependency(getDetailedCoordinates());
 		sources.revision = revision;

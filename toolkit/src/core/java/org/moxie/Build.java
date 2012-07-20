@@ -749,9 +749,7 @@ public class Build {
 		if (retrieved != null && retrieved.contains(dependency)) {
 			return null;
 		}
-		if (dependency.isSnapshot()
-				|| dependency.version.equalsIgnoreCase(Constants.RELEASE)
-				|| dependency.version.equalsIgnoreCase(Constants.LATEST)) {
+		if (dependency.isMetaVersion()) {
 			// Support SNAPSHOT, RELEASE and LATEST versions
 			File metadataFile = moxieCache.getMetadata(dependency, Constants.XML);
 			boolean updateRequired = !metadataFile.exists() || isUpdateMetadata();

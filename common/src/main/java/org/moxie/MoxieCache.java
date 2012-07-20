@@ -112,7 +112,9 @@ public class MoxieCache implements IMavenCache {
 	@Override
 	public File getArtifact(Dependency dep, String ext) {
 		File baseFolder = localReleasesRoot;
+		// clone the original dep object for special checks below
 		Dependency original = DeepCopier.copy(dep);
+		// resolve dependency version - this updates the shared instance
 		resolveRevision(dep);
 		if (dep.isSnapshot()) {
 			baseFolder = localSnapshotsRoot;
@@ -121,8 +123,8 @@ public class MoxieCache implements IMavenCache {
 		String path = Dependency.getMavenPath(original, ext, Constants.MAVEN2_PATTERN);
 		File moxieFile = new File(baseFolder, path);
 		
-		if (!moxieFile.exists() && dep.isSnapshot()) {
-			// try fully qualified revision, if snapshot 
+		if (!moxieFile.exists() && original.isMetaVersion()) {
+			// try fully qualified revision 
 			path = Dependency.getMavenPath(dep, ext, Constants.MAVEN2_PATTERN);
 			moxieFile = new File(baseFolder, path);
 		}
@@ -208,13 +210,19 @@ public class MoxieCache implements IMavenCache {
 		if (!dep.isMavenObject()) {
 			return null;
 		}
-		resolveRevision(dep);
-		String path = Dependency.getMavenPath(dep, "moxie", Constants.MAVEN2_PATTERN);
-		// artifactId-version-revision.moxie
+		// Resolve a clone of the dependency so we do not change
+		// the original object.  This is to resolve RELEASE and LATEST to a
+		// numeric version.  SNAPSHOT revisions are not part of the Moxie
+		// data filename and as such they are irrelevant for this lookup.
+		Dependency copy = DeepCopier.copy(dep);
+		resolveRevision(copy);		
+		String path = Dependency.getMavenPath(copy, "moxie", Constants.MAVEN2_PATTERN);
+		
+		// create a teamp file instance so we can get artifact parent folder
 		File moxieFile = new File(moxiedataRoot, path);
+		
 		// metadata.moxie
-		moxieFile = new File(moxieFile.getParentFile(), "metadata.moxie");
-		return moxieFile;
+		return new File(moxieFile.getParentFile(), "metadata.moxie");
 	}
 	
 	public MoxieData readMoxieData(Dependency dep) {
