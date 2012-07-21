@@ -35,18 +35,18 @@ public class MxClean extends MxTask {
 		if (scope == null) {
 			// clean output folder
 			File dir = new File(getProject().getProperty(Key.outputFolder.propId()));
-			console.log("cleaning {0}", dir.getAbsolutePath());
+			getConsole().log("cleaning {0}", dir.getAbsolutePath());
 			FileUtils.delete(dir);			
 
 			// clean target folder
 			dir = new File(getProject().getProperty(Key.targetFolder.propId()));
-			console.log("cleaning {0}", dir.getAbsolutePath());
+			getConsole().log("cleaning {0}", dir.getAbsolutePath());
 			FileUtils.delete(dir);
 			
 			if (getProject().getProperty(Key.dependencyFolder.propId()) != null) {
 				// clean project dependency folder
 				dir = new File(getProject().getProperty(Key.dependencyFolder.propId()));
-				console.log("cleaning {0}", dir.getAbsolutePath());
+				getConsole().log("cleaning {0}", dir.getAbsolutePath());
 				FileUtils.delete(dir);
 			}
 		} else {
@@ -56,13 +56,13 @@ public class MxClean extends MxTask {
 	
 	private void clean(Scope scope) {
 		if (!scope.isValidSourceScope()) {
-			console.error("Illegal scope for cleaning {0}", scope);
+			getConsole().error("Illegal scope for cleaning {0}", scope);
 			return;
 		}
 
 		Build build = getBuild();
 		File dir = build.getOutputFolder(scope);
-		build.getConsole().log("cleaning {0}", dir.getAbsolutePath());
+		getConsole().log("cleaning {0}", dir.getAbsolutePath());
 		FileUtils.delete(dir);			
 	}
 }

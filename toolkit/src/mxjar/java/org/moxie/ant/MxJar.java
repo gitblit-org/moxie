@@ -273,9 +273,9 @@ public class MxJar extends GenJar {
 			set.setExcludes(excludes);
 		}
 		
-		build.getConsole().title(getClass(), destFile.getName());
+		console.title(getClass(), destFile.getName());
 		
-		build.getConsole().debug("mxjar configuration");
+		console.debug("mxjar configuration");
 
 		// display specified mxjar attributes
 		MaxmlMap attributes = build.getMxJarAttributes();
@@ -296,10 +296,10 @@ public class MxJar extends GenJar {
 					}
 					method.setAccessible(true);
 					Object value = method.invoke(this, (Object[]) null);
-					build.getConsole().debug(1, "{0} = {1}", attrib, value);
+					console.debug(1, "{0} = {1}", attrib, value);
 				}			
 			} catch (Exception e) {
-				build.getConsole().error(e);
+				console.error(e);
 				throw new BuildException("failed to get mx:Jar attributes!", e);
 			}
 		}
@@ -307,8 +307,8 @@ public class MxJar extends GenJar {
 		long start = System.currentTimeMillis();
 		super.execute();
 
-		build.getConsole().log(1, destFile.getAbsolutePath());
-		build.getConsole().log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
+		console.log(1, destFile.getAbsolutePath());
+		console.log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
 		
 		/*
 		 * Build sources jar
@@ -345,7 +345,7 @@ public class MxJar extends GenJar {
 			List<File> folders = build.getSourceFolders(Scope.compile);
 			for (String className : resolvedLocal) {
 				String sourceName = className.substring(0, className.length() - ".class".length()).replace('.', '/') + ".java";
-				build.getConsole().debug(sourceName);
+				console.debug(sourceName);
 				for (File folder : folders) {
 					File file = new File(folder, sourceName);
 					if (file.exists()) {
@@ -358,7 +358,7 @@ public class MxJar extends GenJar {
 						}
 						String packagePath = FileUtils.getRelativePath(folder, file.getParentFile());
 						packageResources.get(folder).add(packagePath + "/*");
-						build.getConsole().debug(1, file.getAbsolutePath());
+						console.debug(1, file.getAbsolutePath());
 						break;
 					}
 				}
@@ -379,8 +379,8 @@ public class MxJar extends GenJar {
 					}
 					includes.setLength(includes.length() - 1);
 					set.setIncludes(includes.toString());
-					build.getConsole().debug("adding resource fileset {0}", entry.getKey());
-					build.getConsole().debug(1, "includes={0}", includes.toString());
+					console.debug("adding resource fileset {0}", entry.getKey());
+					console.debug(1, "includes={0}", includes.toString());
 					jar.add(set);
 				}
 			}
@@ -391,14 +391,14 @@ public class MxJar extends GenJar {
 				configureManifest(mft);
 				jar.addConfiguredManifest(mft);
 			} catch (ManifestException e) {
-				build.getConsole().error(e);
+				console.error(e);
 			}
 			
 			start = System.currentTimeMillis();			
 			jar.execute();
 						
-			build.getConsole().log(1, sourcesFile.getAbsolutePath());
-			build.getConsole().log(1, "{0} KB, generated in {1} ms", (sourcesFile.length()/1024), System.currentTimeMillis() - start);
+			console.log(1, sourcesFile.getAbsolutePath());
+			console.log(1, "{0} KB, generated in {1} ms", (sourcesFile.length()/1024), System.currentTimeMillis() - start);
 		}
 	}
 	

@@ -147,7 +147,7 @@ public class MxDoc extends MxTask {
 			doc.outputFolder = build.getSiteOutputFolder();
 		}
 		
-		build.getConsole().title(getClass(), build.getPom().name);
+		getConsole().title(getClass(), build.getPom().name);
 		
 		build.getSolver().loadDependency(new Dependency("mx:freemarker"));
 		build.getSolver().loadDependency(new Dependency("mx:markdownpapers"));
@@ -163,7 +163,7 @@ public class MxDoc extends MxTask {
 			try {
 				FileUtils.copy(doc.outputFolder, doc.logo.getFile());
 			} catch (IOException e) {
-				build.getConsole().error(e, "Failed to copy logo file!");
+				getConsole().error(e, "Failed to copy logo file!");
 			}
 		}
 		
@@ -171,7 +171,7 @@ public class MxDoc extends MxTask {
 			try {
 				FileUtils.copy(doc.outputFolder, doc.favicon.getFile());
 			} catch (IOException e) {
-				build.getConsole().error(e, "Failed to copy favicon file!");
+				getConsole().error(e, "Failed to copy favicon file!");
 			}
 		}
 		
@@ -231,7 +231,7 @@ public class MxDoc extends MxTask {
 			LessUtils.compile(new File(outputFolder, "bootstrap/css/bootstrap.less"),
 					new File(outputFolder, "bootstrap/css/bootstrap.css"), false);
 		} catch (Exception e) {
-			build.getConsole().error(e,  "Failed to compile LESS!");
+			getConsole().error(e,  "Failed to compile LESS!");
 		}
 	}
 	

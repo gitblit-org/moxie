@@ -45,7 +45,7 @@ public class MxGhPages extends MxGitTask {
 	@Override
 	public void execute() throws org.apache.tools.ant.BuildException {
 		Build build = getBuild();
-		build.getConsole().title(getClass());
+		getConsole().title(getClass());
 		loadDependency(build);
 
 		if (sourceFolder == null) {

@@ -106,18 +106,17 @@ public class MxInit extends MxTask {
 			
 			build.setup();
 			
-			console = build.getConsole();
 			if (isVerbose()) {
-				console.separator();
-				console.log(getProject().getProperty("ant.version"));
-				console.log("Moxie ant properties", getProject().getProperty("ant.version"));
+				getConsole().separator();
+				getConsole().log(getProject().getProperty("ant.version"));
+				getConsole().log("Moxie ant properties", getProject().getProperty("ant.version"));
 			}
 
 			Pom pom = build.getPom();
 			
 			if (isVerbose()) {
-				console.separator();
-				console.log("string properties");
+				getConsole().separator();
+				getConsole().log("string properties");
 			}
 			
 			setProjectProperty(Key.name, pom.name);
@@ -135,8 +134,8 @@ public class MxInit extends MxTask {
 			setProperty(Key.reportsFolder, build.getReportsFolder().toString());
 
 			if (isVerbose()) {
-				console.separator();
-				console.log("path references");
+				getConsole().separator();
+				getConsole().log("path references");
 			}
 			
 			setSourcepath(Key.compile_sourcepath, build, Scope.compile);

@@ -43,7 +43,7 @@ public class MxInstall extends MxTask {
 		File moxieFile = build.getSolver().getMoxieCache().getArtifact(asDependency, asDependency.type);
 		File destinationFolder = moxieFile.getParentFile();
 		
-		build.getConsole().title(getClass(), artifact);
+		getConsole().title(getClass(), artifact);
 
 		FileSet sourceFileset = new FileSet();
 		sourceFileset.setProject(getProject());
@@ -60,13 +60,13 @@ public class MxInstall extends MxTask {
 		copy.execute();
 
 		// output pom file
-		build.getConsole().log("generating pom for {0}", artifact);
+		getConsole().log("generating pom for {0}", artifact);
 		File pomFile = new File(destinationFolder, artifact + ".pom");
 		FileUtils.writeContent(pomFile, pom.toXML());
-		build.getConsole().debug(1, "wrote {0}", pomFile);
+		getConsole().debug(1, "wrote {0}", pomFile);
 		
 		// calculate checksums for each file
-		build.getConsole().log("calculating checksums for installed artifacts");
+		getConsole().log("calculating checksums for installed artifacts");
 		FileSet repoSet = new FileSet();
 		repoSet.setProject(getProject());
 		repoSet.setDir(destinationFolder);
@@ -81,13 +81,13 @@ public class MxInstall extends MxTask {
 			String sha1 = StringUtils.getSHA1(bytes);
 			File sha1File = new File(destinationFolder, file.getFile().getName() + ".sha1");
 			FileUtils.writeContent(sha1File, sha1);
-			build.getConsole().debug(1, "wrote {0}", sha1File);
+			getConsole().debug(1, "wrote {0}", sha1File);
 
 			// calculate the MD5 hash of the content and save result
 			String md5 = StringUtils.getMD5(bytes);
 			File md5File = new File(destinationFolder, file.getFile().getName() + ".md5");
 			FileUtils.writeContent(md5File, md5);
-			build.getConsole().debug(1, "wrote {0}", md5File);
+			getConsole().debug(1, "wrote {0}", md5File);
 		}
 	}
 }

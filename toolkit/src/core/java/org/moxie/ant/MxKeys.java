@@ -52,17 +52,17 @@ public class MxKeys extends MxTask {
 		Build build = getBuild();
 		
 		if (outputFolder == null) {
-			build.getConsole().error("Please specify an output folder!");
+			getConsole().error("Please specify an output folder!");
 			throw new RuntimeException();
 		}
 
 		if (className == null) {
-			build.getConsole().error("Please specify an output classname!");
+			getConsole().error("Please specify an output classname!");
 			throw new RuntimeException();
 		}
 		
 		if (propertiesFile == null) {
-			build.getConsole().error("Please specify an input properties file!");
+			getConsole().error("Please specify an input properties file!");
 			throw new RuntimeException();
 		}
 
@@ -98,10 +98,10 @@ public class MxKeys extends MxTask {
 			FileWriter fw = new FileWriter(file, false);
 			fw.write(root.generateClass(className));
 			fw.close();
-			build.getConsole().title(getClass(), className);
-			build.getConsole().log("{0} generated from {1}", file, propertiesFile);
+			getConsole().title(getClass(), className);
+			getConsole().log("{0} generated from {1}", file, propertiesFile);
 		} catch (Throwable t) {
-			build.getConsole().error(t);
+			getConsole().error(t);
 		}
 	}
 	

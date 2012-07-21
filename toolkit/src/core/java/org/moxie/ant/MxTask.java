@@ -30,7 +30,7 @@ import org.moxie.utils.StringUtils;
 
 public abstract class MxTask extends Task {
 
-	protected Console console = new Console();
+	private Console console;
 
 	private Boolean verbose;
 
@@ -60,6 +60,18 @@ public abstract class MxTask extends Task {
 		return build;
 	}
 
+	protected Console getConsole() {
+		if (console == null) {
+			Build build = getBuild();
+			if (build == null) {
+				console = new Console();
+			} else {
+				console = build.getConsole();
+			}
+		}
+		return console;
+	}
+
 	protected void setProperty(Key prop, String value) {
 		if (!StringUtils.isEmpty(value)) {
 			getProject().setProperty(prop.propId(), value);
@@ -84,12 +96,12 @@ public abstract class MxTask extends Task {
 			int indent = 26;
 			if (split) {
 				String [] paths = value.split(File.pathSeparator);
-				console.key(StringUtils.leftPad(key, indent, ' '), paths[0]);
+				getConsole().key(StringUtils.leftPad(key, indent, ' '), paths[0]);
 				for (int i = 1; i < paths.length; i++) {
-					console.key(StringUtils.leftPad("", indent, ' '), paths[i]);	
+					getConsole().key(StringUtils.leftPad("", indent, ' '), paths[i]);	
 				}
 			} else {
-				console.key(StringUtils.leftPad(key, indent, ' '), value);
+				getConsole().key(StringUtils.leftPad(key, indent, ' '), value);
 			}
 		}
 	}
@@ -105,7 +117,7 @@ public abstract class MxTask extends Task {
 				os.write(buffer, 0, len);
 			}			
 		} catch (Exception e) {
-			console.error(e, "Can't extract {0}!", resource);
+			getConsole().error(e, "Can't extract {0}!", resource);
 		}
 		File file = new File(outputFolder, resource);
 		file.getParentFile().mkdirs();

@@ -40,7 +40,7 @@ public class MxReport extends MxTask {
 	
 	public void execute() {
 		Build build = getBuild();		
-		build.getConsole().title(getClass(), build.getPom().getCoordinates());
+		getConsole().title(getClass(), build.getPom().getCoordinates());
 
 		Scope [] scopes;
 		if (scope == null) {
@@ -55,16 +55,16 @@ public class MxReport extends MxTask {
 				continue;
 			}
 
-			sb.append(build.getConsole().scope(scope, dependencies.size()));
+			sb.append(getConsole().scope(scope, dependencies.size()));
 			sb.append('\n');
 			for (Dependency dep : dependencies) {
 				Pom depPom = build.getSolver().getPom(dep);
-				sb.append(build.getConsole().license(dep, depPom));
+				sb.append(getConsole().license(dep, depPom));
 			}
 		}
 		if (destFile != null) {
 			if (isVerbose()) {
-				build.getConsole().debug("generating {0}", destFile.getAbsolutePath());
+				getConsole().debug("generating {0}", destFile.getAbsolutePath());
 			}
 			FileUtils.writeContent(destFile, sb.toString());
 		}

@@ -35,6 +35,7 @@ import org.moxie.Build;
 import org.moxie.Scope;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
+import org.moxie.console.Console;
 import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.FileUtils;
 
@@ -174,7 +175,8 @@ public class MxJavac extends Javac {
 
 	public void execute() {
 		Build build = (Build) getProject().getReference(Key.build.refId());
-				
+		Console console = build.getConsole();
+		
 		if (scope == null) {
 			scope = Scope.defaultScope;
 		}
@@ -188,7 +190,7 @@ public class MxJavac extends Javac {
 			for (Build linkedProject: build.getSolver().getLinkedProjects()) {
 				if (builds.contains(linkedProject)) {
 					// already built, skip
-					build.getConsole().debug(1, "skipping {0}, already compiled", linkedProject.getPom().getManagementId());
+					console.debug(1, "skipping {0}, already compiled", linkedProject.getPom().getManagementId());
 					continue;
 				}
 				// add the build to the stack so we do not rebuild
@@ -204,15 +206,15 @@ public class MxJavac extends Javac {
 					subCompile.setProject(project);
 					subCompile.perform();
 				} catch (Exception e) {
-					build.getConsole().error(e);
+					console.error(e);
 					throw new BuildException(e);
 				}
 			}
 		}
 
-		build.getConsole().title(getClass(), build.getPom().getCoordinates() + ", " + scope.name());
+		console.title(getClass(), build.getPom().getCoordinates() + ", " + scope.name());
 
-		build.getConsole().debug("mxjavac configuration");
+		console.debug("mxjavac configuration");
 
 		// display specified mxjavac attributes
 		MaxmlMap attributes = build.getMxJavacAttributes();
@@ -233,16 +235,16 @@ public class MxJavac extends Javac {
 					}
 					method.setAccessible(true);
 					Object value = method.invoke(this, (Object[]) null);
-					build.getConsole().debug(1, "{0} = {1}", attrib, value);
+					console.debug(1, "{0} = {1}", attrib, value);
 				}			
 			} catch (Exception e) {
-				build.getConsole().error(e);
+				console.error(e);
 				throw new BuildException("failed to get mx:Javac attributes!", e);
 			}
 		}
 		
 		// project folder
-		build.getConsole().debug(1, "projectdir = {0}", build.getProjectFolder());
+		console.debug(1, "projectdir = {0}", build.getProjectFolder());
 
 		// create sourcepath
 		Path sources = createSrc();
@@ -250,11 +252,11 @@ public class MxJavac extends Javac {
 			PathElement element = sources.createPathElement();
 			element.setLocation(file);
 		}
-		build.getConsole().debug(1, "sources = {0}", sources);
+		console.debug(1, "sources = {0}", sources);
 
 		// set output folder
 		setDestdir(build.getOutputFolder(scope));
-		build.getConsole().debug(1, "destdir = {0}", getDestdir());
+		console.debug(1, "destdir = {0}", getDestdir());
 		
 		// create classpath
 		Path classpath = createClasspath();
@@ -271,11 +273,11 @@ public class MxJavac extends Javac {
 			PathElement element = classpath.createPathElement();
 			element.setLocation(subbuild.getOutputFolder(Scope.compile));
 		}
-		build.getConsole().debug(1, "classpath = {0}", classpath);
+		console.debug(1, "classpath = {0}", classpath);
 				
 		if (clean) {
 			// clean the output folder before compiling
-			build.getConsole().log("Cleaning {0}", getDestdir().getAbsolutePath());
+			console.log("Cleaning {0}", getDestdir().getAbsolutePath());
 			FileUtils.delete(getDestdir());
 		}
 		
@@ -286,7 +288,7 @@ public class MxJavac extends Javac {
 		setUpdatedProperty(prop);
 		super.execute();
 		if (getProject().getProperty(prop) == null) {
-			build.getConsole().log(1, "compiled classes are up-to-date");
+			console.log(1, "compiled classes are up-to-date");
 		}
 		
 		// optionally copy resources from source folders
@@ -298,7 +300,7 @@ public class MxJavac extends Javac {
 			copy.setVerbose(getVerbose());
 
 			if (getVerbose()) {
-				build.getConsole().log("copying resources => {0}", getDestdir());
+				console.log("copying resources => {0}", getDestdir());
 			}
 
 			if (excludes == null) {
@@ -319,7 +321,7 @@ public class MxJavac extends Javac {
 					}
 					copy.add(set);
 					if (getVerbose()) {
-						build.getConsole().log("adding resource path {0}", path);
+						console.log("adding resource path {0}", path);
 					}
 				}
 			}

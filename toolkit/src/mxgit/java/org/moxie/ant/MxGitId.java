@@ -41,15 +41,15 @@ public class MxGitId extends MxGitTask {
 		}
 		String hashid = JGitUtils.getCommitId(repositoryFolder);
 
-		build.getConsole().title(getClass(), repositoryFolder.getAbsolutePath());
+		getConsole().title(getClass(), repositoryFolder.getAbsolutePath());
 
 		setVerbose(false);
 		if (StringUtils.isEmpty(property)) {
 			setProperty(Key.commit, hashid);
-			build.getConsole().key(Key.commit.propId(), hashid);
+			getConsole().key(Key.commit.propId(), hashid);
 		} else {
 			setProperty(property, hashid);
-			build.getConsole().key(property, hashid);
+			getConsole().key(property, hashid);
 		}		
 	}
 }
