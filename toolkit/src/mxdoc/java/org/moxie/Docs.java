@@ -90,7 +90,7 @@ public class Docs {
 						try {
 							FileUtils.copy(new File(doc.outputFolder, "tests"), testOutput);
 						} catch (IOException e) {
-							build.console.error(e, "failed to copy test report");
+							build.getConsole().error(e, "failed to copy test report");
 						}
 						Link testReport = link.createPage();
 						testReport.setName("unit tests");
@@ -103,7 +103,7 @@ public class Docs {
 						try {
 							FileUtils.copy(new File(doc.outputFolder, "coverage"), coverageOutput);
 						} catch (IOException e) {
-							build.console.error(e, "failed to copy coverage report");
+							build.getConsole().error(e, "failed to copy coverage report");
 						}
 						Link coverageReport = link.createPage();
 						coverageReport.setName("code coverage");
@@ -115,12 +115,12 @@ public class Docs {
 		}
 		
 		if (verbose) {
-			doc.describe(build.console);
+			doc.describe(build.getConsole());
 		}
 		
 		injectPrettify(doc, doc.injectPrettify, verbose);
 		if (verbose) {
-			build.console.separator();
+			build.getConsole().separator();
 		}
 		
 		generatePages(build, doc, verbose);
@@ -143,10 +143,10 @@ public class Docs {
 			}
 		}
 
-		String header = generateHeader(projectName, build.project, doc);
+		String header = generateHeader(projectName, build.getProjectConfig(), doc);
 		String footer = generateFooter(doc);
 
-		build.console.log("Generating HTML from Markdown files in {0} ", doc.sourceFolder.getAbsolutePath());
+		build.getConsole().log("Generating HTML from Markdown files in {0} ", doc.sourceFolder.getAbsolutePath());
 
 		for (Link link : allLinks) {
 			if (link.isMenu || link.isDivider || link.isLink) {
@@ -155,7 +155,7 @@ public class Docs {
 			}
 			try {
 				String fileName = getHref(link);
-				build.console.log(1, "{0} => {1}", link.src, fileName);
+				build.getConsole().log(1, "{0} => {1}", link.src, fileName);
 				String content;
 				List<Section> sections = new ArrayList<Section>();
 
@@ -398,7 +398,7 @@ public class Docs {
 				writer.write("\n</html>");
 				writer.close();
 			} catch (Throwable t) {
-				build.console.error(t, "Failed to transform " + link.src);
+				build.getConsole().error(t, "Failed to transform " + link.src);
 			}
 		}
 	}

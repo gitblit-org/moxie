@@ -154,7 +154,7 @@ public class MxJar extends GenJar {
 	private void configure(Build build) {
 		MaxmlMap attributes = build.getMxJarAttributes();
 		if (attributes == null) {
-			build.console.error("mx:Jar attributes are null!");
+			build.getConsole().error("mx:Jar attributes are null!");
 			return;
 		}
 		if (attributes.containsKey(Key.excludes.name())) {
@@ -174,7 +174,7 @@ public class MxJar extends GenJar {
 				// attributes
 				Method method = methods.get("set" + key.toLowerCase());
 				if (method == null) {					
-					build.console.error("unknown mx:Jar attribute {0}", key);
+					build.getConsole().error("unknown mx:Jar attribute {0}", key);
 					continue;
 				}
 				method.setAccessible(true);
@@ -192,7 +192,7 @@ public class MxJar extends GenJar {
 				method.invoke(this, value);
 			}			
 		} catch (Exception e) {
-			build.console.error(e);
+			build.getConsole().error(e);
 			throw new BuildException("failed to set mx:Jar attributes!", e);
 		}
 	}
@@ -200,7 +200,7 @@ public class MxJar extends GenJar {
 	@Override
 	public void execute() throws BuildException {
 		build = (Build) getProject().getReference(Key.build.refId());
-		console = build.console;
+		console = build.getConsole();
 		
 		// automatic manifest entries from Moxie metadata
 		configureManifest(mft);
@@ -273,9 +273,9 @@ public class MxJar extends GenJar {
 			set.setExcludes(excludes);
 		}
 		
-		build.console.title(getClass(), destFile.getName());
+		build.getConsole().title(getClass(), destFile.getName());
 		
-		build.console.debug("mxjar configuration");
+		build.getConsole().debug("mxjar configuration");
 
 		// display specified mxjar attributes
 		MaxmlMap attributes = build.getMxJarAttributes();
@@ -296,10 +296,10 @@ public class MxJar extends GenJar {
 					}
 					method.setAccessible(true);
 					Object value = method.invoke(this, (Object[]) null);
-					build.console.debug(1, "{0} = {1}", attrib, value);
+					build.getConsole().debug(1, "{0} = {1}", attrib, value);
 				}			
 			} catch (Exception e) {
-				build.console.error(e);
+				build.getConsole().error(e);
 				throw new BuildException("failed to get mx:Jar attributes!", e);
 			}
 		}
@@ -307,8 +307,8 @@ public class MxJar extends GenJar {
 		long start = System.currentTimeMillis();
 		super.execute();
 
-		build.console.log(1, destFile.getAbsolutePath());
-		build.console.log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
+		build.getConsole().log(1, destFile.getAbsolutePath());
+		build.getConsole().log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
 		
 		/*
 		 * Build sources jar
@@ -345,7 +345,7 @@ public class MxJar extends GenJar {
 			List<File> folders = build.getSourceFolders(Scope.compile);
 			for (String className : resolvedLocal) {
 				String sourceName = className.substring(0, className.length() - ".class".length()).replace('.', '/') + ".java";
-				build.console.debug(sourceName);
+				build.getConsole().debug(sourceName);
 				for (File folder : folders) {
 					File file = new File(folder, sourceName);
 					if (file.exists()) {
@@ -358,7 +358,7 @@ public class MxJar extends GenJar {
 						}
 						String packagePath = FileUtils.getRelativePath(folder, file.getParentFile());
 						packageResources.get(folder).add(packagePath + "/*");
-						build.console.debug(1, file.getAbsolutePath());
+						build.getConsole().debug(1, file.getAbsolutePath());
 						break;
 					}
 				}
@@ -379,8 +379,8 @@ public class MxJar extends GenJar {
 					}
 					includes.setLength(includes.length() - 1);
 					set.setIncludes(includes.toString());
-					build.console.debug("adding resource fileset {0}", entry.getKey());
-					build.console.debug(1, "includes={0}", includes.toString());
+					build.getConsole().debug("adding resource fileset {0}", entry.getKey());
+					build.getConsole().debug(1, "includes={0}", includes.toString());
 					jar.add(set);
 				}
 			}
@@ -391,14 +391,14 @@ public class MxJar extends GenJar {
 				configureManifest(mft);
 				jar.addConfiguredManifest(mft);
 			} catch (ManifestException e) {
-				build.console.error(e);
+				build.getConsole().error(e);
 			}
 			
 			start = System.currentTimeMillis();			
 			jar.execute();
 						
-			build.console.log(1, sourcesFile.getAbsolutePath());
-			build.console.log(1, "{0} KB, generated in {1} ms", (sourcesFile.length()/1024), System.currentTimeMillis() - start);
+			build.getConsole().log(1, sourcesFile.getAbsolutePath());
+			build.getConsole().log(1, "{0} KB, generated in {1} ms", (sourcesFile.length()/1024), System.currentTimeMillis() - start);
 		}
 	}
 	

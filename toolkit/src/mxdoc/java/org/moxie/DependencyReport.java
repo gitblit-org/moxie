@@ -23,7 +23,7 @@ public class DependencyReport implements MoxieReport {
 		// define tab titles
 		boolean first = true;
 		for (Scope scope : new Scope[] { Scope.compile, Scope.runtime, Scope.test, Scope.build }) {
-			Set<Dependency> dependencies = build.getDependencies(scope);
+			Set<Dependency> dependencies = build.getSolver().getDependencies(scope);
 			if (dependencies.size() == 0) {
 				continue;
 			}
@@ -42,7 +42,7 @@ public class DependencyReport implements MoxieReport {
 		// define tab content
 		first = true;
 		for (Scope scope : new Scope[] { Scope.compile, Scope.runtime, Scope.test, Scope.build }) {
-			Set<Dependency> dependencies = build.getDependencies(scope);
+			Set<Dependency> dependencies = build.getSolver().getDependencies(scope);
 			if (dependencies.size() == 0) {
 				continue;
 			}
@@ -54,9 +54,9 @@ public class DependencyReport implements MoxieReport {
 			sb.append(format("<thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th><th>{4}</th></tr></thead>\n", "ring", "artifact", "size", "links", "license"));
 			sb.append("<tbody>\n");
 			for (Dependency dep : dependencies) {
-				File file = build.getArtifact(dep);
+				File file = build.getSolver().getArtifact(dep);
 				String size = file.length()/1024L + " kB";
-				Pom depPom = build.getPom(dep);
+				Pom depPom = build.getSolver().getPom(dep);
 				String badge;
 				switch (dep.ring){
 					case 1:

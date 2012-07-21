@@ -119,7 +119,7 @@ public class MxJavac extends Javac {
 	private void configure(Build build) {
 		MaxmlMap attributes = build.getMxJavacAttributes();
 		if (attributes == null) {
-			build.console.error("mx:Javac attributes are null!");
+			build.getConsole().error("mx:Javac attributes are null!");
 			return;
 		}
 		if (attributes.containsKey(Key.excludes.name())) {
@@ -149,7 +149,7 @@ public class MxJavac extends Javac {
 				// attributes
 				Method method = methods.get("set" + key.toLowerCase());
 				if (method == null) {					
-					build.console.error("unknown mx:Javac attribute {0}", key);
+					build.getConsole().error("unknown mx:Javac attribute {0}", key);
 					continue;
 				}
 				method.setAccessible(true);
@@ -167,7 +167,7 @@ public class MxJavac extends Javac {
 				method.invoke(this, value);
 			}			
 		} catch (Exception e) {
-			build.console.error(e);
+			build.getConsole().error(e);
 			throw new BuildException("failed to set mx:Javac attributes!", e);
 		}
 	}
@@ -185,10 +185,10 @@ public class MxJavac extends Javac {
 		}
 		
 		if (compileLinkedProjects) {
-			for (Build linkedProject: build.getLinkedProjects()) {
+			for (Build linkedProject: build.getSolver().getLinkedProjects()) {
 				if (builds.contains(linkedProject)) {
 					// already built, skip
-					build.console.debug(1, "skipping {0}, already compiled", linkedProject.getPom().getManagementId());
+					build.getConsole().debug(1, "skipping {0}, already compiled", linkedProject.getPom().getManagementId());
 					continue;
 				}
 				// add the build to the stack so we do not rebuild
@@ -204,15 +204,15 @@ public class MxJavac extends Javac {
 					subCompile.setProject(project);
 					subCompile.perform();
 				} catch (Exception e) {
-					build.console.error(e);
+					build.getConsole().error(e);
 					throw new BuildException(e);
 				}
 			}
 		}
 
-		build.console.title(getClass(), build.getPom().getCoordinates() + ", " + scope.name());
+		build.getConsole().title(getClass(), build.getPom().getCoordinates() + ", " + scope.name());
 
-		build.console.debug("mxjavac configuration");
+		build.getConsole().debug("mxjavac configuration");
 
 		// display specified mxjavac attributes
 		MaxmlMap attributes = build.getMxJavacAttributes();
@@ -233,16 +233,16 @@ public class MxJavac extends Javac {
 					}
 					method.setAccessible(true);
 					Object value = method.invoke(this, (Object[]) null);
-					build.console.debug(1, "{0} = {1}", attrib, value);
+					build.getConsole().debug(1, "{0} = {1}", attrib, value);
 				}			
 			} catch (Exception e) {
-				build.console.error(e);
+				build.getConsole().error(e);
 				throw new BuildException("failed to get mx:Javac attributes!", e);
 			}
 		}
 		
 		// project folder
-		build.console.debug(1, "projectdir = {0}", build.getProjectFolder());
+		build.getConsole().debug(1, "projectdir = {0}", build.getProjectFolder());
 
 		// create sourcepath
 		Path sources = createSrc();
@@ -250,11 +250,11 @@ public class MxJavac extends Javac {
 			PathElement element = sources.createPathElement();
 			element.setLocation(file);
 		}
-		build.console.debug(1, "sources = {0}", sources);
+		build.getConsole().debug(1, "sources = {0}", sources);
 
 		// set output folder
 		setDestdir(build.getOutputFolder(scope));
-		build.console.debug(1, "destdir = {0}", getDestdir());
+		build.getConsole().debug(1, "destdir = {0}", getDestdir());
 		
 		// create classpath
 		Path classpath = createClasspath();
@@ -263,19 +263,19 @@ public class MxJavac extends Javac {
 			PathElement element = classpath.createPathElement();
 			element.setLocation(build.getOutputFolder(Scope.compile));
 		}
-		for (File file : build.getClasspath(scope)) {
+		for (File file : build.getSolver().getClasspath(scope)) {
 			PathElement element = classpath.createPathElement();
 			element.setLocation(file);
 		}
-		for (Build subbuild : build.getLinkedProjects()) {
+		for (Build subbuild : build.getSolver().getLinkedProjects()) {
 			PathElement element = classpath.createPathElement();
 			element.setLocation(subbuild.getOutputFolder(Scope.compile));
 		}
-		build.console.debug(1, "classpath = {0}", classpath);
+		build.getConsole().debug(1, "classpath = {0}", classpath);
 				
 		if (clean) {
 			// clean the output folder before compiling
-			build.console.log("Cleaning {0}", getDestdir().getAbsolutePath());
+			build.getConsole().log("Cleaning {0}", getDestdir().getAbsolutePath());
 			FileUtils.delete(getDestdir());
 		}
 		
@@ -286,7 +286,7 @@ public class MxJavac extends Javac {
 		setUpdatedProperty(prop);
 		super.execute();
 		if (getProject().getProperty(prop) == null) {
-			build.console.log(1, "compiled classes are up-to-date");
+			build.getConsole().log(1, "compiled classes are up-to-date");
 		}
 		
 		// optionally copy resources from source folders
@@ -298,7 +298,7 @@ public class MxJavac extends Javac {
 			copy.setVerbose(getVerbose());
 
 			if (getVerbose()) {
-				build.console.log("copying resources => {0}", getDestdir());
+				build.getConsole().log("copying resources => {0}", getDestdir());
 			}
 
 			if (excludes == null) {
@@ -319,7 +319,7 @@ public class MxJavac extends Javac {
 					}
 					copy.add(set);
 					if (getVerbose()) {
-						build.console.log("adding resource path {0}", path);
+						build.getConsole().log("adding resource path {0}", path);
 					}
 				}
 			}

@@ -147,10 +147,10 @@ public class MxDoc extends MxTask {
 			doc.outputFolder = build.getSiteOutputFolder();
 		}
 		
-		build.console.title(getClass(), build.getPom().name);
+		build.getConsole().title(getClass(), build.getPom().name);
 		
-		build.loadDependency(new Dependency("mx:freemarker"));
-		build.loadDependency(new Dependency("mx:markdownpapers"));
+		build.getSolver().loadDependency(new Dependency("mx:freemarker"));
+		build.getSolver().loadDependency(new Dependency("mx:markdownpapers"));
 
 		if (doc.outputFolder.exists()) {
 			FileUtils.delete(doc.outputFolder);
@@ -163,7 +163,7 @@ public class MxDoc extends MxTask {
 			try {
 				FileUtils.copy(doc.outputFolder, doc.logo.getFile());
 			} catch (IOException e) {
-				build.console.error(e, "Failed to copy logo file!");
+				build.getConsole().error(e, "Failed to copy logo file!");
 			}
 		}
 		
@@ -171,7 +171,7 @@ public class MxDoc extends MxTask {
 			try {
 				FileUtils.copy(doc.outputFolder, doc.favicon.getFile());
 			} catch (IOException e) {
-				build.console.error(e, "Failed to copy favicon file!");
+				build.getConsole().error(e, "Failed to copy favicon file!");
 			}
 		}
 		
@@ -224,20 +224,20 @@ public class MxDoc extends MxTask {
 		File file = new File(outputFolder, "bootstrap/css/custom.less");
 		FileUtils.writeContent(file, less);
 
-		build.loadDependency(new Dependency("mx:rhino"));
+		build.getSolver().loadDependency(new Dependency("mx:rhino"));
 
 		// compile Bootstrap and custom.less overrides into css
 		try {
 			LessUtils.compile(new File(outputFolder, "bootstrap/css/bootstrap.less"),
 					new File(outputFolder, "bootstrap/css/bootstrap.css"), false);
 		} catch (Exception e) {
-			build.console.error(e,  "Failed to compile LESS!");
+			build.getConsole().error(e,  "Failed to compile LESS!");
 		}
 	}
 	
 	void writeDependenciesAsJson() {
 		DepNode root = new DepNode(new Dependency(getBuild().getPom().getCoordinates()));
-		Set<Dependency> dependencies = getBuild().getDependencies(Scope.test);
+		Set<Dependency> dependencies = getBuild().getSolver().getDependencies(Scope.test);
 		DepNode currRoot = root;
 		for (Dependency dep : dependencies) {
 			if (currRoot.dep.ring == dep.ring) {

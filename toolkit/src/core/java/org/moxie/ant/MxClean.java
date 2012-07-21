@@ -62,7 +62,7 @@ public class MxClean extends MxTask {
 
 		Build build = getBuild();
 		File dir = build.getOutputFolder(scope);
-		build.console.log("cleaning {0}", dir.getAbsolutePath());
+		build.getConsole().log("cleaning {0}", dir.getAbsolutePath());
 		FileUtils.delete(dir);			
 	}
 }

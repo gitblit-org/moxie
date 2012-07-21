@@ -74,16 +74,16 @@ public class Repository {
 		return true;
 	}
 	
-	protected void verifySHA1(Build build, String expectedSHA1, DownloadData data) {
+	protected void verifySHA1(Solver solver, String expectedSHA1, DownloadData data) {
 		if (calculateSHA1()) {
 			String calculatedSHA1 = StringUtils.getSHA1(data.content);
 			if (!StringUtils.isEmpty(expectedSHA1) && !calculatedSHA1.equals(expectedSHA1)) {
 				String message = MessageFormat.format("SHA1 checksum mismatch for {0}\ncalculated: {1}\nretrieved: {2}", data.url.toExternalForm(), calculatedSHA1, expectedSHA1);
 				for (String line : message.split("\n")) {
-					build.console.warn(line);
+					solver.getConsole().warn(line);
 				}
-				if (build.isFailOnChecksumError()) {
-					build.console.warn(MessageFormat.format("specify \"-D{0}=false\" when running Ant to disable checksum verification.", Toolkit.MX_ENFORCECHECKSUMS));
+				if (solver.isFailOnChecksumError()) {
+					solver.getConsole().warn(MessageFormat.format("specify \"-D{0}=false\" when running Ant to disable checksum verification.", Toolkit.MX_ENFORCECHECKSUMS));
 					throw new RuntimeException(message);
 				}
 			}
@@ -118,17 +118,17 @@ public class Repository {
 		return new URL(url);
 	}
 
-	protected String getSHA1(Build build, Dependency dep, String ext) {
+	protected String getSHA1(Solver solver, Dependency dep, String ext) {
 		try {
 			String extsha1 = ext + ".sha1";
-			File hashFile = build.getMoxieCache().getArtifact(dep, extsha1);
+			File hashFile = solver.getMoxieCache().getArtifact(dep, extsha1);
 			if (hashFile.exists()) {
 				// read cached sha1
 				return FileUtils.readContent(hashFile, "\n").trim();
 			}
 
 			URL url = getURL(dep, extsha1);
-			DownloadData data = download(build, url);
+			DownloadData data = download(solver, url);
 			String content = new String(data.content, "UTF-8").trim();
 			String hashCode = content.substring(0, 40);
 			
@@ -136,7 +136,7 @@ public class Repository {
 			dep.setOrigin(repositoryUrl);
 			
 			// cache this sha1 file
-			File file = build.getMoxieCache().writeArtifact(dep, extsha1, hashCode);
+			File file = solver.getMoxieCache().writeArtifact(dep, extsha1, hashCode);
 			file.setLastModified(data.lastModified);
 			return hashCode;
 		} catch (FileNotFoundException t) {
@@ -145,25 +145,25 @@ public class Repository {
 			if (t.getMessage().contains("400") || t.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				build.console.error(t, "Error retrieving SHA1 for {0}", dep);
+				solver.getConsole().error(t, "Error retrieving SHA1 for {0}", dep);
 			}
 		} catch (Throwable t) {
-			build.console.error(t, "Error retrieving SHA1 for {0}", dep);
+			solver.getConsole().error(t, "Error retrieving SHA1 for {0}", dep);
 		}
 		return null;
 	}
 	
-	protected String getMetadataSHA1(Build build, Dependency dep) {
+	protected String getMetadataSHA1(Solver solver, Dependency dep) {
 		try {
 			String extsha1 = Constants.XML + ".sha1";
-			File hashFile = build.getMoxieCache().getMetadata(dep, extsha1);
+			File hashFile = solver.getMoxieCache().getMetadata(dep, extsha1);
 			if (hashFile.exists()) {
 				// read cached sha1
 				return FileUtils.readContent(hashFile, "\n").trim();
 			}
 
 			URL url = new URL(Dependency.getMavenPath(dep, extsha1, getMetadataUrl(dep)));
-			DownloadData data = download(build, url);
+			DownloadData data = download(solver, url);
 			String content = new String(data.content, "UTF-8").trim();
 			String hashCode = content.substring(0, 40);
 
@@ -171,7 +171,7 @@ public class Repository {
 			dep.setOrigin(repositoryUrl);
 
 			// cache this sha1 file
-			File file = build.getMoxieCache().writeMetadata(dep, extsha1, hashCode);
+			File file = solver.getMoxieCache().writeMetadata(dep, extsha1, hashCode);
 			file.setLastModified(data.lastModified);
 			return hashCode;
 		} catch (FileNotFoundException t) {
@@ -180,18 +180,18 @@ public class Repository {
 			if (t.getMessage().contains("400") || t.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				build.console.error(t, "Error retrieving metadata SHA1 for {0}", dep);
+				solver.getConsole().error(t, "Error retrieving metadata SHA1 for {0}", dep);
 			}
 		} catch (Throwable t) {
-			build.console.error(t, "Error retrieving metadata SHA1 for {0}", dep);
+			solver.getConsole().error(t, "Error retrieving metadata SHA1 for {0}", dep);
 		}
 		return null;
 	}
 	
-	public File downloadMetadata(Build build, Dependency dep) {
+	public File downloadMetadata(Solver solver, Dependency dep) {
 		String expectedSHA1 = "";
 		if (calculateSHA1()) {
-			expectedSHA1 = getMetadataSHA1(build, dep);
+			expectedSHA1 = getMetadataSHA1(solver, dep);
 			if (expectedSHA1 == null) {
 				// there is no SHA1 for this artifact
 				// check for the artifact just-in-case we can download w/o
@@ -208,12 +208,12 @@ public class Repository {
 		
 		try {
 			URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl(dep)));
-			build.console.download(url.toString());
-			DownloadData data = download(build, url);
-			verifySHA1(build, expectedSHA1, data);
+			solver.getConsole().download(url.toString());
+			DownloadData data = download(solver, url);
+			verifySHA1(solver, expectedSHA1, data);
 			
 			Metadata oldMetadata;
-			File file = build.getMoxieCache().getMetadata(dep, Constants.XML);
+			File file = solver.getMoxieCache().getMetadata(dep, Constants.XML);
 			if (file != null && file.exists()) {
 				oldMetadata = MetadataReader.readMetadata(file);				
 			} else {
@@ -228,42 +228,42 @@ public class Repository {
 			dep.setOrigin(repositoryUrl);
 
 			// save merged metadata to the artifact cache
-			file = build.getMoxieCache().writeMetadata(dep, Constants.XML, newMetadata.toXML());
+			file = solver.getMoxieCache().writeMetadata(dep, Constants.XML, newMetadata.toXML());
 			file.setLastModified(data.lastModified);
 					
 			Date now = new Date();
 			if (dep.isSnapshot()) {
-				MoxieData moxiedata = build.getMoxieCache().readMoxieData(dep);
+				MoxieData moxiedata = solver.getMoxieCache().readMoxieData(dep);
 				moxiedata.setOrigin(repositoryUrl);
 				// do not set lastDownloaded for metadata retrieval
 				moxiedata.setLastChecked(now);
 				moxiedata.setLastUpdated(newMetadata.lastUpdated);
-				build.getMoxieCache().writeMoxieData(dep, moxiedata);	
+				solver.getMoxieCache().writeMoxieData(dep, moxiedata);	
 			} else {				
 				// update the Moxie RELEASE metadata
 				Dependency versions = DeepCopier.copy(dep);
 				versions.version = Constants.RELEASE;
 				
-				MoxieData moxiedata = build.getMoxieCache().readMoxieData(versions);
+				MoxieData moxiedata = solver.getMoxieCache().readMoxieData(versions);
 				moxiedata.setOrigin(repositoryUrl);
 				// do not set lastDownloaded for metadata retrieval
 				moxiedata.setLastChecked(now);
 				moxiedata.setLastUpdated(now);
 				moxiedata.setRELEASE(newMetadata.release);
 				moxiedata.setLATEST(newMetadata.latest);
-				build.getMoxieCache().writeMoxieData(dep, moxiedata);
+				solver.getMoxieCache().writeMoxieData(dep, moxiedata);
 				
 				// update the Moxie LATEST metadata
 				versions.version = Constants.LATEST;
 				
-				moxiedata = build.getMoxieCache().readMoxieData(versions);
+				moxiedata = solver.getMoxieCache().readMoxieData(versions);
 				moxiedata.setOrigin(repositoryUrl);
 				// do not set lastDownloaded for metadata retrieval
 				moxiedata.setLastChecked(now);
 				moxiedata.setLastUpdated(now);
 				moxiedata.setRELEASE(newMetadata.release);
 				moxiedata.setLATEST(newMetadata.latest);
-				build.getMoxieCache().writeMoxieData(dep, moxiedata);	
+				solver.getMoxieCache().writeMoxieData(dep, moxiedata);	
 			}
 			return file;
 		} catch (MalformedURLException m) {
@@ -274,16 +274,16 @@ public class Repository {
 			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", build.moxie.file.getAbsolutePath()), e);
+				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuild().getMoxieConfig().file.getAbsolutePath()), e);
 			}
 		}
 		return null;
 	}
 
-	public File download(Build build, Dependency dep, String ext) {
+	public File download(Solver solver, Dependency dep, String ext) {
 		String expectedSHA1 = "";
 		if (calculateSHA1()) {
-			expectedSHA1 = getSHA1(build, dep, ext);
+			expectedSHA1 = getSHA1(solver, dep, ext);
 			if (expectedSHA1 == null) {
 				// there is no SHA1 for this artifact
 				// check for the artifact just-in-case we can download w/o
@@ -300,24 +300,24 @@ public class Repository {
 		
 		try {
 			URL url = getURL(dep, ext);
-			build.console.download(url.toString());
-			DownloadData data = download(build, url);
-			verifySHA1(build, expectedSHA1, data);
+			solver.getConsole().download(url.toString());
+			DownloadData data = download(solver, url);
+			verifySHA1(solver, expectedSHA1, data);
 
 			// set origin so that we write the artifact into the proper cache
 			dep.setOrigin(repositoryUrl);
 
 			// save to the artifact cache
-			File file = build.getMoxieCache().writeArtifact(dep, ext, data.content);
+			File file = solver.getMoxieCache().writeArtifact(dep, ext, data.content);
 			file.setLastModified(data.lastModified);
 			
 			// update Moxie metadata
-			MoxieData moxiedata = build.getMoxieCache().readMoxieData(dep);
+			MoxieData moxiedata = solver.getMoxieCache().readMoxieData(dep);
 			moxiedata.setOrigin(repositoryUrl);
 			
 			Date now = new Date();
 			if (Constants.POM.equals(ext)) {
-				Pom pom = PomReader.readPom(build.getMoxieCache(), file);
+				Pom pom = PomReader.readPom(solver.getMoxieCache(), file);
 				if (pom.isPOM()) {
 					// POM packaging, so no subsequent download check to mess up
 					moxiedata.setLastDownloaded(now);
@@ -334,7 +334,7 @@ public class Repository {
 					moxiedata.setLastUpdated(new Date(data.lastModified));
 				}
 			}
-			build.getMoxieCache().writeMoxieData(dep, moxiedata);
+			solver.getMoxieCache().writeMoxieData(dep, moxiedata);
 			
 			return file;
 		} catch (MalformedURLException m) {
@@ -345,20 +345,20 @@ public class Repository {
 			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", build.moxie.file.getAbsolutePath()), e);
+				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuild().getMoxieConfig().file.getAbsolutePath()), e);
 			}
 		}
 		return null;
 	}
 	
-	private DownloadData download(Build build, URL url) throws IOException {
+	private DownloadData download(Solver solver, URL url) throws IOException {
 		long lastModified = System.currentTimeMillis();
 		ByteArrayOutputStream buff = new ByteArrayOutputStream();
 
-		java.net.Proxy proxy = build.getProxy(name, repositoryUrl);
+		java.net.Proxy proxy = solver.getBuild().getProxy(name, repositoryUrl);
 		URLConnection conn = url.openConnection(proxy);
 		if (java.net.Proxy.Type.DIRECT != proxy.type()) {
-			String auth = build.getProxyAuthorization(name, repositoryUrl);
+			String auth = solver.getBuild().getProxyAuthorization(name, repositoryUrl);
 			conn.setRequestProperty("Proxy-Authorization", auth);
 		}
 		// try to get the server-specified last-modified date of this artifact

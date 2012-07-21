@@ -106,18 +106,18 @@ public class MxInit extends MxTask {
 			
 			build.setup();
 			
-			console = build.console;
+			console = build.getConsole();
 			if (isVerbose()) {
-				build.console.separator();
-				build.console.log(getProject().getProperty("ant.version"));
-				build.console.log("Moxie ant properties", getProject().getProperty("ant.version"));
+				console.separator();
+				console.log(getProject().getProperty("ant.version"));
+				console.log("Moxie ant properties", getProject().getProperty("ant.version"));
 			}
 
 			Pom pom = build.getPom();
 			
 			if (isVerbose()) {
-				build.console.separator();
-				build.console.log("string properties");
+				console.separator();
+				console.log("string properties");
 			}
 			
 			setProjectProperty(Key.name, pom.name);
@@ -135,8 +135,8 @@ public class MxInit extends MxTask {
 			setProperty(Key.reportsFolder, build.getReportsFolder().toString());
 
 			if (isVerbose()) {
-				build.console.separator();
-				build.console.log("path references");
+				console.separator();
+				console.log("path references");
 			}
 			
 			setSourcepath(Key.compile_sourcepath, build, Scope.compile);
@@ -177,7 +177,7 @@ public class MxInit extends MxTask {
 	}
 	
 	private void setClasspath(Key key, Build build, Scope scope) {
-		List<File> jars = build.getClasspath(scope);
+		List<File> jars = build.getSolver().getClasspath(scope);
 		Path cp = new Path(getProject());
 		// output folder
 		PathElement of = cp.createPathElement();
@@ -202,7 +202,7 @@ public class MxInit extends MxTask {
 	}
 	
 	private void setDependencypath(Key key, Build build, Scope scope) {
-		List<File> jars = build.getClasspath(scope);
+		List<File> jars = build.getSolver().getClasspath(scope);
 		Path cp = new Path(getProject());
 		for (File jar : jars) {
 			PathElement element = cp.createPathElement();
@@ -213,7 +213,7 @@ public class MxInit extends MxTask {
 	
 	private List<File> buildDependentProjectsClasspath(Build build) {
 		List<File> folders = new ArrayList<File>();
-		List<Build> libraryProjects = build.getLinkedProjects();
+		List<Build> libraryProjects = build.getSolver().getLinkedProjects();
 		for (Build project : libraryProjects) {
 			File outputFolder = project.getOutputFolder(Scope.compile);
 			folders.add(outputFolder);
