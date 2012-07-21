@@ -50,6 +50,7 @@ public class Solver {
 	private final Map<String, Dependency> aliases;
 	private final Map<Scope, Set<Dependency>> solutions;	
 	private final Map<Scope, List<File>> classpaths;
+	private final Set<String> registeredUrls;
 	
 	private List<Build> linkedProjects;
 	
@@ -64,6 +65,7 @@ public class Solver {
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
 		this.classpaths = new HashMap<Scope, List<File>>();
 		this.linkedProjects = new ArrayList<Build>();
+		this.registeredUrls = new HashSet<String>();
 		this.console = build.getConsole();
 
 		console.debug("building alias map");
@@ -288,6 +290,13 @@ public class Solver {
 	
 	private void retrievePOMs() {
 		console.debug("locating POMs");
+		
+		// clear registered urls
+		registeredUrls.clear();
+		for (Repository repository : build.getRepositories()) {
+			registeredUrls.add(repository.repositoryUrl);
+		}
+		
 		// retrieve POMs for all dependencies in all scopes
 		Set<Dependency> downloaded = new HashSet<Dependency>(); 
 		for (Scope scope : build.getPom().getScopes()) {
@@ -633,6 +642,13 @@ public class Solver {
 			// mark as retrieved so we do not re-retrieve
 			if (retrieved != null) {
 				retrieved.add(dependency);
+			}
+			
+			// confirm we have the repository url in our repository list
+			if (!StringUtils.isEmpty(moxiedata.getOrigin()) 
+					&& !registeredUrls.contains(moxiedata.getOrigin())) {
+				console.warn("WARNING: You must add {0} to your repositories for {1}!", 
+						moxiedata.getOrigin(), dependency.getManagementId());
 			}
 
 			try {
