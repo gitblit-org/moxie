@@ -233,6 +233,7 @@ public class MoxieCache implements IMavenCache {
 		File moxieFile = getMoxieDataFile(dep);
 		MoxieData moxiedata = new MoxieData(moxieFile);
 		moxiedata.setArtifact(dep);
+		dep.setOrigin(moxiedata.getOrigin());
 		return moxiedata;
 	}
 	

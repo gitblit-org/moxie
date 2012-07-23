@@ -602,12 +602,16 @@ public class Solver {
 			
 			if (updateRequired && isOnline()) {
 				// download artifact maven-metadata.xml
+				console.debug(1, "locating maven-metadata.xml for {0}", dependency.getManagementId());
 				for (Repository repository : config.getRepositories()) {
 					if (!repository.isMavenSource()) {
 						// skip non-Maven repositories
 						continue;
 					}
-					console.debug(1, "locating maven-metadata.xml for {0}", dependency.getManagementId());
+					if (!repository.isSource(dependency)) {
+						// try to match origins
+						continue;
+					}
 					metadataFile = repository.downloadMetadata(this, dependency);
 					if (metadataFile != null && metadataFile.exists()) {
 						// downloaded the metadata
@@ -629,12 +633,16 @@ public class Solver {
 		File pomFile = moxieCache.getArtifact(dependency, Constants.POM);
 		if ((!pomFile.exists() || (dependency.isSnapshot() && moxiedata.isRefreshRequired())) && isOnline()) {
 			// download the POM
+			console.debug(1, "locating POM for {0}", dependency.getDetailedCoordinates());
 			for (Repository repository : config.getRepositories()) {
 				if (!repository.isMavenSource()) {
 					// skip non-Maven repositories
 					continue;
 				}
-				console.debug(1, "locating POM for {0}", dependency.getDetailedCoordinates());
+				if (!repository.isSource(dependency)) {
+					// try to match origins
+					continue;
+				}
 				File retrievedFile = repository.download(this, dependency, Constants.POM);
 				if (retrievedFile != null && retrievedFile.exists()) {
 					pomFile = retrievedFile;
