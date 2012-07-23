@@ -46,7 +46,7 @@ public abstract class MxTask extends Task {
 				if (build == null) {
 					return false;
 				} else {
-					return build.isVerbose();
+					return build.getConfig().isVerbose();
 				}
 			} else {
 				verbose = Boolean.parseBoolean(mxvb);

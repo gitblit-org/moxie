@@ -274,7 +274,7 @@ public class Repository {
 			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuild().getMoxieConfig().file.getAbsolutePath()), e);
+				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuildConfig().getMoxieConfig().file.getAbsolutePath()), e);
 			}
 		}
 		return null;
@@ -345,7 +345,7 @@ public class Repository {
 			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuild().getMoxieConfig().file.getAbsolutePath()), e);
+				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuildConfig().getMoxieConfig().file.getAbsolutePath()), e);
 			}
 		}
 		return null;
@@ -355,10 +355,10 @@ public class Repository {
 		long lastModified = System.currentTimeMillis();
 		ByteArrayOutputStream buff = new ByteArrayOutputStream();
 
-		java.net.Proxy proxy = solver.getBuild().getProxy(name, repositoryUrl);
+		java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, repositoryUrl);
 		URLConnection conn = url.openConnection(proxy);
 		if (java.net.Proxy.Type.DIRECT != proxy.type()) {
-			String auth = solver.getBuild().getProxyAuthorization(name, repositoryUrl);
+			String auth = solver.getBuildConfig().getProxyAuthorization(name, repositoryUrl);
 			conn.setRequestProperty("Proxy-Authorization", auth);
 		}
 		// try to get the server-specified last-modified date of this artifact

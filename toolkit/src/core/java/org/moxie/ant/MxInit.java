@@ -28,9 +28,10 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 import org.apache.tools.ant.util.FileUtils;
 import org.moxie.Build;
-import org.moxie.Toolkit.Key;
+import org.moxie.BuildConfig;
 import org.moxie.Pom;
 import org.moxie.Scope;
+import org.moxie.Toolkit.Key;
 import org.moxie.utils.StringUtils;
 
 
@@ -89,10 +90,12 @@ public class MxInit extends MxTask {
 			
 			// parse the config files and Moxie settings
 			build = new Build(configFile, basedir);
-			build.setVerbose(isVerbose());
+			
+			BuildConfig buildConfig = build.getConfig();
+			buildConfig.setVerbose(isVerbose());
 			
 			// set any external properties into the project
-			for (Map.Entry<String, String> entry : build.getExternalProperties().entrySet()) {
+			for (Map.Entry<String, String> entry : buildConfig.getExternalProperties().entrySet()) {
 				getProject().setProperty(entry.getKey(), entry.getValue());
 			}
 			
@@ -127,19 +130,19 @@ public class MxInit extends MxTask {
 			setProjectProperty(Key.organization, pom.organization);
 			setProjectProperty(Key.url, pom.url);
 
-			setProperty(Key.outputFolder, build.getOutputFolder(null).toString());
-			setProperty(Key.compile_outputFolder, build.getOutputFolder(Scope.compile).toString());
-			setProperty(Key.test_outputFolder, build.getOutputFolder(Scope.test).toString());
-			setProperty(Key.targetFolder, build.getTargetFolder().toString());
-			setProperty(Key.reportsFolder, build.getReportsFolder().toString());
+			setProperty(Key.outputFolder, buildConfig.getOutputFolder(null).toString());
+			setProperty(Key.compile_outputFolder, buildConfig.getOutputFolder(Scope.compile).toString());
+			setProperty(Key.test_outputFolder, buildConfig.getOutputFolder(Scope.test).toString());
+			setProperty(Key.targetFolder, buildConfig.getTargetFolder().toString());
+			setProperty(Key.reportsFolder, buildConfig.getReportsFolder().toString());
 
 			if (isVerbose()) {
 				getConsole().separator();
 				getConsole().log("path references");
 			}
 			
-			setSourcepath(Key.compile_sourcepath, build, Scope.compile);
-			setSourcepath(Key.test_sourcepath, build, Scope.test);
+			setSourcepath(Key.compile_sourcepath, buildConfig, Scope.compile);
+			setSourcepath(Key.test_sourcepath, buildConfig, Scope.test);
 
 			setClasspath(Key.compile_classpath, build, Scope.compile);
 			setClasspath(Key.runtime_classpath, build, Scope.runtime);
@@ -162,10 +165,10 @@ public class MxInit extends MxTask {
 	}
 
 	
-	private void setSourcepath(Key key, Build build, Scope scope) {
+	private void setSourcepath(Key key, BuildConfig buildConfig, Scope scope) {
 		Set<File> folders = new LinkedHashSet<File>();
-		folders.addAll(build.getSourceFolders(scope));
-		folders.addAll(build.getSourceFolders(Scope.defaultScope));
+		folders.addAll(buildConfig.getSourceFolders(scope));
+		folders.addAll(buildConfig.getSourceFolders(Scope.defaultScope));
 		
 		Path sources = new Path(getProject());
 		for (File file : folders) {
@@ -180,9 +183,9 @@ public class MxInit extends MxTask {
 		Path cp = new Path(getProject());
 		// output folder
 		PathElement of = cp.createPathElement();
-		of.setLocation(build.getOutputFolder(scope));
+		of.setLocation(build.getConfig().getOutputFolder(scope));
 		if (!scope.isDefault()) {
-			of.setLocation(build.getOutputFolder(Scope.compile));
+			of.setLocation(build.getConfig().getOutputFolder(Scope.compile));
 		}
 		
 		// add project dependencies 
@@ -214,7 +217,7 @@ public class MxInit extends MxTask {
 		List<File> folders = new ArrayList<File>();
 		List<Build> libraryProjects = build.getSolver().getLinkedProjects();
 		for (Build project : libraryProjects) {
-			File outputFolder = project.getOutputFolder(Scope.compile);
+			File outputFolder = project.getConfig().getOutputFolder(Scope.compile);
 			folders.add(outputFolder);
 		}		
 		return folders;

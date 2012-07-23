@@ -33,7 +33,7 @@ public class MxZip extends Zip {
 			if (!StringUtils.isEmpty(build.getPom().version)) {
 				name += "-" + build.getPom().version;
 			}
-			zipFile = new File(build.getTargetFolder(), name + ".zip");
+			zipFile = new File(build.getConfig().getTargetFolder(), name + ".zip");
 		}
 		
 		if (zipFile.getParentFile() != null) {

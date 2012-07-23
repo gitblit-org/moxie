@@ -38,16 +38,28 @@ import org.moxie.utils.StringUtils;
 
 
 /**
- * Solves transitive dependency chains and scoped classpaths.
- * At present this class is closely tied to the Build class.
+ * Solves transitive dependency chains, scoped classpaths, and linked projects.
+ * <p>
+ * Solver employs Maven 2 transitive dependency resolution based on "nearness"
+ * and declaration order using a 2-pass scheme.  Pass one recursively retrieves
+ * all referenced POMs. Pass two analyzes each retrieved POM for a particular
+ * solving scope and builds a flat dependency list with ring scores.
+ * <p>
+ * Ring-0 is the project itself. Ring-1 are direct named dependencies. Ring > 1
+ * are solved transitive dependencies.  Dependency conflicts are resolved by
+ * choosing the dependency in the lowest ring OR the first declaration, if the
+ * rings are equal.
+ * <p>
+ * Linked projects are treated as source folders of the build project.  Therefore
+ * the dependencies linked projects are assimilated into the build project's
+ * dependencies.
  */
 public class Solver {
 
-	private final Build build;
+	private final BuildConfig config;
 	private final MoxieCache moxieCache;
 	private final Console console;
 	
-	private final Map<String, Dependency> aliases;
 	private final Map<Scope, Set<Dependency>> solutions;	
 	private final Map<Scope, List<File>> classpaths;
 	private final Set<String> registeredUrls;
@@ -58,20 +70,15 @@ public class Solver {
 	private boolean verbose;
 	private boolean solutionBuilt;
 	
-	public Solver(Build build, File moxieRoot) {
-		this.build = build;
+	public Solver(Console console, BuildConfig config) {
+		this.config = config;
 		
-		this.moxieCache = new MoxieCache(moxieRoot);
+		this.moxieCache = new MoxieCache(config.getMoxieRoot());
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
 		this.classpaths = new HashMap<Scope, List<File>>();
 		this.linkedProjects = new ArrayList<Build>();
 		this.registeredUrls = new HashSet<String>();
-		this.console = build.getConsole();
-
-		console.debug("building alias map");
-		aliases = new HashMap<String, Dependency>();
-		aliases.putAll(build.getMoxieConfig().dependencyAliases);
-		aliases.putAll(build.getProjectConfig().dependencyAliases);
+		this.console = console == null ? new Console(config.isColor()) : console;
 	}
 	
 	boolean isOnline() {
@@ -102,36 +109,36 @@ public class Solver {
 	}
 
 	private boolean cache() {
-		return build.getMoxieConfig().apply(Toolkit.APPLY_CACHE) || build.getProjectConfig().apply(Toolkit.APPLY_CACHE);
+		return config.getMoxieConfig().apply(Toolkit.APPLY_CACHE) || config.getProjectConfig().apply(Toolkit.APPLY_CACHE);
 	}
 	
 	private void resolveAliasedDependencies() {
-		resolveAliasedDependencies(build.getPom().getDependencies(false).toArray(new Dependency[0]));
+		resolveAliasedDependencies(config.getPom().getDependencies(false).toArray(new Dependency[0]));
 	}
 	
 	private void resolveAliasedDependencies(Dependency... dependencies) {
 		for (Dependency dep : dependencies) {
 			// check for alias
 			String name = null;
-			if (StringUtils.isEmpty(dep.artifactId) && aliases.containsKey(dep.groupId)) {
+			if (StringUtils.isEmpty(dep.artifactId) && config.getAliases().containsKey(dep.groupId)) {
 				// alias by simple name
 				name = dep.groupId;
-			} else if (aliases.containsKey(dep.getManagementId())) {
+			} else if (config.getAliases().containsKey(dep.getManagementId())) {
 				// alias by groupId:artifactId
 				name = dep.getManagementId();
 			}
 
 			if (name != null) {
 				// we have an alias
-				Dependency alias = aliases.get(name);
+				Dependency alias = config.getAliases().get(name);
 				dep.groupId = alias.groupId;
 				dep.artifactId = alias.artifactId;
 				dep.version = alias.version;
 				
 				if (StringUtils.isEmpty(dep.version)) {
-					dep.version = build.getPom().getManagedVersion(dep);
+					dep.version = config.getPom().getManagedVersion(dep);
 					if (StringUtils.isEmpty(dep.version)) {
-						dep.version = build.getMoxieConfig().getPom().getManagedVersion(dep);
+						dep.version = config.getMoxieConfig().getPom().getManagedVersion(dep);
 					}
 				}
 				if (StringUtils.isEmpty(dep.version)) {
@@ -155,8 +162,8 @@ public class Solver {
 		return console;
 	}
 	
-	public Build getBuild() {
-		return build;
+	public BuildConfig getBuildConfig() {
+		return config;
 	}
 	
 	public Pom getPom(Dependency dependency) {
@@ -214,15 +221,15 @@ public class Solver {
 	}
 	
 	private void solveLinkedProjects(Set<Build> solvedProjects) {
-		if (build.getProjectConfig().linkedProjects.size() > 0) {
+		if (config.getProjectConfig().linkedProjects.size() > 0) {
 			console.separator();
-			console.log("solving {0} linked projects", build.getPom().getManagementId());
+			console.log("solving {0} linked projects", config.getPom().getManagementId());
 			console.separator();
 		}
 		Set<Build> builds = new LinkedHashSet<Build>();
-		for (LinkedProject linkedProject : build.getProjectConfig().linkedProjects) {
+		for (LinkedProject linkedProject : config.getProjectConfig().linkedProjects) {
 			console.debug(Console.SEP);
-			String resolvedName = build.getPom().resolveProperties(linkedProject.name);
+			String resolvedName = config.getPom().resolveProperties(linkedProject.name);
 			if (resolvedName.equals(linkedProject.name)) {
 				console.debug("locating linked project {0}", linkedProject.name);
 			} else {
@@ -231,7 +238,7 @@ public class Solver {
 			File projectDir = new File(resolvedName);
 			console.debug(1, "trying {0}", projectDir.getAbsolutePath());
 			if (!projectDir.exists()) {
-				projectDir = new File(build.getProjectFolder().getParentFile(), resolvedName);
+				projectDir = new File(config.getProjectFolder().getParentFile(), resolvedName);
 				console.debug(1, "trying {0}", projectDir.getAbsolutePath());
 				if (!projectDir.exists()) {
 					console.error("failed to find linked project \"{0}\".", linkedProject.name);
@@ -272,7 +279,7 @@ public class Solver {
 					// linked project dependencies are considered ring-1
 					for (Scope scope : new Scope[] { Scope.compile }) {
 						for (Dependency dep : subProject.getPom().getDependencies(scope, Constants.RING1)) {
-							build.getPom().addDependency(dep, scope);
+							config.getPom().addDependency(dep, scope);
 						}
 					}
 				} else {
@@ -293,38 +300,38 @@ public class Solver {
 		
 		// clear registered urls
 		registeredUrls.clear();
-		for (Repository repository : build.getRepositories()) {
+		for (Repository repository : config.getRepositories()) {
 			registeredUrls.add(repository.repositoryUrl);
 		}
 		
 		// retrieve POMs for all dependencies in all scopes
 		Set<Dependency> downloaded = new HashSet<Dependency>(); 
-		for (Scope scope : build.getPom().getScopes()) {
-			for (Dependency dependency : build.getPom().getDependencies(scope, Constants.RING1)) {
+		for (Scope scope : config.getPom().getScopes()) {
+			for (Dependency dependency : config.getPom().getDependencies(scope, Constants.RING1)) {
 				retrievePOM(dependency, downloaded);
 			}
 		}
 	}
 
 	private void importDependencyManagement() {
-		if (build.getPom().getScopes().contains(Scope.imprt)) {
+		if (config.getPom().getScopes().contains(Scope.imprt)) {
 			console.debug("importing dependency management");
 
 			// This Moxie project imports a pom's dependencyManagement list.
-			for (Dependency dependency : build.getPom().getDependencies(Scope.imprt, Constants.RING1)) {
+			for (Dependency dependency : config.getPom().getDependencies(Scope.imprt, Constants.RING1)) {
 				Pom pom = PomReader.readPom(moxieCache, dependency);
-				build.getPom().importManagedDependencies(pom);
+				config.getPom().importManagedDependencies(pom);
 			}
 		}
 	}
 	
 	private void assimilateDependencies() {
 		Map<Scope, List<Dependency>> assimilate = new LinkedHashMap<Scope, List<Dependency>>();
-		if (build.getPom().getScopes().contains(Scope.assimilate)) {
+		if (config.getPom().getScopes().contains(Scope.assimilate)) {
 			console.debug("assimilating dependencies");
 			
 			// This Moxie project integrates a pom's dependency list.
-			for (Dependency dependency : build.getPom().getDependencies(Scope.assimilate, Constants.RING1)) {
+			for (Dependency dependency : config.getPom().getDependencies(Scope.assimilate, Constants.RING1)) {
 				Pom pom = PomReader.readPom(moxieCache, dependency);
 				for (Scope scope : pom.getScopes()) {
 					if (!assimilate.containsKey(scope)) {
@@ -337,13 +344,13 @@ public class Solver {
 			// merge unique, assimilated dependencies into the Moxie project pom
 			for (Map.Entry<Scope, List<Dependency>> entry : assimilate.entrySet()) {
 				for (Dependency dependency : entry.getValue()) {
-					build.getPom().addDependency(dependency, entry.getKey());
+					config.getPom().addDependency(dependency, entry.getKey());
 				}
 			}
 		}
 		
 		// remove assimilate scope from the project pom, like it never existed
-		build.getPom().removeScope(Scope.assimilate);
+		config.getPom().removeScope(Scope.assimilate);
 	}
 	
 	private void retrieveDependencies() {
@@ -381,7 +388,7 @@ public class Solver {
 		// assemble the flat, ordered list of dependencies
 		// this list may have duplicates/conflicts
 		List<Dependency> all = new ArrayList<Dependency>();
-		for (Dependency dependency : build.getPom().getDependencies(solutionScope, Constants.RING1)) {
+		for (Dependency dependency : config.getPom().getDependencies(solutionScope, Constants.RING1)) {
 			console.debug(dependency.getDetailedCoordinates());
 			all.add(dependency);
 			all.addAll(solve(solutionScope, dependency));
@@ -421,17 +428,17 @@ public class Solver {
 		List<Dependency> dependencies = null;
 		
 		// check to see if we have overridden the POM dependencies
-		Pom override = build.getProjectConfig().getDependencyOverrides(scope, dependency.getCoordinates());
+		Pom override = config.getProjectConfig().getDependencyOverrides(scope, dependency.getCoordinates());
 		if (override == null) {
-			override = build.getMoxieConfig().getDependencyOverrides(scope, dependency.getCoordinates());
+			override = config.getMoxieConfig().getDependencyOverrides(scope, dependency.getCoordinates());
 		}
 		if (override != null) {
 			if (Scope.build.equals(scope)) {
 				// build scope overrides are normal
-				console.debug("OVERRIDE: {0} {1} dependency {2}", build.getPom().getCoordinates(), scope.name().toUpperCase(), dependency.getCoordinates());
+				console.debug("OVERRIDE: {0} {1} dependency {2}", config.getPom().getCoordinates(), scope.name().toUpperCase(), dependency.getCoordinates());
 			} else {
 				// notify on any other scope
-				console.notice("OVERRIDE: {0} {1} dependency {2}", build.getPom().getCoordinates(), scope.name().toUpperCase(), dependency.getCoordinates());
+				console.notice("OVERRIDE: {0} {1} dependency {2}", config.getPom().getCoordinates(), scope.name().toUpperCase(), dependency.getCoordinates());
 			}
 			dependencies = override.getDependencies(scope, dependency.ring + 1);
 		}
@@ -519,16 +526,16 @@ public class Solver {
 			// caching forbidden 
 			return;
 		}
-		String coordinates = build.getPom().getCoordinates();
+		String coordinates = config.getPom().getCoordinates();
 		Dependency projectAsDep = new Dependency(coordinates);
 		if (projectAsDep.isSnapshot()) {
 			// do not use cached solution for snapshots
 			return;
 		}
 		MoxieData moxiedata = moxieCache.readMoxieData(projectAsDep);
-		if (moxiedata.getLastSolved().getTime() == build.getProjectConfig().lastModified) {
+		if (moxiedata.getLastSolved().getTime() == config.getProjectConfig().lastModified) {
 			try {
-				console.debug("reusing project solution {0}", build.getPom());				
+				console.debug("reusing project solution {0}", config.getPom());				
 				for (Scope scope : moxiedata.getScopes()) {
 					Set<Dependency> dependencies = new LinkedHashSet<Dependency>(moxiedata.getDependencies(scope));
 					console.debug(1, "{0} {1} dependencies", dependencies.size(), scope);
@@ -541,14 +548,14 @@ public class Solver {
 	}
 	
 	private void cacheProjectSolution() {
-		Dependency projectAsDep = new Dependency(build.getPom().toString());
+		Dependency projectAsDep = new Dependency(config.getPom().toString());
 		MoxieData moxiedata = moxieCache.readMoxieData(projectAsDep);
 		try {
-			console.debug("caching project solution {0}", build.getPom());			
+			console.debug("caching project solution {0}", config.getPom());			
 			for (Map.Entry<Scope, Set<Dependency>> entry : solutions.entrySet()) {
 				moxiedata.setDependencies(entry.getKey(), entry.getValue());
 			}
-			moxiedata.setLastSolved(new Date(build.getProjectConfig().lastModified));
+			moxiedata.setLastSolved(new Date(config.getProjectConfig().lastModified));
 			moxieCache.writeMoxieData(projectAsDep, moxiedata);
 		} catch (Exception e) {
 			console.error(e, "Failed to cache project solution {0}", projectAsDep.getDetailedCoordinates());
@@ -571,7 +578,7 @@ public class Solver {
 			boolean updateRequired = !metadataFile.exists() || isUpdateMetadata();
 			
 			if (!updateRequired) {
-				UpdatePolicy policy = build.getProjectConfig().updatePolicy;
+				UpdatePolicy policy = config.getProjectConfig().updatePolicy;
 				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
 				// we have metadata, check update policy
 				if (UpdatePolicy.daily.equals(policy)) {
@@ -595,7 +602,7 @@ public class Solver {
 			
 			if (updateRequired && isOnline()) {
 				// download artifact maven-metadata.xml
-				for (Repository repository : build.getRepositories()) {
+				for (Repository repository : config.getRepositories()) {
 					if (!repository.isMavenSource()) {
 						// skip non-Maven repositories
 						continue;
@@ -622,7 +629,7 @@ public class Solver {
 		File pomFile = moxieCache.getArtifact(dependency, Constants.POM);
 		if ((!pomFile.exists() || (dependency.isSnapshot() && moxiedata.isRefreshRequired())) && isOnline()) {
 			// download the POM
-			for (Repository repository : build.getRepositories()) {
+			for (Repository repository : config.getRepositories()) {
 				if (!repository.isMavenSource()) {
 					// skip non-Maven repositories
 					continue;
@@ -685,7 +692,7 @@ public class Solver {
 	 * @return
 	 */
 	private void retrieveArtifact(Dependency dependency, boolean forProject) {
-		for (Repository repository : build.getRepositories()) {
+		for (Repository repository : config.getRepositories()) {
 			if (!repository.isSource(dependency)) {
 				// dependency incompatible with repository
 				continue;
@@ -714,8 +721,8 @@ public class Solver {
 			
 			// optionally copy primary artifact to project-specified folder
 			if (artifactFile != null && artifactFile.exists()) {
-				if (forProject && build.getProjectConfig().dependencyFolder != null) {
-					File projectFile = new File(build.getProjectConfig().dependencyFolder, artifactFile.getName());
+				if (forProject && config.getProjectConfig().dependencyFolder != null) {
+					File projectFile = new File(config.getProjectConfig().dependencyFolder, artifactFile.getName());
 					if (dependency.isSnapshot() || !projectFile.exists()) {
 						console.debug(1, "copying {0} to {1}", artifactFile.getName(), projectFile.getParent());
 						try {
@@ -779,8 +786,8 @@ public class Solver {
 		}
 		
 		File projectFolder = null;
-		if (build.getProjectConfig().dependencyFolder != null && build.getProjectConfig().dependencyFolder.exists()) {
-			projectFolder = build.getProjectConfig().dependencyFolder;
+		if (config.getProjectConfig().dependencyFolder != null && config.getProjectConfig().dependencyFolder.exists()) {
+			projectFolder = config.getProjectConfig().dependencyFolder;
 		}
 		console.debug("solving {0} classpath", scope);
 		Set<Dependency> dependencies = solve(scope);

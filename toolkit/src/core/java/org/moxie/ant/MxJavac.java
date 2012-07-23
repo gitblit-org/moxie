@@ -118,7 +118,7 @@ public class MxJavac extends Javac {
 	 * @param build
 	 */
 	private void configure(Build build) {
-		MaxmlMap attributes = build.getMxJavacAttributes();
+		MaxmlMap attributes = build.getConfig().getMxJavacAttributes();
 		if (attributes == null) {
 			build.getConsole().error("mx:Javac attributes are null!");
 			return;
@@ -199,7 +199,7 @@ public class MxJavac extends Javac {
 				try {
 					// compile the linked project
 					Project project = new Project();
-					project.setBaseDir(linkedProject.getProjectFolder());
+					project.setBaseDir(linkedProject.getConfig().getProjectFolder());
 					project.addReference(Key.build.refId(), linkedProject);
 
 					MxJavac subCompile = new MxJavac(builds);
@@ -217,7 +217,7 @@ public class MxJavac extends Javac {
 		console.debug("mxjavac configuration");
 
 		// display specified mxjavac attributes
-		MaxmlMap attributes = build.getMxJavacAttributes();
+		MaxmlMap attributes = build.getConfig().getMxJavacAttributes();
 		if (attributes != null) {
 			try {
 				Map<String, Method> methods = new HashMap<String, Method>();
@@ -244,18 +244,18 @@ public class MxJavac extends Javac {
 		}
 		
 		// project folder
-		console.debug(1, "projectdir = {0}", build.getProjectFolder());
+		console.debug(1, "projectdir = {0}", build.getConfig().getProjectFolder());
 
 		// create sourcepath
 		Path sources = createSrc();
-		for (File file : build.getSourceFolders(scope)) {
+		for (File file : build.getConfig().getSourceFolders(scope)) {
 			PathElement element = sources.createPathElement();
 			element.setLocation(file);
 		}
 		console.debug(1, "sources = {0}", sources);
 
 		// set output folder
-		setDestdir(build.getOutputFolder(scope));
+		setDestdir(build.getConfig().getOutputFolder(scope));
 		console.debug(1, "destdir = {0}", getDestdir());
 		
 		// create classpath
@@ -263,7 +263,7 @@ public class MxJavac extends Javac {
 		if (Scope.test.equals(scope)) {
 			// add the compile output folder
 			PathElement element = classpath.createPathElement();
-			element.setLocation(build.getOutputFolder(Scope.compile));
+			element.setLocation(build.getConfig().getOutputFolder(Scope.compile));
 		}
 		for (File file : build.getSolver().getClasspath(scope)) {
 			PathElement element = classpath.createPathElement();
@@ -271,7 +271,7 @@ public class MxJavac extends Javac {
 		}
 		for (Build subbuild : build.getSolver().getLinkedProjects()) {
 			PathElement element = classpath.createPathElement();
-			element.setLocation(subbuild.getOutputFolder(Scope.compile));
+			element.setLocation(subbuild.getConfig().getOutputFolder(Scope.compile));
 		}
 		console.debug(1, "classpath = {0}", classpath);
 				

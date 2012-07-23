@@ -33,7 +33,7 @@ public class MxInstall extends MxTask {
 	public void execute() {
 		Build build = getBuild();
 		
-		File sourceFolder = build.getTargetFolder();
+		File sourceFolder = build.getConfig().getTargetFolder();
 		
 		Pom pom = build.getPom();
 		String artifact = pom.artifactId + "-" + pom.version;

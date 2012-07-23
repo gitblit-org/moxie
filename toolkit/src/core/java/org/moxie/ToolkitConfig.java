@@ -42,9 +42,9 @@ import org.moxie.utils.StringUtils;
 
 
 /**
- * Reads the build.maxml file 
+ * Reads a Moxie tookit config file such as settings.moxie or build.moxie. 
  */
-public class Config implements Serializable {
+public class ToolkitConfig implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -71,7 +71,7 @@ public class Config implements Serializable {
 	Map<String, String> externalProperties;
 	UpdatePolicy updatePolicy;
 
-	public Config() {
+	public ToolkitConfig() {
 		// default configuration
 		sourceFolders = Arrays.asList(
 				new SourceFolder("src/main/java", Scope.compile),
@@ -98,12 +98,12 @@ public class Config implements Serializable {
 		updatePolicy = UpdatePolicy.defaultPolicy;
 	}
 	
-	public Config(File file, File baseFolder, String defaultResource) throws IOException, MaxmlException {
+	public ToolkitConfig(File file, File baseFolder, String defaultResource) throws IOException, MaxmlException {
 		this();
 		parse(file, baseFolder, defaultResource);
 	}
 	
-	private Config(String resource) throws IOException, MaxmlException {
+	private ToolkitConfig(String resource) throws IOException, MaxmlException {
 		this();
 		InputStream is = getClass().getResourceAsStream(resource);
 		InputStreamReader reader = new InputStreamReader(is, "UTF-8");
@@ -122,10 +122,10 @@ public class Config implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Config (" + pom + ")";
+		return "ToolkitConfig (" + pom + ")";
 	}
 
-	Config parse(File file, File baseFolder, String defaultResource) throws IOException, MaxmlException {
+	ToolkitConfig parse(File file, File baseFolder, String defaultResource) throws IOException, MaxmlException {
 		String content = "";
 		if (file != null && file.exists()) {
 			this.file = file;
@@ -141,7 +141,7 @@ public class Config implements Serializable {
 	}
 	
 	
-	Config parse(String content, String defaultResource) throws IOException, MaxmlException {
+	ToolkitConfig parse(String content, String defaultResource) throws IOException, MaxmlException {
 		MaxmlMap map = Maxml.parse(content);
 		
 		if (!StringUtils.isEmpty(defaultResource)) {
@@ -151,16 +151,16 @@ public class Config implements Serializable {
 				File defaultFile = new File(System.getProperty("user.home") + "/.moxie/" + defaultResource);
 				if (this.file == null || this.file.equals(defaultFile) || !defaultFile.exists()) {
 					// Moxie-shipped default resource
-					Config parent = new Config("/" + defaultResource);
+					ToolkitConfig parent = new ToolkitConfig("/" + defaultResource);
 					setDefaultsFrom(parent);
 				} else {
 					// local filesystem default is available
-					Config parent = new Config(defaultFile, baseFolder, defaultResource);
+					ToolkitConfig parent = new ToolkitConfig(defaultFile, baseFolder, defaultResource);
 					setDefaultsFrom(parent);
 				}
 			} else {
 				// parent has been specified
-				Config parent = new Config(parentConfig, baseFolder, defaultResource);
+				ToolkitConfig parent = new ToolkitConfig(parentConfig, baseFolder, defaultResource);
 				setDefaultsFrom(parent);
 
 				// set parent properties
@@ -604,7 +604,7 @@ public class Config implements Serializable {
 		}
 	}
 	
-	void setDefaultsFrom(Config parent) {
+	void setDefaultsFrom(ToolkitConfig parent) {
 		pom = parent.pom;
 		lastModified = Math.max(lastModified, parent.lastModified);
 

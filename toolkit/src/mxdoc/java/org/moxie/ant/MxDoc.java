@@ -140,11 +140,11 @@ public class MxDoc extends MxTask {
 		Build build = getBuild();
 		
 		if (doc.sourceFolder == null) {
-			doc.sourceFolder = build.getSiteSourceFolder();
+			doc.sourceFolder = build.getConfig().getSiteSourceFolder();
 		}
 
 		if (doc.outputFolder == null) {
-			doc.outputFolder = build.getSiteOutputFolder();
+			doc.outputFolder = build.getConfig().getSiteOutputFolder();
 		}
 		
 		getConsole().title(getClass(), build.getPom().name);
@@ -255,7 +255,7 @@ public class MxDoc extends MxTask {
 			}
 		}
 		String json = root.asJSON();
-		File file  = new File(getBuild().getSiteOutputFolder(), "moxie-dependencies.json");
+		File file  = new File(getBuild().getConfig().getSiteOutputFolder(), "moxie-dependencies.json");
 		FileUtils.writeContent(file, json);
 	}
 	

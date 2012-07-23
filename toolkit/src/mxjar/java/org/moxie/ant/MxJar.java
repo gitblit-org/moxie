@@ -152,7 +152,7 @@ public class MxJar extends GenJar {
 	}
 
 	private void configure(Build build) {
-		MaxmlMap attributes = build.getMxJarAttributes();
+		MaxmlMap attributes = build.getConfig().getMxJarAttributes();
 		if (attributes == null) {
 			build.getConsole().error("mx:Jar attributes are null!");
 			return;
@@ -250,7 +250,7 @@ public class MxJar extends GenJar {
 			if (!StringUtils.isEmpty(classifier)) {
 				name += "-" + classifier;
 			}
-			destFile = new File(build.getTargetFolder(), name + ".jar");
+			destFile = new File(build.getConfig().getTargetFolder(), name + ".jar");
 		}
 		
 		if (destFile.getParentFile() != null) {
@@ -263,7 +263,7 @@ public class MxJar extends GenJar {
 		if (includeResources) {
 			Resource resources = createResource();			
 			FileSet set = resources.createFileset();
-			set.setDir(build.getOutputFolder(Scope.compile));
+			set.setDir(build.getConfig().getOutputFolder(Scope.compile));
 			if (includes != null) {
 				set.setIncludes(includes);
 			}
@@ -278,7 +278,7 @@ public class MxJar extends GenJar {
 		console.debug("mxjar configuration");
 
 		// display specified mxjar attributes
-		MaxmlMap attributes = build.getMxJarAttributes();
+		MaxmlMap attributes = build.getConfig().getMxJarAttributes();
 		if (attributes != null) {
 			try {
 				Map<String, Method> methods = new HashMap<String, Method>();
@@ -342,7 +342,7 @@ public class MxJar extends GenJar {
 				console.warn("mxjar has not resolved any class files local to {0}", build.getPom().getManagementId());
 			}
 			
-			List<File> folders = build.getSourceFolders(Scope.compile);
+			List<File> folders = build.getConfig().getSourceFolders(Scope.compile);
 			for (String className : resolvedLocal) {
 				String sourceName = className.substring(0, className.length() - ".class".length()).replace('.', '/') + ".java";
 				console.debug(sourceName);

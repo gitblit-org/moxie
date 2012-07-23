@@ -76,8 +76,8 @@ public class Docs {
 				depReport.setContent(new DependencyReport().report(build));
 				depReport.setSrc("moxie-dependencies.html");
 
-				File testOutput = new File(build.getReportsFolder(), "tests");
-				File coverageOutput = new File(build.getReportsFolder(), "coverage");
+				File testOutput = new File(build.getConfig().getReportsFolder(), "tests");
+				File coverageOutput = new File(build.getConfig().getReportsFolder(), "coverage");
 				
 				boolean hasTests = testOutput.exists();
 				boolean hasCoverage = coverageOutput.exists();
@@ -143,7 +143,7 @@ public class Docs {
 			}
 		}
 
-		String header = generateHeader(projectName, build.getProjectConfig(), doc);
+		String header = generateHeader(projectName, build.getConfig().getProjectConfig(), doc);
 		String footer = generateFooter(doc);
 
 		build.getConsole().log("Generating HTML from Markdown files in {0} ", doc.sourceFolder.getAbsolutePath());
@@ -566,7 +566,7 @@ public class Docs {
 		return md;
 	}
 
-	private static String generateHeader(String projectName, Config conf, Doc doc) {
+	private static String generateHeader(String projectName, ToolkitConfig conf, Doc doc) {
 		out.println("Generating HTML header...");
 		StringBuilder sb = new StringBuilder();
 		String header = readResource(doc, "header.html");
