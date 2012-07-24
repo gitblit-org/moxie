@@ -88,9 +88,17 @@ public class PomReader {
 					// read parent pom
 					Dependency parent = pom.getParentDependency();
 					Pom parentPom = readPom(cache, parent);
-					if (parentPom != null) {
-						pom.inherit(parentPom);
-					}					
+					
+					if (parentPom == null) {
+						// we do not have the parent pom yet likely because we
+						// are in the middle of downloading so make a fake one
+						// to satisfy property inheritance
+						parentPom = new Pom();
+						parentPom.groupId = pom.parentGroupId;
+						parentPom.artifactId = pom.parentArtifactId;
+						parentPom.version = pom.parentVersion;
+					}
+					pom.inherit(parentPom);
 				} else if ("properties".equalsIgnoreCase(element.getTagName())) {
 					// pom properties
 					NodeList properties = (NodeList) element;
