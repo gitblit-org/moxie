@@ -1,0 +1,3 @@
+groupId : org.moxie
+artifactId : moxie
+parent : ../build.moxie
