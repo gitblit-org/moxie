@@ -161,6 +161,8 @@
 			<class name="org.moxie.ant.MxIf" />
 				
 			<!-- pro -->
+			<class name="org.moxie.ant.Moxie" />
+			<class name="org.moxie.ant.Launcher" />
 			<class name="org.moxie.ant.MxClean" />
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
@@ -196,6 +198,8 @@
 			<class name="org.moxie.ant.MxIf" />
 			
 			<!-- pro -->
+			<class name="org.moxie.ant.Moxie" />
+			<class name="org.moxie.ant.Launcher" />
 			<class name="org.moxie.ant.MxClean" />
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
