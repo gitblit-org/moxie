@@ -19,6 +19,10 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <organization><name>James Moger</name></organization>
     <url>http://gitblit.github.com/moxie</url>
 
+    <properties>
+        <ant.version>1.8.4</ant.version>
+    </properties>
+
     <dependencies>
     	<!-- test dependencies -->
         <dependency>

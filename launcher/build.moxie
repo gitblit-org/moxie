@@ -1,0 +1,12 @@
+name : Moxie-Launcher
+description : Moxie Ant launcher (and bundled distribution)
+groupId : org.moxie
+artifactId : moxie-launcher
+parent : ../build.moxie
+apply : eclipse, pom, cache
+linkedProjects :
+- common
+sourceFolders : 
+- compile src/main/java
+dependencies :
+- provided org.apache.ant:ant-launcher:${ant.version}

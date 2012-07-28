@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="main" xmlns:mx="antlib:org.moxie">
+
+	<!-- Moxie tasks -->
+	<include>
+		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie.jar" />
+	</include>
+	
+	<target name="main">
+		<mx:init />
+		<mx:javac />
+		<delete dir="${mxp.targetFolder}" includes="**/*" quiet="true" failonerror="false"/>
+		<mx:jar destfile="${mxp.targetFolder}/${project.artifactId}.jar">
+			<classfilter>
+				<exclude name="org.apache." />
+				<include name="org.apache.tools.ant.launch." />
+			</classfilter>
+			<mainclass name="org.moxie.ant.launcher.Launcher" />
+		</mx:jar>
+		
+		<property name="ant.release" value="apache-ant-${ant.version}" />
+		<property name="ant.distribution" value="${ant.release}-bin.zip" />
+		
+		<!-- retrieve the Ant distribution, if necessary -->
+		<get dest="${mxp.outputFolder}" skipexisting="true" verbose="true"
+			src="http://www.apache.org/dist/ant/binaries/${ant.distribution}" />
+
+		<!-- build a new Moxie+Ant distribution -->
+		<delete dir="${mxp.outputFolder}/dist" includes="**/*" quiet="true" failonerror="false"/>
+		<unzip dest="${mxp.outputFolder}/dist" src="${mxp.outputFolder}/${ant.distribution}" />
+		
+		<zip destfile="${mxp.targetFolder}/moxie+ant-${project.version}.zip">
+			<zipfileset dir="${mxp.outputFolder}/dist/${ant.release}" prefix="moxie-${project.version}" />
+			<zipfileset dir="src/main/config" prefix="moxie-${project.version}/bin" />
+			<zipfileset file="${mxp.targetFolder}/${project.artifactId}.jar" prefix="moxie-${project.version}/lib" />
+			<zipfileset file="${moxie.jar}" prefix="moxie-${project.version}/lib" />
+		</zip>
+	</target>
+</project>

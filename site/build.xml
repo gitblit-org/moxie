@@ -44,6 +44,8 @@
 					<link name="moxie-pro" src="moxie-${project.version}-pro.jar" />
 					<link name="moxie-all" src="moxie-${project.version}-all.jar" />
 					<divider />
+					<link name="moxie+ant" src="moxie+ant-${project.version}.zip" />
+					<divider />
 					<link name="moxie-proxy" src="moxie-proxy-${project.version}.jar" />
 					<divider />
 					<link name="maxml" src="maxml-${project.version}.jar" />
@@ -65,6 +67,7 @@
 			<resource>
 				<fileset dir="${basedir}/../toolkit/target/" includes="*.jar" excludes="*-sources.jar,moxie.jar" />
 				<fileset dir="${basedir}/../proxy/target/" includes="*.jar" excludes="*-sources.jar" />
+				<fileset dir="${basedir}/../launcher/target/" includes="*.zip" />
 				<fileset dir="${basedir}/../maxml/target/" includes="*.jar" />
 			</resource>
 			

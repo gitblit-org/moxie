@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+<classpathentry kind="src" path="src/main/java"/>
+<classpathentry kind="lib" path="C:\Users\James Moger\.moxie\remote\repo1.maven.org_maven2\org\apache\ant\ant-launcher\1.8.4\ant-launcher-1.8.4.jar" sourcepath="C:\Users\James Moger\.moxie\remote\repo1.maven.org_maven2\org\apache\ant\ant-launcher\1.8.4\ant-launcher-1.8.4-sources.jar" />
+<classpathentry kind="output" path="bin/classes"/>
+<classpathentry kind="src" path="/Moxie-Common"/>
+<classpathentry kind="src" path="/Moxie-Maxml"/>
+<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+</classpath>

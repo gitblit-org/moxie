@@ -72,7 +72,7 @@ public class MxInit extends MxTask {
 				System.setProperty(entry.getKey(), entry.getValue());
 			}
 		}
-
+		
 		try {
 			if (basedir == null) {
 				basedir = getProject().getBaseDir();
@@ -117,6 +117,12 @@ public class MxInit extends MxTask {
 
 			Pom pom = build.getPom();
 			
+			// push all pom properties into project 
+			Map<String,String> properties = pom.getProperties();
+			for (Map.Entry<String, String> entry : properties.entrySet()) {
+				getProject().setProperty(entry.getKey(), entry.getValue());
+			}
+
 			if (isVerbose()) {
 				getConsole().separator();
 				getConsole().log("string properties");
