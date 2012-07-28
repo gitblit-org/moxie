@@ -89,6 +89,10 @@ public class Pom {
 		return null;
 	}
 	
+	public Map<String, String> getProperties() {
+		return properties;
+	}
+	
 	private String getProperty(String key) {
 		String value = null;
 		if (properties.containsKey(key)) {
