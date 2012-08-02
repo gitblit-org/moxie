@@ -15,12 +15,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <artifactId>moxie-launcher</artifactId>
     <version>0.5.0-SNAPSHOT</version>
     <name>Moxie-Launcher</name>
-    <description>Moxie+Ant bundled distribution</description>
+    <description>Moxie Ant launcher (and bundled distribution)</description>
     <organization><name>James Moger</name></organization>
     <url>http://gitblit.github.com/moxie</url>
 
     <properties>
         <ant.version>1.8.4</ant.version>
+        <groovy.version>1.8.6</groovy.version>
     </properties>
 
     <dependencies>
@@ -29,6 +30,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <groupId>org.apache.ant</groupId>
             <artifactId>ant-launcher</artifactId>
             <version>1.8.4</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.8.6</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

@@ -20,7 +20,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <url>http://gitblit.github.com/moxie</url>
 
     <properties>
-        <ant.version>RELEASE</ant.version>
+        <ant.version>1.8.4</ant.version>
     </properties>
 
     <dependencies>

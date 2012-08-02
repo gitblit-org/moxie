@@ -34,6 +34,7 @@
 			<zipfileset dir="src/main/config" prefix="moxie-${project.version}/bin" />
 			<zipfileset file="${mxp.targetFolder}/${project.artifactId}.jar" prefix="moxie-${project.version}/lib" />
 			<zipfileset file="${moxie.jar}" prefix="moxie-${project.version}/lib" />
+			<zipfileset file="ext/groovy-all-${groovy.version}.jar" prefix="moxie-${project.version}/lib" />
 		</zip>
 	</target>
 </project>
