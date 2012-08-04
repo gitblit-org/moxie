@@ -47,6 +47,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.index.MultiReader;
+import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
@@ -55,6 +56,7 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopFieldDocs;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
@@ -367,10 +369,11 @@ public class LuceneExecutor implements Runnable {
 		try {
 			String repository = config.getRepositoryId(pomFile);
 			IMavenCache cache = config.getMavenCache(repository);
-			IndexWriter writer = getIndexWriter(repository);
-
 			Pom pom = PomReader.readPom(cache, pomFile);
-			String date = DateTools.timeToString(pomFile.lastModified(), Resolution.MINUTE);
+			
+			delete(repository, pom);
+			
+			IndexWriter writer = getIndexWriter(repository);
 
 			Document doc = new Document();
 			doc.add(new Field(FIELD_PACKAGING, pom.packaging, Store.YES, Index.NOT_ANALYZED_NO_NORMS));
@@ -383,6 +386,7 @@ public class LuceneExecutor implements Runnable {
 			if (!StringUtils.isEmpty(pom.description)) {
 				doc.add(new Field(FIELD_DESCRIPTION, pom.description, Store.YES, Index.ANALYZED));
 			}
+			String date = DateTools.timeToString(pomFile.lastModified(), Resolution.MINUTE);
 			doc.add(new Field(FIELD_DATE, date, Store.YES, Index.ANALYZED));
 
 			// add the pom to the index
@@ -392,6 +396,29 @@ public class LuceneExecutor implements Runnable {
 			resetIndexSearcher(repository);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Exception while indexing " + pomFile, e);
+		}
+	}
+	
+	private boolean delete(String repository, Pom pom) throws IOException {
+		BooleanQuery query = new BooleanQuery();
+		Term groupTerm = new Term(FIELD_GROUPID, pom.groupId);
+		query.add(new TermQuery(groupTerm), Occur.MUST);
+		Term artifactTerm = new Term(FIELD_ARTIFACTID, pom.artifactId);
+		query.add(new TermQuery(artifactTerm), Occur.MUST);
+		Term versionTerm = new Term(FIELD_VERSION, pom.version);
+		query.add(new TermQuery(versionTerm), Occur.MUST);
+		
+		IndexWriter writer = getIndexWriter(repository);
+		int numDocsBefore = writer.numDocs();
+		writer.deleteDocuments(query);
+		writer.commit();
+		int numDocsAfter = writer.numDocs();
+		if (numDocsBefore == numDocsAfter) {
+			logger.fine(MessageFormat.format("no records found to delete {0}", query.toString()));
+			return false;
+		} else {
+			logger.fine(MessageFormat.format("deleted {0} records with {1}", numDocsBefore - numDocsAfter, query.toString()));
+			return true;
 		}
 	}
 
