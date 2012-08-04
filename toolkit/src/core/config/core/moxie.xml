@@ -43,15 +43,14 @@
 	<!-- Define the folder where the Moxie jar is located -->
 	<dirname property="moxie.dir" file="${moxie.jar}" />
 	
-	<!-- Make the Moxie extensions folder -->
-	<property name="moxie.extensions" value="${user.home}/.moxie/extensions" />
-	<mkdir dir="${moxie.extensions}" />
+	<!-- Make the Moxie lib folder -->
+	<property name="moxie.lib" value="${user.home}/.moxie/lib" />
+	<mkdir dir="${moxie.lib}" />
 
 	<!-- Define the Moxie classpath -->
 	<path id="moxie.classpath">
 		<pathelement location="${moxie.jar}" />
-		<fileset dir="${moxie.dir}" includes="mxext-*.jar" />
-		<fileset dir="${moxie.extensions}" includes="*.jar" />
+		<fileset dir="${moxie.lib}" includes="*.jar" />
 	</path>
 	
 	<!-- Define Moxie tasks -->

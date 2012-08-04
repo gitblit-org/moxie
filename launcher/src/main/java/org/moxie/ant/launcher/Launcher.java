@@ -55,6 +55,12 @@ public class Launcher {
     public static final String ANT_PRIVATEDIR = ".ant";
 
     /**
+     * The directory name of the per-user moxie directory.
+     * {@value}
+     */
+    public static final String MOXIE_PRIVATEDIR = ".moxie";
+
+    /**
      * The name of a per-user library directory.
      * {@value}
      */
@@ -74,6 +80,16 @@ public class Launcher {
      */
     public static final String USER_LIBDIR =
         ANT_PRIVATEDIR + File.separatorChar + ANT_PRIVATELIB;
+
+    /**
+     * The location of a per-user library directory.
+     * <p>
+     * It's value is the concatenation of {@link #MOXIE_PRIVATEDIR}
+     * with {@link #ANT_PRIVATELIB}, with an appropriate file separator
+     * in between. For example, on Unix, it's <code>.moxie/lib</code>.
+     */
+    public static final String MOXIE_USER_LIBDIR =
+        MOXIE_PRIVATEDIR + File.separatorChar + ANT_PRIVATELIB;
 
     /**
      * The startup class that is to be run.
@@ -249,11 +265,12 @@ public class Launcher {
             noClassPath ? null : cpString, libPaths);
         URL[] systemURLs = getSystemURLs(jarDir);
         URL[] userURLs   = noUserLib ? new URL[0] : getUserURLs();
+        URL[] moxieUserURLs   = noUserLib ? new URL[0] : getMoxieUserURLs();
 
         File toolsJAR = Locator.getToolsJar();
         logPath("tools.jar",toolsJAR);
         URL[] jars = getJarArray(
-            libURLs, userURLs, systemURLs, toolsJAR);
+            libURLs, userURLs, moxieUserURLs, systemURLs, toolsJAR);
 
         // now update the class.path property
         StringBuffer baseClassPath
@@ -362,25 +379,39 @@ public class Launcher {
     }
 
     /**
+     * Get the jar files in user.home/.moxie/lib
+     * @return the URLS from the user's moxie lib dir
+     * @throws MalformedURLException if the URLs cannot be created.
+     */
+    private URL[] getMoxieUserURLs() throws MalformedURLException {
+        File userLibDir
+            = new File(System.getProperty(USER_HOMEDIR), MOXIE_USER_LIBDIR);
+
+        return Locator.getLocationURLs(userLibDir);
+    }
+
+    /**
      * Combine the various jar sources into a single array of jars.
      * @param libJars the jars specified in -lib command line options
      * @param userJars the jars in ~/.ant/lib
+     * @param moxieUserJars the jars in ~/.moxie/lib
      * @param systemJars the jars in $ANT_HOME/lib
      * @param toolsJar   the tools.jar file
      * @return a combined array
      * @throws MalformedURLException if there is a problem.
      */
     private URL[] getJarArray (
-        URL[] libJars, URL[] userJars, URL[] systemJars, File toolsJar)
+        URL[] libJars, URL[] userJars, URL[] moxieUserJars, URL[] systemJars, File toolsJar)
         throws MalformedURLException {
-        int numJars = libJars.length + userJars.length + systemJars.length;
+        int numJars = libJars.length + userJars.length + moxieUserJars.length + systemJars.length;
         if (toolsJar != null) {
             numJars++;
         }
         URL[] jars = new URL[numJars];
         System.arraycopy(libJars, 0, jars, 0, libJars.length);
         System.arraycopy(userJars, 0, jars, libJars.length, userJars.length);
-        System.arraycopy(systemJars, 0, jars, userJars.length + libJars.length,
+        System.arraycopy(moxieUserJars, 0, jars, libJars.length + userJars.length, moxieUserJars.length);
+        System.arraycopy(systemJars, 0, jars, libJars.length + userJars.length + moxieUserJars.length,
             systemJars.length);
 
         if (toolsJar != null) {
