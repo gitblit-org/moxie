@@ -70,6 +70,8 @@ public class ToolkitConfig implements Serializable {
 	MaxmlMap mxreport;
 	Map<String, String> externalProperties;
 	UpdatePolicy updatePolicy;
+	int revisionRetentionCount;
+	int revisionPurgeAfterDays;
 
 	public ToolkitConfig() {
 		// default configuration
@@ -96,6 +98,8 @@ public class ToolkitConfig implements Serializable {
 		mxreport = new MaxmlMap();
 		externalProperties = new HashMap<String, String>();
 		updatePolicy = UpdatePolicy.defaultPolicy;
+		revisionRetentionCount = 1;
+		revisionPurgeAfterDays = 0;
 	}
 	
 	public ToolkitConfig(File file, File baseFolder, String defaultResource) throws IOException, MaxmlException {
@@ -205,6 +209,12 @@ public class ToolkitConfig implements Serializable {
 				updatePolicy.setMins(mins);
 			}
 		}
+		
+		// default snapshot purge policy
+		revisionRetentionCount = Math.min(Toolkit.MAX_REVISIONS, 
+				Math.max(1, map.getInt(Key.revisionRetentionCount.name(), revisionRetentionCount)));
+		revisionPurgeAfterDays = Math.min(Toolkit.MAX_PURGE_AFTER_DAYS,
+				Math.max(0, map.getInt(Key.revisionPurgeAfterDays.name(), revisionPurgeAfterDays)));
 		
 		if (map.containsKey(Key.properties.name())) {
 			MaxmlMap props = map.getMap(Key.properties.name());
@@ -348,6 +358,11 @@ public class ToolkitConfig implements Serializable {
 					String id = repoMap.getString("id", null);
 					String url = repoMap.getString("url", null);
 					RemoteRepository repo = new RemoteRepository(id, url);
+					repo.purgePolicy.retentionCount = Math.min(Toolkit.MAX_REVISIONS, 
+							Math.max(1, repoMap.getInt(Key.revisionRetentionCount.name(), revisionRetentionCount)));
+					repo.purgePolicy.purgeAfterDays = Math.min(Toolkit.MAX_PURGE_AFTER_DAYS, 
+							Math.max(0, repoMap.getInt(Key.revisionPurgeAfterDays.name(), revisionPurgeAfterDays)));
+
 					remotes.add(repo);
 				}
 			}
@@ -625,5 +640,7 @@ public class ToolkitConfig implements Serializable {
 		dependencyAliases = parent.dependencyAliases;
 		externalProperties = parent.externalProperties;
 		updatePolicy = parent.updatePolicy;
+		revisionRetentionCount = parent.revisionRetentionCount;
+		revisionPurgeAfterDays = parent.revisionPurgeAfterDays;
 	}
 }

@@ -309,5 +309,40 @@ public class MoxieCache implements IMavenCache {
 		}
 		FileUtils.writeContent(file, content);
 		return file;
-	}	
+	}
+	
+	public void purgeSnapshots(Dependency dep, PurgePolicy policy) {
+		if (!dep.isSnapshot()) {
+			return;
+		}
+		File metadataFile = getMetadata(dep, Constants.XML);
+		if (metadataFile == null || !metadataFile.exists()) {
+			return;
+		}
+		Metadata metadata = MetadataReader.readMetadata(metadataFile);
+		List<String> purgedRevisions = metadata.purgeSnapshots(policy);
+		if (purgedRevisions.size() > 0) {
+			for (String revision : purgedRevisions) {
+				Dependency old = DeepCopier.copy(dep);				
+				old.revision = revision;
+				purgeArtifacts(old, false);
+			}
+			// write purged metadata
+			FileUtils.writeContent(metadataFile, metadata.toXML());
+		}
+	}
+	
+	public void purgeArtifacts(Dependency dep, boolean includeDependencies) {
+		String identifier = dep.version;
+		if (dep.isSnapshot()) {
+			identifier = dep.revision;
+		}
+		File folder = getArtifact(dep, dep.type).getParentFile();
+		for (File file : folder.listFiles()) {
+			if (file.isFile() && file.getName().contains(identifier)) {
+				//System.out.println("purging " + file.getName());
+				file.delete();
+			}
+		}
+	}
 }

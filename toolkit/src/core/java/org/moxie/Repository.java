@@ -39,6 +39,12 @@ public class Repository {
 	final String artifactPattern;
 	final String metadataPattern;
 	final String snapshotPattern;
+	PurgePolicy purgePolicy;
+	
+	public Repository(RemoteRepository definition) {
+		this(definition.id, definition.url);
+		this.purgePolicy = definition.purgePolicy;
+	}
 
 	public Repository(String name, String mavenUrl) {
 		this(name, mavenUrl, Constants.MAVEN2_PATTERN, Constants.MAVEN2_METADATA_PATTERN, Constants.MAVEN2_SNAPSHOT_PATTERN);
@@ -50,6 +56,7 @@ public class Repository {
 		this.artifactPattern = pattern;
 		this.metadataPattern = metadataPattern;
 		this.snapshotPattern = snapshotPattern;
+		this.purgePolicy = new PurgePolicy();
 	}
 
 	@Override

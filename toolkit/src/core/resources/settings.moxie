@@ -11,13 +11,24 @@ proxies:
 # only the identified repositories are proxied through this connection
 - { id: moxieProxy, active: false,	protocol: http, host: moxie.somewhere.com, port: 8081, username: proxyuser, password: somepassword, repositories: "central, mavencentral, restlet, codehaus" }
 
+# Default snapshot revision purge policy
+#
+# Default minimum count of snapshot revisions to keep
+# minimum acceptable value is 1
+revisionRetentionCount : 1
+
+# if the count of snapshot revisions exceeds the specified retention count,
+# then delete all snapshot revisions older than this count of days
+revisionPurgeAfterDays  : 0
+
 # Registered Maven 2 repositories.  This section is used to define id-url
 # pairs so that project descriptors can specify an repository id, rather than
-# a complete url.
+# a complete url.  A repository definition can override the default snapshot
+# revision purge policy.
 registeredRepositories:
 - { id: central, url: "http://repo1.maven.org/maven2" }
 - { id: mavencentral, url: "http://repo1.maven.org/maven2" }
-- { id: restlet, url: "http://maven.restlet.org" }
+- { id: restlet, url: "http://maven.restlet.org", revisionRetentionCount : 1, revisionPurgeAfterDays : 0 }
 - { id: codehaus, url: "http://repository.codehaus.org" }
 
 # Default repositories for dependency retrieval

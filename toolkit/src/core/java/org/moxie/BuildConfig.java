@@ -139,7 +139,7 @@ public class BuildConfig {
 			}
 			for (RemoteRepository definition : registrations) {
 				if (definition.url.equalsIgnoreCase(url) || definition.id.equalsIgnoreCase(url)) {
-					repositories.add(new Repository(definition.id, definition.url));
+					repositories.add(new Repository(definition));
 					break;
 				}	
 			}

@@ -18,6 +18,7 @@ package org.moxie;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -28,6 +29,9 @@ import org.moxie.utils.StringUtils;
 
 public class Metadata {
 
+	private static final String snapshotTimestamp = "yyyyMMdd.HHmmss";
+	private static final String versionTimestamp = "yyyyMMddHHmmss";
+
 	public String groupId;
 	public String artifactId;
 	public String latest;
@@ -37,7 +41,7 @@ public class Metadata {
 
 	private final List<String> versions;
 	private final List<Snapshot> snapshots;
-
+	
 	public Metadata() {
 		lastUpdated = new Date(0);
 		versions = new ArrayList<String>();
@@ -89,10 +93,69 @@ public class Metadata {
 		if (latest != null) {
 			this.latest = latest.toString();
 		}
+		
+		// merge snapshots
+		LinkedHashSet<Snapshot> sset = new LinkedHashSet<Snapshot>();
+		sset.addAll(snapshots);
+		sset.addAll(oldMetadata.snapshots);
+		List<Snapshot> slist = new ArrayList<Snapshot>(sset);
+		Collections.sort(slist);		
+		snapshots.clear();
+		snapshots.addAll(slist);
 
 		if (oldMetadata.lastUpdated.after(lastUpdated)) {
 			lastUpdated = oldMetadata.lastUpdated;
 		}
+	}
+	
+	public List<String> purgeSnapshots(PurgePolicy policy) {
+		List<String> removed = new ArrayList<String>();
+		if (snapshots.size() > policy.retentionCount) {
+			Collections.sort(snapshots);
+			
+			// keep last RetentionCount snapshots
+			List<Snapshot> kept = new ArrayList<Snapshot>();
+			kept.addAll(snapshots.subList(snapshots.size() - policy.retentionCount, snapshots.size()));
+			
+			if (policy.purgeAfterDays > 0) {
+				// determine which of the remaining snapshots should be purged
+				// or kept based on purgeAfterDays
+
+				Calendar cal = Calendar.getInstance();
+				cal.add(Calendar.DATE, -1 * policy.purgeAfterDays);
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.SECOND, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				Date threshold = cal.getTime();
+
+				SimpleDateFormat df = new SimpleDateFormat(snapshotTimestamp);
+				df.setTimeZone(TimeZone.getTimeZone("UTC"));
+				
+				List<Snapshot> candidates = snapshots.subList(0, snapshots.size() - policy.retentionCount);				
+				for (Snapshot snapshot : candidates) {
+					try {
+						Date sDate = df.parse(snapshot.timestamp);
+						if (sDate.before(threshold)) {
+							removed.add(snapshot.getRevision());
+						} else {
+							kept.add(snapshot);
+						}
+					} catch (ParseException e) {
+					}
+				}
+			} else {
+				// just keep retentionCount revisions
+				for (Snapshot snapshot : snapshots.subList(0, snapshots.size() - policy.retentionCount)) {
+					removed.add(snapshot.getRevision());
+				}
+			}
+			
+			Collections.sort(kept);
+			snapshots.clear();
+			snapshots.addAll(kept);
+		}
+		return removed;
 	}
 
 	public void setLastUpdated(String date) {
@@ -100,7 +163,7 @@ public class Metadata {
 			return;
 		}
 		try {
-			SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+			SimpleDateFormat df = new SimpleDateFormat(versionTimestamp);
 			df.setTimeZone(TimeZone.getTimeZone("UTC"));
 			lastUpdated = df.parse(date);
 		} catch (ParseException e) {
@@ -172,7 +235,7 @@ public class Metadata {
 
 		if (snapshots.size() > 0) {
 			// lastUpdated is most recent snapshot timestamp
-			SimpleDateFormat sf = new SimpleDateFormat("yyyyMMdd.HHmmss");
+			SimpleDateFormat sf = new SimpleDateFormat(snapshotTimestamp);
 			sf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			try {
 				lastUpdated = sf.parse(snapshots.get(snapshots.size() - 1).timestamp);
@@ -182,7 +245,7 @@ public class Metadata {
 		}
 		
 		// set lastUpdated
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+		SimpleDateFormat df = new SimpleDateFormat(versionTimestamp);
 		df.setTimeZone(TimeZone.getTimeZone("UTC"));
 		sb.append("\t").append(StringUtils.toXML("lastUpdated", df.format(lastUpdated)));
 		
@@ -193,7 +256,7 @@ public class Metadata {
 		return sb.toString();
 	}
 	
-	class Snapshot {
+	class Snapshot implements Comparable<Snapshot> {
 		final String timestamp;
 		final String buildNumber;
 		
@@ -217,6 +280,16 @@ public class Metadata {
 		@Override
 		public int hashCode() {
 			return 11 + timestamp.hashCode() + buildNumber.hashCode();
+		}
+
+		@Override
+		public int compareTo(Snapshot o) {
+			return getRevision().compareTo(o.getRevision());
+		}
+		
+		@Override
+		public String toString() {
+			return getRevision();
 		}
 	}
 }

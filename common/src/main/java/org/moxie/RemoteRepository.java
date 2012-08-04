@@ -25,10 +25,12 @@ public class RemoteRepository implements Serializable {
 
 	public final String id;
 	public final String url;
+	public final PurgePolicy purgePolicy;
 
 	public RemoteRepository(String id, String url) {
 		this.id = id;
 		this.url = url;
+		this.purgePolicy = new PurgePolicy();
 	}
 
 	public String getHost() {

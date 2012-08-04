@@ -730,6 +730,9 @@ public class Solver {
 				repository.download(this, sources, sources.type);
 			}
 			
+			// purge snapshots for this dependency			
+			moxieCache.purgeSnapshots(dependency, repository.purgePolicy);
+			
 			// optionally copy primary artifact to project-specified folder
 			if (artifactFile != null && artifactFile.exists()) {
 				if (forProject && config.getProjectConfig().dependencyFolder != null) {

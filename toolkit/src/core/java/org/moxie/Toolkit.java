@@ -47,6 +47,10 @@ public class Toolkit {
 	
 	public static final String MOXIE_DEFAULTS = "defaults.moxie";
 	
+	public static final int MAX_REVISIONS = 100;
+	
+	public static final int MAX_PURGE_AFTER_DAYS = 1000;
+	
 	public static enum Key {
 		build, name, description, url, organization, scope, groupId, artifactId, version,
 		type, classifier, optional, folder, sourceFolder, sourceFolders, compile_sourcepath,
@@ -57,7 +61,8 @@ public class Toolkit {
 		proxies, parent, exclusions, mxjar, mxjavac, compilerArgs, excludes, includes,
 		dependencyManagement, mxreport, outputFile, verbose, build_classpath, reportsFolder,
 		dependencyOverrides, dependencyAliases, updatePolicy, lastChecked, lastUpdated, lastSolved,
-		lastDownloaded, origin, release, latest, revision, packaging, registeredRepositories;
+		lastDownloaded, origin, release, latest, revision, packaging, registeredRepositories,
+		revisionRetentionCount, revisionPurgeAfterDays;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');
