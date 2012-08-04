@@ -356,6 +356,7 @@ public class Solver {
 	private void retrieveDependencies() {
 		console.debug("retrieving artifacts");
 		// solve dependencies for compile, runtime, test, and build scopes
+		Set<Dependency> retrieved = new HashSet<Dependency>();
 		for (Scope scope : new Scope [] { Scope.compile, Scope.runtime, Scope.test, Scope.build }) {
 			if (!silent && verbose) {
 				console.separator();
@@ -369,10 +370,12 @@ public class Solver {
 				}
 			} else {
 				for (Dependency dependency : solution) {
-					if (!silent && verbose) {
-						console.dependency(dependency);
+					if (retrieved.add(dependency)) {
+						if (!silent && verbose) {
+							console.dependency(dependency);
+						}
+						retrieveArtifact(dependency, true);
 					}
-					retrieveArtifact(dependency, true);
 				}
 			}
 		}
