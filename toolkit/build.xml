@@ -177,6 +177,7 @@
 			</resource>
 			<resource file="${basedir}/src/core/config/pro/tasks.properties" />
 			<resource file="${basedir}/src/core/config/pro/moxie.xml" />
+			<resource file="${basedir}/src/core/config/pro/moxie-targets.xml" />
 		</mx:jar>
 
 		
@@ -217,6 +218,7 @@
 			</resource>
 			<resource file="${basedir}/src/core/config/all/tasks.properties" />
 			<resource file="${basedir}/src/core/config/pro/moxie.xml" />
+			<resource file="${basedir}/src/core/config/pro/moxie-targets.xml" />
 		</mx:jar>
 		
 		<!--
