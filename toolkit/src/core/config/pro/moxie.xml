@@ -34,6 +34,8 @@
 			if (bang > -1) {
 				jar = jar.substring(0, bang);
 			}
+			// replace %20 (space)
+			jar = jar.replace("%20", " ");
 			project.setProperty("moxie.jar", jar);
 		]]>
 	</script>
