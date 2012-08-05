@@ -134,6 +134,8 @@
 				<exclude name="org.tautua." />
 				<exclude name="org.w3c." />
 			</classfilter>
+				
+			<class name="org.moxie.ant.ProjectHelper" />
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
 			<class name="org.moxie.ant.MxIf" />
@@ -156,6 +158,7 @@
 			</classfilter>
 			
 			<!-- core -->
+			<class name="org.moxie.ant.ProjectHelper" />
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
 			<class name="org.moxie.ant.MxIf" />
@@ -192,6 +195,7 @@
 			</classfilter>
 			
 			<!-- core -->
+			<class name="org.moxie.ant.ProjectHelper" />
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
 			<class name="org.moxie.ant.MxIf" />
@@ -209,7 +213,6 @@
 			<class name="org.moxie.cobertura.ReportTask" />			
 			
 			<!-- all -->
-			<class name="org.moxie.ant.Main" />
 			<class name="org.moxie.ant.MxDoc" />
 			
 			<resource>
