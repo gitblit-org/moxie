@@ -1,0 +1,12 @@
+name : Moxie+Ant
+description : Moxie+Ant distribution
+groupId : org.moxie
+artifactId : moxie+ant
+parent : ../build.moxie
+apply : eclipse
+properties : {
+ groovy.version : 1.8.6
+}
+dependencyFolder: ext
+dependencies :
+- provided org.codehaus.groovy:groovy-all:${groovy.version}

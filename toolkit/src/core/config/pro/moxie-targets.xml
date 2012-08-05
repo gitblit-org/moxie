@@ -95,7 +95,7 @@
 		<path id="execution.test.classpath">
 			<path refid="mxr.test.classpath" />
 			<path refid="mxr.build.classpath" />
-			<path refid="moxie.classpath"/>
+			<pathelement location="${moxie.jar}" />
 		</path>
 		
 		<!-- Automatic instrumentation for Code Coverage -->

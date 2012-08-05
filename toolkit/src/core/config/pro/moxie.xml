@@ -39,25 +39,16 @@
 		]]>
 	</script>
 	
-	<!-- Define the folder where the Moxie jar is located -->
-	<dirname property="moxie.dir" file="${moxie.jar}" />
-	
-	<!-- Make the Moxie lib folder -->
-	<property name="moxie.lib" value="${user.home}/.moxie/lib" />
-	<mkdir dir="${moxie.lib}" />
-
-	<!-- Define the Moxie classpath -->
-	<path id="moxie.classpath">
-		<pathelement location="${moxie.jar}" />
-		<fileset dir="${moxie.lib}" includes="*.jar" />
-	</path>
-	
 	<!-- Define Moxie tasks -->
-	<taskdef resource="tasks.properties" classpathref="moxie.classpath" uri="antlib:org.moxie" loaderref="moxie.loader" />
+	<taskdef resource="tasks.properties" uri="antlib:org.moxie">
+		<classpath location="${moxie.jar}" />
+	</taskdef>
 
 	<!-- Include Moxie targets -->
 	<include>
-		<javaresource name="moxie-targets.xml" classpathref="moxie.classpath" />
+		<javaresource name="moxie-targets.xml">
+			<classpath location="${moxie.jar}" />
+		</javaresource>
 	</include>
 
 </project>

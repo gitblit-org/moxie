@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Moxie-Launcher</name>
-	<comment>Moxie Ant Launcher</comment>
+	<name>Moxie+Ant</name>
+	<comment>Moxie+Ant distribution</comment>
 	<projects>
 	</projects>
 	<buildSpec>
