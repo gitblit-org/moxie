@@ -39,7 +39,6 @@ public class ProjectHelper extends ProjectHelper2 {
 		if (getImportStack().size() == 0) {
 			System.out.println();
 			System.out.println("Moxie+Ant v" + Toolkit.getVersion());			
-			System.out.println();
 			// TODO display useful details here
 			
 			// automatically define Moxie tasks
@@ -50,105 +49,119 @@ public class ProjectHelper extends ProjectHelper2 {
 			def.execute();
 			
 			// add Moxie targets
-			project.addTarget(newInitTarget());
-			project.addTarget(newCompileTarget());
-			project.addTarget(newTestTarget());
-			project.addTarget(newPackageTarget());
-			project.addTarget(newInstallTarget());
-			project.addTarget(newDeployTarget());
-			project.addTarget(newCleanTarget());
-			project.addTarget(newReportTarget());
+			newInitTarget(project);
+			newCompileTarget(project);
+			newTestTarget(project);
+			newPackageTarget(project);
+			newInstallTarget(project);
+			newDeployTarget(project);
+			newCleanTarget(project);
+			newReportTarget(project);
 		}		
 		
 		// continue normal parsing
 		super.parse(project, source);
 	}
 	
-	private Target newTarget(String name) {
+	private Target newTarget(Project project, String name) {
 		Target target = new Target();
 		target.setName(name);
 		target.setLocation(new Location(name));
+		project.addTarget(target);
 		return target;
 	}
 	
-	private Target newInitTarget() {
-		Target target = newTarget("moxie.init");
+	private Target newInitTarget(Project project) {
+		Target target = newTarget(project, "moxie.init");
 		target.setDescription("validates project configuration, retrieves dependencies, and configures ANT properties");
 		
 		MxInit task = new MxInit();
+		task.setTaskName("mx:init");
+		task.setProject(project);
 		target.addTask(task);
 		return target;
 	}
 	
-	private Target newCompileTarget() {
-		Target target = newTarget("moxie.compile");
+	private Target newCompileTarget(Project project) {
+		Target target = newTarget(project, "moxie.compile");
 		target.setDepends("moxie.init");
 		target.setDescription("compile the source code of the project");
-		
-		
+				
 		MxJavac task = new MxJavac();
+		task.setTaskName("mx:javac");
+		task.setProject(project);
 		target.addTask(task);
 		return target;
 	}
 
-	private Target newTestTarget() {
-		Target target = newTarget("moxie.test");
+	private Target newTestTarget(Project project) {
+		Target target = newTarget(project, "moxie.test");
 		target.setDepends("moxie.compile");
 		target.setDescription("compile the source code of the project");
 		
-		// TODO implement test target
+		MxTest task = new MxTest();
+		task.setTaskName("mx:test");
+		task.setProject(project);
+		target.addTask(task);
 		return target;
 	}
 
-	private Target newPackageTarget() {
-		Target target = newTarget("moxie.package");
+	private Target newPackageTarget(Project project) {
+		Target target = newTarget(project, "moxie.package");
 		target.setDepends("moxie.test");
 		target.setDescription("take the compiled code and package it in its distributable format, such as a JAR");
 		
 		// TODO WAR packaging
 		MxJar task = new MxJar();
+		task.setTaskName("mx:jar");
+		task.setProject(project);
 		task.setIncluderesources(true);
 		task.setPackagesources(true);
 		target.addTask(task);
 		return target;
 	}
 	
-	private Target newInstallTarget() {
-		Target target = newTarget("moxie.install");
+	private Target newInstallTarget(Project project) {
+		Target target = newTarget(project, "moxie.install");
 		
 		target.setDepends("moxie.package");
 		target.setDescription("install the package into the local repository, for use as a dependency in other projects locally");
 
-		MxInstall task = new MxInstall();		
-
+		MxInstall task = new MxInstall();
+		task.setTaskName("mx:install");
+		task.setProject(project);
 		target.addTask(task);
 		return target;
 	}
 	
-	private Target newDeployTarget() {
-		Target target = newTarget("moxie.deploy");
+	private Target newDeployTarget(Project project) {
+		Target target = newTarget(project, "moxie.deploy");
 		target.setDepends("moxie.install");
 		target.setDescription("deploys the generated binaries to an external repository");
 		// TODO implement deploy
 		return target;
 	}
 	
-	private Target newCleanTarget() {		
-		Target target = newTarget("moxie.clean");
+	private Target newCleanTarget(Project project) {		
+		Target target = newTarget(project, "moxie.clean");
 		target.setDepends("moxie.init");
 		target.setDescription("clean build and target folders");
 
 		MxClean task = new MxClean();
+		task.setTaskName("mx:clean");
+		task.setProject(project);
 		target.addTask(task);
 		return target;
 	}
 	
-	private Target newReportTarget() {
-		Target target = newTarget("moxie.report");
+	private Target newReportTarget(Project project) {
+		Target target = newTarget(project, "moxie.report");
 		target.setDepends("moxie.init");
 		target.setDescription("generates a dependency report");
 
 		MxReport task = new MxReport();
+		task.setTaskName("mx:report");
+		task.setProject(project);
 		target.addTask(task);
 		return target;
 	}

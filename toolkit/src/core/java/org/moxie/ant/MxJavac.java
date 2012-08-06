@@ -110,7 +110,9 @@ public class MxJavac extends Javac {
 	public void setProject(Project project) {
 		super.setProject(project);
 		Build build = (Build) getProject().getReference(Key.build.refId());
-		configure(build);
+		if (build != null) {
+			configure(build);
+		}
 	}
 	
 	/**

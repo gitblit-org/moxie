@@ -148,7 +148,9 @@ public class MxJar extends GenJar {
 	public void setProject(Project project) {
 		super.setProject(project);
 		Build build = (Build) getProject().getReference(Key.build.refId());
-		configure(build);
+		if (build != null) {
+			configure(build);
+		}
 	}
 
 	private void configure(Build build) {
