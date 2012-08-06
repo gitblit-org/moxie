@@ -15,6 +15,7 @@
 		<property name="ant.distribution" value="${ant.release}-bin.zip" />
 		
 		<!-- retrieve the Ant distribution, if necessary -->
+		<mkdir dir="${mxp.outputFolder}"/>
 		<get dest="${mxp.outputFolder}" skipexisting="true" verbose="true"
 			src="http://www.apache.org/dist/ant/binaries/${ant.distribution}" />
 
