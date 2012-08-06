@@ -2,10 +2,9 @@
 <project default="main" xmlns:mx="antlib:org.moxie">
 
 	<!-- Moxie tasks -->
-	<include>
-		<!-- The toolkit project must be built first! -->
-		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie.jar" />
-	</include>
+	<taskdef resource="tasks.properties" uri="antlib:org.moxie">
+		<classpath location="${basedir}/../toolkit/target/moxie.jar" />
+	</taskdef>
 
 	<!--
 	Build the Moxie site
@@ -72,8 +71,8 @@
 			</resource>
 			
 			<!-- Set the logo from the mx:doc resources -->
-			<logo file="${basedir}/../toolkit/src/mxdoc/resources/moxie.png" />
-			<favicon file="${basedir}/../toolkit/src/mxdoc/resources/moxie-favicon.png" />
+			<logo file="${basedir}/../toolkit/src/all/resources/moxie.png" />
+			<favicon file="${basedir}/../toolkit/src/all/resources/moxie-favicon.png" />
 		</mx:doc>
 	</target>
 

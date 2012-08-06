@@ -2,9 +2,9 @@
 <project default="main" xmlns:mx="antlib:org.moxie">
 
 	<!-- Moxie tasks -->
-	<include>
-		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie.jar" />
-	</include>
+	<taskdef resource="tasks.properties" uri="antlib:org.moxie">
+		<classpath location="${basedir}/../toolkit/target/moxie.jar" />
+	</taskdef>
 	
 	<target name="main">
 		<mx:init />

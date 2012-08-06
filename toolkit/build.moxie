@@ -9,11 +9,9 @@ linkedProjects :
 sourceFolders : 
 - compile src/core/java
 - compile src/core/resources
-- compile src/mxgit/java
-- compile src/mxjar/java
-- compile src/cobertura/java
-- compile src/mxdoc/java
-- compile src/mxdoc/resources
+- compile src/pro/java
+- compile src/all/java
+- compile src/all/resources
 - { scope: test, folder: src/test/java }
 properties: {
   jgit.version : 1.3.0.201202151440-r

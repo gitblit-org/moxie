@@ -2,13 +2,15 @@
 <project default="main" xmlns:mx="antlib:org.moxie">
 
 	<!-- Moxie tasks -->
-	<include>
-		<!-- The toolkit project must be built first! -->
-		<javaresource name="moxie.xml" classpath="${basedir}/../toolkit/target/moxie.jar" />
-	</include>
+	<taskdef resource="tasks.properties" uri="antlib:org.moxie">
+		<classpath location="${basedir}/../toolkit/target/moxie.jar" />
+	</taskdef>
 	
 	<target name="main">
-		<antcall target="moxie.package" />
+		<mx:init />
+		<mx:javac />
+		<mx:test />
+		<mx:jar includeResources="true" packageSources="true" />
 	</target>
 	
 </project>

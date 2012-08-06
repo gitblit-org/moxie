@@ -102,12 +102,13 @@
 		<taskdef classname="org.moxie.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 
 		<taskdef classname="org.moxie.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.ant.MxZip" name="zip" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		
-		<!-- All -->
+		<taskdef classname="org.moxie.ant.MxTest" name="test" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxZip" name="zip" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />		
 		<taskdef classname="org.moxie.ant.MxExtract" name="extract" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxGitId" name="gitid" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxGhPages" name="ghpages" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		
+		<!-- All -->
 		<taskdef classname="org.moxie.ant.MxDoc" name="doc" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 
 		<!-- Prepare the project -->
@@ -135,7 +136,6 @@
 				<exclude name="org.w3c." />
 			</classfilter>
 				
-			<class name="org.moxie.ant.ProjectHelper" />
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
 			<class name="org.moxie.ant.MxIf" />
@@ -143,8 +143,7 @@
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
 			</resource>
-			<resource file="${basedir}/src/core/config/core/tasks.properties" />
-			<resource file="${basedir}/src/core/config/core/moxie.xml" />
+			<resource file="${basedir}/src/core/config/tasks.properties" />
 		</mx:jar>
 
 		<!-- Moxie-Pro -->
@@ -158,7 +157,6 @@
 			</classfilter>
 			
 			<!-- core -->
-			<class name="org.moxie.ant.ProjectHelper" />
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
 			<class name="org.moxie.ant.MxIf" />
@@ -168,6 +166,7 @@
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
 			<class name="org.moxie.ant.MxJar" />
+			<class name="org.moxie.ant.MxTest" />
 			<class name="org.moxie.ant.MxZip" />
 			<class name="org.moxie.ant.MxKeys" />
 			<class name="org.moxie.ant.MxExtract" />
@@ -178,9 +177,7 @@
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
 			</resource>
-			<resource file="${basedir}/src/core/config/pro/tasks.properties" />
-			<resource file="${basedir}/src/core/config/pro/moxie.xml" />
-			<resource file="${basedir}/src/core/config/pro/moxie-targets.xml" />
+			<resource file="${basedir}/src/pro/config/tasks.properties" />
 		</mx:jar>
 
 		
@@ -205,6 +202,7 @@
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
 			<class name="org.moxie.ant.MxJar" />
+			<class name="org.moxie.ant.MxTest" />
 			<class name="org.moxie.ant.MxZip" />
 			<class name="org.moxie.ant.MxKeys" />
 			<class name="org.moxie.ant.MxExtract" />
@@ -217,11 +215,9 @@
 			
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
-				<fileset dir="${basedir}/src/mxdoc/resources" />
+				<fileset dir="${basedir}/src/all/resources" />
 			</resource>
-			<resource file="${basedir}/src/core/config/all/tasks.properties" />
-			<resource file="${basedir}/src/core/config/pro/moxie.xml" />
-			<resource file="${basedir}/src/core/config/pro/moxie-targets.xml" />
+			<resource file="${basedir}/src/all/config/tasks.properties" />
 		</mx:jar>
 		
 		<!--
