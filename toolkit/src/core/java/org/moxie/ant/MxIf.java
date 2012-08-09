@@ -150,6 +150,11 @@ public class MxIf extends ConditionBase {
     private Vector     elseIfTasks = new Vector();
     private Sequential elseTasks = null;
 
+    public MxIf() {
+    	super();
+    	setTaskName("mx:if");
+    }
+    
     /***
      * A nested Else if task
      */

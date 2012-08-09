@@ -25,6 +25,11 @@ import org.moxie.utils.StringUtils;
 
 public class MxZip extends Zip {
 	
+	public MxZip() {
+		super();
+		setTaskName("mx:zip");
+	}
+	
 	public void execute() {
 		Build build = (Build) getProject().getReference(Key.build.refId());
 		if (zipFile == null) {

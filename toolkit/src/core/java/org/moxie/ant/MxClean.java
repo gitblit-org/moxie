@@ -27,6 +27,11 @@ public class MxClean extends MxTask {
 	
 	Scope scope;
 	
+	public MxClean() {
+		super();
+		setTaskName("mx:clean");
+	}
+	
 	public void setScope(String scope) {
 		this.scope = Scope.fromString(scope);
 	}

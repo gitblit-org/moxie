@@ -30,6 +30,11 @@ public class MxReport extends MxTask {
 	
 	File destFile;
 	
+	public MxReport() {
+		super();
+		setTaskName("mx:report");
+	}
+	
 	public void setScope(String scope) {
 		this.scope = Scope.fromString(scope);
 	}

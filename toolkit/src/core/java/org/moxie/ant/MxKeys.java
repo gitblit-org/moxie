@@ -36,6 +36,11 @@ public class MxKeys extends MxTask {
 	
 	File outputFolder;
 	
+	public MxKeys() {
+		super();
+		setTaskName("mx:keys");
+	}
+	
 	public void setPropertiesfile(File file) {
 		this.propertiesFile = file;
 	}

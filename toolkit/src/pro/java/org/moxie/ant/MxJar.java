@@ -71,6 +71,12 @@ public class MxJar extends GenJar {
 	boolean packageSources;
 
 	String classifier;
+	private boolean configured;
+	
+	public MxJar() {
+		super();
+		setTaskName("mx:jar");
+	}
 	
 	/**
 	 * Builds a <mainclass> element.
@@ -154,6 +160,7 @@ public class MxJar extends GenJar {
 	}
 
 	private void configure(Build build) {
+		configured = true;
 		MaxmlMap attributes = build.getConfig().getMxJarAttributes();
 		if (attributes == null) {
 			build.getConsole().error("mx:Jar attributes are null!");
@@ -203,6 +210,11 @@ public class MxJar extends GenJar {
 	public void execute() throws BuildException {
 		build = (Build) getProject().getReference(Key.build.refId());
 		console = build.getConsole();
+		
+		if (!configured) {
+			// called from moxie.package
+			configure(build);
+		}
 		
 		// automatic manifest entries from Moxie metadata
 		configureManifest(mft);

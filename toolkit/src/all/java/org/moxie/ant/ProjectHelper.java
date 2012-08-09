@@ -76,7 +76,6 @@ public class ProjectHelper extends ProjectHelper2 {
 		target.setDescription("validates project configuration, retrieves dependencies, and configures ANT properties");
 		
 		MxInit task = new MxInit();
-		task.setTaskName(task.getClass().getSimpleName());
 		task.setProject(project);
 		target.addTask(task);
 		return target;
@@ -88,8 +87,7 @@ public class ProjectHelper extends ProjectHelper2 {
 		target.setDescription("compile the source code of the project");
 				
 		MxJavac task = new MxJavac();
-		task.setTaskName(task.getClass().getSimpleName());
-		task.setProject(project);
+		task.setProject(project);		
 		target.addTask(task);
 		return target;
 	}
@@ -100,7 +98,6 @@ public class ProjectHelper extends ProjectHelper2 {
 		target.setDescription("compile the source code of the project");
 		
 		MxTest task = new MxTest();
-		task.setTaskName(task.getClass().getSimpleName());
 		task.setProject(project);
 		target.addTask(task);
 		return target;
@@ -113,7 +110,6 @@ public class ProjectHelper extends ProjectHelper2 {
 		
 		// TODO WAR packaging
 		MxJar task = new MxJar();
-		task.setTaskName(task.getClass().getSimpleName());
 		task.setProject(project);
 		task.setIncluderesources(true);
 		task.setPackagesources(true);
@@ -128,7 +124,6 @@ public class ProjectHelper extends ProjectHelper2 {
 		target.setDescription("install the package into the local repository, for use as a dependency in other projects locally");
 
 		MxInstall task = new MxInstall();
-		task.setTaskName(task.getClass().getSimpleName());
 		task.setProject(project);
 		target.addTask(task);
 		return target;
@@ -148,7 +143,6 @@ public class ProjectHelper extends ProjectHelper2 {
 		target.setDescription("clean build and target folders");
 
 		MxClean task = new MxClean();
-		task.setTaskName(task.getClass().getSimpleName());
 		task.setProject(project);
 		target.addTask(task);
 		return target;
@@ -160,7 +154,6 @@ public class ProjectHelper extends ProjectHelper2 {
 		target.setDescription("generates a dependency report");
 
 		MxReport task = new MxReport();
-		task.setTaskName(task.getClass().getSimpleName());
 		task.setProject(project);
 		target.addTask(task);
 		return target;

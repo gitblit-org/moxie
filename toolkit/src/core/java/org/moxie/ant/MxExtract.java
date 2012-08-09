@@ -31,6 +31,11 @@ public class MxExtract extends MxTask {
 	String field;
 
 	String property;
+	
+	public MxExtract() {
+		super();
+		setTaskName("mx:extract");
+	}
 
 	public void setSrcfile(String file) {
 		this.srcfile = file;

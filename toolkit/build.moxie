@@ -18,8 +18,12 @@ properties: {
 }
 dependencies :
 - provided org.apache.ant:ant:${ant.version}
+- provided org.apache.ant:ant-junit:${ant.version}@jar
 - provided org.eclipse.jgit:org.eclipse.jgit:${jgit.version}
 - provided org.tautua.markdownpapers:markdownpapers-core:1.2.7
 - provided org.mozilla:rhino:1.7R3
 - provided cobertura
-- test junit
+- provided emma:emma:2.1.5320
+- provided emma:emma_ant:2.1.5320
+- provided testng
+- provided junit

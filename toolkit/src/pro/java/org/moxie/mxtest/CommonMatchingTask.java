@@ -59,7 +59,7 @@
  * <http://www.apache.org/>.
  */
 
-package org.moxie.cobertura;
+package org.moxie.mxtest;
 
 import java.io.File;
 import java.io.IOException;

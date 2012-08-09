@@ -26,6 +26,11 @@ import org.moxie.utils.StringUtils;
 public class MxGitId extends MxGitTask {
 
 	private String property;
+	
+	public MxGitId() {
+		super();
+		setTaskName("mx:gitid");
+	}
 
 	public void setProperty(String property) {
 		this.property = property;

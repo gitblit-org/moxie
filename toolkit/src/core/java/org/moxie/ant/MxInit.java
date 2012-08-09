@@ -41,6 +41,11 @@ public class MxInit extends MxTask {
 
 	private File basedir;
 	
+	public MxInit() {
+		super();
+		setTaskName("mx:init");
+	}
+	
 	public void setConfig(String config) {
 		this.config = config;
 	}
@@ -157,10 +162,12 @@ public class MxInit extends MxTask {
 
 			setDependencypath(Key.compile_dependencypath, build, Scope.compile);
 			setDependencypath(Key.runtime_dependencypath, build, Scope.runtime);
-			setDependencypath(Key.test_dependencypath, build, Scope.test);	
+			setDependencypath(Key.test_dependencypath, build, Scope.test);
+			
+			updateExecutionClasspath();			
 		} catch (Exception e) {
 			throw new BuildException(e);
-		}		
+		}
 	}
 	
 	protected void setProjectProperty(Key prop, String value) {

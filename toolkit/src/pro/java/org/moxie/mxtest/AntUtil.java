@@ -1,12 +1,8 @@
 /*
  * The Apache Software License, Version 1.1
  *
- * Copyright (C) 2000-2002 The Apache Software Foundation.  All rights
- * reserved.
- * Copyright (C) 2003 jcoverage ltd.
- * Copyright (C) 2005 Mark Doliner
- * Copyright (C) 2005 Jeremy Thomerson
- * Copyright (C) 2005 Grzegorz Lukasik
+ * Copyright (C) 2006 Mark Doliner
+ * Copyright (C) 2006 John Lewis
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -56,84 +52,43 @@
  * <http://www.apache.org/>.
  */
 
-package org.moxie.cobertura;
+package org.moxie.mxtest;
 
-import java.io.File;
-import java.io.IOException;
+import org.apache.tools.ant.taskdefs.Java;
+import org.apache.tools.ant.types.Environment.Variable;
 
-import net.sourceforge.cobertura.util.CommandLineBuilder;
-
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-
-/**
- * Generate a coverage report based on coverage data generated 
- * by instrumented classes.
- */
-public class ReportTask extends CommonMatchingTask
+abstract class AntUtil
 {
 
-	private String dataFile = null;
-	private String format = "html";
-	private File destDir;
-	private String srcDir;
-   private String encoding;
-
-	public ReportTask() {
-		super("net.sourceforge.cobertura.reporting.Main");
-	}
-	
-	public void execute() throws BuildException {
-		CommandLineBuilder builder = null;
-		try {
-			builder = new CommandLineBuilder();
-			if (dataFile != null)
-				builder.addArg("--datafile", dataFile);
-			if (destDir != null)
-				builder.addArg("--destination", destDir.getAbsolutePath());
-			if (format != null)
-				builder.addArg("--format", format);
-         if (encoding != null)
-            builder.addArg("--encoding", encoding);
-			if (srcDir != null)
-				builder.addArg(srcDir);
-			createArgumentsForResourceCollections(builder);
-
-			builder.saveArgs();
-		} catch (IOException ioe) {
-			getProject().log("Error creating commands file.", Project.MSG_ERR);
-			throw new BuildException("Unable to create the commands file.", ioe);
+	/**
+	 * Used to transfer the net.sourceforge.cobertura.datafile property to a JVM
+	 * that is about to be forked.
+	 * 
+	 * This is confusing, but it's required by our functional test.
+	 * What happens is, we have a JUnit test that runs ant to
+	 * instrument some classes.  When the instrumentation is running,
+	 * we want to get the coverage info that is created by exercising
+	 * our instrumentation classes.
+	 *
+	 * So we pass in two different coverage files:
+	 * 1. The coverage data file command line parameter.  This tells
+	 *    the instrument task where to write the new coverage data.
+	 * 2. The coverage data system property.  This tells the
+	 *    instrumentation inside the instrumented classes where to
+	 *    keep track of the line hit counts, etc.
+	 *
+	 * @param task The Java task that will do the forking.
+	 */
+	static void transferCoberturaDataFileProperty(Java task)
+	{
+		String coberturaProperty = System.getProperty("net.sourceforge.cobertura.datafile");
+		if (coberturaProperty != null)
+		{
+			Variable sysproperty = new Variable();
+			sysproperty.setKey("net.sourceforge.cobertura.datafile");
+			sysproperty.setValue(coberturaProperty);
+			task.addSysproperty(sysproperty);
 		}
-
-		// Execute GPL licensed code in separate virtual machine
-		getJava().createArg().setValue("--commandsfile");
-		getJava().createArg().setValue(builder.getCommandLineFile());
-		AntUtil.transferCoberturaDataFileProperty(getJava());
-		if (getJava().executeJava() != 0) {
-			throw new BuildException(
-					"Error running reports. See messages above.");
-		}
-
-		builder.dispose();
 	}
 
-	public void setDataFile(String dataFile) {
-		this.dataFile = dataFile;
-	}
-
-	public void setDestDir(File destDir) {
-		this.destDir = destDir;
-	}
-
-	public void setFormat(String format) {
-		this.format = format;
-	}
-
-   public void setEncoding(String encoding) {
-      this.encoding = encoding;
-   }
-	
-	public void setSrcDir(String dir) {
-		srcDir = dir;
-	}
 }

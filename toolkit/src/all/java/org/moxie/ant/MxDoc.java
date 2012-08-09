@@ -47,6 +47,11 @@ public class MxDoc extends MxTask {
 	Doc doc = new Doc();
 
 	List<org.moxie.Resource> resources = new ArrayList<org.moxie.Resource>();
+	
+	public MxDoc() {
+		super();
+		setTaskName("mx:doc");
+	}
 
 	public Link createStructure() {
 		Link link = new Link();

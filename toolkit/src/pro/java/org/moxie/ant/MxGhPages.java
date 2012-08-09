@@ -29,6 +29,11 @@ public class MxGhPages extends MxGitTask {
 	private File repositoryFolder;
 
 	private boolean obliterate;
+	
+	public MxGhPages() {
+		super();
+		setTaskName("mx:ghPages");
+	}
 
 	public void setSourceFolder(String path) {
 		this.sourceFolder = new File(path);

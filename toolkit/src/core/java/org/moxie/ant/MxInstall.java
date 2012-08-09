@@ -30,6 +30,11 @@ import org.moxie.utils.StringUtils;
 
 public class MxInstall extends MxTask {
 	
+	public MxInstall() {
+		super();
+		setTaskName("mx:install");
+	}
+	
 	public void execute() {
 		Build build = getBuild();
 		

@@ -149,11 +149,23 @@
 		<!-- Moxie-Pro -->
 		<mx:jar classifier="pro">
 			<classfilter>
+				<exclude name="emma" />
+				<exclude name="emmarun" />
+				<exclude name="bsh." />
+				<exclude name="com.beust." />
+				<exclude name="com.google." />
+				<exclude name="com.jcraft." />
+				<exclude name="com.vladium." />
+				<exclude name="net.sourceforge." />
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
+				<exclude name="org.hamcrest." />
 				<exclude name="org.mozilla." />
+				<exclude name="org.objectweb." />
 				<exclude name="org.tautua." />
+				<exclude name="org.testng." />
 				<exclude name="org.w3c." />
+				<exclude name="org.yaml." />
 			</classfilter>
 			
 			<!-- core -->
@@ -172,7 +184,7 @@
 			<class name="org.moxie.ant.MxExtract" />
 			<class name="org.moxie.ant.MxGitId" />
 			<class name="org.moxie.ant.MxGhPages" />				
-			<class name="org.moxie.cobertura.ReportTask" />
+			<class name="org.moxie.mxtest.CoberturaReportTask" />
 
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
@@ -184,11 +196,23 @@
 		<!-- Moxie-All -->
 		<mx:jar classifier="all" packageSources="true">
 			<classfilter>
+				<exclude name="emma" />
+				<exclude name="emmarun" />
+				<exclude name="bsh." />
+				<exclude name="com.beust." />
+				<exclude name="com.google." />
+				<exclude name="com.jcraft." />
+				<exclude name="com.vladium." />
+				<exclude name="net.sourceforge." />
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
+				<exclude name="org.hamcrest." />
 				<exclude name="org.mozilla." />
+				<exclude name="org.objectweb." />
 				<exclude name="org.tautua." />
-				<exclude name="org.w3c." />				
+				<exclude name="org.testng." />
+				<exclude name="org.w3c." />
+				<exclude name="org.yaml." />
 			</classfilter>
 			
 			<!-- core -->
@@ -208,7 +232,7 @@
 			<class name="org.moxie.ant.MxExtract" />
 			<class name="org.moxie.ant.MxGitId" />
 			<class name="org.moxie.ant.MxGhPages" />
-			<class name="org.moxie.cobertura.ReportTask" />			
+			<class name="org.moxie.mxtest.CoberturaReportTask" />			
 			
 			<!-- all -->
 			<class name="org.moxie.ant.MxDoc" />
@@ -227,5 +251,8 @@
 		<copy file="${basedir}/target/moxie-${project.version}-all.jar" tofile="${basedir}/target/moxie.jar" />
 
 	</target>
-
+	
+	<target name="test" depends="prepare">
+		<mx:test />
+	</target>
 </project>

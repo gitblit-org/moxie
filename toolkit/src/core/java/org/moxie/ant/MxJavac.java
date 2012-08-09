@@ -50,8 +50,11 @@ public class MxJavac extends Javac {
 	String excludes;
 	Set<Build> builds;
 	
+	private boolean configured;
+	
 	public MxJavac() {
 		super();
+		setTaskName("mx:javac");
 	}
 	
 	private MxJavac(Set<Build> builds) {
@@ -120,6 +123,7 @@ public class MxJavac extends Javac {
 	 * @param build
 	 */
 	private void configure(Build build) {
+		configured = true;
 		MaxmlMap attributes = build.getConfig().getMxJavacAttributes();
 		if (attributes == null) {
 			build.getConsole().error("mx:Javac attributes are null!");
@@ -178,6 +182,11 @@ public class MxJavac extends Javac {
 	public void execute() {
 		Build build = (Build) getProject().getReference(Key.build.refId());
 		Console console = build.getConsole();
+		
+		if (!configured) {
+			// called from moxie.compile
+			configure(build);
+		}
 		
 		if (scope == null) {
 			scope = Scope.defaultScope;
