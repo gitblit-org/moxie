@@ -40,7 +40,7 @@ apply: color, #debug
 # if those versions are not specified in the project's build.moxie.
 dependencyManagement:
 - junit:junit:4.10
-- org.testng:testng:6.5.2
+- org.testng:testng:6.7
 - net.sourceforge.cobertura:cobertura:1.9.4.1
 - emma:emma:2.1.5320
 - org.eclipse.jgit:org.eclipse.jgit:1.3.0.201202151440-r
@@ -53,11 +53,9 @@ dependencyManagement:
 dependencyAliases: {
 	junit : junit:junit
 	testng : org.testng:testng
-	reportng : org.uncommons:reportng
 	cobertura : net.sourceforge.cobertura:cobertura
 	emma : emma:emma
 	"mx:jgit" : org.eclipse.jgit:org.eclipse.jgit
-	"mx:freemarker" : org.freemarker:freemarker
 	"mx:markdownpapers" : org.tautua.markdownpapers:markdownpapers-core
 	"mx:rhino" : org.mozilla:rhino
 }
@@ -87,27 +85,6 @@ dependencyOverrides: {
 		- compile org.apache.ant:ant:1.7.0 optional
 	}
 
-# reportng: redefine testng as optional for build scope
-	"org.uncommons:reportng:1.1.2" : {
-		scope: build
-		dependencies:
-		- compile org.testng:testng:5:jdk15 optional
-		- compile velocity:velocity:1.4
-	}
-
-# velocity: the 1.4 pom is a disaster, override with 1.5 dependencies, set ant optional
-    "velocity:velocity:1.4" : {
-		dependencies:
-		- compile commons-collections:commons-collections:3.1
-		- compile commons-lang:commons-lang:2.1
-		- compile oro:oro:2.0.8
-		- provided log4j:log4j:1.2.12
-		- provided javax.servlet:servlet-api:2.3
-		- provided logkit:logkit:2.0
-		- provided werken-xpath:werken-xpath:0.9.4
-		- provided ant:ant:1.6 optional
-	}
-	
 # emma: add emma_ant dependency for build scope
     "emma:emma:2.1.5320" : {
 		scope: build

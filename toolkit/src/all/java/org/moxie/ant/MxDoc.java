@@ -154,7 +154,6 @@ public class MxDoc extends MxTask {
 		
 		getConsole().title(getClass(), build.getPom().name);
 		
-		build.getSolver().loadDependency(new Dependency("mx:freemarker"));
 		build.getSolver().loadDependency(new Dependency("mx:markdownpapers"));
 
 		if (doc.outputFolder.exists()) {
