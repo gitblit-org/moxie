@@ -18,6 +18,7 @@ package org.moxie.ant;
 import java.io.File;
 import java.text.MessageFormat;
 
+import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Environment;
 import org.apache.tools.ant.types.FileSet;
@@ -186,7 +187,7 @@ public class MxTest extends MxTask {
 		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.test_classpath.refId()));
 		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.build_classpath.refId()));
 		unitTestClasspath.createPathElement().setPath(testClassesFolder.getAbsolutePath());
-//		unitTestClasspath.add(new Path(getProject(), System.getProperty("java.class.path")));
+		unitTestClasspath.add(new Path(getProject(), System.getProperty("java.class.path")));
 		
 		// log the unit test classpath to the console in debug mode		
 		build.getConsole().debug("unit test classpath");
