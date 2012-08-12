@@ -9,7 +9,11 @@
 	<target name="main">
 		<delete dir="ext" includes="**/*" quiet="true" failonerror="false"/>
 		<mx:init />
+		<mx:javac />
 		<delete dir="${mxp.targetFolder}" includes="**/*" quiet="true" failonerror="false"/>
+		<mx:jar destfile="${mxp.targetFolder}/${project.artifactId}.jar" >
+			<mainclass name="org.moxie.ant.launch.Launcher" />
+		</mx:jar>
 		
 		<property name="ant.release" value="apache-ant-${ant.version}" />
 		<property name="ant.distribution" value="${ant.release}-bin.zip" />
@@ -23,16 +27,84 @@
 		<delete dir="${mxp.outputFolder}/dist" includes="**/*" quiet="true" failonerror="false"/>
 		<unzip dest="${mxp.outputFolder}/dist" src="${mxp.outputFolder}/${ant.distribution}" />
 
-		<!-- rename ant scripts to moxie, this avoids path confusion -->
-		<property name="antbin" value="${mxp.outputFolder}/dist/${ant.release}/bin" />		
-		<move tofile="${antbin}/moxie" file="${antbin}/ant" />
-		<move tofile="${antbin}/moxie.cmd" file="${antbin}/ant.cmd" />
-		<move tofile="${antbin}/moxie.bat" file="${antbin}/ant.bat" />
+		<!-- rename ant scripts to moxie scripts, this avoids path confusion -->
+		<property name="antbin" value="${mxp.outputFolder}/dist/${ant.release}/bin" />
 		
+		<patchfile tofile="${antbin}/moxie" file="${antbin}/ant" />
+		<patchfile tofile="${antbin}/moxie.cmd" file="${antbin}/ant.cmd" />
+		<patchfile tofile="${antbin}/moxie.bat" file="${antbin}/ant.bat" />
+		<patchfile tofile="${antbin}/moxieRun" file="${antbin}/antRun" />
+		<patchfile tofile="${antbin}/moxieRun.bat" file="${antbin}/antRun.bat" />
+		<patchfile tofile="${antbin}/moxieRun.pl" file="${antbin}/antRun.pl" />
+		<patchfile tofile="${antbin}/complete-moxie-cmd.pl" file="${antbin}/complete-ant-cmd.pl" />
+		<patchfile tofile="${antbin}/runmoxie.pl" file="${antbin}/runant.pl" />
+		<patchfile tofile="${antbin}/runmoxie.py" file="${antbin}/runant.py" />
+		<patchfile tofile="${antbin}/moxieenv.cmd" file="${antbin}/antenv.cmd" />
+
+		<!-- create zip distribution -->
 		<zip destfile="${mxp.targetFolder}/moxie+ant-${project.version}.zip">
 			<zipfileset dir="${mxp.outputFolder}/dist/${ant.release}" prefix="moxie-${project.version}" />
+			<zipfileset file="${mxp.targetFolder}/${project.artifactId}.jar" prefix="moxie-${project.version}/lib" />
 			<zipfileset file="${basedir}/../toolkit/target/moxie.jar" prefix="moxie-${project.version}/lib" />
 			<zipfileset dir="ext" prefix="moxie-${project.version}/lib" />
 		</zip>
+		
+		<!-- create gzip distribution (preserves execute permission) -->
+		<tar longfile="gnu" destfile="${mxp.outputFolder}/dist/moxie+ant-${project.version}.tar">
+			<tarfileset dir="${mxp.outputFolder}/dist/${ant.release}" prefix="moxie-${project.version}"
+				filemode="755" username="ant" group="ant">
+				<include name="bin/moxie"/>
+				<include name="bin/moxieRun"/>
+				<include name="bin/moxieRun.pl"/>
+				<include name="bin/complete-moxie-cmd.pl"/>
+				<include name="bin/runmoxie.pl"/>
+				<include name="bin/runmoxie.py"/>
+			</tarfileset>
+			<tarfileset dir="${mxp.outputFolder}/dist/${ant.release}" prefix="moxie-${project.version}"
+				username="ant" group="ant">
+				<include name="**/*"/>
+				<exclude name="bin/*.pl"/>
+				<exclude name="bin/*.py"/>
+				<exclude name="bin/moxie"/>
+				<exclude name="bin/moxieRun"/>
+			</tarfileset>
+			<tarfileset dir="ext" prefix="moxie-${project.version}/lib"
+				username="ant" group="ant">
+				<exclude name="ant*"/>
+				<include name="*"/>
+			</tarfileset>
+			<tarfileset file="${basedir}/../toolkit/target/moxie.jar" prefix="moxie-${project.version}/lib"
+				username="ant" group="ant" />
+			<tarfileset file="${mxp.targetFolder}/${project.artifactId}.jar" prefix="moxie-${project.version}/lib"
+				username="ant" group="ant" />
+		</tar>		
+		<gzip destfile="${mxp.targetFolder}/moxie+ant-${project.version}.tar.gz" 
+			src="${mxp.outputFolder}/dist/moxie+ant-${project.version}.tar" />
 	</target>
+	
+	<!-- Renames bin scripts and replaces all Ant-specific variables, paths, -->
+	<!-- etc. with Moxie-specific alternatives. -->
+	<macrodef name="patchfile">
+	   <attribute name="file"/>
+	   <attribute name="tofile"/>	   
+	   <sequential>
+	   		<move tofile="@{tofile}" file="@{file}" />
+			<replace file="@{tofile}">
+				<replacefilter token="ANT_OPTS" value="MOXIE_OPTS"/>
+				<replacefilter token="ANT_ARGS" value="MOXIE_ARGS"/>
+				<replacefilter token="ANT_HOME" value="MOXIE_HOME"/>
+				<replacefilter token="ANT_LIB" value="MOXIE_LIB"/>
+				<replacefilter token="ANT_USE_CP" value="MOXIE_USE_CP"/>
+				<replacefilter token="ANT_CMD_LINE_ARGS" value="MOXIE_CMD_LINE_ARGS"/>
+				<replacefilter token="ANT_RUN_CMD" value="MOXIE_RUN_CMD"/>
+				
+				<replacefilter token="antRun" value="moxieRun"/>
+				<replacefilter token="ant-launcher.jar" value="moxie-launcher.jar"/>
+				<replacefilter token="ant-launcher" value="moxie-launcher"/>
+				<replacefilter token="org.apache.tools.ant.launch.Launcher" value="org.moxie.ant.launch.Launcher"/>
+				<replacefilter token="org.apache.tools.ant.Main" value="org.moxie.ant.Main"/>
+				<replacefilter token="antenv" value="moxieenv"/>
+			</replace>
+	      </sequential>
+	</macrodef>
 </project>

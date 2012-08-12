@@ -21,7 +21,6 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.helper.ProjectHelper2;
 import org.apache.tools.ant.taskdefs.Taskdef;
-import org.moxie.Toolkit;
 
 /**
  * Entry point for Ant-classpath-included Moxie (i.e. Moxie + Ant or 
@@ -37,9 +36,7 @@ public class ProjectHelper extends ProjectHelper2 {
 	@Override
 	public void parse(Project project, Object source) throws BuildException {
 		if (getImportStack().size() == 0) {
-			System.out.println();
-			System.out.println("Moxie+Ant v" + Toolkit.getVersion());			
-			// TODO display useful details here
+			project.log("configuring moxie tasks", Project.MSG_DEBUG);
 			
 			// automatically define Moxie tasks
 			Taskdef def = new Taskdef();
@@ -49,6 +46,7 @@ public class ProjectHelper extends ProjectHelper2 {
 			def.execute();
 			
 			// add Moxie targets
+			project.log("adding moxie.xxx targets", Project.MSG_DEBUG);
 			newInitTarget(project);
 			newCompileTarget(project);
 			newTestTarget(project);

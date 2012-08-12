@@ -39,11 +39,12 @@
 				</menu>
 				<page name="maxml" src="maxml.mkd" sidebar="true" />
 				<menu name="download">
+					<link name="moxie+ant (zip)" src="moxie+ant-${project.version}.zip" />
+					<link name="moxie+ant (tar.gz)" src="moxie+ant-${project.version}.tar.gz" />
+					<divider />
 					<link name="moxie-core" src="moxie-${project.version}-core.jar" />
 					<link name="moxie-pro" src="moxie-${project.version}-pro.jar" />
 					<link name="moxie-all" src="moxie-${project.version}-all.jar" />
-					<divider />
-					<link name="moxie+ant" src="moxie+ant-${project.version}.zip" />
 					<divider />
 					<link name="moxie-proxy" src="moxie-proxy-${project.version}.jar" />
 					<divider />
@@ -66,7 +67,7 @@
 			<resource>
 				<fileset dir="${basedir}/../toolkit/target/" includes="*.jar" excludes="*-sources.jar,moxie.jar" />
 				<fileset dir="${basedir}/../proxy/target/" includes="*.jar" excludes="*-sources.jar" />
-				<fileset dir="${basedir}/../moxie+ant/target/" includes="*.zip" />
+				<fileset dir="${basedir}/../moxie+ant/target/" includes="*.zip,*.gz" />
 				<fileset dir="${basedir}/../maxml/target/" includes="*.jar" />
 			</resource>
 			
