@@ -1,8 +1,9 @@
+name: ${groupId}:${artifactId}
+description: project for ${groupId}:${artifactId}
 groupId: ${groupId}
 artifactId: ${artifactId}
 version: ${version}
 type: jar
-description: project for ${groupId}:${artifactId}
 apply: eclipse, cache
 sourceFolders:
 - compile src/main/java
@@ -11,3 +12,4 @@ sourceFolders:
 - test src/test/resources
 dependencies:
 - test junit
+- build cobertura

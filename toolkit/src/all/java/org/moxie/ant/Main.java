@@ -61,29 +61,28 @@ public class Main extends org.apache.tools.ant.Main {
 	 */
 	@Override
 	public void startAnt(String[] args, Properties additionalUserProperties, ClassLoader coreLoader) {
-		if (!processArgs(args)) {
-			super.startAnt(args, additionalUserProperties, coreLoader);
-		}
-	}
-
-	private boolean processArgs(String[] args) {
+		boolean startAnt = true;
 		 for (int i = 0; i < args.length; i++) {
 	            String arg = args[i];
 
 	            if (arg.equals("-help") || arg.equals("-h")) {
 	                printUsage();
-	                return true;
+	                startAnt = false;
 	            } else if (arg.equals("-version")) {
 	                printVersion();
-	                return true;
+	                startAnt = false;
 	            } else if (arg.equals("-new")) {
 	            	String [] dest = new String[args.length - i - 1];
 	            	System.arraycopy(args, i + 1, dest, 0, dest.length);
 	                newProject(dest);
-	                return true;
+	                // initialize the project
+	                args = new String[] { "moxie.init" };
 	            }
 		 }
-		return false;
+		 
+		if (startAnt) {
+			super.startAnt(args, additionalUserProperties, coreLoader);
+		}
 	}
 	
 	private void printVersion() {
