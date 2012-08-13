@@ -15,6 +15,8 @@
  */
 package org.moxie.maxml;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -125,5 +127,69 @@ public class MaxmlMap extends LinkedHashMap<String, Object> {
 			}
 		}
 		return null;
+	}
+	
+	public String toMaxml() {
+		StringBuilder sb = new StringBuilder();
+		for (String key : keySet()) {
+			Object o = get(key);
+			if (o instanceof MaxmlMap) {
+				sb.append(escapeKey(key)).append(" : {\n");
+				sb.append(((MaxmlMap) o).toMaxml());
+				sb.append("\n}\n");
+			} else if (o instanceof List) {
+				sb.append(escapeKey(key)).append(" :\n");
+				for (Object j : ((List<?>) o)) {
+					sb.append("- ").append(toMaxml(j)).append('\n');
+				}
+			} else {
+				sb.append(escapeKey(key)).append(" : ").append(toMaxml(o)).append('\n');
+			}
+		}
+		return sb.toString();
+	}
+	
+	String escapeKey(String key) {
+		if (key.indexOf(':') > -1) {
+			return "\"" + key + "\"";
+		}
+		return key;
+	}
+	
+	String toMaxml(Object o) {
+		StringBuilder sb = new StringBuilder();
+		if (o instanceof MaxmlMap) {
+			// inline-map
+			sb.append(" { ");
+			MaxmlMap map = (MaxmlMap) o;
+			for (String key : map.keySet()) {
+				sb.append(escapeKey(key)).append(':').append(toMaxml(map.get(key))).append(", ");
+				sb.append(((MaxmlMap) o).toMaxml());
+			}
+			// trim trailing comma-space
+			sb.setLength(sb.length() - 2);
+			sb.append(" }");
+		} else if (o instanceof List) {
+			// in-line list
+			sb.append(" [ ");
+			for (Object j : ((List<?>) o)) {
+				sb.append("\"").append(toMaxml(j)).append("\", ");
+			}
+			// trim trailing comma-space
+			sb.setLength(sb.length() - 2);
+			sb.append(" ]");
+		} else if (o instanceof java.sql.Date) {
+			// date
+			DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+			sb.append(date.format((Date) o)).append('\n');
+		} else if (o instanceof Date) {
+			// full date
+			DateFormat iso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+			sb.append(iso8601.format((Date) o)).append('\n');
+		} else {
+			// number, boolean, string
+			sb.append(o);
+		}
+		return sb.toString();
 	}
 }
