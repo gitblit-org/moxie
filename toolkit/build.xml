@@ -174,9 +174,7 @@
 			<class name="org.moxie.ant.MxIf" />
 				
 			<!-- pro -->
-			<class name="org.moxie.ant.Main" />
 			<class name="org.moxie.ant.ProjectHelper" />
-			
 			<class name="org.moxie.ant.MxClean" />
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
@@ -224,9 +222,7 @@
 			<class name="org.moxie.ant.MxIf" />
 			
 			<!-- pro -->
-			<class name="org.moxie.ant.Main" />
 			<class name="org.moxie.ant.ProjectHelper" />
-
 			<class name="org.moxie.ant.MxClean" />
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
@@ -241,7 +237,8 @@
 			
 			<!-- all -->
 			<class name="org.moxie.ant.MxDoc" />
-			
+			<class name="org.moxie.ant.Main" />
+
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
 				<fileset dir="${basedir}/src/all/resources" />

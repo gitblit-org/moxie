@@ -1,0 +1,13 @@
+groupId: ${groupId}
+artifactId: ${artifactId}
+version: ${version}
+type: jar
+description: project for ${groupId}:${artifactId}
+apply: eclipse, cache
+sourceFolders:
+- compile src/main/java
+- compile src/main/resources
+- test src/test/java
+- test src/test/resources
+dependencies:
+- test junit
