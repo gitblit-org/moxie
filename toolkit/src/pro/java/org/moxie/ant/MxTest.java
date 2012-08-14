@@ -183,6 +183,7 @@ public class MxTest extends MxTask {
 		unitTestClasspath = new Path(getProject());
 		unitTestClasspath.createPathElement().setPath(instrumentedBuild.getAbsolutePath());
 		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.test_classpath.refId()));
+		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.build_classpath.refId()));
 		unitTestClasspath.createPathElement().setPath(testClassesFolder.getAbsolutePath());
 		
 		// log the unit test classpath to the console in debug mode		
