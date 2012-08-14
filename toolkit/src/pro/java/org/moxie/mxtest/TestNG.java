@@ -43,7 +43,6 @@ public class TestNG {
 		testng.setMode(Mode.mixed);
 		testng.setWorkingDir(mxtest.getProject().getBaseDir());
 		testng.setOutputDir(mxtest.getTestReports());
-		testng.setSuiteName(mxtest.getProjectTitle());
 		testng.setUseDefaultListeners(useDefaultListeners);
 		testng.setListeners(listeners);
 		testng.setFailureProperty(mxtest.getFailureProperty());
