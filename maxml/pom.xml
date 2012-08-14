@@ -26,9 +26,9 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
     <dependencies>
     	<!-- test dependencies -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.7</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>

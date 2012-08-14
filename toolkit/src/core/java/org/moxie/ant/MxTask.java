@@ -208,4 +208,12 @@ public abstract class MxTask extends Task {
 			build.getConsole().error("Skipping update classpath. Unexpected class loader {0}", loader.getClass().getName());
 		}
 	}
+	
+	public String getProjectTitle() {
+		String name = getBuild().getPom().getCoordinates();
+		if (!StringUtils.isEmpty(getBuild().getPom().getName())) {
+			name = getBuild().getPom().getName() + " (" + name + ")";
+		}
+		return name;
+	}
 }

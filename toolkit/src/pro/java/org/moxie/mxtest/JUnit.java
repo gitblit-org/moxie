@@ -21,17 +21,19 @@ import org.apache.tools.ant.taskdefs.optional.junit.BatchTest;
 import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement;
 import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement.TypeAttribute;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask;
+import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.ForkMode;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.SummaryAttribute;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator;
 import org.apache.tools.ant.types.FileSet;
 import org.moxie.ant.MxTest;
+import org.moxie.utils.StringUtils;
 
 /**
  * Utility class to setup JUnit test execution.
  */
 public class JUnit {
 
-	public static void test(MxTest mxtest) {
+	public static void test(MxTest mxtest, String jvmarg) {
 		JUnitTask junit = null;
 		try {
 			// constructor throws Exception. Really??
@@ -42,7 +44,13 @@ public class JUnit {
 		junit.setProject(mxtest.getProject());
 		junit.init();
 		
+		if (!StringUtils.isEmpty(jvmarg)) {
+			junit.createJvmarg().setValue(jvmarg);
+		}
+	
 		junit.setFork(true);
+		junit.setForkMode((ForkMode) ForkMode.getInstance(ForkMode.class, "once"));
+		
 		SummaryAttribute yes = (SummaryAttribute) SummaryAttribute.getInstance(SummaryAttribute.class, "yes");
 		junit.setPrintsummary(yes);
 		junit.setShowOutput(false);
@@ -63,9 +71,9 @@ public class JUnit {
 		formatter.setProject(mxtest.getProject());
 		formatter.setType(xml);
 		junit.addFormatter(formatter);
-		
+
 		junit.execute();
-		
+
 		XMLResultAggregator junitReport = new XMLResultAggregator();
 		junitReport.setTaskName("test");
 		junitReport.setProject(mxtest.getProject());

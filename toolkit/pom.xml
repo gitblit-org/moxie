@@ -96,6 +96,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <type>jar</type>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.ant</artifactId>
+            <version>0.5.9.201207300726</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>

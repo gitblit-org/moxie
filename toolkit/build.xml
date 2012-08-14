@@ -160,6 +160,7 @@
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
 				<exclude name="org.hamcrest." />
+				<exclude name="org.jacoco." />
 				<exclude name="org.mozilla." />
 				<exclude name="org.objectweb." />
 				<exclude name="org.tautua." />
@@ -184,8 +185,7 @@
 			<class name="org.moxie.ant.MxKeys" />
 			<class name="org.moxie.ant.MxExtract" />
 			<class name="org.moxie.ant.MxGitId" />
-			<class name="org.moxie.ant.MxGhPages" />				
-			<class name="org.moxie.mxtest.CoberturaReportTask" />
+			<class name="org.moxie.ant.MxGhPages" />
 
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
@@ -208,6 +208,7 @@
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
 				<exclude name="org.hamcrest." />
+				<exclude name="org.jacoco." />
 				<exclude name="org.mozilla." />
 				<exclude name="org.objectweb." />
 				<exclude name="org.tautua." />
@@ -233,7 +234,6 @@
 			<class name="org.moxie.ant.MxExtract" />
 			<class name="org.moxie.ant.MxGitId" />
 			<class name="org.moxie.ant.MxGhPages" />
-			<class name="org.moxie.mxtest.CoberturaReportTask" />			
 			
 			<!-- all -->
 			<class name="org.moxie.ant.MxDoc" />

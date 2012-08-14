@@ -11,4 +11,4 @@ sourceFolders :
 - test src/test/java
 dependencies :
 - test junit
-- build cobertura
+- build jacoco

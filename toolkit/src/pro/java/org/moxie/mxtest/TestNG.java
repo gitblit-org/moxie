@@ -16,6 +16,7 @@
 package org.moxie.mxtest;
 
 import org.moxie.ant.MxTest;
+import org.moxie.utils.StringUtils;
 import org.testng.TestNGAntTask;
 import org.testng.TestNGAntTask.Mode;
 
@@ -24,7 +25,7 @@ import org.testng.TestNGAntTask.Mode;
  */
 public class TestNG {
 
-	public static void test(MxTest mxtest) {
+	public static void test(MxTest mxtest, String jvmarg) {
 		
 		// use default TestNG reports
 		String useDefaultListeners = "true";
@@ -35,10 +36,14 @@ public class TestNG {
 		testng.setProject(mxtest.getProject());
 		testng.init();
 		
+		if (!StringUtils.isEmpty(jvmarg)) {
+			testng.createJvmarg().setValue(jvmarg);
+		}
+
 		testng.setMode(Mode.mixed);
 		testng.setWorkingDir(mxtest.getProject().getBaseDir());
 		testng.setOutputDir(mxtest.getTestReports());
-		testng.setSuiteName((mxtest.getBuild().getPom().getName() + " Test Suite").trim());
+		testng.setSuiteName(mxtest.getProjectTitle());
 		testng.setUseDefaultListeners(useDefaultListeners);
 		testng.setListeners(listeners);
 		testng.setFailureProperty(mxtest.getFailureProperty());
@@ -52,7 +57,7 @@ public class TestNG {
 		// EMMA properties
 		testng.addSysproperty(mxtest.getEmmaFileProperty());
 		testng.addSysproperty(mxtest.getEmmaMergeProperty());
-		
+	
 		testng.execute();
 	}
 }

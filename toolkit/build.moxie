@@ -27,3 +27,4 @@ dependencies :
 - provided emma:emma_ant:2.1.5320
 - provided testng
 - provided junit
+- provided jacoco

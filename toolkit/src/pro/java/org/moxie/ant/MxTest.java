@@ -30,6 +30,7 @@ import org.moxie.Toolkit.Key;
 import org.moxie.mxtest.Cobertura;
 import org.moxie.mxtest.Emma;
 import org.moxie.mxtest.JUnit;
+import org.moxie.mxtest.Jacoco;
 import org.moxie.mxtest.TestNG;
 import org.moxie.utils.FileUtils;
 
@@ -41,6 +42,7 @@ public class MxTest extends MxTask {
 	File instrumentedBuild;
 	File coberturaData;
 	File emmaData;
+	File jacocoData;
 	File classesFolder;
 	File testClassesFolder;
 	Path unitTestClasspath;
@@ -75,7 +77,11 @@ public class MxTest extends MxTask {
 	public File getEmmaData() {
 		return emmaData;
 	}
-	
+
+	public File getJaCoCoData() {
+		return jacocoData;
+	}
+
 	public File getClassesFolder() {
 		return classesFolder;
 	}
@@ -168,6 +174,10 @@ public class MxTest extends MxTask {
 		emmaData = new File(config.getOutputFolder(null), "metadata.emma");
 		emmaData.delete();
 
+		// delete JaCoCo metadata
+		jacocoData = new File(config.getOutputFolder(null), "jacoco.exec");
+		jacocoData.delete();
+
 		classesFolder = config.getOutputFolder(Scope.compile);
 		testClassesFolder = config.getOutputFolder(Scope.test);
 
@@ -207,16 +217,24 @@ public class MxTest extends MxTask {
 			Cobertura.instrument(this);
 		} else if (hasClass("com.vladium.emma.emmaTask")) {
 			Emma.instrument(this);
+		} else if (hasClass("org.jacoco.ant.AbstractCoverageTask")) {
+			// jacoco wraps unit test tasks
 		} else {
 			build.getConsole().warn("SKIPPING code-coverage!");
-			build.getConsole().warn("add \"- build cobertura\" or \"- build emma\" to your dependencies for code-coverage.");
+			build.getConsole().warn("add \"- build jacoco\", \"- build cobertura\", or \"- build emma\" to your dependencies for code-coverage.");
+		}
+		
+		// optional jvmarg for running unit tests
+		String jvmarg = null;
+		if (hasClass("org.jacoco.ant.AbstractCoverageTask")) {
+			jvmarg = Jacoco.newJvmarg(this);
 		}
 		
 		// execute unit tests
-		if (hasClass("org.testng.TestNGAntTask")) {
-			TestNG.test(this);
+		if (hasClass("org.testng.TestNGAntTask")) {	
+			TestNG.test(this, jvmarg);
 		} else if (hasClass("junit.framework.Test")) {
-			JUnit.test(this);
+			JUnit.test(this, jvmarg);
 		} else {
 			build.getConsole().warn("SKIPPING unit tests!");
 			build.getConsole().warn("add \"- test junit\" or \"- test testng\" to your dependencies to execute unit tests.");
@@ -227,6 +245,8 @@ public class MxTest extends MxTask {
 			Cobertura.report(this);
 		} else if (hasClass("com.vladium.emma.report.reportTask")) {
 			Emma.report(this);
+		} else if (hasClass("org.jacoco.ant.ReportTask")) {
+			Jacoco.report(this);
 		}
 		
 		if ((getProject().getProperty(getFailureProperty()) != null) && failOnError) {

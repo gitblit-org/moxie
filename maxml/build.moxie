@@ -8,5 +8,5 @@ sourceFolders :
 - compile src/main/java
 - test src/test/java
 dependencies :
-- test junit
+- test testng
 - build cobertura
