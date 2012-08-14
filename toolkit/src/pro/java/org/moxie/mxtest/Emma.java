@@ -57,6 +57,8 @@ public class Emma {
 		reportTask report = (reportTask) emma.createReport();
 		report.setTaskName("report");
 		report.setProject(mxtest.getProject());
+		report.init();
+		
 		report.setSourcepathRef(new Reference(mxtest.getProject(), Key.compile_sourcepath.refId()));
 		XFileSet fileSet = new XFileSet();
 		fileSet.setProject(mxtest.getProject());

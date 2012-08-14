@@ -149,7 +149,6 @@ public abstract class MxTask extends Task {
 		executionDependencies.addAll(build.getSolver().getDependencies(Scope.build));
 		
 		Set<String> cp = new LinkedHashSet<String>();
-//		cp.addAll(Arrays.asList(System.getProperty("java.class.path").split(File.pathSeparator)));
 
 		ClassLoader loader  = getClass().getClassLoader();
 		if (loader instanceof AntClassLoader) {

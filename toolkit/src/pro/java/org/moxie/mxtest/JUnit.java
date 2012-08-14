@@ -40,6 +40,7 @@ public class JUnit {
 		}
 		junit.setTaskName("test");
 		junit.setProject(mxtest.getProject());
+		junit.init();
 		
 		junit.setFork(true);
 		SummaryAttribute yes = (SummaryAttribute) SummaryAttribute.getInstance(SummaryAttribute.class, "yes");
@@ -62,14 +63,14 @@ public class JUnit {
 		formatter.setProject(mxtest.getProject());
 		formatter.setType(xml);
 		junit.addFormatter(formatter);
-
+		
 		junit.execute();
 		
 		XMLResultAggregator junitReport = new XMLResultAggregator();
 		junitReport.setTaskName("test");
 		junitReport.setProject(mxtest.getProject());
-		junitReport.setTodir(mxtest.getUnitTestOutputFolder());
-		
+		junitReport.init();
+				
 		FileSet fileSet = new FileSet();
 		fileSet.setProject(mxtest.getProject());
 		fileSet.setDir(mxtest.getUnitTestOutputFolder());
@@ -81,6 +82,8 @@ public class JUnit {
 		report.setFormat((Format) Format.getInstance(Format.class, "frames"));
 		report.setTodir(mxtest.getTestReports());
 		
+		junitReport.setTodir(mxtest.getUnitTestOutputFolder());
+
 		junitReport.execute();
 	}
 }

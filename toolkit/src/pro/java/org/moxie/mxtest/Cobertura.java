@@ -37,6 +37,8 @@ public class Cobertura {
 		InstrumentTask task = new InstrumentTask();
 		task.setTaskName("instr");
 		task.setProject(mxtest.getProject());
+		task.init();
+		
 		task.addFileset(fileSet);
 		task.setDataFile(mxtest.getCoberturaData().getAbsolutePath());
 		task.setToDir(mxtest.getInstrumentedBuild());
@@ -47,6 +49,8 @@ public class Cobertura {
 		CoberturaReportTask task = new CoberturaReportTask();
 		task.setTaskName("report");
 		task.setProject(mxtest.getProject());
+		task.init();
+		
 		task.setDataFile(mxtest.getCoberturaData().getAbsolutePath());
 		task.setFormat("html");
 		task.setDestDir(mxtest.getCoverageReports());

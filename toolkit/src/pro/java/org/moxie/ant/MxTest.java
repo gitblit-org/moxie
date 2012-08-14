@@ -18,7 +18,6 @@ package org.moxie.ant;
 import java.io.File;
 import java.text.MessageFormat;
 
-import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Environment;
 import org.apache.tools.ant.types.FileSet;
@@ -180,14 +179,11 @@ public class MxTest extends MxTask {
 		unitTests.createInclude().setName("**/*Test.class");
 
 		// classpath for tests
-		// instrumented classes, build libraries (Corbertura, Emma, etc)
-		// and project compile/test classes
+		// instrumented classes, unit test classes, and unit test libraries
 		unitTestClasspath = new Path(getProject());
 		unitTestClasspath.createPathElement().setPath(instrumentedBuild.getAbsolutePath());
 		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.test_classpath.refId()));
-		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.build_classpath.refId()));
 		unitTestClasspath.createPathElement().setPath(testClassesFolder.getAbsolutePath());
-		unitTestClasspath.add(new Path(getProject(), System.getProperty("java.class.path")));
 		
 		// log the unit test classpath to the console in debug mode		
 		build.getConsole().debug("unit test classpath");
@@ -218,7 +214,7 @@ public class MxTest extends MxTask {
 		// execute unit tests
 		if (hasClass("org.testng.TestNGAntTask")) {
 			TestNG.test(this);
-		} else if (hasClass("junit.framework.Assert")) {
+		} else if (hasClass("junit.framework.Test")) {
 			JUnit.test(this);
 		} else {
 			build.getConsole().warn("SKIPPING unit tests!");

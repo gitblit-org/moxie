@@ -33,6 +33,8 @@ public class TestNG {
 		TestNGAntTask testng = new TestNGAntTask();
 		testng.setTaskName("test");
 		testng.setProject(mxtest.getProject());
+		testng.init();
+		
 		testng.setMode(Mode.mixed);
 		testng.setWorkingDir(mxtest.getProject().getBaseDir());
 		testng.setOutputDir(mxtest.getTestReports());
