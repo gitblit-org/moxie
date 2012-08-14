@@ -100,7 +100,7 @@ public class Dependency implements Serializable {
 		exclusions = new TreeSet<String>();
 		Set<String> options = new TreeSet<String>();
 		for (String option : principals) {
-			if (option.charAt(0) == '-') {
+			if (option.charAt(0) == '-' || option.charAt(0) == '!') {
 				// exclusion
 				exclusions.add(option.substring(1));
 			} else {
