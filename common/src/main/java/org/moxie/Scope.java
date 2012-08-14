@@ -118,8 +118,6 @@ public enum Scope {
 			// build dependency
 			switch (transitiveDependency) {
 			case compile:
-			case provided:
-			case runtime:
 				return build;
 			}
 			break;

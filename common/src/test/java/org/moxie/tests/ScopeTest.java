@@ -125,8 +125,8 @@ public class ScopeTest extends Assert {
 		assertEquals(null, Scope.test.getTransitiveScope(Scope.build));
 
 		assertEquals(Scope.build, Scope.build.getTransitiveScope(Scope.compile));
-		assertEquals(Scope.build, Scope.build.getTransitiveScope(Scope.provided));
-		assertEquals(Scope.build, Scope.build.getTransitiveScope(Scope.runtime));
+		assertEquals(null, Scope.build.getTransitiveScope(Scope.provided));
+		assertEquals(null, Scope.build.getTransitiveScope(Scope.runtime));
 		assertEquals(null, Scope.build.getTransitiveScope(Scope.test));
 
 		// site dependency
