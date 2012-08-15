@@ -19,6 +19,8 @@ public class Toolkit {
 	
 	public static final String APPLY_ECLIPSE = "eclipse";
 	
+	public static final String APPLY_ECLIPSE_VAR = "eclipse-var";
+	
 	public static final String APPLY_POM = "pom";
 	
 	public static final String APPLY_COLOR = "color";
@@ -46,6 +48,8 @@ public class Toolkit {
 	public static final String MOXIE_SETTINGS = "settings.moxie";
 	
 	public static final String MOXIE_DEFAULTS = "defaults.moxie";
+	
+	public static final String MOXIE_HOME = "MOXIE_HOME";
 	
 	public static final int MAX_REVISIONS = 100;
 	

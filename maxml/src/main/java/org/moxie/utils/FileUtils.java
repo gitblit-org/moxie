@@ -310,10 +310,21 @@ public class FileUtils {
 	public static String getRelativePath(File basePath, File path) {
 		File exactBase = getExactFile(basePath);
 		File exactPath = getExactFile(path);
-		if (exactBase.equals(exactPath)) {
-			return "";
+		if (path.getAbsolutePath().startsWith(basePath.getAbsolutePath())) {
+			// absolute base-path match
+			return StringUtils.getRelativePath(basePath.getAbsolutePath(), path.getAbsolutePath());
+		} else if (exactPath.getPath().startsWith(exactBase.getPath())) {
+			// canonical base-path match
+			return StringUtils.getRelativePath(exactBase.getPath(), exactPath.getPath());
+		} else if (exactPath.getPath().startsWith(basePath.getAbsolutePath())) {
+			// mixed path match
+			return StringUtils.getRelativePath(basePath.getAbsolutePath(), exactPath.getPath());
+		} else if (path.getAbsolutePath().startsWith(exactBase.getPath())) {
+			// mixed path match
+			return StringUtils.getRelativePath(exactBase.getPath(), path.getAbsolutePath());
 		}
-		return StringUtils.getRelativePath(exactBase.getPath(), exactPath.getPath());
+		// no relative relationship
+		return null;
 	}
 	
 	/**

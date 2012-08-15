@@ -95,7 +95,8 @@ public class Build {
 			boolean applied = false;
 			
 			// create/update Eclipse configuration files
-			if (solutionBuilt && project.apply(Toolkit.APPLY_ECLIPSE)) {
+			if (solutionBuilt && (project.apply(Toolkit.APPLY_ECLIPSE)
+					|| project.apply(Toolkit.APPLY_ECLIPSE_VAR))) {
 				writeEclipseClasspath();
 				writeEclipseProject();
 				console.notice(1, "rebuilt Eclipse configuration");
@@ -144,6 +145,9 @@ public class Build {
 			}
 		}
 		
+		// determine how to output dependencies (fixed-path or variable-relative)
+		String kind = getConfig().getProjectConfig().apply(Toolkit.APPLY_ECLIPSE_VAR) ? "var" : "lib";
+		
 		// always link classpath against Moxie artifact cache
 		Set<Dependency> dependencies = solver.solve(Scope.test);
 		for (Dependency dependency : dependencies) {
@@ -153,13 +157,24 @@ public class Build {
 			} else {				
 				File jar = solver.getMoxieCache().getArtifact(dependency, dependency.type);
 				Dependency sources = dependency.getSourcesArtifact();
-				File srcJar = solver.getMoxieCache().getArtifact(sources, sources.type);
+				File srcJar = solver.getMoxieCache().getArtifact(sources, sources.type);				
+				String jarPath;
+				String srcPath;
+				if ("var".equals(kind)) {
+					// relative to MOXIE_HOME
+					jarPath = Toolkit.MOXIE_HOME + "/" + FileUtils.getRelativePath(config.getMoxieRoot(), jar);
+					srcPath = Toolkit.MOXIE_HOME + "/" + FileUtils.getRelativePath(config.getMoxieRoot(), srcJar);
+				} else {
+					// absolute, hard-coded path
+					jarPath = jar.getAbsolutePath();
+					srcPath = srcJar.getAbsolutePath();
+				}
 				if (srcJar.exists()) {
 					// have sources
-					sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" sourcepath=\"{1}\" />\n", jar.getAbsolutePath(), srcJar.getAbsolutePath()));
+					sb.append(format("<classpathentry kind=\"{0}\" path=\"{1}\" sourcepath=\"{2}\" />\n", kind, jarPath, srcPath));
 				} else {
 					// no sources
-					sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", jar.getAbsolutePath()));
+					sb.append(format("<classpathentry kind=\"{0}\" path=\"{1}\" />\n", kind, jarPath));
 				}
 			}
 		}
