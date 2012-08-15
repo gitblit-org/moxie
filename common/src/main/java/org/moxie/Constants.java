@@ -40,6 +40,6 @@ public class Constants {
 	public static enum Key {
 		name, description, url, organization, scope, groupId, artifactId, version,
 		type, classifier, optional, dependencies, lastChecked, lastUpdated, lastSolved,
-		lastDownloaded, origin, release, latest, revision, packaging;
+		lastDownloaded, origin, release, latest, revision, packaging, solutionVersion;
 	}
 }

@@ -46,10 +46,14 @@ import org.moxie.utils.StringUtils;
 public class MoxieData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	private static final int currentSolutionVersion = 1;
+	
 	private final File file;
 
 	private final Map<Scope, Set<Dependency>> dependencies;
+
+	private int solutionVersion;
 
 	private Date lastDownloaded;
 	
@@ -105,6 +109,7 @@ public class MoxieData implements Serializable {
 		lastUpdated = parseDate(map, Key.lastUpdated, lastUpdated);
 		lastSolved = parseDate(map, Key.lastSolved, lastSolved);
 		origin = map.getString(Key.origin.name(), null);
+		solutionVersion = map.getInt("solutionVersion", 0);
 		return this;
 	}
 	
@@ -256,6 +261,10 @@ public class MoxieData implements Serializable {
 		return revision;
 	}
 	
+	public boolean isValidSolution() {
+		return solutionVersion == currentSolutionVersion;
+	}
+	
 	public boolean isRefreshRequired() {
 		return lastUpdated.after(lastDownloaded);
 	}
@@ -265,6 +274,10 @@ public class MoxieData implements Serializable {
 			return "";
 		}
 		return MessageFormat.format("{0} : {1}\n", key, value);
+	}
+
+	private String kvp(Object key, int value) {
+		return MessageFormat.format("{0} : {1,number,0}\n", key, value);
 	}
 
 	private String kvp(Object key, Date value) {
@@ -288,6 +301,7 @@ public class MoxieData implements Serializable {
 		sb.append(kvp(Key.latest, latest));
 		
 		sb.append("\n# Moxie metadata\n");
+		sb.append(kvp(Key.solutionVersion, currentSolutionVersion));
 		sb.append(kvp(Key.origin, origin));
 		sb.append(kvp(Key.lastDownloaded, lastDownloaded));
 		sb.append(kvp(Key.lastChecked, lastChecked));

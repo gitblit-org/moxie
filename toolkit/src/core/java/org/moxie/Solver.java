@@ -482,7 +482,8 @@ public class Solver {
 			return null;
 		}
 		MoxieData moxiedata = moxieCache.readMoxieData(dependency);
-		if (moxiedata.getLastSolved().getTime() == FileUtils.getLastModified(moxieCache.getArtifact(dependency, Constants.POM))) {
+		if (moxiedata.isValidSolution() && 
+				moxiedata.getLastSolved().getTime() == FileUtils.getLastModified(moxieCache.getArtifact(dependency, Constants.POM))) {
 			// solution lastModified date must equal pom lastModified date
 			try {
 				console.debug(1, "=> reusing solution {0}", dependency.getDetailedCoordinates());				
