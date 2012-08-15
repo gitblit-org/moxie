@@ -229,13 +229,17 @@ public class Build {
 		sb.append("\t</projects>\n");
 		sb.append("\t<buildSpec>\n");
 		sb.append("\t\t<buildCommand>\n");
-		sb.append("\t\t\t<name>org.eclipse.jdt.core.javabuilder</name>\n");
-		sb.append("\t\t\t<arguments>\n");
-		sb.append("\t\t\t</arguments>\n");
+		if (config.getSourceFolders().size() > 0) {
+			sb.append("\t\t\t<name>org.eclipse.jdt.core.javabuilder</name>\n");
+			sb.append("\t\t\t<arguments>\n");
+			sb.append("\t\t\t</arguments>\n");
+		}
 		sb.append("\t\t</buildCommand>\n");
 		sb.append("\t</buildSpec>\n");
 		sb.append("\t<natures>\n");
-		sb.append("\t\t<nature>org.eclipse.jdt.core.javanature</nature>\n");
+		if (config.getSourceFolders().size() > 0) {
+			sb.append("\t\t<nature>org.eclipse.jdt.core.javanature</nature>\n");
+		}
 		sb.append("\t</natures>\n");
 		sb.append("</projectDescription>\n");
 		
