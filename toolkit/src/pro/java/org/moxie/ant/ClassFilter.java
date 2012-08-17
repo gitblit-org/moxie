@@ -60,7 +60,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.tools.ant.BuildException;
+import org.moxie.MoxieException;
 
 /**
  * Determines whether a class is to be included in the jar.
@@ -220,7 +220,7 @@ public class ClassFilter {
 				log.verbose("No site-excludes found");
 			}
 		} catch (IOException ioe) {
-			throw new BuildException("IOException loading site-excludes");
+			throw new MoxieException("IOException loading site-excludes");
 		}
 	}
 

@@ -52,11 +52,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.DataType;
 import org.apache.tools.ant.types.FileSet;
+import org.moxie.MoxieException;
 
 /**
  * <p>
@@ -175,7 +175,7 @@ public class ClassSpec extends DataType implements JarSpec {
 	 */
 	public FileSet createFileset() {
 		if (name != null) {
-			throw new BuildException(
+			throw new MoxieException(
 					"Unable to add Fileset - class name already set");
 		}
 		FileSet set = new FileSet();

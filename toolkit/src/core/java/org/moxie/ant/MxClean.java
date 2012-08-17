@@ -18,8 +18,8 @@ package org.moxie.ant;
 import java.io.File;
 
 import org.moxie.Build;
-import org.moxie.Toolkit.Key;
 import org.moxie.Scope;
+import org.moxie.Toolkit.Key;
 import org.moxie.utils.FileUtils;
 
 

@@ -60,6 +60,7 @@ import java.util.zip.ZipEntry;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.DataType;
 import org.apache.tools.ant.types.Path;
+import org.moxie.MoxieException;
 
 /**
  * This class encapsulates the concept of a library - either a set of files in a
@@ -133,9 +134,9 @@ public class LibrarySpec extends DataType implements JarSpec {
 	 * @throws BuildException
 	 *             Description of the Exception
 	 */
-	public void setJar(String file) throws BuildException {
+	public void setJar(String file) throws MoxieException {
 		if (dir != null) {
-			throw new BuildException(
+			throw new MoxieException(
 					"GenJar: Can't specify both file and dir in a <library> element");
 		}
 
@@ -149,7 +150,7 @@ public class LibrarySpec extends DataType implements JarSpec {
 		if (!jarFile.exists()) {
 			jarFile = new File(baseDir, file);
 			if (!jarFile.exists()) {
-				throw new BuildException(
+				throw new MoxieException(
 						"GenJar: specified library jar not found (" + file
 								+ ")");
 			}
@@ -172,7 +173,7 @@ public class LibrarySpec extends DataType implements JarSpec {
 		classpath.setLocation(new File(dir));
 
 		if (jar != null) {
-			throw new BuildException(
+			throw new MoxieException(
 					"GenJar: Can't specify both file and dir in a <library> element");
 		}
 		//
@@ -203,7 +204,7 @@ public class LibrarySpec extends DataType implements JarSpec {
 			dirFile = new File(baseDir, dir);
 		}
 		if (!dirFile.exists()) {
-			throw new BuildException(
+			throw new MoxieException(
 					"GenJar: Specified library dir not found (" + jar + ")");
 		}
 		this.dir = dirFile;
@@ -260,7 +261,7 @@ public class LibrarySpec extends DataType implements JarSpec {
 			}
 			jarFile.close();
 		} catch (IOException ioe) {
-			throw new BuildException("Error while reading library jar", ioe);
+			throw new MoxieException("Error while reading library jar", ioe);
 		}
 	}
 

@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.tools.ant.BuildException;
 import org.eclipse.jgit.JGitText;
 import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
@@ -49,6 +48,7 @@ import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.util.FS;
+import org.moxie.MoxieException;
 
 public class JGitUtils {
 
@@ -61,7 +61,7 @@ public class JGitUtils {
 			gitDir = FileKey.resolve(folder.getParentFile(), FS.DETECTED);
 		}
 		if (gitDir == null || !gitDir.exists()) {
-			throw new BuildException("Can not find .git folder for " + folder);
+			throw new MoxieException("Can not find .git folder for " + folder);
 		}
 
 		String hashid = "";
@@ -73,7 +73,7 @@ public class JGitUtils {
 			repository.close();
 		} catch (IOException io) {
 			io.printStackTrace();
-			throw new BuildException("IOException accessing "
+			throw new MoxieException("IOException accessing "
 					+ gitDir.getAbsolutePath(), io);
 		}
 		return hashid;

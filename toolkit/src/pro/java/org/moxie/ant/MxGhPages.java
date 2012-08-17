@@ -19,6 +19,7 @@ import java.io.File;
 
 import org.apache.tools.ant.BuildException;
 import org.moxie.Build;
+import org.moxie.MoxieException;
 import org.moxie.utils.JGitUtils;
 
 
@@ -48,17 +49,17 @@ public class MxGhPages extends MxGitTask {
 	}
 
 	@Override
-	public void execute() throws org.apache.tools.ant.BuildException {
+	public void execute() throws BuildException {
 		Build build = getBuild();
 		getConsole().title(getClass());
 		loadDependency(build);
 
 		if (sourceFolder == null) {
-			throw new BuildException("You did not specify a sourceFolder!");
+			throw new MoxieException("You did not specify a sourceFolder!");
 		}
 
 		if (!sourceFolder.exists()) {
-			throw new BuildException("Source folder does not exist!");
+			throw new MoxieException("Source folder does not exist!");
 		}
 
 		if (repositoryFolder == null || !repositoryFolder.exists()) {

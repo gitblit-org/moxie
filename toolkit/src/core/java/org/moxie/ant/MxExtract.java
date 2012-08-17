@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.tools.ant.BuildException;
+import org.moxie.MoxieException;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 
@@ -52,13 +53,13 @@ public class MxExtract extends MxTask {
 	@Override
 	public void execute() throws BuildException {
 		if (StringUtils.isEmpty(srcfile)) {
-			throw new BuildException("srcfile attribute is unspecified!");
+			throw new MoxieException("srcfile attribute is unspecified!");
 		}
 		if (StringUtils.isEmpty(field)) {
-			throw new BuildException("field attribute is unspecified!");
+			throw new MoxieException("field attribute is unspecified!");
 		}
 		if (StringUtils.isEmpty(property)) {
-			throw new BuildException("property attribute is unspecified!");
+			throw new MoxieException("property attribute is unspecified!");
 		}
 		File f = new File(srcfile);
 		String content = FileUtils.readContent(f, "\n");

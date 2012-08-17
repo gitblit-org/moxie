@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Javac;
@@ -32,6 +31,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 import org.moxie.Build;
+import org.moxie.MoxieException;
 import org.moxie.Scope;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
@@ -175,7 +175,7 @@ public class MxJavac extends Javac {
 			}			
 		} catch (Exception e) {
 			build.getConsole().error(e);
-			throw new BuildException("failed to set mx:Javac attributes!", e);
+			throw new MoxieException("failed to set mx:Javac attributes!", e);
 		}
 	}
 
@@ -218,7 +218,7 @@ public class MxJavac extends Javac {
 					subCompile.perform();
 				} catch (Exception e) {
 					console.error(e);
-					throw new BuildException(e);
+					throw new MoxieException(e);
 				}
 			}
 		}
@@ -250,7 +250,7 @@ public class MxJavac extends Javac {
 				}			
 			} catch (Exception e) {
 				console.error(e);
-				throw new BuildException("failed to get mx:Javac attributes!", e);
+				throw new MoxieException("failed to get mx:Javac attributes!", e);
 			}
 		}
 		

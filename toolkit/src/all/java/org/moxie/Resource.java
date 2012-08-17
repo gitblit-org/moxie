@@ -19,7 +19,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.FileSet;
 
 public class Resource {
@@ -30,7 +29,7 @@ public class Resource {
 
 	public void setFile(File f) {
 		if (filesets.size() > 0) {
-			throw new BuildException("can't add 'file' - fileset already used");
+			throw new MoxieException("can't add 'file' - fileset already used");
 		}
 		file = f;
 	}
@@ -46,7 +45,7 @@ public class Resource {
 
 	public FileSet createFileset() {
 		if (file != null) {
-			throw new BuildException("can't add Fileset - file already set");
+			throw new MoxieException("can't add Fileset - file already set");
 		}
 		FileSet set = new FileSet();
 		filesets.add(set);

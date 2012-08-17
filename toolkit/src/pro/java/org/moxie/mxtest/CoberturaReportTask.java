@@ -65,6 +65,7 @@ import net.sourceforge.cobertura.util.CommandLineBuilder;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.moxie.MoxieException;
 
 /**
  * Generate a coverage report based on coverage data generated 
@@ -102,7 +103,7 @@ public class CoberturaReportTask extends CommonMatchingTask
 			builder.saveArgs();
 		} catch (IOException ioe) {
 			getProject().log("Error creating commands file.", Project.MSG_ERR);
-			throw new BuildException("Unable to create the commands file.", ioe);
+			throw new MoxieException("Unable to create the commands file.", ioe);
 		}
 
 		// Execute GPL licensed code in separate virtual machine
@@ -110,7 +111,7 @@ public class CoberturaReportTask extends CommonMatchingTask
 		getJava().createArg().setValue(builder.getCommandLineFile());
 		AntUtil.transferCoberturaDataFileProperty(getJava());
 		if (getJava().executeJava() != 0) {
-			throw new BuildException(
+			throw new MoxieException(
 					"Error running reports. See messages above.");
 		}
 

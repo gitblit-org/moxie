@@ -53,11 +53,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.DataType;
 import org.apache.tools.ant.types.FileSet;
+import org.moxie.MoxieException;
 
 /**
  * Represents a &lt;resource&gt; element within the project file. </p>
@@ -110,7 +110,7 @@ public class Resource extends DataType implements JarSpec {
 	 */
 	public void setFile(File f) {
 		if (filesets.size() > 0) {
-			throw new BuildException("can't add 'file' - fileset already used");
+			throw new MoxieException("can't add 'file' - fileset already used");
 		}
 		file = f;
 	}
@@ -159,7 +159,7 @@ public class Resource extends DataType implements JarSpec {
 	 */
 	public FileSet createFileset() {
 		if (file != null) {
-			throw new BuildException("can't add Fileset - file already set");
+			throw new MoxieException("can't add Fileset - file already set");
 		}
 		FileSet set = new FileSet();
 		filesets.add(set);

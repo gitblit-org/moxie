@@ -18,7 +18,6 @@ package org.moxie.mxtest;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
@@ -28,6 +27,7 @@ import org.jacoco.ant.ReportTask;
 import org.jacoco.ant.ReportTask.GroupElement;
 import org.jacoco.ant.ReportTask.SourceFilesElement;
 import org.jacoco.core.runtime.AgentOptions;
+import org.moxie.MoxieException;
 import org.moxie.Toolkit.Key;
 import org.moxie.ant.MxTest;
 
@@ -57,7 +57,7 @@ public class Jacoco {
 
 			return agentFile;
 		} catch (final IOException e) {
-			throw new BuildException("Unable to extract agent jar", e);
+			throw new MoxieException("Unable to extract agent jar", e);
 		}
 	}
 

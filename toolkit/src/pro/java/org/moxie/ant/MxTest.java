@@ -25,6 +25,7 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 import org.moxie.Build;
 import org.moxie.BuildConfig;
+import org.moxie.MoxieException;
 import org.moxie.Scope;
 import org.moxie.Toolkit.Key;
 import org.moxie.mxtest.Cobertura;
@@ -137,7 +138,7 @@ public class MxTest extends MxTask {
 	}	
 	
 	@Override
-	public void execute() throws org.apache.tools.ant.BuildException {
+	public void execute() throws BuildException {
 
 		/*
 		 * Prepare all variables and state.
@@ -250,7 +251,7 @@ public class MxTest extends MxTask {
 		}
 		
 		if ((getProject().getProperty(getFailureProperty()) != null) && failOnError) {
-			throw new BuildException(MessageFormat.format("{0} has failed unit tests! Build aborted!", build.getPom().getArtifactId()));
+			throw new MoxieException("{0} has failed unit tests! Build aborted!", build.getPom().getArtifactId());
 		}
 	}
 }

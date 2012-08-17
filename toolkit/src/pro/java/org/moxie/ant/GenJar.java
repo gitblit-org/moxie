@@ -69,6 +69,7 @@ import org.apache.tools.ant.taskdefs.Manifest;
 import org.apache.tools.ant.taskdefs.Manifest.Section;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
+import org.moxie.MoxieException;
 import org.moxie.utils.StringUtils;
 
 
@@ -165,7 +166,7 @@ public class GenJar extends Task {
 			logger.verbose("Classpath:" + classpath);
 			initPathResolvers();
 		} catch (IOException ioe) {
-			throw new BuildException("Unable to process classpath: " + ioe,
+			throw new MoxieException("Unable to process classpath: " + ioe,
 					getLocation());
 		}
 
@@ -183,11 +184,11 @@ public class GenJar extends Task {
 			try {
 				js.resolve(this);
 			} catch (FileNotFoundException ioe) {
-				throw new BuildException("Unable to resolve: " + js.getName()
+				throw new MoxieException("Unable to resolve: " + js.getName()
 						+ "\nFileNotFound=" + ioe.getMessage(), ioe,
 						getLocation());
 			} catch (IOException ioe) {
-				throw new BuildException("Unable to resolve: " + js.getName()
+				throw new MoxieException("Unable to resolve: " + js.getName()
 						+ "\nMSG=" + ioe.getMessage(), ioe, getLocation());
 			}
 			//
@@ -215,7 +216,7 @@ public class GenJar extends Task {
 						is.close();
 					}
 				} catch (IOException ioe) {
-					throw new BuildException(
+					throw new MoxieException(
 							"Error while generating manifest entry for: "
 									+ jes.toString(), ioe, getLocation());
 				}
@@ -242,7 +243,7 @@ public class GenJar extends Task {
 						}
 					} catch (IOException ioe) {
 					}
-					throw new BuildException("Jar component not found: "
+					throw new MoxieException("Jar component not found: "
 							+ jes.getJarName(), getLocation());
 				}
 				jout.putNextEntry(entry);
@@ -257,7 +258,7 @@ public class GenJar extends Task {
 				logger.verbose("Added: " + jes.getJarName());
 			}
 		} catch (IOException ioe) {
-			throw new BuildException("Unable to create jar: "
+			throw new MoxieException("Unable to create jar: "
 					+ destFile.getName(), ioe, getLocation());
 		} finally {
 			try {
@@ -461,7 +462,7 @@ public class GenJar extends Task {
 			} else if (f.getName().toLowerCase().endsWith(".zip")) {
 				resolvers.add(new ZipResolver(f, logger));
 			} else {
-				throw new BuildException(f.getName()
+				throw new MoxieException(f.getName()
 						+ " is not a valid classpath component", getLocation());
 			}
 		}

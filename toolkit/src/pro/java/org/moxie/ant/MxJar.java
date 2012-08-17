@@ -46,10 +46,11 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Path.PathElement;
 import org.apache.tools.ant.types.resources.FileResource;
 import org.moxie.Build;
-import org.moxie.Toolkit;
-import org.moxie.Toolkit.Key;
+import org.moxie.MoxieException;
 import org.moxie.Pom;
 import org.moxie.Scope;
+import org.moxie.Toolkit;
+import org.moxie.Toolkit.Key;
 import org.moxie.console.Console;
 import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.FileUtils;
@@ -90,7 +91,7 @@ public class MxJar extends GenJar {
 			jarSpecs.add(cs);
 			return cs;
 		}
-		throw new BuildException("Can only specify one main class");
+		throw new MoxieException("Can only specify one main class");
 	}
 	
 	public boolean getFatjar() {
@@ -202,7 +203,7 @@ public class MxJar extends GenJar {
 			}			
 		} catch (Exception e) {
 			build.getConsole().error(e);
-			throw new BuildException("failed to set mx:Jar attributes!", e);
+			throw new MoxieException("failed to set mx:Jar attributes!", e);
 		}
 	}
 
@@ -314,7 +315,7 @@ public class MxJar extends GenJar {
 				}			
 			} catch (Exception e) {
 				console.error(e);
-				throw new BuildException("failed to get mx:Jar attributes!", e);
+				throw new MoxieException("failed to get mx:Jar attributes!", e);
 			}
 		}
 		

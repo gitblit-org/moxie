@@ -26,10 +26,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.moxie.Build;
 import org.moxie.Dependency;
+import org.moxie.MoxieException;
 import org.moxie.Scope;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
@@ -180,7 +180,7 @@ public abstract class MxTask extends Task {
 				addURL = sysclass.getDeclaredMethod("addURL", new Class[] { URL.class });
 				addURL.setAccessible(true);
 			} catch (Throwable t) {
-				throw new BuildException("Error, could not access class loader!", t);
+				throw new MoxieException("Error, could not access class loader!", t);
 			}
 
 			for (Dependency dependency : executionDependencies) {
@@ -200,7 +200,7 @@ public abstract class MxTask extends Task {
 					addURL.invoke(sysloader, new Object[] { new File(path).toURI().toURL() });
 					build.getConsole().debug(1, "{0}", path);
 				} catch (Throwable t) {
-					throw new BuildException(MessageFormat.format(
+					throw new MoxieException(MessageFormat.format(
 						"Error, could not add {0} to classloader", path), t);
 				}
 			}				

@@ -22,6 +22,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.Sequential;
 import org.apache.tools.ant.taskdefs.condition.Condition;
 import org.apache.tools.ant.taskdefs.condition.ConditionBase;
+import org.moxie.MoxieException;
 
 /**
  * Perform some tasks based on whether a given condition holds true or
@@ -117,19 +118,19 @@ public class MxIf extends ConditionBase {
         {
             if (thenTasks != null)
             {
-                throw new BuildException("You must not nest more than one <then> into <elseif>");
+                throw new MoxieException("You must not nest more than one <then> into <elseif>");
             }
             thenTasks = t;
         }
 
         public boolean eval()
-            throws BuildException
+            throws MoxieException
         {
             if (countConditions() > 1) {
-                throw new BuildException("You must not nest more than one condition into <elseif>");
+                throw new MoxieException("You must not nest more than one condition into <elseif>");
             }
             if (countConditions() < 1) {
-                throw new BuildException("You must nest a condition into <elseif>");
+                throw new MoxieException("You must nest a condition into <elseif>");
             }
             Condition c = (Condition) getConditions().nextElement();
 
@@ -171,7 +172,7 @@ public class MxIf extends ConditionBase {
      */
     public void addThen(Sequential t) {
         if (thenTasks != null) {
-            throw new BuildException("You must not nest more than one <then> into <if>");
+            throw new MoxieException("You must not nest more than one <then> into <if>");
         }
         thenTasks = t;
     }
@@ -184,17 +185,17 @@ public class MxIf extends ConditionBase {
      */
     public void addElse(Sequential e) {
         if (elseTasks != null) {
-            throw new BuildException("You must not nest more than one <else> into <if>");
+            throw new MoxieException("You must not nest more than one <else> into <if>");
         }
         elseTasks = e;
     }
 
     public void execute() throws BuildException {
         if (countConditions() > 1) {
-            throw new BuildException("You must not nest more than one condition into <if>");
+            throw new MoxieException("You must not nest more than one condition into <if>");
         }
         if (countConditions() < 1) {
-            throw new BuildException("You must nest a condition into <if>");
+            throw new MoxieException("You must nest a condition into <if>");
         }
         Condition c = (Condition) getConditions().nextElement();
         if (c.eval()) {

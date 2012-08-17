@@ -17,6 +17,7 @@ package org.moxie.ant;
 
 import java.io.File;
 
+import org.apache.tools.ant.BuildException;
 import org.moxie.Build;
 import org.moxie.Toolkit.Key;
 import org.moxie.utils.JGitUtils;
@@ -37,7 +38,7 @@ public class MxGitId extends MxGitTask {
 	}
 
 	@Override
-	public void execute() throws org.apache.tools.ant.BuildException {
+	public void execute() throws BuildException {
 		Build build = (Build) getProject().getReference(Key.build.refId());
 		loadDependency(build);
 

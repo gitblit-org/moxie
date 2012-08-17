@@ -73,7 +73,6 @@ import net.sourceforge.cobertura.util.CommandLineBuilder;
 import net.sourceforge.cobertura.util.StringUtil;
 
 import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Java;
@@ -85,6 +84,7 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 import org.apache.tools.ant.types.ResourceCollection;
 import org.apache.tools.ant.types.resources.FileResource;
+import org.moxie.MoxieException;
 
 public abstract class CommonMatchingTask extends MatchingTask
 {
@@ -202,7 +202,7 @@ public abstract class CommonMatchingTask extends MatchingTask
 					 * Once --basedir has been used, it cannot be undone without changes to the
 					 * Main methods.   So, any dirsets have to come before filesets.
 					 */
-					throw new BuildException("Dirsets have to come before filesets");
+					throw new MoxieException("Dirsets have to come before filesets");
 				}
 				AbstractFileSet fileSet = (AbstractFileSet) collection;
 				createArgumentsForFilenames( builder, getDirectoryScanner(fileSet).getIncludedDirectories());

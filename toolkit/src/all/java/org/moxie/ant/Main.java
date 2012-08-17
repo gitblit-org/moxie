@@ -27,7 +27,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.tools.ant.BuildException;
+import org.moxie.MoxieException;
 import org.moxie.Scope;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
@@ -197,7 +197,7 @@ public class Main extends org.apache.tools.ant.Main {
     				version = fields[2];
     				break;
     			default:
-    				throw new BuildException("Illegal parameter " + args);
+    				throw new MoxieException("Illegal parameter " + args);
     			}
     		}
     	}
