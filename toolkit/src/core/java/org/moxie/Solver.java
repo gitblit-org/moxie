@@ -241,8 +241,8 @@ public class Solver {
 				projectDir = new File(config.getProjectFolder().getParentFile(), resolvedName);
 				console.debug(1, "trying {0}", projectDir.getAbsolutePath());
 				if (!projectDir.exists()) {
-					console.error("failed to find linked project \"{0}\".", linkedProject.name);
-					continue;
+					String msg = console.error("failed to find linked project \"{0}\".", linkedProject.name);
+					throw new MoxieException(msg);
 				}
 			}
 			try {

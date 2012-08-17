@@ -255,37 +255,41 @@ public class Console {
 		out.println(ansi().bold().fg(Color.YELLOW).a(MessageFormat.format(message, args)).boldOff().reset());
 	}
 
-	public void warn(Throwable t, String message, Object... args) {
+	public String warn(Throwable t, String message, Object... args) {
 		if (!StringUtils.isEmpty(message)) {
-			out.println(ansi().bold().fg(Color.YELLOW).a(MessageFormat.format(message, args)).boldOff().reset());
+			message = MessageFormat.format(message, args);
+			out.println(ansi().bold().fg(Color.YELLOW).a(message).boldOff().reset());
 		}
 		if (t != null) {
 			t.printStackTrace(out);
 		}
+		return message;
 	}
 
 	public final void error(Throwable t) {
 		error(t, null, emptyArray);
 	}
 
-	public final void error(String message) {
-		error(null, message, emptyArray);
+	public final String error(String message) {
+		return error(null, message, emptyArray);
 	}
 
-	public void error(String message, Object... args) {
-		error(null, message, args);
+	public final String error(String message, Object... args) {
+		return error(null, message, args);
 	}
 
-	public final void error(Throwable t, String message) {
-		error(t, message, emptyArray);
+	public final String error(Throwable t, String message) {
+		return error(t, message, emptyArray);
 	}
 
-	public void error(Throwable t, String message, Object... args) {
+	public String error(Throwable t, String message, Object... args) {
 		if (!StringUtils.isEmpty(message)) {
-			err.println(ansi().bold().fg(Color.RED).a(MessageFormat.format(message, args)).boldOff().reset());
+			message = MessageFormat.format(message, args);
+			err.println(ansi().bold().fg(Color.RED).a(message).boldOff().reset());
 		}
 		if (t != null) {
 			t.printStackTrace(err);
 		}
+		return message;
 	}
 }
