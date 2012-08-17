@@ -734,10 +734,11 @@ public class Solver {
 			// purge snapshots for this dependency			
 			moxieCache.purgeSnapshots(dependency, repository.purgePolicy);
 			
-			// optionally copy primary artifact to project-specified folder
+			// optionally copy artifact to project-specified folder
 			if (artifactFile != null && artifactFile.exists()) {
-				if (forProject && config.getProjectConfig().dependencyFolder != null) {
-					File projectFile = new File(config.getProjectConfig().dependencyFolder, artifactFile.getName());
+				if (forProject && config.getProjectConfig().getDependencyFolder() != null) {
+					// copy jar
+					File projectFile = new File(config.getProjectConfig().getDependencyFolder(), artifactFile.getName());
 					if (dependency.isSnapshot() || !projectFile.exists()) {
 						console.debug(1, "copying {0} to {1}", artifactFile.getName(), projectFile.getParent());
 						try {
@@ -745,6 +746,20 @@ public class Solver {
 							FileUtils.copy(projectFile.getParentFile(), artifactFile);
 						} catch (IOException e) {
 							throw new RuntimeException("Error writing to file " + projectFile, e);
+						}
+					}
+					
+					// copy source jar
+					Dependency source = dependency.getSourcesArtifact();
+					File sourceFile = moxieCache.getArtifact(source, source.type);					
+					File projectSourceFile = new File(config.getProjectConfig().getDependencySourceFolder(), sourceFile.getName());
+					if (dependency.isSnapshot() || !projectSourceFile.exists()) {
+						console.debug(1, "copying {0} to {1}", sourceFile.getName(), projectSourceFile.getParent());
+						try {
+							projectSourceFile.getParentFile().mkdirs();
+							FileUtils.copy(projectSourceFile.getParentFile(), sourceFile);
+						} catch (IOException e) {
+							throw new RuntimeException("Error writing to file " + projectSourceFile, e);
 						}
 					}
 				}
@@ -801,8 +816,9 @@ public class Solver {
 		}
 		
 		File projectFolder = null;
-		if (config.getProjectConfig().dependencyFolder != null && config.getProjectConfig().dependencyFolder.exists()) {
-			projectFolder = config.getProjectConfig().dependencyFolder;
+		if (config.getProjectConfig().getDependencyFolder() != null
+				&& config.getProjectConfig().getDependencyFolder().exists()) {
+			projectFolder = config.getProjectConfig().getDependencyFolder();
 		}
 		console.debug("solving {0} classpath", scope);
 		Set<Dependency> dependencies = solve(scope);

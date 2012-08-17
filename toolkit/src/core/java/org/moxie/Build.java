@@ -96,7 +96,8 @@ public class Build {
 			
 			// create/update Eclipse configuration files
 			if (solutionBuilt && (project.apply(Toolkit.APPLY_ECLIPSE)
-					|| project.apply(Toolkit.APPLY_ECLIPSE_VAR))) {
+					|| project.apply(Toolkit.APPLY_ECLIPSE_VAR)
+					|| project.apply(Toolkit.APPLY_ECLIPSE_EXT))) {
 				writeEclipseClasspath();
 				writeEclipseProject();
 				console.notice(1, "rebuilt Eclipse configuration");
@@ -147,6 +148,7 @@ public class Build {
 		
 		// determine how to output dependencies (fixed-path or variable-relative)
 		String kind = getConfig().getProjectConfig().apply(Toolkit.APPLY_ECLIPSE_VAR) ? "var" : "lib";
+		boolean extRelative = getConfig().getProjectConfig().apply(Toolkit.APPLY_ECLIPSE_EXT);
 		
 		// always link classpath against Moxie artifact cache
 		Set<Dependency> dependencies = solver.solve(Scope.test);
@@ -165,9 +167,20 @@ public class Build {
 					jarPath = Toolkit.MOXIE_HOME + "/" + FileUtils.getRelativePath(config.getMoxieRoot(), jar);
 					srcPath = Toolkit.MOXIE_HOME + "/" + FileUtils.getRelativePath(config.getMoxieRoot(), srcJar);
 				} else {
-					// absolute, hard-coded path
-					jarPath = jar.getAbsolutePath();
-					srcPath = srcJar.getAbsolutePath();
+					// filesystem path
+					if (extRelative) {
+						// relative to project dependency folder
+						File baseFolder = config.getProjectConfig().getDependencyFolder();
+						jar = new File(baseFolder, jar.getName());
+						srcJar = new File(baseFolder, srcJar.getName());
+						
+						jarPath = FileUtils.getRelativePath(baseFolder, jar);
+						srcPath = FileUtils.getRelativePath(baseFolder, srcJar);
+					} else {
+						// absolute, hard-coded path to Moxie root
+						jarPath = jar.getAbsolutePath();
+						srcPath = srcJar.getAbsolutePath();
+					}
 				}
 				if (srcJar.exists()) {
 					// have sources

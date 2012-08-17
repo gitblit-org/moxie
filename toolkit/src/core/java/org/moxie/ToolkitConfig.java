@@ -573,6 +573,14 @@ public class ToolkitConfig implements Serializable {
 		return sourceFolders;
 	}
 	
+	public File getDependencyFolder() {
+		return dependencyFolder;
+	}
+	
+	public File getDependencySourceFolder() {
+		return new File(dependencyFolder, "src");
+	}
+	
 	public List<Proxy> getProxies() {
 		return proxies;
 	}
