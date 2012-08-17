@@ -131,13 +131,22 @@ public class FileUtils {
 	 * @param content
 	 */
 	public static void writeContent(File file, String content) {
+		File tempFile = new File(file.getAbsolutePath() + "." + Long.toHexString(System.currentTimeMillis()));
 		try {
 			file.getAbsoluteFile().getParentFile().mkdirs();
 			OutputStreamWriter os = new OutputStreamWriter(
-					new FileOutputStream(file), Charset.forName("UTF-8"));
+					new FileOutputStream(tempFile), Charset.forName("UTF-8"));
 			BufferedWriter writer = new BufferedWriter(os);
 			writer.append(content);
 			writer.close();
+			if (file.exists()) {				
+				if (!file.delete()) {
+					System.err.println("Failed to delete " + file);	
+				}
+			}
+			if (!tempFile.renameTo(file)) {
+				System.err.println("Failed to rename temp file to " + file);	
+			}
 		} catch (Throwable t) {
 			System.err.println("Failed to write content of " + file);
 			t.printStackTrace();
@@ -151,11 +160,16 @@ public class FileUtils {
 	 * @param content
 	 */
 	public static void writeContent(File file, byte [] data) {
+		File tempFile = new File(file.getAbsolutePath() + "." + Long.toHexString(System.currentTimeMillis()));
 		try {
 			file.getAbsoluteFile().getParentFile().mkdirs();
-			FileOutputStream os = new FileOutputStream(file);
+			FileOutputStream os = new FileOutputStream(tempFile);
 			os.write(data);			
-			os.close();			
+			os.close();
+			if (file.exists()) {				
+				file.delete();
+			}
+			tempFile.renameTo(file);
 		} catch (IOException e) {
 			throw new RuntimeException("Error writing to file " + file, e);
 		}
