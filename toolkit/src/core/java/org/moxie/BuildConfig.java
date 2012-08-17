@@ -137,11 +137,22 @@ public class BuildConfig {
 				repositories.add(new GoogleCode());
 				continue;
 			}
+			boolean added = false;
 			for (RemoteRepository definition : registrations) {
 				if (definition.url.equalsIgnoreCase(url) || definition.id.equalsIgnoreCase(url)) {
 					repositories.add(new Repository(definition));
+					added = true;
 					break;
 				}	
+			}
+			
+			if (!added) {
+				// just add url and use hostname as name
+				String name = url.substring(url.indexOf("://") + 3);
+				if (name.indexOf('/') > -1) {
+					name = name.substring(0,  name.lastIndexOf('/'));
+				}
+				repositories.add(new Repository(name, url));
 			}
 		}
 	}
