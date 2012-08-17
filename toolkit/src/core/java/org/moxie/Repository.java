@@ -312,10 +312,16 @@ public class Repository {
 		
 		try {
 			URL url = getURL(dep, ext);
-			solver.getConsole().download(url.toString());
+
+			// log url attempts
+			solver.getConsole().debug("trying " + url.toString());
+
 			DownloadData data = download(solver, url);
 			verifySHA1(solver, expectedSHA1, data);
-
+			
+			// log successes
+			solver.getConsole().download(url.toString());
+			
 			// set origin so that we write the artifact into the proper cache
 			dep.setOrigin(repositoryUrl);
 
