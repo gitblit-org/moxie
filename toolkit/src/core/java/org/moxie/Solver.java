@@ -704,6 +704,10 @@ public class Solver {
 	 * @return
 	 */
 	private void retrieveArtifact(Dependency dependency, boolean forProject) {
+		if (Constants.POM.equals(dependency.type)) {
+			// pom dependencies do not have other artifacts
+			return;
+		}
 		for (Repository repository : config.getRepositories()) {
 			if (!repository.isSource(dependency)) {
 				// dependency incompatible with repository
