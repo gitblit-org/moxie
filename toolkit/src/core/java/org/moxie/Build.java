@@ -217,9 +217,57 @@ public class Build {
 	private void writeEclipseProject() {
 		File dotProject = new File(config.getProjectFolder(), ".project");
 		if (dotProject.exists()) {
-			// don't recreate the project file
+			// update name and description
+			try {
+				StringBuilder sb = new StringBuilder();
+				Pattern namePattern = Pattern.compile("\\s*?<name>(.+)</name>");
+				Pattern descriptionPattern = Pattern.compile("\\s*?<comment>(.+)</comment>");
+				
+				boolean replacedName = false;
+				boolean replacedDescription = false;
+				
+				Scanner scanner = new Scanner(dotProject);
+				while (scanner.hasNextLine()) {
+					String line = scanner.nextLine();
+					
+					// replace name
+					if (!replacedName) {
+						Matcher m = namePattern.matcher(line);
+						if (m.matches()) {
+							int start = m.start(1);
+							int end = m.end(1);
+							//console.error("s=" + start + " e=" + end + " l=" + line);
+							line = line.substring(0,  start)
+									+ config.getPom().getName() + line.substring(end);
+							replacedName = true;
+						}
+					}
+					
+					// replace description
+					if (!replacedDescription) {
+						Matcher m = descriptionPattern.matcher(line);
+						if (m.matches()) {
+							int start = m.start(1);
+							int end = m.end(1);
+							//console.error("s=" + start + " e=" + end + " l=" + line);
+							line = line.substring(0,  start)
+									+ (config.getPom().getDescription() == null ? "" : config.getPom().getDescription())
+									+ line.substring(end);
+							replacedDescription = true;
+						}
+					}
+					
+					sb.append(line).append('\n');
+				}
+				scanner.close();
+				
+				FileUtils.writeContent(dotProject, sb.toString());
+			} catch (FileNotFoundException e) {
+			}
 			return;
 		}
+		
+		// create file
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		sb.append("<projectDescription>\n");
