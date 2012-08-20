@@ -121,9 +121,16 @@ public class BuildConfig {
 		this.verbose = verbose;
 	}
 	
-	private void determineProxies() {
+	private void determineProxies() {		
 		proxies.addAll(projectConfig.getActiveProxies());
 		proxies.addAll(toolkitConfig.getActiveProxies());
+		
+		// add M2 defined proxies last since they can only define host exclusions
+		File m2Settings = new File(System.getProperty("user.home"), "/.m2/settings.xml");
+		if (m2Settings.exists()) {
+			Settings settings = SettingsReader.readSettings(m2Settings);
+			proxies.addAll(settings.getActiveProxies());
+		}
 	}
 	
 	private void determineRepositories() {
