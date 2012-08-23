@@ -19,7 +19,6 @@ import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,7 +36,6 @@ import java.util.zip.ZipEntry;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Jar;
-import org.apache.tools.ant.taskdefs.Javac;
 import org.apache.tools.ant.taskdefs.Manifest;
 import org.apache.tools.ant.taskdefs.Manifest.Attribute;
 import org.apache.tools.ant.taskdefs.ManifestException;
@@ -162,49 +160,13 @@ public class MxJar extends GenJar {
 
 	private void configure(Build build) {
 		configured = true;
-		MaxmlMap attributes = build.getConfig().getMxJarAttributes();
+		MaxmlMap attributes = build.getConfig().getTaskAttributes(getTaskName());
 		if (attributes == null) {
-			build.getConsole().error("mx:Jar attributes are null!");
+			build.getConsole().error(getTaskName() + " attributes are null!");
 			return;
 		}
-		if (attributes.containsKey(Key.excludes.name())) {
-			excludes = attributes.getString(Key.excludes.name(), null);
-		}
 		
-		try {
-			Map<String, Method> methods = new HashMap<String, Method>();
-			for (Class<?> javacClass : new Class<?>[] { Javac.class, MxJar.class }) {
-				for (Method method: javacClass.getDeclaredMethods()) {
-					if (method.getName().startsWith("set")) {
-						methods.put(method.getName().toLowerCase(), method);
-					}
-				}
-			}
-			for (String key : attributes.keySet()) {
-				// attributes
-				Method method = methods.get("set" + key.toLowerCase());
-				if (method == null) {					
-					build.getConsole().error("unknown mx:Jar attribute {0}", key);
-					continue;
-				}
-				method.setAccessible(true);
-				Object value = null;
-				Class<?> parameterClass = method.getParameterTypes()[0];
-				if (String.class.isAssignableFrom(parameterClass)) {
-					value = attributes.getString(key, "");
-				} else if (boolean.class.isAssignableFrom(parameterClass)
-						|| Boolean.class.isAssignableFrom(parameterClass)) {
-					value = attributes.getBoolean(key, false);
-				} else if (int.class.isAssignableFrom(parameterClass)
-						|| Integer.class.isAssignableFrom(parameterClass)) {
-					value = attributes.getInt(key, 0);
-				}
-				method.invoke(this, value);
-			}			
-		} catch (Exception e) {
-			build.getConsole().error(e);
-			throw new MoxieException("failed to set mx:Jar attributes!", e);
-		}
+		AttributeReflector.setAttributes(getProject(), this, attributes);
 	}
 
 	@Override
@@ -293,32 +255,9 @@ public class MxJar extends GenJar {
 		console.debug("mxjar configuration");
 
 		// display specified mxjar attributes
-		MaxmlMap attributes = build.getConfig().getMxJarAttributes();
-		if (attributes != null) {
-			try {
-				Map<String, Method> methods = new HashMap<String, Method>();
-				for (Class<?> javacClass : new Class<?>[] { MxJar.class }) {
-					for (Method method: javacClass.getDeclaredMethods()) {
-						if (method.getName().startsWith("get")) {
-							methods.put(method.getName().toLowerCase(), method);
-						}
-					}
-				}
-				for (String attrib : attributes.keySet()) {
-					Method method = methods.get("get" + attrib.toLowerCase());
-					if (method == null) {
-						continue;
-					}
-					method.setAccessible(true);
-					Object value = method.invoke(this, (Object[]) null);
-					console.debug(1, "{0} = {1}", attrib, value);
-				}			
-			} catch (Exception e) {
-				console.error(e);
-				throw new MoxieException("failed to get mx:Jar attributes!", e);
-			}
-		}
-		
+		MaxmlMap attributes = build.getConfig().getTaskAttributes(getTaskName());
+		AttributeReflector.logAttributes(this, attributes, console);
+
 		long start = System.currentTimeMillis();
 		super.execute();
 

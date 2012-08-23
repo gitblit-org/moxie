@@ -65,9 +65,7 @@ public class ToolkitConfig implements Serializable {
 	Set<String> apply;
 	Map<String, Dependency> dependencyAliases;
 	Map<Scope, Map<String, Pom>> dependencyOverrides;
-	MaxmlMap mxjavac;
-	MaxmlMap mxjar;
-	MaxmlMap mxreport;
+	MaxmlMap tasks;
 	Map<String, String> externalProperties;
 	UpdatePolicy updatePolicy;
 	int revisionRetentionCount;
@@ -93,9 +91,7 @@ public class ToolkitConfig implements Serializable {
 		proxies = new ArrayList<Proxy>();
 		dependencyAliases = new HashMap<String, Dependency>();
 		dependencyOverrides = new HashMap<Scope, Map<String, Pom>>();
-		mxjavac = new MaxmlMap();
-		mxjar = new MaxmlMap();
-		mxreport = new MaxmlMap();
+		tasks = new MaxmlMap();
 		externalProperties = new HashMap<String, String>();
 		updatePolicy = UpdatePolicy.defaultPolicy;
 		revisionRetentionCount = 1;
@@ -238,14 +234,20 @@ public class ToolkitConfig implements Serializable {
 		
 		pom.addExclusions(readStrings(map, Key.exclusions, new ArrayList<String>(), true));
 
-		if (map.containsKey(Key.mxjavac.name())) {
-			mxjavac.putAll(map.getMap(Key.mxjavac.name()));
-		}
-		if (map.containsKey(Key.mxjar.name())) {
-			mxjar.putAll(map.getMap(Key.mxjar.name()));
-		}
-		if (map.containsKey(Key.mxreport.name())) {
-			mxreport.putAll(map.getMap(Key.mxreport.name()));
+		// all task attributes are inherited. individual attributes can be overridden
+		if (map.containsKey("tasks")) {
+			MaxmlMap taskOverrides = map.getMap("tasks");
+			for (Map.Entry<String, Object> entry : taskOverrides.entrySet()) {
+				String task = entry.getKey();
+				MaxmlMap taskAttributes  = (MaxmlMap) entry.getValue();
+				if (tasks.containsKey(task)) {
+					// update existing entry with attribute overrides
+					tasks.getMap(task).putAll(taskAttributes);
+				} else {
+					// new entry
+					tasks.put(task, taskAttributes);
+				}
+			}
 		}
 		
 		// maxml build properties
@@ -641,9 +643,7 @@ public class ToolkitConfig implements Serializable {
 		outputFolder = parent.outputFolder;
 		targetFolder = parent.targetFolder;
 		apply = parent.apply;
-		mxjavac = parent.mxjavac;
-		mxjar = parent.mxjar;
-		mxreport = parent.mxreport;
+		tasks = parent.tasks;
 		dependencyOverrides = parent.dependencyOverrides;
 		dependencyAliases = parent.dependencyAliases;
 		externalProperties = parent.externalProperties;

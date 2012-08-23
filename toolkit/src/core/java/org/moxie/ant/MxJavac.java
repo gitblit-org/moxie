@@ -16,12 +16,7 @@
 package org.moxie.ant;
 
 import java.io.File;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.tools.ant.Project;
@@ -59,6 +54,7 @@ public class MxJavac extends Javac {
 	
 	private MxJavac(Set<Build> builds) {
 		this.builds = builds;
+		setTaskName("mx:javac");
 	}
 	
 	public boolean getClean() {
@@ -124,59 +120,13 @@ public class MxJavac extends Javac {
 	 */
 	private void configure(Build build) {
 		configured = true;
-		MaxmlMap attributes = build.getConfig().getMxJavacAttributes();
+		MaxmlMap attributes = build.getConfig().getTaskAttributes(getTaskName());
 		if (attributes == null) {
-			build.getConsole().error("mx:Javac attributes are null!");
+			build.getConsole().error(getTaskName() + " attributes are null!");
 			return;
 		}
-		if (attributes.containsKey(Key.excludes.name())) {
-			excludes = attributes.getString(Key.excludes.name(), null);
-		}
-		if (attributes.containsKey(Key.includes.name())) {
-			includes = attributes.getString(Key.includes.name(), null);
-		}
-		try {
-			Map<String, Method> methods = new HashMap<String, Method>();
-			for (Class<?> javacClass : new Class<?>[] { Javac.class, MxJavac.class }) {
-				for (Method method: javacClass.getDeclaredMethods()) {
-					if (method.getName().startsWith("set")) {
-						methods.put(method.getName().toLowerCase(), method);
-					}
-				}
-			}
-			for (String key : attributes.keySet()) {
-				if (key.equalsIgnoreCase(Key.compilerArgs.name())) {
-					// compiler args are special
-					List<String> args = (List<String>) attributes.getStrings(key,new ArrayList<String>());
-					for (String arg : args) {
-						createCompilerArg().setValue(arg);
-					}
-					continue;
-				}
-				// attributes
-				Method method = methods.get("set" + key.toLowerCase());
-				if (method == null) {					
-					build.getConsole().error("unknown mx:Javac attribute {0}", key);
-					continue;
-				}
-				method.setAccessible(true);
-				Object value = null;
-				Class<?> parameterClass = method.getParameterTypes()[0];
-				if (String.class.isAssignableFrom(parameterClass)) {
-					value = attributes.getString(key, "");
-				} else if (boolean.class.isAssignableFrom(parameterClass)
-						|| Boolean.class.isAssignableFrom(parameterClass)) {
-					value = attributes.getBoolean(key, false);
-				} else if (int.class.isAssignableFrom(parameterClass)
-						|| Integer.class.isAssignableFrom(parameterClass)) {
-					value = attributes.getInt(key, 0);
-				}
-				method.invoke(this, value);
-			}			
-		} catch (Exception e) {
-			build.getConsole().error(e);
-			throw new MoxieException("failed to set mx:Javac attributes!", e);
-		}
+		
+		AttributeReflector.setAttributes(getProject(), this, attributes);
 	}
 
 	public void execute() {
@@ -228,31 +178,8 @@ public class MxJavac extends Javac {
 		console.debug("mxjavac configuration");
 
 		// display specified mxjavac attributes
-		MaxmlMap attributes = build.getConfig().getMxJavacAttributes();
-		if (attributes != null) {
-			try {
-				Map<String, Method> methods = new HashMap<String, Method>();
-				for (Class<?> javacClass : new Class<?>[] { Javac.class, MxJavac.class }) {
-					for (Method method: javacClass.getDeclaredMethods()) {
-						if (method.getName().startsWith("get")) {
-							methods.put(method.getName().toLowerCase(), method);
-						}
-					}
-				}
-				for (String attrib : attributes.keySet()) {
-					Method method = methods.get("get" + attrib.toLowerCase());
-					if (method == null) {
-						continue;
-					}
-					method.setAccessible(true);
-					Object value = method.invoke(this, (Object[]) null);
-					console.debug(1, "{0} = {1}", attrib, value);
-				}			
-			} catch (Exception e) {
-				console.error(e);
-				throw new MoxieException("failed to get mx:Javac attributes!", e);
-			}
-		}
+		MaxmlMap attributes = build.getConfig().getTaskAttributes(getTaskName());
+		AttributeReflector.logAttributes(this, attributes, console);
 		
 		// project folder
 		console.debug(1, "projectdir = {0}", build.getConfig().getProjectFolder());

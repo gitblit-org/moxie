@@ -185,19 +185,11 @@ public class BuildConfig {
 	public Pom getPom() {
 		return projectConfig.pom;
 	}
-	
-	public MaxmlMap getMxJavacAttributes() {
-		return projectConfig.mxjavac;
+
+	public MaxmlMap getTaskAttributes(String taskname) {
+		return projectConfig.tasks.getMap(taskname);
 	}
 
-	public MaxmlMap getMxJarAttributes() {
-		return projectConfig.mxjar;
-	}
-
-	public MaxmlMap getMxReportAttributes() {
-		return projectConfig.mxreport;
-	}
-	
 	public Map<String, String> getExternalProperties() {
 		return projectConfig.externalProperties;
 	}

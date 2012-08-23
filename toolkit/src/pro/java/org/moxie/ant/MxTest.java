@@ -16,7 +16,6 @@
 package org.moxie.ant;
 
 import java.io.File;
-import java.text.MessageFormat;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.Environment;
