@@ -7,7 +7,7 @@ The Moxie binaries and this site are built with Moxie.
 <div class="span7">
 <pre>
   [mx:init] =========================================================
-  [mx:init] Moxie  (0.4.0-SNAPSHOT)
+  [mx:init] Moxie  (0.5.0-SNAPSHOT)
   [mx:init] ---------------------------------------------------------
   [mx:init] project metadata
   [mx:init]            name: Moxie
@@ -27,15 +27,14 @@ The Moxie binaries and this site are built with Moxie.
  [mx:javac] Compiling 41 source files to C:\projects\git\moxie\build\classes
  [mx:javac] Copying 20 files to C:\projects\git\moxie\build\classes
    [mx:jar] =========================================================
-   [mx:jar] mx:Jar  (moxie-0.4.0-SNAPSHOT-all.jar)
+   [mx:jar] mx:Jar  (moxie-0.5.0-SNAPSHOT-all.jar)
    [mx:jar] ---------------------------------------------------------
-   [mx:jar]    C:\projects\git\moxie\target\moxie-0.4.0-SNAPSHOT-all.jar
+   [mx:jar] Building jar: C:\projects\git\moxie\target\moxie-0.4.0-SNAPSHOT-all.jar
    [mx:jar]    331 KB, generated in 460 ms
    [mx:jar] Building jar: C:\projects\git\moxie\target\moxie-0.4.0-SNAPSHOT-sources.jar
-   [mx:jar]    C:\projects\git\moxie\target\moxie-0.4.0-SNAPSHOT-sources.jar
    [mx:jar]    148 KB, generated in 80 ms
 [mx:install] =========================================================
-[mx:install] mx:Install  (moxie-0.4.0-SNAPSHOT)
+[mx:install] mx:Install  (moxie-0.5.0-SNAPSHOT)
 [mx:install] ---------------------------------------------------------
 [mx:install] Copying 2 files to C:\Users\James Moger\.moxie\repository\org.moxie\moxie\0.4.0-SNAPSHOT
 [mx:install] generating pom for moxie-0.4.0-SNAPSHOT
@@ -44,23 +43,21 @@ The Moxie binaries and this site are built with Moxie.
 </div>
 
 <div class="span5">
-<h3>Core Package (100KB)</h3>
+<h3>Core Package (160KB)</h3>
 
 The core package includes <code>mx:init</code> for project setup & dependency retrieval, and <code>mx:report</code> to create a text report about your transitive dependencies and their licenses.
 <br/><br/>
-Bundled with the core package is a private copy of the [AntContrib](http://ant-contrib.sourceforge.net) <i>if</i> task (included as <code>mx:if</code>) and a partial subset of <a href="http://jansi.fusesource.org">jansi</a>, to optionally liven-up your console.
-<br/><br/>
 The core package has no external dependencies.
 
-<h3>Pro Package (180KB)</h3>
+<h3>Pro Package (250KB)</h3>
 
 The pro package builds on the core package by adding a Maven-ish set of targets (<i>moxie.compile, moxie.test, etc</i>) and tasks to handle compiling your sources, packaging your compiled code, and installing artifacts into your local Moxie repository.
 <br/><br/>
-Also included in the pro package are Git tasks to grab the hash id of the checked-out of your project and a task to update a <i>ghpages</i> branch for <a href="http://www.github.com">Github</a> or <a href="http://gitblit.com">Gitblit</a>.
+Also included in the pro package are a private copy of the [AntContrib](http://ant-contrib.sourceforge.net) <i>if</i> task (included as <code>mx:if</code>), Git tasks to grab the hash id of the checked-out of your project and a task to update a <i>ghpages</i> branch for <a href="http://www.github.com">Github</a> or <a href="http://gitblit.com">Gitblit</a>.
 <br/><br/>
 The git tasks depend on <a href="http://eclipse.org/jgit">JGit</a> which is resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.
 
-<h3>All Package (360KB)</h3>
+<h3>All Package (500KB)</h3>
 
 The all package includes the pro package plus <code>mx:doc</code>, the Moxie site/document-generation tool.
 <br/><br/>

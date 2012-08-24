@@ -94,9 +94,9 @@
 		<!-- Core -->
 		<taskdef classname="org.moxie.ant.MxInit" name="init" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxReport" name="report" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.ant.MxIf" name="if" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 			
 		<!-- Pro -->
+		<taskdef classname="org.moxie.ant.MxIf" name="if" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxJavac" name="javac" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxClean" name="clean" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
@@ -139,7 +139,6 @@
 				
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
-			<class name="org.moxie.ant.MxIf" />
 
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
@@ -173,10 +172,10 @@
 			<!-- core -->
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
-			<class name="org.moxie.ant.MxIf" />
 				
 			<!-- pro -->
 			<class name="org.moxie.ant.ProjectHelper" />
+			<class name="org.moxie.ant.MxIf" />
 			<class name="org.moxie.ant.MxClean" />
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
@@ -222,10 +221,10 @@
 			<!-- core -->
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
-			<class name="org.moxie.ant.MxIf" />
 			
 			<!-- pro -->
 			<class name="org.moxie.ant.ProjectHelper" />
+			<class name="org.moxie.ant.MxIf" />
 			<class name="org.moxie.ant.MxClean" />
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
