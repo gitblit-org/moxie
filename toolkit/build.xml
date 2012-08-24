@@ -102,6 +102,7 @@
 		<taskdef classname="org.moxie.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 
 		<taskdef classname="org.moxie.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxGenJar" name="genjar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxTest" name="test" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxZip" name="zip" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />		
 		<taskdef classname="org.moxie.ant.MxExtract" name="extract" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
@@ -127,7 +128,7 @@
 		<mx:report scope="compile" destFile = "${mxp.targetFolder}/compile_dependencies.txt"/>
 
 		<!-- Moxie-Core -->
-		<mx:jar classifier="core">
+		<mx:genjar classifier="core">
 			<classfilter>
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
@@ -144,10 +145,10 @@
 				<fileset dir="${basedir}/src/core/resources" />
 			</resource>
 			<resource file="${basedir}/src/core/config/tasks.properties" />
-		</mx:jar>
+		</mx:genjar>
 
 		<!-- Moxie-Pro -->
-		<mx:jar classifier="pro">
+		<mx:genjar classifier="pro">
 			<classfilter>
 				<exclude name="emma" />
 				<exclude name="emmarun" />
@@ -180,6 +181,7 @@
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
 			<class name="org.moxie.ant.MxJar" />
+			<class name="org.moxie.ant.MxGenJar" />
 			<class name="org.moxie.ant.MxTest" />
 			<class name="org.moxie.ant.MxZip" />
 			<class name="org.moxie.ant.MxKeys" />
@@ -191,11 +193,11 @@
 				<fileset dir="${basedir}/src/core/resources" />
 			</resource>
 			<resource file="${basedir}/src/pro/config/tasks.properties" />
-		</mx:jar>
+		</mx:genjar>
 
 		
 		<!-- Moxie-All -->
-		<mx:jar classifier="all" packageSources="true">
+		<mx:genjar classifier="all" packageSources="true">
 			<classfilter>
 				<exclude name="emma" />
 				<exclude name="emmarun" />
@@ -228,6 +230,7 @@
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
 			<class name="org.moxie.ant.MxJar" />
+			<class name="org.moxie.ant.MxGenJar" />
 			<class name="org.moxie.ant.MxTest" />
 			<class name="org.moxie.ant.MxZip" />
 			<class name="org.moxie.ant.MxKeys" />
@@ -244,7 +247,7 @@
 				<fileset dir="${basedir}/src/all/resources" />
 			</resource>
 			<resource file="${basedir}/src/all/config/tasks.properties" />
-		</mx:jar>
+		</mx:genjar>
 		
 		<!--
 		Copy the all jar to moxie.jar for use in the other Moxie projects,

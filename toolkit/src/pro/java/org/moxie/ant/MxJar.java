@@ -15,23 +15,14 @@
  */
 package org.moxie.ant;
 
-import java.io.BufferedOutputStream;
-import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.jar.JarOutputStream;
-import java.util.zip.ZipEntry;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -41,8 +32,7 @@ import org.apache.tools.ant.taskdefs.Manifest.Attribute;
 import org.apache.tools.ant.taskdefs.ManifestException;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.types.Path.PathElement;
-import org.apache.tools.ant.types.resources.FileResource;
+import org.apache.tools.ant.types.ZipFileSet;
 import org.moxie.Build;
 import org.moxie.MoxieException;
 import org.moxie.Pom;
@@ -55,13 +45,12 @@ import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 
 
-public class MxJar extends GenJar {
+public class MxJar extends Jar {
 
 	Build build;
 	Console console;
-	
+
 	ClassSpec mainclass;
-	boolean classResolution;
 	boolean fatjar;
 	boolean includeResources;
 	boolean excludePomFiles;
@@ -85,8 +74,7 @@ public class MxJar extends GenJar {
 	public ClassSpec createMainclass() {
 		if (mainclass == null) {
 			ClassSpec cs = new ClassSpec(getProject());
-			mainclass = cs;
-			jarSpecs.add(cs);
+			mainclass = cs;			
 			return cs;
 		}
 		throw new MoxieException("Can only specify one main class");
@@ -131,7 +119,7 @@ public class MxJar extends GenJar {
 	public void setExcludes(String excludes) {
 		this.excludes = excludes;
 	}
-
+	
 	public String getClassifier() {
 		return classifier;
 	}
@@ -147,7 +135,6 @@ public class MxJar extends GenJar {
 	public void setPackagesources(boolean sources) {
 		this.packageSources = sources;
 	}
-
 	
 	@Override
 	public void setProject(Project project) {
@@ -180,41 +167,55 @@ public class MxJar extends GenJar {
 		}
 		
 		// automatic manifest entries from Moxie metadata
-		configureManifest(mft);
+		Manifest manifest = new Manifest();
+		configureManifest(manifest);
 
 		if (mainclass != null) {
 			String mc = mainclass.getName().replace('/', '.');
 			if (mc.endsWith(".class")) {
 				mc = mc.substring(0, mc.length() - ".class".length());
 			}
-			setManifest(mft, "Main-Class", mc);
+			setManifest(manifest, "Main-Class", mc);
 		}
-
-		// automatic classpath resolution, if not manually specified
-		if (classpath == null) {
+		try {
+			addConfiguredManifest(manifest);
+		} catch (ManifestException e1) {
+			console.error(e1, "Failed to configure manifest!");
+			throw new MoxieException(e1);
+		}
+		
+		if (fatjar) {
+			// FatJar generation (merging reference dependencies)
 			Object o = getProject().getReference(Key.compile_classpath.refId());
 			if (o != null && o instanceof Path) {
 				Path cp = (Path) o;
-				if (fatjar) {
-					// FatJar generation
-					classpath = createClasspath();					
-					for (String path : cp.list()) {
-						if (path.toLowerCase().endsWith(".jar")) {
-							LibrarySpec lib = createLibrary();
-							lib.setJar(path);
-						} else {
-							PathElement element = classpath.createPathElement();
-							element.setPath(path);
-						}
+				for (String path : cp.list()) {
+					if (path.toLowerCase().endsWith(".jar")) {
+						ZipFileSet zip = new ZipFileSet();
+						zip.setProject(getProject());
+						zip.setSrc(new File(path));
+						addZipfileset(zip);
 					}
-				} else {
-					// standard GenJar class dependency resolution
-					classpath = cp;
 				}
 			}
 		}
 		
-		if (destFile == null) {
+		if (excludes == null) {
+			excludes = Toolkit.DEFAULT_EXCLUDES;
+		}
+
+		// compiled output
+		File outputFolder = build.getConfig().getOutputFolder(Scope.compile);
+		FileSet outputSet = new FileSet();
+		outputSet.setProject(getProject());
+		outputSet.setDir(outputFolder);
+		if (includes != null) {
+			outputSet.setIncludes(includes);
+		}
+		outputSet.setExcludes(excludes);		
+		addFileset(outputSet);
+
+		if (getDestFile() == null) {
 			// default output jar if file unspecified
 			Pom pom = build.getPom();
 			String name = pom.artifactId;
@@ -227,41 +228,28 @@ public class MxJar extends GenJar {
 			if (!StringUtils.isEmpty(classifier)) {
 				name += "-" + classifier;
 			}
-			destFile = new File(build.getConfig().getTargetFolder(), name + ".jar");
+			setDestFile(new File(build.getConfig().getTargetFolder(), name + ".jar"));
 		}
+		
+		File destFile = getDestFile();
 		
 		if (destFile.getParentFile() != null) {
 			destFile.getParentFile().mkdirs();
 		}
 		
-		version = build.getPom().version;
-		
-		// optionally include resources from the outputfolder
-		if (includeResources) {
-			Resource resources = createResource();			
-			FileSet set = resources.createFileset();
-			set.setDir(build.getConfig().getOutputFolder(Scope.compile));
-			if (includes != null) {
-				set.setIncludes(includes);
-			}
-			if (excludes == null) {
-				excludes = Toolkit.DEFAULT_EXCLUDES;
-			}
-			set.setExcludes(excludes);
-		}
+		addMavenEntries();
 		
 		console.title(getClass(), destFile.getName());
 		
-		console.debug("mxjar configuration");
+		console.debug(getTaskName() + " configuration");
 
-		// display specified mxjar attributes
+		// display specified mx:jar attributes
 		MaxmlMap attributes = build.getConfig().getTaskAttributes(getTaskName());
 		AttributeReflector.logAttributes(this, attributes, console);
 
 		long start = System.currentTimeMillis();
 		super.execute();
 
-		console.log(1, destFile.getAbsolutePath());
 		console.log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
 		
 		/*
@@ -288,54 +276,20 @@ public class MxJar extends GenJar {
 			// set the destination file
 			jar.setDestFile(sourcesFile);
 			
-			// use the resolved classes to determine included source files
-			List<FileResource> sourceFiles = new ArrayList<FileResource>();
-			Map<File, Set<String>> packageResources = new HashMap<File, Set<String>>();
-			
-			if (resolvedLocal.size() == 0) {
-				console.warn("mxjar has not resolved any class files local to {0}", build.getPom().getManagementId());
-			}
-			
 			List<File> folders = build.getConfig().getSourceFolders(Scope.compile);
-			for (String className : resolvedLocal) {
-				String sourceName = className.substring(0, className.length() - ".class".length()).replace('.', '/') + ".java";
-				console.debug(sourceName);
-				for (File folder : folders) {
-					File file = new File(folder, sourceName);
-					if (file.exists()) {
-						FileResource resource = new FileResource(getProject(), file);
-						resource.setBaseDir(folder);
-						sourceFiles.add(resource);
-						if (!packageResources.containsKey(folder)) {
-							// always include default package resources
-							packageResources.put(folder, new TreeSet<String>(Arrays.asList( "/*" )));						
-						}
-						String packagePath = FileUtils.getRelativePath(folder, file.getParentFile());
-						packageResources.get(folder).add(packagePath + "/*");
-						console.debug(1, file.getAbsolutePath());
-						break;
-					}
-				}
-			}
-			
-			// add the discovered source files for the resolved classes
-			jar.add(new FileResourceSet(sourceFiles));
-			
-			// add the resolved package folders for resource files
-			if (includeResources) {
-				for (Map.Entry<File, Set<String>> entry : packageResources.entrySet()) {
-					FileSet set = new FileSet();				
-					set.setDir(entry.getKey());
-					set.setExcludes(excludes);
-					StringBuilder includes = new StringBuilder();
-					for (String packageName : entry.getValue()) {
-						includes.append(packageName + ",");
-					}
-					includes.setLength(includes.length() - 1);
-					set.setIncludes(includes.toString());
-					console.debug("adding resource fileset {0}", entry.getKey());
-					console.debug(1, "includes={0}", includes.toString());
-					jar.add(set);
+			for (File folder : folders) {
+				FileSet srcSet = new FileSet();
+				srcSet.setProject(getProject());
+				srcSet.setDir(folder);				
+				srcSet.setIncludes("**/*.java");				
+				jar.addFileset(srcSet);
+
+				if (includeResources) {
+					FileSet resSet = new FileSet();
+					resSet.setProject(getProject());
+					resSet.setDir(folder);				
+					resSet.setExcludes(excludes);
+					jar.addFileset(resSet);
 				}
 			}
 			
@@ -348,10 +302,9 @@ public class MxJar extends GenJar {
 				console.error(e);
 			}
 			
-			start = System.currentTimeMillis();			
+			start = System.currentTimeMillis();	
 			jar.execute();
 						
-			console.log(1, sourcesFile.getAbsolutePath());
 			console.log(1, "{0} KB, generated in {1} ms", (sourcesFile.length()/1024), System.currentTimeMillis() - start);
 		}
 	}
@@ -406,7 +359,7 @@ public class MxJar extends GenJar {
 			try {
 				man.addConfiguredAttribute(new Attribute(key, value));
 			} catch (ManifestException e) {
-				console.error(e, "Failed to set manifest attribute!");
+				console.error(e, "Failed to set manifest attribute \"{0}\"!", key);
 			}
 		}
 	}
@@ -414,38 +367,43 @@ public class MxJar extends GenJar {
 	/**
 	 * Add the Maven META-INF files. 
 	 */
-	@Override
-	protected void writeJarEntries(JarOutputStream jos) {
+	private void addMavenEntries() {
 		if (excludePomFiles) {
 			return;
 		}
 		
-		DataOutputStream dos = new DataOutputStream(new BufferedOutputStream(jos));
-		
-		Properties properties = new Properties();
-		properties.put(Key.groupId.name(), build.getPom().groupId);
-		properties.put(Key.artifactId.name(), build.getPom().artifactId);
-		properties.put(Key.version.name(), version);
-		
 		try {
-			ZipEntry entry = new ZipEntry(MessageFormat.format("META-INF/maven/{0}/{1}/pom.properties", build.getPom().groupId, build.getPom().artifactId));
-			jos.putNextEntry(entry);		
-			properties.store(dos, "Generated by Moxie");
-			dos.flush();
-			jos.closeEntry();
+			Properties properties = new Properties();
+			properties.put(Key.groupId.name(), build.getPom().groupId);
+			properties.put(Key.artifactId.name(), build.getPom().artifactId);
+			properties.put(Key.version.name(), build.getPom().version);
+
+			File tmpFile = new File(build.getConfig().getOutputFolder(null), "pom.properties");			
+			FileWriter writer = new FileWriter(tmpFile);
+			properties.store(writer, "Generated by Moxie");
+			writer.flush();
+			writer.close();
+			
+			ZipFileSet set = new ZipFileSet();
+			set.setProject(getProject());
+			set.setFile(tmpFile);
+			set.setPrefix(MessageFormat.format("META-INF/maven/{0}/{1}", build.getPom().groupId, build.getPom().artifactId));
+			addFileset(set);
 		} catch (IOException e) {
 			console.error(e, "failed to write pom.properties!");
 		}
 		
 		try {
-			ZipEntry entry = new ZipEntry(MessageFormat.format("META-INF/maven/{0}/{1}/pom.xml", build.getPom().groupId, build.getPom().artifactId));
-			jos.putNextEntry(entry);
-			dos.write(build.getPom().toXML().getBytes("UTF-8"));
-			dos.flush();
-			jos.closeEntry();
-		} catch (IOException e) {
+			File tmpFile = new File(build.getConfig().getOutputFolder(null), "pom.xml");
+			FileUtils.writeContent(tmpFile, build.getPom().toXML());
+
+			ZipFileSet set = new ZipFileSet();
+			set.setProject(getProject());
+			set.setFile(tmpFile);
+			set.setPrefix(MessageFormat.format("META-INF/maven/{0}/{1}", build.getPom().groupId, build.getPom().artifactId));
+			addFileset(set);
+		} catch (Exception e) {
 			console.error(e, "failed to write pom.xml!");
 		}
 	}
-
 }

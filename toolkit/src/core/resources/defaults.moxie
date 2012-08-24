@@ -52,4 +52,11 @@ tasks : {
 		excludePomFiles: false
 		excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
 	}
+
+	# mx:GenJar attributes
+	# These defaults may be overriden in your build.moxie file.
+	"mx:genjar" : {
+		excludePomFiles: false
+		excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
+	}
 }

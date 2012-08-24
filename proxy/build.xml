@@ -9,13 +9,13 @@
 	<target name="main">
 		<mx:init />
 		<mx:javac />
-		<mx:jar fatjar="true" includeResources="true" >
+		<mx:genjar fatjar="true" includeResources="true" >
 			<classfilter>
 				<exclude name="org.w3c." />
 				<exclude name="org.xml." />
 				<exclude name="org.zeroturnaround." />
 			</classfilter>
 			<mainclass name="org.moxie.proxy.Launcher" />
-		</mx:jar>
+		</mx:genjar>
 	</target>
 </project>

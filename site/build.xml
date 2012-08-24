@@ -29,7 +29,8 @@
 					<page name="mx:If" src="mxextract.mkd" />
 					<page name="mx:Install" src="mxextract.mkd" />
 					<page name="mx:Init" src="mxextract.mkd" />
-					<page name="mx:Jar" src="mxextract.mkd" />
+					<page name="mx:Jar" src="mxjar.mkd" />
+					<page name="mx:GenJar" src="mxgenjar.mkd" />
 					<page name="mx:Javac" src="mxextract.mkd" />
 					<page name="mx:Keys" src="mxextract.mkd" />
 					<page name="mx:Report" src="mxextract.mkd" />
