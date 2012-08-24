@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="main" xmlns:mx="antlib:org.moxie">
 
-	<target name="main">
+	<!--
+		Moxie Tasks
+		
+		Remove this section if you only plan to use Moxie+Ant or Ant with the
+		-lib moxie.jar command line parameter.
+		
+		If you plan to use regular Ant and include the Moxie jar in your
+		project (e.g. standard Eclipse/Netbeans/etc) then uncomment this section
+		and set the appropriate path to your Moxie jar file.
+	-->
+	
+	<!--<taskdef resource="tasks.properties" uri="antlib:org.moxie">
+		<classpath location="${basedir}/moxie.jar" />
+	</taskdef>-->
+
+	<!-- Main Target -->
+	<target name="main" description="Prepares, compiles, tests, and packages your project">
 		<mx:init />
 		<mx:javac />
 		<mx:test />
