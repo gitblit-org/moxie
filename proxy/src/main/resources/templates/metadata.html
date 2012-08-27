@@ -1,0 +1,56 @@
+<#if pom??>
+<div class="alert">
+	<!-- Artifact Metadata -->
+	<h4>${pom.artifactId} ${pom.version}</h4>
+	<ul class="unstyled">
+		<#if pom.description??>
+			<#if pom.name??>
+				<li style="padding-top:10px">${pom.name}</li>
+				<li style="padding-top:5px">${pom.description}</li>
+			<#else>
+				<li style="padding-top:10px">${pom.description}</li>
+			</#if>
+		<#else>
+			<#if pom.name??>
+				<li style="padding-top:10px">${pom.name}</li>
+			</#if>
+		</#if>
+		<#if pom.organization??>
+			<li style="padding-top:10px;">${rc.getString("mp.by")} ${pom.organization}</li>
+		</#if>
+		<#if pom.url??>
+			<li><a target="_blank" href="${pom.url}">${pom.url}</a></li>
+		</#if>
+	</ul>
+
+	<!-- Artifact Licenses -->		
+	<#if (pom.licenses!?size > 0)>
+			<h4 style="padding-top:10px;">${rc.getString("mp.licenses")}</h4>
+			<ul class="unstyled">
+			<#list pom.licenses as license>
+				<#if license.url??>
+					<li><a target="_blank" href="${license.url}">${license.name}</a></li>
+				<#else>
+					<li>${license.name}</li>
+				</#if>
+			</#list>
+		</ul>
+	</#if>
+</div>
+</#if>
+
+<!-- dependencies content --> 
+<#if (dependencies!?size > 0)>
+<div class="alert alert-info">
+	<h4 style="padding-bottom:5px;">dependencies</h4>
+	<table>
+		<tbody>				
+			<#list dependencies as dependency>
+				<tr>
+					<td><a href="${baseRef}/${dependency.path}">${dependency.coordinates}</a></td>
+				</tr>
+			</#list>
+		</tbody>
+	</table>
+</div>
+</#if>
