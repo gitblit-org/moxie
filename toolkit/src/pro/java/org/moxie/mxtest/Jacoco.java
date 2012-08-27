@@ -30,6 +30,7 @@ import org.jacoco.core.runtime.AgentOptions;
 import org.moxie.MoxieException;
 import org.moxie.Toolkit.Key;
 import org.moxie.ant.MxTest;
+import org.moxie.maxml.MaxmlMap;
 
 /**
  * Utility class for JaCoCo code-coverage.
@@ -82,9 +83,14 @@ public class Jacoco {
 		outputpath.setPath(mxtest.getClassesFolder().getAbsolutePath());
 		classfiles.add(outputpath);
 		
+		MaxmlMap attributes = mxtest.getBuild().getConfig().getTaskAttributes(mxtest.getTaskName());
+		if (attributes == null) {
+			attributes = new MaxmlMap();
+		}
+
 		// source files
-		// TODO encoding
-		SourceFilesElement sourcefiles = structure.createSourcefiles();	
+		SourceFilesElement sourcefiles = structure.createSourcefiles();
+		sourcefiles.setEncoding(attributes.getString("encoding", null));
 		Path sourcepath = new Path(mxtest.getProject());
 		sourcepath.setRefid(new Reference(mxtest.getProject(), Key.compile_sourcepath.refId()));
 		sourcefiles.add(sourcepath);

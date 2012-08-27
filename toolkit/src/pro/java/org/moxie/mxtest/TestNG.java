@@ -15,10 +15,11 @@
  */
 package org.moxie.mxtest;
 
+import org.moxie.ant.AttributeReflector;
 import org.moxie.ant.MxTest;
+import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.StringUtils;
 import org.testng.TestNGAntTask;
-import org.testng.TestNGAntTask.Mode;
 
 /**
  * Utility class to set TestNG test execution. 
@@ -28,23 +29,17 @@ public class TestNG {
 	public static void test(MxTest mxtest, String jvmarg) {
 		
 		// use default TestNG reports
-		String useDefaultListeners = "true";
-		String listeners = "";
-		
 		TestNGAntTask testng = new TestNGAntTask();
 		testng.setTaskName("test");
 		testng.setProject(mxtest.getProject());
 		testng.init();
-		
+				
 		if (!StringUtils.isEmpty(jvmarg)) {
 			testng.createJvmarg().setValue(jvmarg);
 		}
 
-		testng.setMode(Mode.mixed);
 		testng.setWorkingDir(mxtest.getProject().getBaseDir());
 		testng.setOutputDir(mxtest.getTestReports());
-		testng.setUseDefaultListeners(useDefaultListeners);
-		testng.setListeners(listeners);
 		testng.setFailureProperty(mxtest.getFailureProperty());
 		
 		testng.createClasspath().add(mxtest.getUnitTestClasspath());
@@ -57,6 +52,12 @@ public class TestNG {
 		testng.addSysproperty(mxtest.getEmmaFileProperty());
 		testng.addSysproperty(mxtest.getEmmaMergeProperty());
 	
+		// configure properties from Moxie file
+		MaxmlMap attributes = mxtest.getBuild().getConfig().getTaskAttributes("testng");
+		if (attributes != null) {
+			AttributeReflector.setAttributes(mxtest.getProject(), testng, attributes);
+		}
+
 		testng.execute();
 	}
 }

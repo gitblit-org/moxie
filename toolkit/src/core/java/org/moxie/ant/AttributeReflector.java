@@ -37,8 +37,8 @@ import org.moxie.maxml.MaxmlMap;
  */
 public class AttributeReflector {
 
-	public static void setAttributes(Project project, Task task, MaxmlMap attributes) {
-		IntrospectionHelper ih = IntrospectionHelper.getHelper(project, task.getClass());
+	public static void setAttributes(Project project, Object object, MaxmlMap attributes) {
+		IntrospectionHelper ih = IntrospectionHelper.getHelper(project, object.getClass());
 		for (String key : attributes.keySet()) {
 			Object value = attributes.get(key);
 			String attrValue;
@@ -56,18 +56,18 @@ public class AttributeReflector {
 				attrValue = value.toString();
 			}
 			try {
-				ih.setAttribute(project, task, key, attrValue);
+				ih.setAttribute(project, object, key, attrValue);
 			} catch (UnsupportedAttributeException be) {
-				throw new MoxieException("{0} does not support the \"{1}\" attribute!", task.getTaskName(), key);
+				throw new MoxieException("{0} does not support the \"{1}\" attribute!", object instanceof Task ? ((Task) object).getTaskName() : object.getClass().getSimpleName(), key);
 			}
 		}
 	}
 	
-	public static void logAttributes(Task task, MaxmlMap attributes, Console console) {
+	public static void logAttributes(Object object, MaxmlMap attributes, Console console) {
 		if (attributes != null) {
 			try {
 				Map<String, Method> methods = new HashMap<String, Method>();
-				for (Class<?> javacClass : new Class<?>[] { task.getClass().getSuperclass(), task.getClass() }) {
+				for (Class<?> javacClass : new Class<?>[] { object.getClass().getSuperclass(), object.getClass() }) {
 					for (Method method: javacClass.getDeclaredMethods()) {
 						if (method.getName().startsWith("get")) {
 							methods.put(method.getName().toLowerCase(), method);
@@ -80,12 +80,12 @@ public class AttributeReflector {
 						continue;
 					}
 					method.setAccessible(true);
-					Object value = method.invoke(task, (Object[]) null);
+					Object value = method.invoke(object, (Object[]) null);
 					console.debug(1, "{0} = {1}", attrib, value);
 				}			
 			} catch (Exception e) {
 				console.error(e);
-				throw new MoxieException("failed to log {0} attributes!", task.getTaskName());
+				throw new MoxieException("failed to log {0} attributes!", object instanceof Task ? ((Task) object).getTaskName() : object.getClass().getSimpleName());
 			}
 		}
 	}

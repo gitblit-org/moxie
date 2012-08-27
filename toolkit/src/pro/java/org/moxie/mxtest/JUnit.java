@@ -16,16 +16,15 @@
 package org.moxie.mxtest;
 
 import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer;
-import org.apache.tools.ant.taskdefs.optional.junit.AggregateTransformer.Format;
 import org.apache.tools.ant.taskdefs.optional.junit.BatchTest;
 import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement;
 import org.apache.tools.ant.taskdefs.optional.junit.FormatterElement.TypeAttribute;
 import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask;
-import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.ForkMode;
-import org.apache.tools.ant.taskdefs.optional.junit.JUnitTask.SummaryAttribute;
 import org.apache.tools.ant.taskdefs.optional.junit.XMLResultAggregator;
 import org.apache.tools.ant.types.FileSet;
+import org.moxie.ant.AttributeReflector;
 import org.moxie.ant.MxTest;
+import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.StringUtils;
 
 /**
@@ -48,12 +47,6 @@ public class JUnit {
 			junit.createJvmarg().setValue(jvmarg);
 		}
 	
-		junit.setFork(true);
-		junit.setForkMode((ForkMode) ForkMode.getInstance(ForkMode.class, "once"));
-		
-		SummaryAttribute yes = (SummaryAttribute) SummaryAttribute.getInstance(SummaryAttribute.class, "yes");
-		junit.setPrintsummary(yes);
-		junit.setShowOutput(false);
 		junit.setFailureProperty(mxtest.getFailureProperty());
 		junit.createClasspath().add(mxtest.getUnitTestClasspath());
 		
@@ -72,6 +65,12 @@ public class JUnit {
 		formatter.setType(xml);
 		junit.addFormatter(formatter);
 
+		// configure properties from Moxie file
+		MaxmlMap testAttributes = mxtest.getBuild().getConfig().getTaskAttributes("junit");
+		if (testAttributes != null) {
+			AttributeReflector.setAttributes(mxtest.getProject(), junit, testAttributes);
+		}
+
 		junit.execute();
 
 		XMLResultAggregator junitReport = new XMLResultAggregator();
@@ -86,8 +85,11 @@ public class JUnit {
 		junitReport.addFileSet(fileSet);
 		
 		AggregateTransformer report = junitReport.createReport();
-		// TODO consider making this a property
-		report.setFormat((Format) Format.getInstance(Format.class, "frames"));
+		// configure properties from Moxie file
+		MaxmlMap reportAttributes = mxtest.getBuild().getConfig().getTaskAttributes("junitreport");
+		if (reportAttributes != null) {
+			AttributeReflector.setAttributes(mxtest.getProject(), report, reportAttributes);
+		}
 		report.setTodir(mxtest.getTestReports());
 		
 		junitReport.setTodir(mxtest.getUnitTestOutputFolder());

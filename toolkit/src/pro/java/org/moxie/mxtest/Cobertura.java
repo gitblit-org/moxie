@@ -21,7 +21,9 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
 import org.moxie.Toolkit.Key;
+import org.moxie.ant.AttributeReflector;
 import org.moxie.ant.MxTest;
+import org.moxie.maxml.MaxmlMap;
 
 /**
  * Utility class for Cobertura code-coverage.
@@ -52,9 +54,13 @@ public class Cobertura {
 		task.init();
 		
 		task.setDataFile(mxtest.getCoberturaData().getAbsolutePath());
-		task.setFormat("html");
 		task.setDestDir(mxtest.getCoverageReports());
 		
+		MaxmlMap attributes = mxtest.getBuild().getConfig().getTaskAttributes("cobertura");
+		if (attributes != null) {
+			AttributeReflector.setAttributes(mxtest.getProject(), task, attributes);
+		}
+
 		Path path = new Path(mxtest.getProject());
 		path.setRefid(new Reference(mxtest.getProject(), Key.compile_sourcepath.refId()));
 		task.addPath(path);

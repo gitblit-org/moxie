@@ -27,6 +27,7 @@ import org.moxie.BuildConfig;
 import org.moxie.MoxieException;
 import org.moxie.Scope;
 import org.moxie.Toolkit.Key;
+import org.moxie.maxml.MaxmlMap;
 import org.moxie.mxtest.Cobertura;
 import org.moxie.mxtest.Emma;
 import org.moxie.mxtest.JUnit;
@@ -47,6 +48,7 @@ public class MxTest extends MxTask {
 	File testClassesFolder;
 	Path unitTestClasspath;
 	FileSet unitTests;
+	String failureProperty;
 	boolean failOnError;
 	
 	public MxTest() {
@@ -99,7 +101,7 @@ public class MxTest extends MxTask {
 	}
 	
 	public String getFailureProperty() {
-		return "unit.test.failed";
+		return failureProperty;
 	}
 	
 	public boolean getFailOnError() {
@@ -185,8 +187,11 @@ public class MxTest extends MxTask {
 		unitTests = new FileSet();
 		unitTests.setProject(getProject());
 		unitTests.setDir(testClassesFolder);
-		// TODO this needs to be a property
-		unitTests.createInclude().setName("**/*Test.class");
+
+		MaxmlMap attributes = config.getTaskAttributes(getTaskName());
+		failureProperty = attributes.getString("failureProperty", "unit.test.failed");
+		failOnError = attributes.getBoolean("failOnError", false);
+		unitTests.createInclude().setName(attributes.getString("include", "**/*Test.class"));
 
 		// classpath for tests
 		// instrumented classes, unit test classes, and unit test libraries

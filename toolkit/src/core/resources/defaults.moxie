@@ -59,4 +59,53 @@ tasks : {
 		excludePomFiles: false
 		excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
 	}
+	
+	# mx:Test attributes
+	# These defaults may be overriden in your build.moxie file.
+	"mx:test" : {
+		include : **/*Test.class
+		encoding : UTF-8
+		failureProperty : unit.test.failed
+		failOnError : false
+	}
+	
+	# testng attributes
+	# These defaults may be overriden in your build.moxie file.
+	"testng" : {
+		mode : mixed
+		useDefaultListeners : true
+		suiteName : Moxie+Ant Suite
+	}
+	
+	# junit test attributes
+	# These defaults may be overriden in your build.moxie file.
+	"junit" : {
+		fork : yes
+		forkMode : once
+		printSummary : yes
+		showOutput : no
+	}
+	
+	# junit report attributes
+	# These defaults may be overriden in your build.moxie file.
+	"junitreport" : {
+		format : frames
+	}
+
+	# emma instrumentation attributes
+	# These defaults may be overriden in your build.moxie file.
+	"emma" : {
+		merge : true		
+	}
+
+	# emma report attributes
+	# These defaults may be overriden in your build.moxie file.
+	"emmareport" : {
+	}
+	
+	# cobertura report attributes
+	# These defaults may be overriden in your build.moxie file.
+	"cobertura" : {
+		format : html
+	}
 }

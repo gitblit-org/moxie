@@ -19,7 +19,9 @@ import java.io.File;
 
 import org.apache.tools.ant.types.Reference;
 import org.moxie.Toolkit.Key;
+import org.moxie.ant.AttributeReflector;
 import org.moxie.ant.MxTest;
+import org.moxie.maxml.MaxmlMap;
 
 import com.vladium.emma.emmaTask;
 import com.vladium.emma.ant.XFileSet;
@@ -41,9 +43,12 @@ public class Emma {
 		instr.setTaskName("instr");
 		instr.setProject(mxtest.getProject());
 		instr.setMetadatafile(mxtest.getEmmaData());
-		instr.setMerge(true);
 		instr.setDestdir(mxtest.getInstrumentedBuild());
 		instr.createInstrpath().setLocation(mxtest.getClassesFolder());
+		MaxmlMap instrAttributes = mxtest.getBuild().getConfig().getTaskAttributes("emma");
+		if (instrAttributes != null) {
+			AttributeReflector.setAttributes(mxtest.getProject(), instr, instrAttributes);
+		}
 		
 		emma.execute();
 	}
@@ -58,7 +63,12 @@ public class Emma {
 		report.setTaskName("report");
 		report.setProject(mxtest.getProject());
 		report.init();
-		
+
+		MaxmlMap reportAttributes = mxtest.getBuild().getConfig().getTaskAttributes("emmareport");
+		if (reportAttributes != null) {
+			AttributeReflector.setAttributes(mxtest.getProject(), report, reportAttributes);
+		}
+
 		report.setSourcepathRef(new Reference(mxtest.getProject(), Key.compile_sourcepath.refId()));
 		XFileSet fileSet = new XFileSet();
 		fileSet.setProject(mxtest.getProject());
