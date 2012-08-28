@@ -830,6 +830,7 @@ public class Solver {
 		Set<Dependency> retrieved = new HashSet<Dependency>();
 		for (Dependency dep : deps) {
 			resolveAliasedDependencies(dep);
+			getConsole().dependency(dep);
 			retrievePOM(dep, retrieved);
 			pom.addDependency(dep, scope);
 		}

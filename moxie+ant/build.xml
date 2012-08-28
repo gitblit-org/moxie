@@ -16,6 +16,9 @@
 		<mx:get dest="${basedir}/ext" scope="compile">
 			<dependency coordinates="javax.mail:mail:1.4" />
 			<dependency coordinates="javax.activation:activation:1.1" />
+			<dependency coordinates="mx:markdownpapers" />
+			<dependency coordinates="mx:jgit" />
+			<dependency coordinates="mx:rhino" />
 		</mx:get>
 			
 		<delete dir="${mxp.targetFolder}" includes="**/*" quiet="true" failonerror="false"/>

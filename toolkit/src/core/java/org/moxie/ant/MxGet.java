@@ -81,8 +81,7 @@ public class MxGet extends MxTask {
 
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		for (ScopedDependency dep : deps) {
-			dependencies.add(dep.dependency);
-			getConsole().dependency(dep.dependency);
+			dependencies.add(dep.dependency);			
 		}
 
 		List<File> artifacts = build.getSolver().solve(scope,
