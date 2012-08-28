@@ -8,7 +8,16 @@
 	
 	<target name="main">
 		<delete dir="ext" includes="**/*" quiet="true" failonerror="false"/>
+		
+		<!-- initialize Moxie, retrieve dependencies, and setup classpaths --> 
 		<mx:init />
+		
+		<!-- retrieve dependencies not defined in build.moxie -->
+		<mx:get dest="${basedir}/ext" scope="compile">
+			<dependency coordinates="javax.mail:mail:1.4" />
+			<dependency coordinates="javax.activation:activation:1.1" />
+		</mx:get>
+			
 		<delete dir="${mxp.targetFolder}" includes="**/*" quiet="true" failonerror="false"/>
 		
 		<property name="ant.release" value="apache-ant-${ant.version}" />

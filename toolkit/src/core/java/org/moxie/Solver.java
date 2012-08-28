@@ -703,10 +703,10 @@ public class Solver {
 	 *            Moxie dependency
 	 * @return
 	 */
-	private void retrieveArtifact(Dependency dependency, boolean forProject) {
+	private File retrieveArtifact(Dependency dependency, boolean forProject) {
 		if (Constants.POM.equals(dependency.type)) {
 			// pom dependencies do not have other artifacts
-			return;
+			return null;
 		}
 		for (Repository repository : config.getRepositories()) {
 			if (!repository.isSource(dependency)) {
@@ -768,7 +768,11 @@ public class Solver {
 					}
 				}
 			}
+			
+			return artifactFile;
 		}
+		
+		return null;
 	}
 	
 	/**
@@ -812,6 +816,37 @@ public class Solver {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Solves the dependency solution for the specified artifacts and scope.
+	 * 
+	 * @param scope
+	 * @param dependencies
+	 * @return a list of artifacts
+	 */
+	public List<File> solve(Scope scope, Dependency... deps) {		
+		Pom pom = new Pom();
+		Set<Dependency> retrieved = new HashSet<Dependency>();
+		for (Dependency dep : deps) {
+			resolveAliasedDependencies(dep);
+			retrievePOM(dep, retrieved);
+			pom.addDependency(dep, scope);
+		}
+
+		Set<Dependency> solution = new LinkedHashSet<Dependency>();
+		for (Dependency dependency : pom.getDependencies(scope, Constants.RING1)) {
+			solution.add(dependency);
+			solution.addAll(solve(scope, dependency));
+		}
+		List<File> artifacts = new ArrayList<File>();
+		for (Dependency dependency : solution) {
+			File artifact = retrieveArtifact(dependency, false);
+			if (artifact != null) {
+				artifacts.add(artifact);
+			}
+		}
+		return artifacts;
 	}
 	
 	public List<File> getClasspath(Scope scope) {

@@ -24,13 +24,14 @@
 					<page name="mx:Clean" src="mxextract.mkd" />
 					<page name="mx:Doc" src="mxdoc.mkd" />
 					<page name="mx:Extract" src="mxextract.mkd" />
+					<page name="mx:GenJar" src="mxgenjar.mkd" />
+					<page name="mx:Get" src="mxextract.mkd" />
 					<page name="mx:GhPages" src="mxghpages.mkd" />					
 					<page name="mx:GitId" src="mxgitid.mkd" />
 					<page name="mx:If" src="mxextract.mkd" />
 					<page name="mx:Install" src="mxextract.mkd" />
 					<page name="mx:Init" src="mxextract.mkd" />
 					<page name="mx:Jar" src="mxjar.mkd" />
-					<page name="mx:GenJar" src="mxgenjar.mkd" />
 					<page name="mx:Javac" src="mxextract.mkd" />
 					<page name="mx:Keys" src="mxextract.mkd" />
 					<page name="mx:Report" src="mxextract.mkd" />
