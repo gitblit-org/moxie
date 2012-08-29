@@ -705,9 +705,23 @@ public class Solver {
 	 */
 	private File retrieveArtifact(Dependency dependency, boolean forProject) {
 		if (Constants.POM.equals(dependency.type)) {
-			// pom dependencies do not have other artifacts
+			// POM dependencies do not have other artifacts
+			if (dependency.isSnapshot()) {
+				// ... but we still have to purge old pom snapshots
+				for (Repository repository : config.getRepositories()) {
+					if (!repository.isSource(dependency)) {
+						// dependency incompatible with repository
+						continue;
+					}
+
+					// purge snapshots for this dependency			
+					moxieCache.purgeSnapshots(dependency, repository.purgePolicy);
+				}
+			}
 			return null;
 		}
+		
+		// standard artifact
 		for (Repository repository : config.getRepositories()) {
 			if (!repository.isSource(dependency)) {
 				// dependency incompatible with repository
