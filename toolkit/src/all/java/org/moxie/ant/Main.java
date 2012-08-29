@@ -17,8 +17,10 @@ package org.moxie.ant;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +29,15 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.tools.ant.BuildEvent;
+import org.apache.tools.ant.BuildListener;
+import org.apache.tools.ant.Project;
+import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CommitCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.InitCommand;
+import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.StoredConfig;
 import org.moxie.MoxieException;
 import org.moxie.Scope;
 import org.moxie.Toolkit;
@@ -35,8 +46,11 @@ import org.moxie.maxml.Maxml;
 import org.moxie.maxml.MaxmlException;
 import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.FileUtils;
+import org.moxie.utils.StringUtils;
 
-public class Main extends org.apache.tools.ant.Main {
+public class Main extends org.apache.tools.ant.Main implements BuildListener {
+	
+	NewProject newProject = null;
 
     /**
      * Command line entry point. This method kicks off the building
@@ -87,10 +101,10 @@ public class Main extends org.apache.tools.ant.Main {
 	                printVersion();
 	                startAnt = false;
 	            } else if (arg.equals("-new")) {
+	            	// new project
 	            	String [] dest = new String[args.length - i - 1];
 	            	System.arraycopy(args, i + 1, dest, 0, dest.length);
-	                newProject(dest);
-	                // initialize the project
+	                newProject = newProject(dest);
 	                args = new String[] { "moxie.init" };
 	                break;
 	            }
@@ -105,6 +119,12 @@ public class Main extends org.apache.tools.ant.Main {
 
 			super.startAnt(moxieArgs, additionalUserProperties, coreLoader);
 		}
+	}
+	
+	@Override
+	protected void addBuildListeners(Project project) {
+		project.addBuildListener(this);
+		super.addBuildListeners(project);
 	}
 	
 	private void printVersion() {
@@ -169,32 +189,84 @@ public class Main extends org.apache.tools.ant.Main {
      * 
      * @param args
      */
-    private void newProject(String [] args) {
+    private NewProject newProject(String [] args) {
     	File basedir = new File(System.getProperty("user.dir"));
     	File moxieFile = new File(basedir, "build.moxie");
     	if (moxieFile.exists()) {
     		log("build.moxie exists!  Can not create new project!");
     		System.exit(1);
     	}
-    	String type = "jar";
-    	String groupId = "mygroup";
-    	String artifactId = "artifact";
-    	String version = "0.0.0-SNAPSHOT";
+    	
+    	NewProject project = new NewProject();
+    	project.dir = basedir;
+    	
+    	List<String> apply = new ArrayList<String>();
+    	apply.add(Toolkit.APPLY_CACHE);
     	
     	// parse args
     	if (args.length > 0) {
-    		type = args[0];
-    		if (args.length > 1) {
-    			String [] fields = args[1].split(":");
+    		List<String> projectArgs = new ArrayList<String>();
+    		for (String arg : args) {
+    			if (arg.startsWith("-git")) {
+    				project.initGit = true;
+    				if (arg.startsWith("'-git:"))  {
+    					project.gitOrigin = arg.substring(5);
+    				}
+    			} else if ("-eclipse".equals(arg)) {
+    				// Eclipse uses hard-coded paths to MOXIE_HOME
+    				project.eclipse = Eclipse.hard;
+    				apply.add(Toolkit.APPLY_ECLIPSE);
+    			} else if ("-eclipse-var".equals(arg)) {
+    				// Eclipse uses MOXIE_HOME relative classpath
+    				project.eclipse = Eclipse.var;
+    				apply.add(Toolkit.APPLY_ECLIPSE_VAR);
+    			} else if ("-eclipse-ext".equals(arg)) {
+    				// Eclipse looks for dependencies in ext folder
+    				project.eclipse = Eclipse.ext;
+    				apply.add(Toolkit.APPLY_ECLIPSE_EXT);
+    			} else if (arg.startsWith("-apply:")) {
+    				// -apply:a,b,c,d
+    				// -apply:a -apply:b
+    				List<String> vals = new ArrayList<String>();
+    				for (String val : arg.substring(arg.indexOf(':') + 1).split(",")) {
+    					vals.add(val.trim());
+    				}
+    				apply.addAll(vals);
+    				
+    				// special apply cases
+    				for (String val : vals) {
+    					if (Toolkit.APPLY_ECLIPSE.equals(val)) {
+    						// Eclipse uses hard-coded paths to MOXIE_HOME
+    						project.eclipse = Eclipse.hard;
+    					} else if (Toolkit.APPLY_ECLIPSE_EXT.equals(val)) {
+    						// Eclipse looks for dependencies in ext folder
+    						project.eclipse = Eclipse.ext;
+    					} else if (Toolkit.APPLY_ECLIPSE_VAR.equals(val)) {
+    						// Eclipse uses MOXIE_HOME relative classpath
+    						project.eclipse = Eclipse.var;
+    					}
+    				}
+    			} else {
+    				projectArgs.add(arg);
+    			}
+    		}
+    		
+    		// parse 
+    		project.type = projectArgs.get(0);
+    		if (project.type.charAt(0) == '-') {
+    			project.type = project.type.substring(1);
+    		}
+    		if (projectArgs.size() > 1) {
+    			String [] fields = projectArgs.get(1).split(":");
     			switch (fields.length) {
     			case 2:
-    				groupId = fields[0];
-    				artifactId = fields[1];
+    				project.groupId = fields[0];
+    				project.artifactId = fields[1];
     				break;
     			case 3:
-    				groupId = fields[0];
-    				artifactId = fields[1];
-    				version = fields[2];
+    				project.groupId = fields[0];
+    				project.artifactId = fields[1];
+    				project.version = fields[2];
     				break;
     			default:
     				throw new MoxieException("Illegal parameter " + args);
@@ -202,9 +274,9 @@ public class Main extends org.apache.tools.ant.Main {
     		}
     	}
     	
-    	InputStream is = getClass().getResourceAsStream(MessageFormat.format("/archetypes/{0}.moxie", type));
+    	InputStream is = getClass().getResourceAsStream(MessageFormat.format("/archetypes/{0}.moxie", project.type));
     	if (is == null) {
-    		log("Unknown archetype " + type);
+    		log("Unknown archetype " + project.type);
     		System.exit(1);
     	}
     	MaxmlMap map = null;
@@ -216,9 +288,10 @@ public class Main extends org.apache.tools.ant.Main {
     	
     	// property substitution
     	Map<String, String> properties = new HashMap<String, String>();
-    	properties.put(Key.groupId.name(), groupId);
-    	properties.put(Key.artifactId.name(), artifactId);
-    	properties.put(Key.version.name(), version);
+    	properties.put(Key.groupId.name(), project.groupId);
+    	properties.put(Key.artifactId.name(), project.artifactId);
+    	properties.put(Key.version.name(), project.version);
+    	properties.put(Key.apply.name(), StringUtils.flattenStrings(apply, ", "));
     	for (String key : map.keySet()) {
     		Object o = map.get(key);
     		if (o instanceof String) {
@@ -260,6 +333,71 @@ public class Main extends org.apache.tools.ant.Main {
     		t.printStackTrace();
     		System.exit(1);
     	}
+    	
+    	return project;
+    }
+    
+    private void initGit() {
+    	// create the repository
+    	InitCommand init = Git.init();
+    	init.setBare(false);
+    	init.setDirectory(newProject.dir);
+    	Git git = init.call();
+    	
+    	if (!StringUtils.isEmpty(newProject.gitOrigin)) {
+    		// set the origin and configure the master branch for merging 
+    		StoredConfig config = git.getRepository().getConfig();
+    		config.setString("remote", "origin", "url", newProject.gitOrigin);
+    		config.setString("remote",  "origin", "fetch", "+refs/heads/*:refs/remotes/origin/*");
+    		config.setString("branch",  "master", "remote", "origin");
+    		config.setString("branch",  "master", "merge", "refs/heads/master");
+    		try {
+				config.save();
+			} catch (IOException e) {
+				throw new MoxieException(e);
+			}
+    	}
+
+    	// prepare a common gitignore file
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("/.directory\n");
+    	sb.append("/.DS_STORE\n");
+    	sb.append("/.DS_Store\n");
+    	sb.append("/.settings\n");
+    	sb.append("/bin\n");
+    	sb.append("/build\n");
+    	sb.append("/ext\n");
+    	sb.append("/target\n");
+    	sb.append("/tmp\n");
+    	sb.append("/temp\n");
+    	if (!newProject.eclipse.includeDotClasspath()) {
+    		// ignore hard-coded .classpath
+    		sb.append("/.classpath\n");	
+    	}
+    	FileUtils.writeContent(new File(newProject.dir, ".gitignore"), sb.toString());
+
+    	AddCommand add = git.add();
+    	add.addFilepattern("build.xml");
+    	add.addFilepattern("build.moxie");
+    	add.addFilepattern(".gitignore");
+    	if (newProject.eclipse.includeDotProject()) {
+    		add.addFilepattern(".project");	
+    	}
+    	if (newProject.eclipse.includeDotClasspath()) {
+    		// MOXIE_HOME relative dependencies in .classpath
+    		add.addFilepattern(".classpath");	
+    	}
+    	try {
+    		add.call();
+    		CommitCommand commit = git.commit();
+    		PersonIdent moxie = new PersonIdent("Moxie", "moxie@localhost");
+    		commit.setAuthor(moxie);
+    		commit.setCommitter(moxie);
+    		commit.setMessage("Project structure created");
+    		commit.call();
+    	} catch (Exception e) {
+    		throw new MoxieException(e);
+    	}
     }
     
     String resolveProperties(String string, Map<String, String> properties) {
@@ -287,4 +425,59 @@ public class Main extends org.apache.tools.ant.Main {
     private void log(String msg) {
     	System.out.println(msg);
     }
+    
+    private enum Eclipse {
+    	none, hard, var, ext;
+    	
+    	boolean includeDotProject() {
+    		return this.ordinal() > none.ordinal();
+    	}
+    	
+    	boolean includeDotClasspath() {
+    		return this.ordinal() > hard.ordinal();
+    	}
+    }
+    
+    private class NewProject {
+    	String type = "jar";
+    	String groupId = "mygroup";
+    	String artifactId = "artifact";
+    	String version = "0.0.0-SNAPSHOT";
+    	boolean initGit = false;
+    	String gitOrigin;
+    	Eclipse eclipse = Eclipse.none;
+    	File dir;
+    }
+
+	@Override
+	public void buildStarted(BuildEvent event) {
+	}
+
+	@Override
+	public void buildFinished(BuildEvent event) {
+		if (newProject != null && newProject.initGit) {
+			// init Git repository after running moxie.init
+			initGit();
+		}
+	}
+
+	@Override
+	public void targetStarted(BuildEvent event) {
+	}
+
+	@Override
+	public void targetFinished(BuildEvent event) {
+	}
+
+	@Override
+	public void taskStarted(BuildEvent event) {
+	}
+
+	@Override
+	public void taskFinished(BuildEvent event) {
+	}
+
+	@Override
+	public void messageLogged(BuildEvent event) {
+	}
 }

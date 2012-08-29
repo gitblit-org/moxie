@@ -4,7 +4,7 @@ groupId: ${groupId}
 artifactId: ${artifactId}
 version: ${version}
 type: jar
-apply: eclipse, cache
+apply: ${apply}
 sourceFolders:
 - compile src/main/java
 - compile src/main/resources
