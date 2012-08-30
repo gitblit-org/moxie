@@ -313,6 +313,11 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     			log("Illegal source folder scope: " + s);
     		}
     	}
+    	
+    	// Eclipse-ext dependency folder
+    	if (Eclipse.ext.equals(project.eclipse)) {
+    		map.put(Toolkit.Key.dependencyFolder.name(), "ext");
+    	}
 
     	// write build.moxie
     	String maxml = map.toMaxml();

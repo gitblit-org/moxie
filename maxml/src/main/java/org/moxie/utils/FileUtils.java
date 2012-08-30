@@ -216,7 +216,7 @@ public class FileUtils {
 			if (file.isDirectory()) {
 				copy(new File(destinationFolder, file.getName()),
 						file.listFiles());
-			} else {
+			} else if (file.exists()) {
 				File dFile = new File(destinationFolder, file.getName());
 				BufferedInputStream bufin = null;
 				FileOutputStream fos = null;
