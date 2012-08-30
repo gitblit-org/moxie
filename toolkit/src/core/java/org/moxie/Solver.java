@@ -213,7 +213,7 @@ public class Solver {
 			for (Dependency dep : all) {
 				if (!retrieved.contains(dep)) {
 					retrievePOM(dep, retrieved);
-					retrieveArtifact(dep, true);
+					retrieveArtifact(dep);					
 				}
 			}
 		}
@@ -374,7 +374,10 @@ public class Solver {
 						if (!silent && verbose) {
 							console.dependency(dependency);
 						}
-						retrieveArtifact(dependency, true);
+						File artifactFile = retrieveArtifact(dependency);
+						if (!Scope.build.equals(scope)) {
+							copyArtifact(dependency, artifactFile);
+						}
 					}
 				}
 			}
@@ -698,12 +701,9 @@ public class Solver {
 	 * 
 	 * @param dependency
 	 *            the dependency to download
-	 * @param forProject
-	 *            true if this is a project dependency, false if this is a
-	 *            Moxie dependency
 	 * @return
 	 */
-	private File retrieveArtifact(Dependency dependency, boolean forProject) {
+	private File retrieveArtifact(Dependency dependency) {
 		if (Constants.POM.equals(dependency.type)) {
 			// POM dependencies do not have other artifacts
 			if (dependency.isSnapshot()) {
@@ -752,41 +752,43 @@ public class Solver {
 			// purge snapshots for this dependency			
 			moxieCache.purgeSnapshots(dependency, repository.purgePolicy);
 			
-			// optionally copy artifact to project-specified folder
-			if (artifactFile != null && artifactFile.exists()) {
-				if (forProject && config.getProjectConfig().getDependencyFolder() != null) {
-					// copy jar
-					File projectFile = new File(config.getProjectConfig().getDependencyFolder(), artifactFile.getName());
-					if (dependency.isSnapshot() || !projectFile.exists()) {
-						console.debug(1, "copying {0} to {1}", artifactFile.getName(), projectFile.getParent());
-						try {
-							projectFile.getParentFile().mkdirs();
-							FileUtils.copy(projectFile.getParentFile(), artifactFile);
-						} catch (IOException e) {
-							throw new RuntimeException("Error writing to file " + projectFile, e);
-						}
-					}
-					
-					// copy source jar
-					Dependency source = dependency.getSourcesArtifact();
-					File sourceFile = moxieCache.getArtifact(source, source.type);					
-					File projectSourceFile = new File(config.getProjectConfig().getDependencySourceFolder(), sourceFile.getName());
-					if (dependency.isSnapshot() || !projectSourceFile.exists()) {
-						console.debug(1, "copying {0} to {1}", sourceFile.getName(), projectSourceFile.getParent());
-						try {
-							projectSourceFile.getParentFile().mkdirs();
-							FileUtils.copy(projectSourceFile.getParentFile(), sourceFile);
-						} catch (IOException e) {
-							throw new RuntimeException("Error writing to file " + projectSourceFile, e);
-						}
-					}
-				}
-			}
-			
 			return artifactFile;
 		}
 		
 		return null;
+	}
+	
+	private void copyArtifact(Dependency dependency, File artifactFile) {
+		// optionally copy artifact to project-specified folder
+		if (artifactFile != null && artifactFile.exists()) {
+			if (config.getProjectConfig().getDependencyFolder() != null) {
+				// copy jar
+				File projectFile = new File(config.getProjectConfig().getDependencyFolder(), artifactFile.getName());
+				if (dependency.isSnapshot() || !projectFile.exists()) {
+					console.debug(1, "copying {0} to {1}", artifactFile.getName(), projectFile.getParent());
+					try {
+						projectFile.getParentFile().mkdirs();
+						FileUtils.copy(projectFile.getParentFile(), artifactFile);
+					} catch (IOException e) {
+						throw new RuntimeException("Error writing to file " + projectFile, e);
+					}
+				}
+				
+				// copy source jar
+				Dependency source = dependency.getSourcesArtifact();
+				File sourceFile = moxieCache.getArtifact(source, source.type);					
+				File projectSourceFile = new File(config.getProjectConfig().getDependencySourceFolder(), sourceFile.getName());
+				if (dependency.isSnapshot() || !projectSourceFile.exists()) {
+					console.debug(1, "copying {0} to {1}", sourceFile.getName(), projectSourceFile.getParent());
+					try {
+						projectSourceFile.getParentFile().mkdirs();
+						FileUtils.copy(projectSourceFile.getParentFile(), sourceFile);
+					} catch (IOException e) {
+						throw new RuntimeException("Error writing to file " + projectSourceFile, e);
+					}
+				}
+			}
+		}
 	}
 	
 	/**
@@ -810,7 +812,7 @@ public class Solver {
 			solution.addAll(solve(Scope.compile, dependency));
 		}		
 		for (Dependency dependency : solution) {
-			retrieveArtifact(dependency, false);
+			retrieveArtifact(dependency);
 		}
 
 		// load dependency onto executing classpath from Moxie cache
@@ -856,7 +858,7 @@ public class Solver {
 		}
 		List<File> artifacts = new ArrayList<File>();
 		for (Dependency dependency : solution) {
-			File artifact = retrieveArtifact(dependency, false);
+			File artifact = retrieveArtifact(dependency);
 			if (artifact != null) {
 				artifacts.add(artifact);
 			}

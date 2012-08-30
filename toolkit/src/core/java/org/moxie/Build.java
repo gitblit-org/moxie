@@ -172,10 +172,13 @@ public class Build {
 						// relative to project dependency folder
 						File baseFolder = config.getProjectConfig().getDependencyFolder();
 						jar = new File(baseFolder, jar.getName());
+						
+						// relative to project dependency source folder
+						baseFolder = config.getProjectConfig().getDependencySourceFolder();
 						srcJar = new File(baseFolder, srcJar.getName());
 						
-						jarPath = FileUtils.getRelativePath(baseFolder, jar);
-						srcPath = FileUtils.getRelativePath(baseFolder, srcJar);
+						jarPath = FileUtils.getRelativePath(projectFolder, jar);
+						srcPath = FileUtils.getRelativePath(projectFolder, srcJar);
 					} else {
 						// absolute, hard-coded path to Moxie root
 						jarPath = jar.getAbsolutePath();
