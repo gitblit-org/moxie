@@ -16,6 +16,7 @@
 package org.moxie.ant;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -209,7 +210,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     		for (String arg : args) {
     			if (arg.startsWith("-git")) {
     				project.initGit = true;
-    				if (arg.startsWith("'-git:"))  {
+    				if (arg.startsWith("-git:"))  {
     					project.gitOrigin = arg.substring(5);
     				}
     			} else if ("-eclipse".equals(arg)) {
@@ -352,7 +353,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	if (!StringUtils.isEmpty(newProject.gitOrigin)) {
     		// set the origin and configure the master branch for merging 
     		StoredConfig config = git.getRepository().getConfig();
-    		config.setString("remote", "origin", "url", newProject.gitOrigin);
+    		config.setString("remote", "origin", "url", getGitUrl());
     		config.setString("remote",  "origin", "fetch", "+refs/heads/*:refs/remotes/origin/*");
     		config.setString("branch",  "master", "remote", "origin");
     		config.setString("branch",  "master", "merge", "refs/heads/master");
@@ -427,10 +428,66 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 		}		
 	}
     
+    /**
+     * Returns a git url from the specified url which may use aliases.
+     * 
+     * @return a url
+     */
+    private String getGitUrl() {
+    	String url = newProject.gitOrigin;
+    	String repo = newProject.gitOrigin.substring(url.indexOf("://") + 3);
+    	
+		File root = new File(System.getProperty("user.home") + "/.moxie");
+		if (System.getProperty(Toolkit.MX_ROOT) != null) {
+			String value = System.getProperty(Toolkit.MX_ROOT);
+			if (!StringUtils.isEmpty(value)) {
+				root = new File(value);
+			}
+		}
+		
+    	File gitAliases = new File(root, "git.moxie");
+    	if (gitAliases.exists()) {
+    		try {
+    			FileInputStream is = new FileInputStream(gitAliases);
+    			MaxmlMap map = Maxml.parse(is);
+    			is.close();
+    			// look for protocol alias matches
+    			for (String alias : map.keySet()) {
+    				// ensure alias is legal
+    				if ("ftp".equals(alias)
+    						|| "http".equals(alias)
+    						|| "https".equals(alias)
+    						|| "git".equals(alias)
+    						|| "ssh".equals(alias)) {
+    					error(MessageFormat.format("Illegal repository alias \"{0}\"!", alias));
+    					continue;
+    				}
+    				
+    				// look for alias match
+    				String proto = alias + "://";
+    				if (url.startsWith(proto)) {
+    					String baseUrl = map.getString(alias, "");
+    					if (baseUrl.charAt(baseUrl.length() - 1) != '/') {
+    						return baseUrl + '/' + repo;
+    					}
+    					return baseUrl + repo;
+    				}
+    			}
+    		} catch (Exception e) {
+    			throw new MoxieException(e);
+    		}
+    	}
+    	return url;
+    }
+    
     private void log(String msg) {
     	System.out.println(msg);
     }
-    
+
+    private void error(String msg) {
+    	System.err.println(msg);
+    }
+
     private enum Eclipse {
     	none, hard, var, ext;
     	
