@@ -32,7 +32,7 @@ public class MainLogger extends DefaultLogger {
 		super();
 	}
 	
-    static void throwableMessage(StringBuffer m, Throwable error, boolean verbose) {
+    static void throwableMessage(StringBuilder m, Throwable error, boolean verbose) {
         while (error instanceof BuildException) { // #43398
             Throwable cause = error.getCause();
             if (cause == null) {
@@ -73,7 +73,7 @@ public class MainLogger extends DefaultLogger {
      */
     public void buildFinished(BuildEvent event) {
         Throwable error = event.getException();
-        StringBuffer message = new StringBuffer();
+        StringBuilder message = new StringBuilder();
         if (error == null) {
             message.append(StringUtils.LINE_SEP);
             message.append(getBuildSuccessfulMessage());

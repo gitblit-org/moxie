@@ -471,7 +471,7 @@ public class Ansi {
 		return this;
 	}
 
-	public Ansi a(StringBuffer value) {
+	public Ansi a(StringBuilder value) {
 		flushAtttributes();		
 		builder.append(value);
 		return this;

@@ -235,7 +235,7 @@ public class Resource extends DataType implements JarSpec {
 	 * @return All the toString() methods form the jar entires.
 	 */
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (JarEntrySpec entry : jarEntries) {
 			sb.append("\n");
 			sb.append(entry);

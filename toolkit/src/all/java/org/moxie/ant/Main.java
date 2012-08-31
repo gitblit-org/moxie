@@ -140,7 +140,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
      */
     private void printUsage() {
         String lSep = System.getProperty("line.separator");
-        StringBuffer msg = new StringBuffer();
+        StringBuilder msg = new StringBuilder();
         msg.append("moxie [options] [target [target2 [target3] ...]]" + lSep);
         msg.append("Options: " + lSep);
         msg.append("  -help, -h              print this message" + lSep);
@@ -411,7 +411,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 			return null;
 		}
 		Pattern p = Pattern.compile("\\$\\{[a-zA-Z0-9-_\\.]+\\}");			
-		StringBuffer sb = new StringBuffer(string);
+		StringBuilder sb = new StringBuilder(string);
 		while (true) {
 			Matcher m = p.matcher(sb.toString());
 			if (m.find()) {

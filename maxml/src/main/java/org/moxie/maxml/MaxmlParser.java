@@ -57,7 +57,7 @@ public class MaxmlParser {
 		String lastKey = null;
 		MaxmlMap map = new MaxmlMap();
 		ArrayList<Object> array = null;
-		StringBuffer textBlock = new StringBuffer();
+		StringBuilder textBlock = new StringBuilder();
 		boolean appendTextBuffer = false;
 		String line = null;
 		while ((line = reader.readLine()) != null) {

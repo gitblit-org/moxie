@@ -296,7 +296,7 @@ public class Pom {
 			return null;
 		}
 		Pattern p = Pattern.compile("\\$\\{[a-zA-Z0-9-_\\.]+\\}");			
-		StringBuffer sb = new StringBuffer(string);
+		StringBuilder sb = new StringBuilder(string);
 		while (true) {
 			Matcher m = p.matcher(sb.toString());
 			if (m.find()) {

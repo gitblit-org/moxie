@@ -67,7 +67,7 @@ public class ProxyRequestHandler extends Thread {
 			boolean keepAlive = false;
 			do {
 				String downloadURL = null;
-				StringBuffer fullRequest = new StringBuffer(1024);
+				StringBuilder fullRequest = new StringBuilder(1024);
 				while ((line = readLine()) != null) {
 					if (line.length() == 0)
 						break;
@@ -245,7 +245,7 @@ public class ProxyRequestHandler extends Thread {
 		if (in == null)
 			in = new BufferedInputStream(clientSocket.getInputStream());
 
-		StringBuffer buffer = new StringBuffer(256);
+		StringBuilder buffer = new StringBuilder(256);
 		int c;
 
 		try {
