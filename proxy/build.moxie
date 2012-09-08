@@ -22,6 +22,7 @@ dependencies :
 - compile org.restlet.jse:org.restlet.ext.ssl:${restlet.version}
 - compile org.restlet.jse:org.restlet.ext.atom:${restlet.version}
 - compile org.restlet.jse:org.restlet.ext.freemarker:${restlet.version}
+- compile org.restlet.jse:org.restlet.ext.jetty:${restlet.version}
 - compile commons-httpclient:commons-httpclient:3.1
 - compile com.beust:jcommander:1.17
 - test junit

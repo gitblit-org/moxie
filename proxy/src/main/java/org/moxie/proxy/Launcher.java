@@ -25,6 +25,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -129,24 +130,32 @@ public class Launcher {
 		// turn off Restlet url access logging
 		c.getLogService().setEnabled(config.getAccessLog());
 
+		// specify the Jetty helpers
+		String httpHelper = "org.restlet.ext.jetty.HttpServerHelper";
+		String httpsHelper = "org.restlet.ext.jetty.HttpsServerHelper";
+		
 		// create a Restlet server
 		if (config.getBindAddresses().size() == 0) {
 			// start server on all available addresses
 			if (config.getHttpPort() > 0) {
-				c.getServers().add(Protocol.HTTP, config.getHttpPort());
+				Server server = new Server(null, Arrays.asList(Protocol.HTTP), null, config.getHttpPort(), c, httpHelper);
+				c.getServers().add(server);
 			}
 			if (config.getHttpsPort() > 0) {
-				Server server = c.getServers().add(Protocol.HTTPS, config.getHttpsPort());
+				Server server = new Server(null, Arrays.asList(Protocol.HTTPS), null, config.getHttpsPort(), c, httpsHelper);
+				c.getServers().add(server);
 				configureHttps(server, config);
 			}
 		} else {
 			// start server on specific address(es)
 			for (String address : config.getBindAddresses()) {
 				if (config.getHttpPort() > 0) {
-					c.getServers().add(Protocol.HTTP, address, config.getHttpPort());
+					Server server = new Server(null, Arrays.asList(Protocol.HTTP), address, config.getHttpPort(), c, httpHelper);
+					c.getServers().add(server);
 				}
 				if (config.getHttpsPort() > 0) {
-					Server server = c.getServers().add(Protocol.HTTPS, address, config.getHttpsPort());
+					Server server = new Server(null, Arrays.asList(Protocol.HTTPS), address, config.getHttpsPort(), c, httpsHelper);
+					c.getServers().add(server);
 					configureHttps(server, config);
 				}
 			}
