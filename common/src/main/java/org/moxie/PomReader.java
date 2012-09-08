@@ -187,6 +187,9 @@ public class PomReader {
 				} else if ("organization".equalsIgnoreCase(element.getTagName())) {
 					// extract the organization name
 					pom.organization = readStringTag(element, Key.name);
+				} else if ("inceptionYear".equalsIgnoreCase(element.getTagName())) {
+					// extract the inception year
+					pom.inceptionYear = readStringTag(element);
 				}
 			}
 		}

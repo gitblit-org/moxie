@@ -18,6 +18,9 @@
 		<#if pom.organization??>
 			<li style="padding-top:10px;">${rc.getString("mp.by")} ${pom.organization}</li>
 		</#if>
+		<#if pom.inceptionYear??>
+			<li>${rc.getString("mp.since")} ${pom.inceptionYear}</li>
+		</#if>
 		<#if pom.url??>
 			<li><a target="_blank" href="${pom.url}">${pom.url}</a></li>
 		</#if>
