@@ -185,8 +185,9 @@ public class PomReader {
 					// extract the url
 					pom.url = readStringTag(element);
 				} else if ("organization".equalsIgnoreCase(element.getTagName())) {
-					// extract the organization name
+					// extract the organization data
 					pom.organization = readStringTag(element, Key.name);
+					pom.organizationUrl = readStringTag(element, Key.url);
 				} else if ("inceptionYear".equalsIgnoreCase(element.getTagName())) {
 					// extract the inception year
 					pom.inceptionYear = readStringTag(element);

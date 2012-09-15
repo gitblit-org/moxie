@@ -179,6 +179,7 @@ public class ToolkitConfig implements Serializable {
 		pom.description = readString(map, Key.description, null);
 		pom.url = readString(map, Key.url, pom.url);
 		pom.organization = readString(map, Key.organization, pom.organization);
+		pom.organizationUrl = readString(map, Key.organizationUrl, pom.organizationUrl);
 		pom.inceptionYear = readString(map, Key.inceptionYear, pom.inceptionYear);
 		
 		// set default name to artifact id

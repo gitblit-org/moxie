@@ -40,6 +40,7 @@ public class Pom {
 	public String url;
 	public String issuesUrl;
 	public String organization;
+	public String organizationUrl;
 	public String inceptionYear;
 	
 	public String groupId;
@@ -519,7 +520,8 @@ public class Pom {
 		sb.append(StringUtils.toXML("version", version));
 		sb.append(StringUtils.toXML("name", name));
 		sb.append(StringUtils.toXML("description", description));
-		sb.append(StringUtils.toXML("organization", StringUtils.toXML("name", organization).trim()));
+		String org = StringUtils.toXML("name", organization).trim() + StringUtils.toXML("url", organizationUrl).trim();
+		sb.append(StringUtils.toXML("organization", org));
 		sb.append(StringUtils.toXML("url", url));
 		sb.append(StringUtils.toXML("inceptionYear", inceptionYear));
 		sb.append('\n');
