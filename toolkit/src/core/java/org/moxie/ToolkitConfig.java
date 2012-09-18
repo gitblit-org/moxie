@@ -181,6 +181,8 @@ public class ToolkitConfig implements Serializable {
 		pom.organization = readString(map, Key.organization, pom.organization);
 		pom.organizationUrl = readString(map, Key.organizationUrl, pom.organizationUrl);
 		pom.inceptionYear = readString(map, Key.inceptionYear, pom.inceptionYear);
+		pom.getDevelopers().addAll(readPersons(map, Key.developers));
+		pom.getContributors().addAll(readPersons(map, Key.contributors));
 		
 		// set default name to artifact id
 		if (StringUtils.isEmpty(pom.name)) {
@@ -565,6 +567,27 @@ public class ToolkitConfig implements Serializable {
 		for (String def : readStrings(map, key, new ArrayList<String>())) {
 			LinkedProject project = new LinkedProject(def);
 			list.add(project);
+		}
+		return list;
+	}
+	
+	List<Person> readPersons(MaxmlMap map, Key key) {
+		List<Person> list = new ArrayList<Person>();
+		if (map.containsKey(key)) {
+			for (Object o : map.getList(key.name(), new ArrayList<Object>())) {
+				if (o instanceof MaxmlMap) {
+					MaxmlMap m = (MaxmlMap) o;
+					Person p = new Person();
+					p.id = m.getString(Key.id.name(), null);
+					p.name = m.getString(Key.name.name(), null);
+					p.email = m.getString(Key.email.name(), null);
+					p.organization = m.getString(Key.organization.name(), null);
+					p.organizationUrl = m.getString(Key.organizationUrl.name(), null);
+					p.url = m.getString(Key.url.name(), null);
+					p.roles = m.getStrings(Key.roles.name(), new ArrayList<String>());
+					list.add(p);
+				}
+			}
 		}
 		return list;
 	}

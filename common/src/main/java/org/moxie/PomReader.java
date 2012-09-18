@@ -16,6 +16,7 @@
 package org.moxie;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -160,6 +161,28 @@ public class PomReader {
 							pom.addLicense(license);
 						}
 					}
+				} else if ("developers".equalsIgnoreCase(element.getTagName())) {
+					// read developers
+					NodeList developers = (NodeList) element;
+					for (int j = 0; j < developers.getLength(); j++) {
+						Node node = developers.item(j);
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							// developers.developer
+							Person person = readPerson(node);							
+							pom.addDeveloper(person);
+						}
+					}
+				} else if ("contributors".equalsIgnoreCase(element.getTagName())) {
+					// read contributors
+					NodeList contributors = (NodeList) element;
+					for (int j = 0; j < contributors.getLength(); j++) {
+						Node node = contributors.item(j);
+						if (node.getNodeType() == Node.ELEMENT_NODE) {
+							// contributors.contributor
+							Person person = readPerson(node);							
+							pom.addContributor(person);
+						}
+					}
 				} else if ("issueManagement".equalsIgnoreCase(element.getTagName())) {
 					// extract the issue tracker url
 					pom.issuesUrl = readStringTag(element, Key.url);
@@ -209,7 +232,24 @@ public class PomReader {
 		dep.exclusions.addAll(readExclusions(node));
 		return dep;
 	}
-	
+
+	private static Person readPerson(Node node) {
+		Person person = new Person();
+		person.id = readStringTag(node, Key.id);
+		person.name = readStringTag(node, Key.name);
+		person.email = readStringTag(node, Key.email);
+		person.url = readStringTag(node, Key.url);
+		person.organization = readStringTag(node, Key.organization);
+		person.organizationUrl = readStringTag(node, Key.organizationUrl);
+		
+		person.roles = new ArrayList<String>();
+		NodeList roles = ((Element) node).getElementsByTagName("role");
+		for (int i = 0; i < roles.getLength(); i++) {
+			person.roles.add(readStringTag(roles.item(i)));
+		}
+		return person;
+	}
+
 	private static String readStringTag(Node node, Key tag) {
 		Element element = (Element) node;
 		NodeList tagList = element.getElementsByTagName(tag.name());
@@ -269,4 +309,5 @@ public class PomReader {
 		}
 		return exclusions;
 	}
+	
 }

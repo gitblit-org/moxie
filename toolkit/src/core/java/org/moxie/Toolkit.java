@@ -68,7 +68,8 @@ public class Toolkit {
 		dependencyManagement, mxreport, outputFile, verbose, build_classpath, reportsFolder,
 		dependencyOverrides, dependencyAliases, updatePolicy, lastChecked, lastUpdated, lastSolved,
 		lastDownloaded, origin, release, latest, revision, packaging, registeredRepositories,
-		revisionRetentionCount, revisionPurgeAfterDays, inceptionYear, organizationUrl;
+		revisionRetentionCount, revisionPurgeAfterDays, inceptionYear, organizationUrl, developers,
+		contributors, id, email, roles;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

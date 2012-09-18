@@ -60,6 +60,8 @@ public class Pom {
 	private final Set<String> exclusions;	
 	private final Map<String, String> antProperties;
 	private final List<License> licenses;
+	private final List<Person> developers;
+	private final List<Person> contributors;
 	
 	public Pom() {
 		version = "";
@@ -70,6 +72,8 @@ public class Pom {
 		exclusions = new TreeSet<String>();
 		antProperties = new TreeMap<String, String>();
 		licenses = new ArrayList<License>();
+		developers = new ArrayList<Person>();
+		contributors = new ArrayList<Person>();
 		packaging = "jar";
 	}
 	
@@ -192,6 +196,22 @@ public class Pom {
 		licenses.clear();
 	}
 	
+	public void addDeveloper(Person person) {
+		developers.add(person);
+	}
+	
+	public List<Person> getDevelopers() {
+		return developers;
+	}
+
+	public void addContributor(Person person) {
+		contributors.add(person);
+	}
+	
+	public List<Person> getContributors() {
+		return contributors;
+	}
+
 	public void addManagedDependency(Dependency dep, Scope scope) {
 		dep.groupId = resolveProperties(dep.groupId);
 		dep.version = resolveProperties(dep.version);
@@ -525,7 +545,15 @@ public class Pom {
 		sb.append(StringUtils.toXML("url", url));
 		sb.append(StringUtils.toXML("inceptionYear", inceptionYear));
 		sb.append('\n');
-		
+
+		// persons
+		if (developers.size() > 0) {
+			sb.append(StringUtils.insertTab(toXML("developer", developers)));
+		}
+		if (contributors.size() > 0) {
+			sb.append(StringUtils.insertTab(toXML("contributor", contributors)));
+		}
+
 		// properties
 		if (properties.size() > 0) {
 			Map<String, String> filtered = new LinkedHashMap<String, String>();
@@ -602,5 +630,17 @@ public class Pom {
 		// close project
 		sb.append("</project>");
 		return sb.toString();
+	}
+	
+	private String toXML(String nodename, List<Person> persons) {
+		StringBuilder list = new StringBuilder();
+		if (persons.size() > 0) {
+			list.append(MessageFormat.format("<{0}s>\n", nodename));
+			for (Person person : persons) {
+				list.append(StringUtils.insertTab(person.toXML(nodename)));
+			}
+			list.append(MessageFormat.format("</{0}s>\n", nodename));
+		}
+		return list.toString();
 	}
 }
