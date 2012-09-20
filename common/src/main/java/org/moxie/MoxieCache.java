@@ -323,12 +323,20 @@ public class MoxieCache implements IMavenCache {
 		List<String> purgedRevisions = metadata.purgeSnapshots(policy);
 		if (purgedRevisions.size() > 0) {
 			for (String revision : purgedRevisions) {
-				Dependency old = DeepCopier.copy(dep);				
+				Dependency old = DeepCopier.copy(dep);
 				old.revision = revision;
 				purgeArtifacts(old, false);
 			}
 			// write purged metadata
 			FileUtils.writeContent(metadataFile, metadata.toXML());
+
+			// if this dependency has a parent, purge that too
+			File pomFile = getArtifact(dep, Constants.POM);
+			Pom pom = PomReader.readPom(this, pomFile);
+			if (pom.hasParentDependency()) {
+				Dependency parent = pom.getParentDependency();
+				purgeSnapshots(parent, policy);
+			}
 		}
 	}
 	
