@@ -322,6 +322,7 @@ public class MoxieCache implements IMavenCache {
 		Metadata metadata = MetadataReader.readMetadata(metadataFile);
 		List<String> purgedRevisions = metadata.purgeSnapshots(policy);
 		if (purgedRevisions.size() > 0) {
+			System.out.println("purging old snapshots " + dep.getCoordinates());
 			for (String revision : purgedRevisions) {
 				Dependency old = DeepCopier.copy(dep);
 				old.revision = revision;
@@ -335,6 +336,7 @@ public class MoxieCache implements IMavenCache {
 			Pom pom = PomReader.readPom(this, pomFile);
 			if (pom.hasParentDependency()) {
 				Dependency parent = pom.getParentDependency();
+				parent.setOrigin(dep.getOrigin());
 				purgeSnapshots(parent, policy);
 			}
 		}
@@ -345,10 +347,16 @@ public class MoxieCache implements IMavenCache {
 		if (dep.isSnapshot()) {
 			identifier = dep.revision;
 		}
-		File folder = getArtifact(dep, dep.type).getParentFile();
+		File artifact = getArtifact(dep, dep.type);
+		File folder = artifact.getParentFile();
+		if (folder == null || !folder.exists()) {
+			System.out.println("   ! skipping non existent folder " + folder);
+			return;
+		}
+		
 		for (File file : folder.listFiles()) {
 			if (file.isFile() && file.getName().contains(identifier)) {
-				//System.out.println("purging " + file.getName());
+				System.out.println("   - " + file.getName());
 				file.delete();
 			}
 		}

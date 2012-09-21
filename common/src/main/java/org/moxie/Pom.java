@@ -387,7 +387,7 @@ public class Pom {
 	}
 	
 	public Dependency getParentDependency() {
-		return new Dependency(parentGroupId + ":" + parentArtifactId + ":" + parentVersion);
+		return new Dependency(parentGroupId + ":" + parentArtifactId + ":" + parentVersion + "::" + Constants.POM);
 	}
 	
 	public boolean hasDependency(Dependency dependency) {
