@@ -183,6 +183,12 @@ public class PomReader {
 							pom.addContributor(person);
 						}
 					}
+				} else if ("scm".equalsIgnoreCase(element.getTagName())) {
+					// scm properties	
+					pom.scm.connection = readStringTag(pNode, Key.connection);
+					pom.scm.developerConnection = readStringTag(pNode, Key.developerConnection);
+					pom.scm.url = readStringTag(pNode, Key.url);
+					pom.scm.tag = readStringTag(pNode, Key.tag);					
 				} else if ("issueManagement".equalsIgnoreCase(element.getTagName())) {
 					// extract the issue tracker url
 					pom.issuesUrl = readStringTag(element, Key.url);

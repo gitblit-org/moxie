@@ -52,6 +52,8 @@ public class Pom {
 	public String parentGroupId;
 	public String parentArtifactId;
 	public String parentVersion;
+	
+	public SCM scm;
 
 	private final Map<String, String> properties;
 	private final Map<Scope, List<Dependency>> dependencies;
@@ -74,6 +76,7 @@ public class Pom {
 		licenses = new ArrayList<License>();
 		developers = new ArrayList<Person>();
 		contributors = new ArrayList<Person>();
+		scm = new SCM();
 		packaging = "jar";
 	}
 	
@@ -546,12 +549,21 @@ public class Pom {
 		sb.append(StringUtils.toXML("inceptionYear", inceptionYear));
 		sb.append('\n');
 
+		// scm
+		if (!scm.isEmpty()) {
+			sb.append("\t<!-- project scm metadata-->\n");
+			sb.append(StringUtils.insertTab(scm.toXML()));
+			sb.append('\n');
+		}
+		
 		// persons
 		if (developers.size() > 0) {
 			sb.append(StringUtils.insertTab(toXML("developer", developers)));
+			sb.append('\n');
 		}
 		if (contributors.size() > 0) {
 			sb.append(StringUtils.insertTab(toXML("contributor", contributors)));
+			sb.append('\n');
 		}
 
 		// properties

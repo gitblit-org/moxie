@@ -184,6 +184,15 @@ public class ToolkitConfig implements Serializable {
 		pom.getDevelopers().addAll(readPersons(map, Key.developers));
 		pom.getContributors().addAll(readPersons(map, Key.contributors));
 		
+		// scm metadata
+		if (map.containsKey(Key.scm)) {
+			MaxmlMap scm = map.getMap(Key.scm.name());
+			pom.scm.connection = scm.getString(Key.connection.name(), null);
+			pom.scm.developerConnection = scm.getString(Key.developerConnection.name(), null);
+			pom.scm.url = scm.getString(Key.url.name(), null);
+			pom.scm.tag = scm.getString(Key.tag.name(), null);
+		}
+		
 		// set default name to artifact id
 		if (StringUtils.isEmpty(pom.name)) {
 			pom.name = pom.artifactId;
