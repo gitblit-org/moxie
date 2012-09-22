@@ -182,6 +182,10 @@ public class Pom {
 	public String getIssuesUrl() {
 		return issuesUrl;
 	}
+	
+	public SCM getScm() {
+		return scm;
+	}
 
 	public String getOrganization() {
 		return organization;

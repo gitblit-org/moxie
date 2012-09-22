@@ -26,6 +26,20 @@
 		</#if>
 	</ul>
 
+	<#if pom.issuesUrl??>
+		<h4 style="padding-top:10px;">${rc.getString("mp.issueTracker")}</h4>
+		<ul class="unstyled">
+			<li><a target="_blank" href="${pom.issuesUrl}">${pom.issuesUrl}</a></li>
+		</ul>
+	</#if>
+	
+	<#if pom.scm.url??>
+		<h4 style="padding-top:10px;">${rc.getString("mp.scm")}</h4>
+		<ul class="unstyled">
+			<li><a target="_blank" href="${pom.scm.url}">${pom.scm.url}</a></li>
+		</ul>
+	</#if>
+
 	<!-- Artifact Licenses -->		
 	<#if (pom.licenses!?size > 0)>
 			<h4 style="padding-top:10px;">${rc.getString("mp.licenses")}</h4>

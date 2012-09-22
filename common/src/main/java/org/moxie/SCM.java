@@ -23,6 +23,10 @@ public class SCM {
 	public String url;
 	public String tag;
 	
+	public String getUrl() {
+		return url;
+	}
+	
 	public boolean isEmpty() {
 		return StringUtils.isEmpty(connection) && StringUtils.isEmpty(developerConnection)
 				&& StringUtils.isEmpty(url);
