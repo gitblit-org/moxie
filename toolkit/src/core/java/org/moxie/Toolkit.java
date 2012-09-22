@@ -69,7 +69,7 @@ public class Toolkit {
 		dependencyOverrides, dependencyAliases, updatePolicy, lastChecked, lastUpdated, lastSolved,
 		lastDownloaded, origin, release, latest, revision, packaging, registeredRepositories,
 		revisionRetentionCount, revisionPurgeAfterDays, inceptionYear, organizationUrl, developers,
-		contributors, id, email, roles, scm, connection, developerConnection, tag;
+		contributors, id, email, roles, scm, connection, developerConnection, tag, requires;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

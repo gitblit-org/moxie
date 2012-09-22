@@ -144,6 +144,16 @@ public class ToolkitConfig implements Serializable {
 	ToolkitConfig parse(String content, String defaultResource) throws IOException, MaxmlException {
 		MaxmlMap map = Maxml.parse(content);
 		
+		if (map.containsKey(Key.requires.name())) {
+			// enforce a required minimum Moxie version
+			String req = map.getString(Key.requires.name(), null);
+			ArtifactVersion requires = new ArtifactVersion(req);
+			ArtifactVersion running = new ArtifactVersion(Toolkit.getVersion());
+			if (running.compareTo(requires) == -1) {
+				throw new MoxieException("Moxie {0} required for this script.", requires);
+			}
+		}
+		
 		if (!StringUtils.isEmpty(defaultResource)) {
 			// build.moxie inheritance
 			File parentConfig = readFile(map, Key.parent, null);
