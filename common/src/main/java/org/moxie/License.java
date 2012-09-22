@@ -17,6 +17,8 @@ package org.moxie;
 
 import java.io.Serializable;
 
+import org.moxie.utils.StringUtils;
+
 /**
  * Represents a license.
  */
@@ -26,6 +28,8 @@ public class License implements Serializable {
 
 	public final String name;
 	public final String url;
+	public String distribution;
+	public String comments;
 
 	License(String name, String url) {
 		this.name = convert(name);
@@ -81,5 +85,16 @@ public class License implements Serializable {
 	@Override
 	public String toString() {
 		return name + " (" + url + ")";
-	}		
+	}
+	
+	public String toXML() {
+		StringBuilder node = new StringBuilder();
+		node.append("<license>\n");
+		node.append(StringUtils.toXML("name", name));
+		node.append(StringUtils.toXML("url", url));
+		node.append(StringUtils.toXML("distribution", distribution));
+		node.append(StringUtils.toXML("comments", comments));
+		node.append("</license>\n");
+		return node.toString();
+	}
 }

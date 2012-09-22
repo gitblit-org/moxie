@@ -158,6 +158,8 @@ public class PomReader {
 							String name = readStringTag(node, Key.name);
 							String url = readStringTag(node, Key.url);
 							License license = new License(name, url);
+							license.distribution = readStringTag(node, Key.distribution);
+							license.comments = readStringTag(node, Key.comments);
 							pom.addLicense(license);
 						}
 					}

@@ -193,6 +193,7 @@ public class ToolkitConfig implements Serializable {
 		pom.inceptionYear = readString(map, Key.inceptionYear, pom.inceptionYear);
 		pom.getDevelopers().addAll(readPersons(map, Key.developers));
 		pom.getContributors().addAll(readPersons(map, Key.contributors));
+		pom.getLicenses().addAll(readLicenses(map, Key.licenses));
 		
 		// scm metadata
 		if (map.containsKey(Key.scm)) {
@@ -610,7 +611,27 @@ public class ToolkitConfig implements Serializable {
 		}
 		return list;
 	}
-	
+
+	List<License> readLicenses(MaxmlMap map, Key key) {
+		List<License> list = new ArrayList<License>();
+		if (map.containsKey(key)) {
+			for (Object o : map.getList(key.name(), new ArrayList<Object>())) {
+				if (o instanceof MaxmlMap) {
+					MaxmlMap m = (MaxmlMap) o;
+					String name = m.getString(Key.name.name(), null);
+					String url = m.getString(Key.url.name(), null);
+					License license = new License(name, url);
+					
+					license.distribution = m.getString("distribution", null);
+					license.comments = m.getString("comments", null);
+					
+					list.add(license);
+				}
+			}
+		}
+		return list;
+	}
+
 	void keyError(Key key) {
 		System.err.println(MessageFormat.format("{0} is improperly specified in {1}, using default", key.name(), file.getAbsolutePath()));
 	}

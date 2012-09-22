@@ -41,6 +41,7 @@ public class Constants {
 		name, description, url, organization, scope, groupId, artifactId, version,
 		type, classifier, optional, dependencies, lastChecked, lastUpdated, lastSolved,
 		lastDownloaded, origin, release, latest, revision, packaging, solutionVersion,
-		id, email, organizationUrl, connection, developerConnection, tag;
+		id, email, organizationUrl, connection, developerConnection, tag, distribution,
+		comments;
 	}
 }

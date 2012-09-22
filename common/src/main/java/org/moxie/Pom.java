@@ -554,6 +554,18 @@ public class Pom {
 		sb.append(StringUtils.toXML("url", url));
 		sb.append(StringUtils.toXML("inceptionYear", inceptionYear));
 		sb.append('\n');
+		
+		// licenses
+		if (licenses.size() > 0) {
+			StringBuilder node = new StringBuilder();
+			node.append("<licenses>\n");
+			for (License license : licenses) {
+				node.append(StringUtils.insertTab(license.toXML()));
+			}
+			node.append("</licenses>\n");
+			sb.append(StringUtils.insertTab(node.toString()));
+			sb.append('\n');
+		}
 
 		// scm
 		if (!scm.isEmpty()) {
