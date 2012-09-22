@@ -440,7 +440,7 @@ public class MxGenJar extends GenJar {
 		try {
 			ZipEntry entry = new ZipEntry(MessageFormat.format("META-INF/maven/{0}/{1}/pom.xml", build.getPom().groupId, build.getPom().artifactId));
 			jos.putNextEntry(entry);
-			dos.write(build.getPom().toXML().getBytes("UTF-8"));
+			dos.write(build.getPom().toXML(false).getBytes("UTF-8"));
 			dos.flush();
 			jos.closeEntry();
 		} catch (IOException e) {

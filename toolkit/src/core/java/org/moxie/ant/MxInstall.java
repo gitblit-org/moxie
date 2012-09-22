@@ -67,7 +67,7 @@ public class MxInstall extends MxTask {
 		// output pom file
 		getConsole().log("generating pom for {0}", artifact);
 		File pomFile = new File(destinationFolder, artifact + ".pom");
-		FileUtils.writeContent(pomFile, pom.toXML());
+		FileUtils.writeContent(pomFile, pom.toXML(false));
 		getConsole().debug(1, "wrote {0}", pomFile);
 		
 		// calculate checksums for each file

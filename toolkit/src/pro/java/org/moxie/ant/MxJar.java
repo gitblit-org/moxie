@@ -395,7 +395,7 @@ public class MxJar extends Jar {
 		
 		try {
 			File tmpFile = new File(build.getConfig().getOutputFolder(null), "pom.xml");
-			FileUtils.writeContent(tmpFile, build.getPom().toXML());
+			FileUtils.writeContent(tmpFile, build.getPom().toXML(false));
 
 			ZipFileSet set = new ZipFileSet();
 			set.setProject(getProject());
