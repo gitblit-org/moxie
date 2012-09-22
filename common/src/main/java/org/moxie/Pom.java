@@ -519,10 +519,10 @@ public class Pom {
 	}
 	
 	public String toXML() {
-		return toXML(true);
+		return toXML(true, true);
 	}
 	
-	public String toXML(boolean includeParent) {
+	public String toXML(boolean includeParent, boolean includeProperties) {
 		String pomVersion = "4.0.0";
 		StringBuilder sb = new StringBuilder();
 		sb.append(MessageFormat.format("<project xmlns=\"http://maven.apache.org/POM/{0}\" ", pomVersion));
@@ -589,7 +589,7 @@ public class Pom {
 		}
 
 		// properties
-		if (properties.size() > 0) {
+		if (includeProperties && properties.size() > 0) {
 			Map<String, String> filtered = new LinkedHashMap<String, String>();
 			for (Map.Entry<String, String> entry : properties.entrySet()) {
 				String key = entry.getKey();
