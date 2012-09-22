@@ -468,6 +468,12 @@ public class Pom {
 		if (pom.licenses != null) {
 			licenses.addAll(pom.licenses);
 		}
+		if (pom.developers!= null) {
+			developers.addAll(pom.developers);
+		}
+		if (pom.contributors != null) {
+			contributors.addAll(pom.contributors);
+		}
 		if (StringUtils.isEmpty(organization)) {
 			organization = pom.organization;
 		}
