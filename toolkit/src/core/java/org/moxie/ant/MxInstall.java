@@ -22,6 +22,7 @@ import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.FileResource;
 import org.moxie.Build;
+import org.moxie.Constants;
 import org.moxie.Dependency;
 import org.moxie.Pom;
 import org.moxie.utils.FileUtils;
@@ -29,6 +30,16 @@ import org.moxie.utils.StringUtils;
 
 
 public class MxInstall extends MxTask {
+	
+	private File baseFolder;
+	
+	public void setBaseFolder(File folder) {
+		this.baseFolder = folder;
+	}
+	
+	public File getBaseFolder() {
+		return baseFolder;
+	}
 	
 	public MxInstall() {
 		super();
@@ -45,8 +56,17 @@ public class MxInstall extends MxTask {
 		String pattern = artifact + "*";
 		
 		Dependency asDependency = new Dependency(pom.getCoordinates());
-		File moxieFile = build.getSolver().getMoxieCache().getArtifact(asDependency, asDependency.type);
-		File destinationFolder = moxieFile.getParentFile();
+		File destinationFolder;
+		if (baseFolder == null) {
+			// install to local repository
+			File moxieFile = build.getSolver().getMoxieCache().getArtifact(asDependency, asDependency.type);
+			destinationFolder = moxieFile.getParentFile();
+		} else {
+			// install to specified repository
+			String path = Dependency.getMavenPath(asDependency, asDependency.type, Constants.MAVEN2_PATTERN);
+			File moxieFile = new File(baseFolder, path);
+			destinationFolder = moxieFile.getParentFile();
+		}
 		
 		getConsole().title(getClass(), artifact);
 
