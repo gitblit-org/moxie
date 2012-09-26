@@ -523,10 +523,10 @@ public class Pom {
 	}
 	
 	public String toXML() {
-		return toXML(true, true);
+		return toXML(true);
 	}
 	
-	public String toXML(boolean includeParent, boolean includeProperties) {
+	public String toXML(boolean includeProperties) {
 		String pomVersion = "4.0.0";
 		StringBuilder sb = new StringBuilder();
 		sb.append(MessageFormat.format("<project xmlns=\"http://maven.apache.org/POM/{0}\" ", pomVersion));
@@ -539,7 +539,7 @@ public class Pom {
 		sb.append('\n');
 		
 		// parent metadata
-		if (includeParent && hasParentDependency()) {
+		if (hasParentDependency()) {
 			StringBuilder node = new StringBuilder();
 			node.append("<parent>\n");
 			node.append(StringUtils.toXML("groupId", parentGroupId));

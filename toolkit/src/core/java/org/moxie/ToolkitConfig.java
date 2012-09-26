@@ -172,11 +172,6 @@ public class ToolkitConfig implements Serializable {
 				// parent has been specified
 				ToolkitConfig parent = new ToolkitConfig(parentConfig, baseFolder, defaultResource);
 				setDefaultsFrom(parent);
-
-				// set parent properties
-				pom.parentGroupId = pom.groupId;
-				pom.parentArtifactId = pom.artifactId;
-				pom.parentVersion = pom.version;
 			}
 		}
 		
@@ -194,6 +189,15 @@ public class ToolkitConfig implements Serializable {
 		pom.getDevelopers().addAll(readPersons(map, Key.developers));
 		pom.getContributors().addAll(readPersons(map, Key.contributors));
 		pom.getLicenses().addAll(readLicenses(map, Key.licenses));
+		
+		String parentPom = map.getString(Key.parentPom.name(), null);
+		if (!StringUtils.isEmpty(parentPom)) {
+			// config specifies a parent pom
+			Dependency parent = new Dependency(parentPom);
+			pom.parentGroupId = parent.groupId;
+			pom.parentArtifactId = parent.artifactId;
+			pom.parentVersion = parent.version;
+		}
 		
 		// scm metadata
 		if (map.containsKey(Key.scm)) {
