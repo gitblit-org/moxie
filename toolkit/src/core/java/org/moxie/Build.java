@@ -132,8 +132,6 @@ public class Build {
 	
 	private void writeEclipseClasspath() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-		sb.append("<classpath>\n");
 		File projectFolder = config.getProjectFolder();
 		for (SourceFolder sourceFolder : config.getProjectConfig().getSourceFolders()) {
 			if (Scope.site.equals(sourceFolder.scope)) {
@@ -225,9 +223,14 @@ public class Build {
 			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", projectName));
 		}
 		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
-		sb.append("</classpath>");
 		
-		FileUtils.writeContent(new File(projectFolder, ".classpath"), sb.toString());
+		StringBuilder file = new StringBuilder();
+		file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+		file.append("<classpath>\n");
+		file.append(StringUtils.insertTab(sb.toString()));
+		file.append("</classpath>");
+		
+		FileUtils.writeContent(new File(projectFolder, ".classpath"), file.toString());
 	}
 	
 	private void writeEclipseProject() {

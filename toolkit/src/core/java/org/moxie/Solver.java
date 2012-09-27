@@ -16,6 +16,7 @@
 package org.moxie;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -787,6 +788,54 @@ public class Solver {
 						throw new RuntimeException("Error writing to file " + projectSourceFile, e);
 					}
 				}
+				
+				// remove obsolete artifacts
+				removeObsoleteArtifacts(dependency, projectFile.getParentFile());
+				removeObsoleteArtifacts(source, projectSourceFile.getParentFile());
+			}
+		}
+	}
+	
+	/**
+	 * If we are maintaining project-local artifacts then make sure to remove
+	 * obsolete versions of these local artifacts.  For example if we upgrade
+	 * from Lucene 3.6.0 to 3.6.1 we should remove the 3.6.0 artifacts.  Or the
+	 * reverse, if we are downgrading.
+	 * 
+	 * @param dependency
+	 * @param folder
+	 */
+	private void removeObsoleteArtifacts(final Dependency dependency, File folder) {
+		File [] removals = folder.listFiles(new FilenameFilter() {
+			@Override
+			public boolean accept(File dir, String name) {
+				String n = name.toLowerCase();
+				String dep = dependency.artifactId.toLowerCase();
+				if (n.startsWith(dep)) {
+					dep += "-" + dependency.version;
+					if (!n.startsWith(dep)) {
+						String suffix;
+						if (!StringUtils.isEmpty(dependency.classifier)) {
+							suffix = "-" + dependency.classifier;
+						} else {
+							suffix = "";
+						}
+						suffix += "." + dependency.type;
+						suffix = suffix.toLowerCase();
+						if (n.endsWith(suffix)) {
+							console.debug("deleting obsolete artifact {0}", n);
+							return true;
+						}
+					}
+				}
+				return false;
+			}
+		});
+		
+		// delete any matches
+		if (removals != null) {
+			for (File file : removals) {
+				file.delete();
 			}
 		}
 	}
