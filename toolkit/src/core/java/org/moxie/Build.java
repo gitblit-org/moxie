@@ -185,8 +185,8 @@ public class Build {
 						srcPath = srcJar.getAbsolutePath();
 					}
 				}
-				if (srcJar.exists()) {
-					// have sources
+				if (srcJar.exists() && srcJar.length() > 1024) {
+					// has non-placeholder sources jar
 					sb.append(format("<classpathentry kind=\"{0}\" path=\"{1}\" sourcepath=\"{2}\" />\n", kind, jarPath, srcPath));
 				} else {
 					// no sources
