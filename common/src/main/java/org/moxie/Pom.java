@@ -551,7 +551,6 @@ public class Pom {
 		}
 
 		// project metadata
-		sb.append("\t<!-- project metadata-->\n");
 		sb.append(StringUtils.toXML("groupId", groupId));
 		sb.append(StringUtils.toXML("artifactId", artifactId));
 		sb.append(StringUtils.toXML("version", version));
@@ -577,7 +576,6 @@ public class Pom {
 
 		// scm
 		if (!scm.isEmpty()) {
-			sb.append("\t<!-- project scm metadata-->\n");
 			sb.append(StringUtils.insertTab(scm.toXML()));
 			sb.append('\n');
 		}

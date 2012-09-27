@@ -168,7 +168,9 @@ public class Dependency implements Serializable {
 	public boolean excludes(Dependency dependency) {
 		return exclusions.contains(dependency.getMediationId()) 
 				|| exclusions.contains(dependency.getManagementId())
-				|| exclusions.contains(dependency.groupId);
+				|| exclusions.contains(dependency.groupId)
+				|| exclusions.contains("*:*")
+				|| exclusions.contains("*");
 	}
 	
 	public String getOrigin() {
@@ -210,6 +212,27 @@ public class Dependency implements Serializable {
 		sb.append(StringUtils.toXML("scope", scope));
 		if (optional) {
 			sb.append(StringUtils.toXML("optional", true));
+		}
+		Set<String> excludes = new TreeSet<String>(exclusions);
+		if (!resolveDependencies) {
+			excludes.add("*:*");
+		}
+		if (excludes.size() > 0) {
+			StringBuilder nodelist = new StringBuilder();
+			nodelist.append("<exclusions>\n");
+			for (String exclusion : excludes) {
+				StringBuilder node = new StringBuilder();
+				node.append("<exclusion>\n");
+				String [] e = exclusion.split(":");
+				node.append(StringUtils.toXML("groupId", e[0]));
+				if (e.length > 1) {
+					node.append(StringUtils.toXML("artifactId", e[1]));
+				}
+				node.append("</exclusion>\n");
+				nodelist.append(StringUtils.insertTab(node.toString()));
+			}
+			nodelist.append("</exclusions>\n");
+			sb.append(StringUtils.insertTab(nodelist.toString()));
 		}
 		sb.append("</dependency>\n");
 		return sb.toString();
