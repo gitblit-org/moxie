@@ -194,6 +194,7 @@ public class MxJar extends Jar {
 						ZipFileSet zip = new ZipFileSet();
 						zip.setProject(getProject());
 						zip.setSrc(new File(path));
+						zip.setExcludes("META-INF/*.DSA, META-INF/*.SF, META-INF/*.RSA");
 						addZipfileset(zip);
 					}
 				}
@@ -204,7 +205,7 @@ public class MxJar extends Jar {
 			excludes = Toolkit.DEFAULT_EXCLUDES;
 		}
 
-		// compiled output
+		// compiled output of this project
 		File outputFolder = build.getConfig().getOutputFolder(Scope.compile);
 		FileSet outputSet = new FileSet();
 		outputSet.setProject(getProject());
@@ -214,7 +215,20 @@ public class MxJar extends Jar {
 		}
 		outputSet.setExcludes(excludes);		
 		addFileset(outputSet);
-
+		
+		// add the output folders of linked projects
+		for (Build linkedProject : build.getSolver().getLinkedProjects()) {
+			FileSet projectOutputSet = new FileSet();
+			projectOutputSet.setProject(getProject());
+			File dir = linkedProject.getConfig().getOutputFolder(Scope.compile);
+			projectOutputSet.setDir(dir);
+			if (includes != null) {
+				projectOutputSet.setIncludes(includes);
+			}
+			projectOutputSet.setExcludes(excludes);		
+			addFileset(projectOutputSet);
+		}
+		
 		if (getDestFile() == null) {
 			// default output jar if file unspecified
 			Pom pom = build.getPom();
