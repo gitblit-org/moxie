@@ -110,7 +110,14 @@ public class MaxmlParser {
 					array = new ArrayList<Object>();
 					map.put(lastKey, array);
 				}
-				Object value = parseValue(line.substring(1).trim());
+				String rem = line.substring(1).trim();
+				Object value;
+				if (rem.charAt(0) == '{' && rem.length() == 1) {
+					Map<String, Object> submap = parse(reader);
+					value = submap;
+				} else {
+					value = parseValue(rem);
+				}				
 				array.add(value);
 			} else {
 				// field:value

@@ -23,7 +23,7 @@ import org.moxie.utils.FileUtils;
  * 
  */
 public class TestMaxmlParser extends Assert {
-	String config = "name: Moxie\ndescription: Project Build Toolkit\nversion: 0.1.0\nurl: http://github.com/gitblit/moxie\nartifactId: moxie\nvendor: James Moger\nconfigureEclipseClasspath: true\nsourceFolders: [core, maxjar, maxdoc]\nmap: { \na1: 12\na2: 3.14f\na3 : {\nb1:100l\nb2 : {\nc1:6.023d\nc2:c2value\n}\nb3:b3value\n}\na4: a4value\n}\noutputFolder: bin\nmavenUrls: [mavencentral]\ndependencyFolder: ext\ndependencies:\n - [ant, 1.7.0, org/apache/ant]\n - [markdownpapers-core, 1.2.5, org/tautua/markdownpapers]\nsimpledate:2003-07-04\ncanonical:2001-07-04T16:08:56.235Z\niso8601:2002-07-04T12:08:56.235-0400";
+	String config = "name: Moxie\ndescription: Project Build Toolkit\nversion: 0.1.0\nurl: http://github.com/gitblit/moxie\nartifactId: moxie\nvendor: James Moger\nconfigureEclipseClasspath: true\nsourceFolders: [core, maxjar, maxdoc]\nmap: { \na1: 12\na2: 3.14f\na3 : {\nb1:100l\nb2 : {\nc1:6.023d\nc2:c2value\n}\nb3:b3value\n}\na4: a4value\n}\noutputFolder: bin\nmavenUrls: [mavencentral]\ndependencyFolder: ext\ndependencies:\n - [ant, 1.7.0, org/apache/ant]\n - [markdownpapers-core, 1.2.5, org/tautua/markdownpapers]\nsimpledate:2003-07-04\ncanonical:2001-07-04T16:08:56.235Z\niso8601:2002-07-04T12:08:56.235-0400\ndevelopers :\n- {\n  id: james\n  name : James Moger\n  url : https://plus.google.com/u/0/116428776452027956920\n  roles : developer\n  }\n- {\n  id: james\n  name : James Moger\n  url : https://plus.google.com/u/0/116428776452027956920\n  roles : developer\n  }";
 
 	String blockTest = "name: Moxie\ndescription: \"\"\"\nMoxie\nis a\nJava Project Build Toolkit\n\"\"\"\nversion: 0.1.0";
 
@@ -32,6 +32,8 @@ public class TestMaxmlParser extends Assert {
 	String inlineMap = "{ id: myproxy, active: true, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }";
 	
 	String inlineMap2 = "{ id: central, url: \"http://repo1.apache.org/maven\", url2: \"http://repo1.apache.org/maven\" }";
+	
+	String maplist = "developers :\n- {\n  id: james\n  name : James Moger\n  url : https://plus.google.com/u/0/116428776452027956920\n  roles : developer\n  }";
 
 	@SuppressWarnings("rawtypes")
 	@Test
@@ -86,7 +88,7 @@ public class TestMaxmlParser extends Assert {
 		// inline map
 		assertEquals(7, ((MaxmlMap) parser.parseValue(inlineMap)).size());
 		assertEquals(3, ((MaxmlMap) parser.parseValue(inlineMap2)).size());
-
+		
 		// dates
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 		assertEquals("2003-07-04",
@@ -113,7 +115,7 @@ public class TestMaxmlParser extends Assert {
 		assertEquals(2, ((List) map.get("dependencies")).size());
 		assertEquals(4, ((Map) map.get("map")).size());
 	}
-
+	
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void testParseFile() throws MaxmlException {
@@ -121,9 +123,9 @@ public class TestMaxmlParser extends Assert {
 		Map<String, Object> map = Maxml.parse(content);
 		assertTrue(map.size() > 0);
 		assertTrue(map.containsKey("name"));
-		assertEquals("Moxie", map.get("name"));
-		assertEquals(7, ((List) map.get("sourcefolders")).size());
-		assertEquals(5, ((List) map.get("dependencies")).size());
+		assertEquals("Moxie-Maxml", map.get("name"));
+		assertEquals(2, ((List) map.get("sourcefolders")).size());
+		assertEquals(2, ((List) map.get("dependencies")).size());
 	}
 
 	@Test
@@ -134,6 +136,7 @@ public class TestMaxmlParser extends Assert {
 		assertEquals(3, test.sourceFolders.size());
 		assertEquals(2, test.dependencies.size());
 		assertEquals(4, test.map.size());
+		assertEquals(2, test.developers.size());
 	}
 
 	public static class TestObject {
@@ -154,5 +157,6 @@ public class TestMaxmlParser extends Assert {
 		public Date canonical;
 		public Date iso8601;
 		public Date simpleDate;
+		public List<Map<String, Object>> developers;
 	}
 }
