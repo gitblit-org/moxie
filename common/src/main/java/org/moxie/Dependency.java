@@ -41,6 +41,7 @@ public class Dependency implements Serializable {
 
 	public int ring;
 	public String origin;
+    public Scope definedScope;
 	
 	public Dependency() {
 		type = "jar";

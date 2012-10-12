@@ -317,9 +317,18 @@ public class StringUtils {
 	}
 	
 	public static String insertTab(String content) {
+		return insertTab(content, true);
+	}
+	
+	public static String insertTab(String content, boolean asSpaces) {
 		StringBuilder sb = new StringBuilder();
 		for (String line : content.split("\n")) {
-			sb.append("    ").append(line).append('\n');
+			if (asSpaces) {
+				sb.append("    ");
+			} else {
+				sb.append('\t');
+			}
+			sb.append(line).append('\n');
 		}
 		return sb.toString();
 	}

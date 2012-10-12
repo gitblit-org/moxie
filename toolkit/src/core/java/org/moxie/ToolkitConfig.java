@@ -374,6 +374,7 @@ public class ToolkitConfig implements Serializable {
 		} else {
 			dep = new Dependency(def);
 		}
+        dep.definedScope = scope;
 		pom.addDependency(dep, scope);
 	}
 	

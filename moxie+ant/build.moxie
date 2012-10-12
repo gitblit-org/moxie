@@ -3,9 +3,9 @@ description : Moxie+Ant distribution
 groupId : org.moxie
 artifactId : moxie+ant
 parent : ../build.moxie
-apply : eclipse
+apply : eclipse, intellij
 properties : {
- groovy.version : 1.8.6
+ groovy.version : 1.8.8
 }
 dependencyFolder: ext
 dependencies :

@@ -143,7 +143,7 @@ public class PomReader {
 							// dependencies.dependency
 							Dependency dep = readDependency(node);							
 							Scope scope = Scope.fromString(readStringTag(node, Key.scope));
-							pom.addDependency(dep, scope);
+                            dep.definedScope = pom.addDependency(dep, scope);
 						}
 					}
 				} else if ("licenses".equalsIgnoreCase(element.getTagName())) {

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+	<component name="NewModuleRootManager" inherit-compiler-output="false" >
+		<output url="file://$MODULE_DIR$/bin/classes" />
+		<output-test url="file://$MODULE_DIR$/bin/test-classes" />
+		<exclude-output />
+		<content url="file://$MODULE_DIR$">
+			
+		</content>
+		<orderEntry type="sourceFolder" forTests="false" />
+		<orderEntry type="module-library" scope="PROVIDED" >
+			<library name="commons-net-1.4.0.jar">
+				<CLASSES>
+					<root url="jar://$MODULE_DIR$/ext/commons-net-1.4.0.jar!/" />
+				</CLASSES>
+				<JAVADOC />
+				<SOURCES>
+					<root url="jar://$MODULE_DIR$/ext/src/commons-net-1.4.0-sources.jar!/" />
+				</SOURCES>
+			</library>
+		</orderEntry>
+		<orderEntry type="module-library" scope="PROVIDED" >
+			<library name="groovy-all-1.8.8.jar">
+				<CLASSES>
+					<root url="jar://$MODULE_DIR$/ext/groovy-all-1.8.8.jar!/" />
+				</CLASSES>
+				<JAVADOC />
+				<SOURCES>
+					<root url="jar://$MODULE_DIR$/ext/src/groovy-all-1.8.8-sources.jar!/" />
+				</SOURCES>
+			</library>
+		</orderEntry>
+		<orderEntry type="inheritedJdk" />
+	</component>
+</module>

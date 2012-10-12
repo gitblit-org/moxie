@@ -134,31 +134,28 @@ public class MoxieData implements Serializable {
 			List<?> values = (List<?>) map.get(key.name());			
 			for (Object definition : values) {
 				if (definition instanceof String) {
-					String def = definition.toString();
-					Scope scope = Scope.fromString(def.substring(0, def.indexOf(' ')));
-					if (scope == null) {
-						// default scope
-						scope = Scope.defaultScope;
+					String [] fields = definition.toString().split(" ");
+					Scope solutionScope = Scope.fromString(fields[0]);
+					int ring = Integer.parseInt(fields[1]);
+					String def = StringUtils.stripQuotes(fields[2].trim());
+					Scope dependencyScope;
+					if (fields.length > 3) {
+						dependencyScope = Scope.fromString(fields[3]);
 					} else {
-						// trim out scope
-						def = def.substring(scope.name().length()).trim();
-					}					
-					
-					// pull ring from solution
-					int ringIdx = def.indexOf(' ');
-					int ring = Integer.parseInt(def.substring(0, ringIdx));
-					
-					def = StringUtils.stripQuotes(def.substring(ringIdx).trim());
+						// for backwards-compatibility, even though it is incorrect
+						dependencyScope = solutionScope;
+					}
 					
 					Dependency dep;
-					if (Scope.system.equals(scope)) {
+					if (Scope.system.equals(solutionScope)) {
 						dep = new SystemDependency(def);
 					} else {
 						dep = new Dependency(def);
 					}
 					dep.ring = ring;
+					dep.definedScope = dependencyScope;
 					
-					addDependency(dep, scope);
+					addDependency(dep, solutionScope);
 				} else {
 					throw new RuntimeException("Illegal dependency " + definition);
 				}
@@ -313,8 +310,8 @@ public class MoxieData implements Serializable {
 			sb.append(MessageFormat.format("{0} :\n", Key.dependencies.name()));
 			for (Map.Entry<Scope, Set<Dependency>> entry : dependencies.entrySet()) {
 				for (Dependency dep : entry.getValue()) {
-					// - scope ring coordinates
-					sb.append(MessageFormat.format("- {0} {1,number,0} {2}\n", entry.getKey(), dep.ring, dep.getDetailedCoordinates()));
+					// - solutionScope ring coordinates dependencyScope
+					sb.append(MessageFormat.format("- {0} {1,number,0} {2} {3}\n", entry.getKey(), dep.ring, dep.getDetailedCoordinates(), dep.definedScope));
 				}
 			}
 		}

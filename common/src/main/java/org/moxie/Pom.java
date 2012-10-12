@@ -264,7 +264,7 @@ public class Pom {
 		return dependencies.size() > 0;
 	}
 	
-	public boolean addDependency(Dependency dep, Scope scope) {
+	public Scope addDependency(Dependency dep, Scope scope) {
 		if (dep.isMavenObject()) {
 			// determine group
 			dep.groupId = resolveProperties(dep.groupId);
@@ -282,7 +282,7 @@ public class Pom {
 			
 			if (dep.getManagementId().equals(getManagementId())) {
 				System.out.println(MessageFormat.format("WARNING: ignoring circular dependency {0}", dep.getManagementId()));
-				return false;
+				return null;
 			}
 		} else if ((dep instanceof SystemDependency)) {
 			// System Dependency
@@ -293,7 +293,7 @@ public class Pom {
 		
 		// POM-level dependency exclusion is a Moxie feature
 		if (hasDependency(dep) || excludes(dep)) {
-			return false;
+			return null;
 		}
 		
 		if (scope == null) {
@@ -309,7 +309,7 @@ public class Pom {
 		}
 		
 		dependencies.get(scope).add(dep);
-		return true;
+		return scope;
 	}
 	
 	void resolveProperties() {
@@ -364,6 +364,7 @@ public class Pom {
 	public List<Dependency> getDependencies(Scope scope, int ring) {
 		Set<Dependency> set = new LinkedHashSet<Dependency>();		
 		for (Scope dependencyScope : dependencies.keySet()) {
+            Scope definedScope = dependencyScope;
 			boolean includeScope = false;
 			if (ring == Constants.RING1) {
 				// project-specified dependency
@@ -372,6 +373,7 @@ public class Pom {
 				// transitive dependencies
 				Scope transitiveScope = scope.getTransitiveScope(dependencyScope);
 				includeScope = scope.includeOnClasspath(transitiveScope);
+                definedScope = transitiveScope;
 			}
 			
 			if (includeScope) {
@@ -382,6 +384,7 @@ public class Pom {
 						continue;
 					}
 					dependency.ring = ring;
+                    dependency.definedScope = definedScope;
 					set.add(dependency);
 				}
 			}

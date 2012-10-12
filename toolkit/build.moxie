@@ -3,7 +3,7 @@ description : Java Project Build Toolkit for Ant
 groupId : org.moxie
 artifactId : moxie
 parent : ../build.moxie
-apply : eclipse, pom, cache
+apply : eclipse, intellij, pom, cache
 linkedProjects :
 - common
 sourceFolders : 

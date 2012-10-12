@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -96,14 +97,21 @@ public class Build {
 			
 			// create/update Eclipse configuration files
 			if (solutionBuilt && (project.apply(Toolkit.APPLY_ECLIPSE)
-					|| project.apply(Toolkit.APPLY_ECLIPSE_VAR)
-					|| project.apply(Toolkit.APPLY_ECLIPSE_EXT))) {
+					|| project.apply(Toolkit.APPLY_ECLIPSE_VAR))) {
 				writeEclipseClasspath();
 				writeEclipseProject();
 				console.notice(1, "rebuilt Eclipse configuration");
 				applied = true;
 			}
-		
+
+            // create/update IntelliJ IDEA configuration files
+            if (solutionBuilt && (project.apply(Toolkit.APPLY_INTELLIJ)
+                    || project.apply(Toolkit.APPLY_INTELLIJ_VAR))) {
+                writeIntelliJClasspath();
+                console.notice(1, "rebuilt IntelliJ IDEA configuration");
+                applied = true;
+            }
+
 			// create/update Maven POM
 			if (solutionBuilt && project.apply(Toolkit.APPLY_POM)) {
 				writePOM();
@@ -117,7 +125,7 @@ public class Build {
 		}
 	}
 	
-	private File getEclipseOutputFolder(Scope scope) {
+	private File getIDEOutputFolder(Scope scope) {
 		File baseFolder = new File(config.getProjectFolder(), "bin");
 		if (scope == null) {
 			return baseFolder;
@@ -138,15 +146,15 @@ public class Build {
 				continue;
 			}
 			if (sourceFolder.scope.isDefault()) {
-				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\"/>\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources())));
+				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources())));
 			} else {
-				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" output=\"{1}\"/>\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources()), FileUtils.getRelativePath(projectFolder, getEclipseOutputFolder(sourceFolder.scope))));
+				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" output=\"{1}\" />\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources()), FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(sourceFolder.scope))));
 			}
 		}
 		
 		// determine how to output dependencies (fixed-path or variable-relative)
 		String kind = getConfig().getProjectConfig().apply(Toolkit.APPLY_ECLIPSE_VAR) ? "var" : "lib";
-		boolean extRelative = getConfig().getProjectConfig().apply(Toolkit.APPLY_ECLIPSE_EXT);
+		boolean extRelative = getConfig().getProjectConfig().dependencyFolder != null && getConfig().getProjectConfig().dependencyFolder.exists();
 		
 		// always link classpath against Moxie artifact cache
 		Set<Dependency> dependencies = solver.solve(Scope.test);
@@ -192,7 +200,7 @@ public class Build {
 				}
 			}
 		}
-		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\"/>\n", FileUtils.getRelativePath(projectFolder, getEclipseOutputFolder(Scope.compile))));
+		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(Scope.compile))));
 				
 		for (Build linkedProject : solver.getLinkedProjects()) {
 			String projectName = null;
@@ -220,14 +228,14 @@ public class Build {
 				// use folder name
 				projectName = linkedProject.config.getProjectFolder().getName();
 			}
-			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\"/>\n", projectName));
+			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\" />\n", projectName));
 		}
-		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\"/>\n");
+		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\" />\n");
 		
 		StringBuilder file = new StringBuilder();
 		file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		file.append("<classpath>\n");
-		file.append(StringUtils.insertTab(sb.toString()));
+		file.append(StringUtils.insertTab(sb.toString(), false));
 		file.append("</classpath>");
 		
 		FileUtils.writeContent(new File(projectFolder, ".classpath"), file.toString());
@@ -312,6 +320,129 @@ public class Build {
 		
 		FileUtils.writeContent(dotProject, sb.toString());
 	}
+
+    private void writeIntelliJClasspath() {
+        File projectFolder = config.getProjectFolder();
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(format("<output url=\"file://$MODULE_DIR$/{0}\" />\n", FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(Scope.compile))));
+        sb.append(format("<output-test url=\"file://$MODULE_DIR$/{0}\" />\n", FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(Scope.test))));
+        sb.append("<exclude-output />\n");
+        sb.append("<content url=\"file://$MODULE_DIR$\">\n");
+        StringBuilder sf = new StringBuilder();
+        for (SourceFolder sourceFolder : config.getProjectConfig().getSourceFolders()) {
+            if (Scope.site.equals(sourceFolder.scope)) {
+                continue;
+            }
+            sf.append(format("<sourceFolder url=\"file://$MODULE_DIR$/{0}\" isTestSource=\"{1}\" />\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources()), Scope.test.equals(sourceFolder.scope)));
+        }
+        sb.append(StringUtils.insertTab(sf.toString(), false));
+        sb.append("</content>\n");
+        sb.append("<orderEntry type=\"sourceFolder\" forTests=\"false\" />\n");
+
+        // determine how to output dependencies (fixed-path or variable-relative)
+        boolean variableRelative = false;
+        boolean extRelative = getConfig().getProjectConfig().dependencyFolder != null && getConfig().getProjectConfig().dependencyFolder.exists();
+
+        // always link classpath against Moxie artifact cache
+        Set<Dependency> dependencies = new LinkedHashSet<Dependency>();
+        dependencies.addAll(solver.solve(Scope.compile));
+        // add unique test classpath items
+        dependencies.addAll(solver.solve(Scope.test));
+        
+        for (Dependency dependency : dependencies) {
+            Scope scope = null;
+            File jar = null;
+            File srcJar = null;
+            String jarPath = null;
+            String srcPath = null;
+
+            if (dependency instanceof SystemDependency) {
+                SystemDependency sys = (SystemDependency) dependency;
+                jar = new File(sys.path);
+                jarPath = format("jar://{0}!/", jar.getAbsolutePath());
+            } else {
+            	if (dependency.definedScope == null) {
+            		getConsole().error("{0} is missing a definedScope!", dependency.getCoordinates());
+            	}
+                // COMPILE scope is always implied and unnecessary in iml file
+                if (!dependency.definedScope.isDefault()) {
+                    scope = dependency.definedScope;
+                }
+
+                jar = solver.getMoxieCache().getArtifact(dependency, dependency.type);
+                Dependency sources = dependency.getSourcesArtifact();
+                srcJar = solver.getMoxieCache().getArtifact(sources, sources.type);
+
+                if (variableRelative) {
+                    // relative to MOXIE_HOME
+                    jarPath = format("jar://$" + Toolkit.MOXIE_HOME + "$/{0}!/", FileUtils.getRelativePath(config.getMoxieRoot(), jar));
+                    srcPath = format("jar://$" + Toolkit.MOXIE_HOME + "$/{0}!/", FileUtils.getRelativePath(config.getMoxieRoot(), srcJar));
+                } else {
+                    // filesystem path
+                    if (extRelative) {
+                        // relative to project dependency folder
+                        File baseFolder = config.getProjectConfig().getDependencyFolder();
+                        jar = new File(baseFolder, jar.getName());
+
+                        // relative to project dependency source folder
+                        baseFolder = config.getProjectConfig().getDependencySourceFolder();
+                        srcJar = new File(baseFolder, srcJar.getName());
+
+                        jarPath = format("jar://$MODULE_DIR$/{0}!/", FileUtils.getRelativePath(projectFolder, jar));
+                        srcPath = format("jar://$MODULE_DIR$/{0}!/", FileUtils.getRelativePath(projectFolder, srcJar));
+                    } else {
+                        // relative to USER_HOME
+                        jarPath = format("jar://$USER_HOME$/.moxie/{0}!/", FileUtils.getRelativePath(config.getMoxieRoot(), jar));
+                        srcPath = format("jar://$USER_HOME$/.moxie/{0}!/", FileUtils.getRelativePath(config.getMoxieRoot(), srcJar));
+                    }
+                }
+            }
+
+            if (scope == null) {
+                sb.append("<orderEntry type=\"module-library\" >\n");
+            } else {
+                sb.append(format("<orderEntry type=\"module-library\" scope=\"{0}\" >\n", scope.name().toUpperCase()));
+            }
+            StringBuilder lib = new StringBuilder();
+            lib.append(format("<library name=\"{0}\">\n", jar.getName()));
+            StringBuilder CLASSES = new StringBuilder();
+            CLASSES.append("<CLASSES>\n");
+            CLASSES.append(StringUtils.insertTab(format("<root url=\"{0}\" />\n", jarPath), false));
+            CLASSES.append("</CLASSES>\n");
+            lib.append(StringUtils.insertTab(CLASSES.toString(), false));
+            lib.append(StringUtils.insertTab("<JAVADOC />\n", false));
+            if (srcJar != null && srcJar.exists() && srcJar.length() > 1024) {
+                StringBuilder SOURCES = new StringBuilder();
+                SOURCES.append("<SOURCES>\n");
+                SOURCES.append(StringUtils.insertTab(format("<root url=\"{0}\" />\n", srcPath), false));
+                SOURCES.append("</SOURCES>\n");
+                lib.append(StringUtils.insertTab(SOURCES.toString(), false));
+            }
+            lib.append("</library>\n");
+            sb.append(StringUtils.insertTab(lib.toString(), false));
+            sb.append("</orderEntry>\n");
+        }
+
+        for (Build linkedProject : solver.getLinkedProjects()) {
+            String projectName = linkedProject.getPom().getName();
+            sb.append(format("<orderEntry type=\"module\" module-name=\"{0}\"/>\n", projectName));
+        }
+        sb.append("<orderEntry type=\"inheritedJdk\" />\n");
+
+        StringBuilder component = new StringBuilder();
+        component.append("<component name=\"NewModuleRootManager\" inherit-compiler-output=\"false\" >\n");
+        component.append(StringUtils.insertTab(sb.toString(), false));
+        component.append("</component>");
+
+        StringBuilder file = new StringBuilder();
+        file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        file.append("<module type=\"JAVA_MODULE\" version=\"4\">\n");
+        file.append(StringUtils.insertTab(component.toString(), false));
+        file.append("</module>\n");
+
+        FileUtils.writeContent(new File(projectFolder, config.getPom().getName() + ".iml"), file.toString());
+    }
 	
 	private void writePOM() {
 		StringBuilder sb = new StringBuilder();

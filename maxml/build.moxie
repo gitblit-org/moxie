@@ -3,7 +3,7 @@ description : Maxml parser
 groupId : org.moxie
 artifactId : maxml
 parent : ../build.moxie
-apply : eclipse, pom, cache
+apply : eclipse, intellij, pom, cache
 sourceFolders :
 - compile src/main/java
 - test src/test/java

@@ -214,17 +214,21 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     					project.gitOrigin = arg.substring(5);
     				}
     			} else if ("-eclipse".equals(arg)) {
-    				// Eclipse uses hard-coded paths to MOXIE_HOME
-    				project.eclipse = Eclipse.hard;
+    				// Eclipse uses hard-coded paths to MOXIE_HOME in USER_HOME
+    				project.eclipse = Eclipse.user;
     				apply.add(Toolkit.APPLY_ECLIPSE);
     			} else if ("-eclipse-var".equals(arg)) {
     				// Eclipse uses MOXIE_HOME relative classpath
     				project.eclipse = Eclipse.var;
     				apply.add(Toolkit.APPLY_ECLIPSE_VAR);
-    			} else if ("-eclipse-ext".equals(arg)) {
-    				// Eclipse looks for dependencies in ext folder
-    				project.eclipse = Eclipse.ext;
-    				apply.add(Toolkit.APPLY_ECLIPSE_EXT);
+                } else if ("-idea".equals(arg)) {
+                    // IntelliJ IDEA uses USER_HOME relative paths
+                    project.idea = IntelliJ.user;
+                    apply.add(Toolkit.APPLY_INTELLIJ);
+                } else if ("-idea-var".equals(arg)) {
+                    // IntelliJ IDEA uses MOXIE_HOME relative classpath
+                    project.idea = IntelliJ.var;
+                    apply.add(Toolkit.APPLY_INTELLIJ_VAR);
     			} else if (arg.startsWith("-apply:")) {
     				// -apply:a,b,c,d
     				// -apply:a -apply:b
@@ -237,15 +241,18 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     				// special apply cases
     				for (String val : vals) {
     					if (Toolkit.APPLY_ECLIPSE.equals(val)) {
-    						// Eclipse uses hard-coded paths to MOXIE_HOME
-    						project.eclipse = Eclipse.hard;
-    					} else if (Toolkit.APPLY_ECLIPSE_EXT.equals(val)) {
-    						// Eclipse looks for dependencies in ext folder
-    						project.eclipse = Eclipse.ext;
+    						// Eclipse uses hard-coded paths to MOXIE_HOME in USER_HOME
+    						project.eclipse = Eclipse.user;
     					} else if (Toolkit.APPLY_ECLIPSE_VAR.equals(val)) {
     						// Eclipse uses MOXIE_HOME relative classpath
     						project.eclipse = Eclipse.var;
-    					}
+                        } else if (Toolkit.APPLY_INTELLIJ.equals(val)) {
+                            // IntelliJ IDEA uses USER_HOME relative classpath
+                            project.idea = IntelliJ.user;
+                        } else if (Toolkit.APPLY_INTELLIJ_VAR.equals(val)) {
+                            // IntelliJ IDEA uses MOXIE_HOME relative classpath
+                            project.idea = IntelliJ.var;
+                        }
     				}
     			} else {
     				projectArgs.add(arg);
@@ -376,7 +383,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	sb.append("/target\n");
     	sb.append("/tmp\n");
     	sb.append("/temp\n");
-    	if (!newProject.eclipse.includeDotClasspath()) {
+    	if (!newProject.eclipse.includeClasspath()) {
     		// ignore hard-coded .classpath
     		sb.append("/.classpath\n");	
     	}
@@ -386,13 +393,20 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	add.addFilepattern("build.xml");
     	add.addFilepattern("build.moxie");
     	add.addFilepattern(".gitignore");
-    	if (newProject.eclipse.includeDotProject()) {
+    	if (newProject.eclipse.includeProject()) {
     		add.addFilepattern(".project");	
     	}
-    	if (newProject.eclipse.includeDotClasspath()) {
+    	if (newProject.eclipse.includeClasspath()) {
     		// MOXIE_HOME relative dependencies in .classpath
     		add.addFilepattern(".classpath");	
     	}
+        if (newProject.idea.includeProject()) {
+            add.addFilepattern(".project");
+        }
+        if (newProject.idea.includeClasspath()) {
+            // MOXIE_HOME relative dependencies in .iml
+            add.addFilepattern("*.iml");
+        }
     	try {
     		add.call();
     		CommitCommand commit = git.commit();
@@ -489,15 +503,27 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     }
 
     private enum Eclipse {
-    	none, hard, var, ext;
+    	none, user, var, ext;
     	
-    	boolean includeDotProject() {
+    	boolean includeProject() {
     		return this.ordinal() > none.ordinal();
     	}
     	
-    	boolean includeDotClasspath() {
-    		return this.ordinal() > hard.ordinal();
+    	boolean includeClasspath() {
+    		return this.ordinal() > user.ordinal();
     	}
+    }
+
+    private enum IntelliJ {
+        none, user, var;
+
+        boolean includeProject() {
+            return this.ordinal() > none.ordinal();
+        }
+
+        boolean includeClasspath() {
+            return true;
+        }
     }
     
     private class NewProject {
@@ -508,6 +534,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	boolean initGit = false;
     	String gitOrigin;
     	Eclipse eclipse = Eclipse.none;
+        IntelliJ idea = IntelliJ.none;
     	File dir;
     }
 
