@@ -311,23 +311,26 @@ public class StringUtils {
 	 */
 	public static <K> String toXML(String field, K value) {
 		if (value != null) {
-			return MessageFormat.format("    <{0}>{1}</{0}>\n", field, value);
+			return MessageFormat.format("  <{0}>{1}</{0}>\n", field, value);
 		}
 		return "";
 	}
 	
-	public static String insertTab(String content) {
-		return insertTab(content, true);
+	public static String insertHardTab(String content) {
+		return insertAtLineBegin(content, "\t");
 	}
-	
-	public static String insertTab(String content, boolean asSpaces) {
+
+	public static String insertSoftTab(String content) {
+		return insertAtLineBegin(content, "    ");
+	}
+	public static String insertHalfTab(String content) {
+		return insertAtLineBegin(content, "  ");
+	}
+
+	public static String insertAtLineBegin(String content, String insert) {
 		StringBuilder sb = new StringBuilder();
 		for (String line : content.split("\n")) {
-			if (asSpaces) {
-				sb.append("    ");
-			} else {
-				sb.append('\t');
-			}
+			sb.append(insert);
 			sb.append(line).append('\n');
 		}
 		return sb.toString();

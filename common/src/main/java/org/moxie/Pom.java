@@ -549,7 +549,7 @@ public class Pom {
 			node.append(StringUtils.toXML("artifactId", parentArtifactId));
 			node.append(StringUtils.toXML("version", parentVersion));
 			node.append("</parent>\n");
-			sb.append(StringUtils.insertTab(node.toString()));
+			sb.append(StringUtils.insertHalfTab(node.toString()));
 			sb.append('\n');
 		}
 
@@ -570,26 +570,26 @@ public class Pom {
 			StringBuilder node = new StringBuilder();
 			node.append("<licenses>\n");
 			for (License license : licenses) {
-				node.append(StringUtils.insertTab(license.toXML()));
+				node.append(StringUtils.insertHalfTab(license.toXML()));
 			}
 			node.append("</licenses>\n");
-			sb.append(StringUtils.insertTab(node.toString()));
+			sb.append(StringUtils.insertHalfTab(node.toString()));
 			sb.append('\n');
 		}
 
 		// scm
 		if (!scm.isEmpty()) {
-			sb.append(StringUtils.insertTab(scm.toXML()));
+			sb.append(StringUtils.insertHalfTab(scm.toXML()));
 			sb.append('\n');
 		}
 		
 		// persons
 		if (developers.size() > 0) {
-			sb.append(StringUtils.insertTab(toXML("developer", developers)));
+			sb.append(StringUtils.insertHalfTab(toXML("developer", developers)));
 			sb.append('\n');
 		}
 		if (contributors.size() > 0) {
-			sb.append(StringUtils.insertTab(toXML("contributor", contributors)));
+			sb.append(StringUtils.insertHalfTab(toXML("contributor", contributors)));
 			sb.append('\n');
 		}
 
@@ -619,7 +619,7 @@ public class Pom {
 					node.append(StringUtils.toXML(entry.getKey(), entry.getValue()));
 				}
 				node.append("</properties>\n");
-				sb.append(StringUtils.insertTab(node.toString()));
+				sb.append(StringUtils.insertHalfTab(node.toString()));
 				sb.append('\n');
 			}
 		}
@@ -637,10 +637,10 @@ public class Pom {
 				Dependency dep = new Dependency(key + ":" + version);
 				subnode.append(dep.toXML(scope));
 			}
-			node.append(StringUtils.insertTab(subnode.toString()));
+			node.append(StringUtils.insertHalfTab(subnode.toString()));
 			node.append("</dependencies>\n");
 			node.append("</dependencyManagement>\n");
-			sb.append(StringUtils.insertTab(node.toString()));
+			sb.append(StringUtils.insertHalfTab(node.toString()));
 			sb.append('\n');
 		}
 		
@@ -658,16 +658,16 @@ public class Pom {
 				for (Dependency dependency : entry.getValue()) {
 					StringBuilder depNode = new StringBuilder();
 					depNode.append(dependency.toXML(entry.getKey()));
-					node.append(StringUtils.insertTab(depNode.toString()));
+					node.append(StringUtils.insertHalfTab(depNode.toString()));
 				}
 			}
 			node.append("</dependencies>\n");
-			sb.append(StringUtils.insertTab(node.toString()));
+			sb.append(StringUtils.insertHalfTab(node.toString()));
 			sb.append('\n');
 		}
 		
 		// close project
-		sb.append("</project>");
+		sb.append("</project>\n\n");
 		return sb.toString();
 	}
 	
@@ -676,7 +676,7 @@ public class Pom {
 		if (persons.size() > 0) {
 			list.append(MessageFormat.format("<{0}s>\n", nodename));
 			for (Person person : persons) {
-				list.append(StringUtils.insertTab(person.toXML(nodename)));
+				list.append(StringUtils.insertHalfTab(person.toXML(nodename)));
 			}
 			list.append(MessageFormat.format("</{0}s>\n", nodename));
 		}

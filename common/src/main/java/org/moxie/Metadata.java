@@ -201,7 +201,7 @@ public class Metadata {
 		StringBuilder node = new StringBuilder();
 		node.append(StringUtils.toXML("latest", latest));
 		node.append(StringUtils.toXML("release", release));
-		sb.append(StringUtils.insertTab(node.toString()));
+		sb.append(StringUtils.insertHalfTab(node.toString()));
 		
 		// snapshots
 		if (snapshots.size() > 0) {
@@ -220,10 +220,10 @@ public class Metadata {
 			sb.append("\t\t<versions>\n");
 			StringBuilder sbv = new StringBuilder();
 			for (String version : versions) {
-				sbv.append(StringUtils.insertTab(StringUtils.toXML("version", version)));
+				sbv.append(StringUtils.insertHalfTab(StringUtils.toXML("version", version)));
 			}
 			if (sbv.length() > 0) {
-				sb.append(StringUtils.insertTab(sbv.toString()));
+				sb.append(StringUtils.insertHalfTab(sbv.toString()));
 			}
 			sb.append("\t\t</versions>\n");
 		}

@@ -230,10 +230,10 @@ public class Dependency implements Serializable {
 					node.append(StringUtils.toXML("artifactId", e[1]));
 				}
 				node.append("</exclusion>\n");
-				nodelist.append(StringUtils.insertTab(node.toString()));
+				nodelist.append(StringUtils.insertHalfTab(node.toString()));
 			}
 			nodelist.append("</exclusions>\n");
-			sb.append(StringUtils.insertTab(nodelist.toString()));
+			sb.append(StringUtils.insertHalfTab(nodelist.toString()));
 		}
 		sb.append("</dependency>\n");
 		return sb.toString();

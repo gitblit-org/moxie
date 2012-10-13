@@ -1,34 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="JAVA_MODULE" version="4">
-	<component name="NewModuleRootManager" inherit-compiler-output="false" >
-		<output url="file://$MODULE_DIR$/bin/classes" />
-		<output-test url="file://$MODULE_DIR$/bin/test-classes" />
-		<exclude-output />
-		<content url="file://$MODULE_DIR$">
-			<sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
-			<sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
-		</content>
-		<orderEntry type="sourceFolder" forTests="false" />
-		<orderEntry type="module-library" scope="TEST" >
-			<library name="junit-4.10.jar">
-				<CLASSES>
-					<root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/junit/junit/4.10/junit-4.10.jar!/" />
-				</CLASSES>
-				<JAVADOC />
-				<SOURCES>
-					<root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/junit/junit/4.10/junit-4.10-sources.jar!/" />
-				</SOURCES>
-			</library>
-		</orderEntry>
-		<orderEntry type="module-library" scope="TEST" >
-			<library name="hamcrest-core-1.1.jar">
-				<CLASSES>
-					<root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar!/" />
-				</CLASSES>
-				<JAVADOC />
-			</library>
-		</orderEntry>
-		<orderEntry type="module" module-name="Moxie-Maxml"/>
-		<orderEntry type="inheritedJdk" />
-	</component>
+  <component name="NewModuleRootManager" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/bin/classes" />
+    <output-test url="file://$MODULE_DIR$/bin/test-classes" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" scope="TEST">
+      <library name="junit-4.10.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/junit/junit/4.10/junit-4.10.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/junit/junit/4.10/junit-4.10-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library name="hamcrest-core-1.1.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module" module-name="Moxie-Maxml" />
+    <orderEntry type="inheritedJdk" />
+  </component>
 </module>
+

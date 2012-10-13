@@ -47,7 +47,7 @@ public class Person {
 				rolesNode.append(StringUtils.toXML("role", role));
 			}
 			rolesNode.append("</roles>\n");
-			node.append(StringUtils.insertTab(rolesNode.toString()));
+			node.append(StringUtils.insertHalfTab(rolesNode.toString()));
 		}
 		
 		node.append(MessageFormat.format("</{0}>\n", nodename));

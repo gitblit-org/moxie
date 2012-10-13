@@ -235,7 +235,7 @@ public class Build {
 		StringBuilder file = new StringBuilder();
 		file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		file.append("<classpath>\n");
-		file.append(StringUtils.insertTab(sb.toString(), false));
+		file.append(StringUtils.insertHardTab(sb.toString()));
 		file.append("</classpath>");
 		
 		FileUtils.writeContent(new File(projectFolder, ".classpath"), file.toString());
@@ -316,7 +316,7 @@ public class Build {
 			sb.append("\t\t<nature>org.eclipse.jdt.core.javanature</nature>\n");
 		}
 		sb.append("\t</natures>\n");
-		sb.append("</projectDescription>\n");
+		sb.append("</projectDescription>\n\n");
 		
 		FileUtils.writeContent(dotProject, sb.toString());
 	}
@@ -336,7 +336,7 @@ public class Build {
             }
             sf.append(format("<sourceFolder url=\"file://$MODULE_DIR$/{0}\" isTestSource=\"{1}\" />\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources()), Scope.test.equals(sourceFolder.scope)));
         }
-        sb.append(StringUtils.insertTab(sf.toString(), false));
+        sb.append(StringUtils.insertHalfTab(sf.toString()));
         sb.append("</content>\n");
         sb.append("<orderEntry type=\"sourceFolder\" forTests=\"false\" />\n");
 
@@ -400,47 +400,48 @@ public class Build {
             }
 
             if (scope == null) {
-                sb.append("<orderEntry type=\"module-library\" >\n");
+                sb.append("<orderEntry type=\"module-library\">\n");
             } else {
-                sb.append(format("<orderEntry type=\"module-library\" scope=\"{0}\" >\n", scope.name().toUpperCase()));
+                sb.append(format("<orderEntry type=\"module-library\" scope=\"{0}\">\n", scope.name().toUpperCase()));
             }
             StringBuilder lib = new StringBuilder();
             lib.append(format("<library name=\"{0}\">\n", jar.getName()));
             StringBuilder CLASSES = new StringBuilder();
             CLASSES.append("<CLASSES>\n");
-            CLASSES.append(StringUtils.insertTab(format("<root url=\"{0}\" />\n", jarPath), false));
+            CLASSES.append(StringUtils.insertHalfTab(format("<root url=\"{0}\" />\n", jarPath)));
             CLASSES.append("</CLASSES>\n");
-            lib.append(StringUtils.insertTab(CLASSES.toString(), false));
-            lib.append(StringUtils.insertTab("<JAVADOC />\n", false));
+            lib.append(StringUtils.insertHalfTab(CLASSES.toString()));
+            lib.append(StringUtils.insertHalfTab("<JAVADOC />\n"));
             if (srcJar != null && srcJar.exists() && srcJar.length() > 1024) {
                 StringBuilder SOURCES = new StringBuilder();
                 SOURCES.append("<SOURCES>\n");
-                SOURCES.append(StringUtils.insertTab(format("<root url=\"{0}\" />\n", srcPath), false));
+                SOURCES.append(StringUtils.insertHalfTab(format("<root url=\"{0}\" />\n", srcPath)));
                 SOURCES.append("</SOURCES>\n");
-                lib.append(StringUtils.insertTab(SOURCES.toString(), false));
+                lib.append(StringUtils.insertHalfTab(SOURCES.toString()));
+            } else {
+                lib.append(StringUtils.insertHalfTab("<SOURCES />\n"));
             }
             lib.append("</library>\n");
-            sb.append(StringUtils.insertTab(lib.toString(), false));
+            sb.append(StringUtils.insertHalfTab(lib.toString()));
             sb.append("</orderEntry>\n");
         }
 
         for (Build linkedProject : solver.getLinkedProjects()) {
             String projectName = linkedProject.getPom().getName();
-            sb.append(format("<orderEntry type=\"module\" module-name=\"{0}\"/>\n", projectName));
+            sb.append(format("<orderEntry type=\"module\" module-name=\"{0}\" />\n", projectName));
         }
         sb.append("<orderEntry type=\"inheritedJdk\" />\n");
 
         StringBuilder component = new StringBuilder();
-        component.append("<component name=\"NewModuleRootManager\" inherit-compiler-output=\"false\" >\n");
-        component.append(StringUtils.insertTab(sb.toString(), false));
+        component.append("<component name=\"NewModuleRootManager\" inherit-compiler-output=\"false\">\n");
+        component.append(StringUtils.insertHalfTab(sb.toString()));
         component.append("</component>");
 
         StringBuilder file = new StringBuilder();
         file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         file.append("<module type=\"JAVA_MODULE\" version=\"4\">\n");
-        file.append(StringUtils.insertTab(component.toString(), false));
-        file.append("</module>\n");
-
+        file.append(StringUtils.insertHalfTab(component.toString()));
+        file.append("</module>\n\n");
         FileUtils.writeContent(new File(projectFolder, config.getPom().getName() + ".iml"), file.toString());
     }
 	

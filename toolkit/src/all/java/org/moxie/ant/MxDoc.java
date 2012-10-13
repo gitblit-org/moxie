@@ -305,7 +305,7 @@ public class MxDoc extends MxTask {
 			} else if (children.size() > 0) {
 				sb.append(",\n    \"children\" : [\n");
 				for (DepNode node : children) {
-					sb.append(StringUtils.insertTab(node.asJSON()));
+					sb.append(StringUtils.insertSoftTab(node.asJSON()));
 					sb.append(",\n");
 				}
 				// trim trailing comma,newline
