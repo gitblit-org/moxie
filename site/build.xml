@@ -35,6 +35,7 @@
 					<page name="mx:Javac" src="mxextract.mkd" />
 					<page name="mx:Keys" src="mxextract.mkd" />
 					<page name="mx:Report" src="mxextract.mkd" />
+					<page name="mx:Run" src="mxextract.mkd" />
 					<page name="mx:Test" src="mxextract.mkd" />
 					<page name="mx:War" src="mxextract.mkd" />
 					<page name="mx:Zip" src="mxextract.mkd" />

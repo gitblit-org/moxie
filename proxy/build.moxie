@@ -6,6 +6,7 @@ apply : eclipse, intellij, pom, cache
 linkedProjects :
 - maxml
 - common
+mainclass: org.moxie.proxy.Launcher
 sourceFolders :
 - compile src/main/java
 - compile src/main/resources

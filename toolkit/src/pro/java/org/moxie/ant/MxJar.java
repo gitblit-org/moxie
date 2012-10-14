@@ -170,6 +170,15 @@ public class MxJar extends Jar {
 		Manifest manifest = new Manifest();
 		configureManifest(manifest);
 
+		if (mainclass == null) {
+			String mc = build.getConfig().getProjectConfig().getMainclass();
+			if (!StringUtils.isEmpty(mc)) {
+				ClassSpec cs = new ClassSpec(getProject());
+				mainclass = cs;
+				mainclass.setName(mc);
+			}
+		}
+		
 		if (mainclass != null) {
 			String mc = mainclass.getName().replace('/', '.');
 			if (mc.endsWith(".class")) {

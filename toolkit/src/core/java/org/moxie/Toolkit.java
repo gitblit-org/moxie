@@ -72,7 +72,7 @@ public class Toolkit {
 		lastDownloaded, origin, release, latest, revision, packaging, registeredRepositories,
 		revisionRetentionCount, revisionPurgeAfterDays, inceptionYear, organizationUrl, developers,
 		contributors, id, email, roles, scm, connection, developerConnection, tag, requires, licenses,
-		parentPom;
+		parentPom, mainclass;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

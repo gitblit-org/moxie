@@ -101,6 +101,7 @@
 		<taskdef classname="org.moxie.ant.MxJavac" name="javac" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxClean" name="clean" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxRun" name="jar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 
 		<taskdef classname="org.moxie.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxGenJar" name="genjar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
@@ -182,6 +183,7 @@
 			<class name="org.moxie.ant.MxClean" />
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
+			<class name="org.moxie.ant.MxRun" />
 			<class name="org.moxie.ant.MxJar" />
 			<class name="org.moxie.ant.MxGenJar" />
 			<class name="org.moxie.ant.MxTest" />
@@ -232,6 +234,7 @@
 			<class name="org.moxie.ant.MxClean" />
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxInstall" />
+			<class name="org.moxie.ant.MxRun" />
 			<class name="org.moxie.ant.MxJar" />
 			<class name="org.moxie.ant.MxGenJar" />
 			<class name="org.moxie.ant.MxTest" />

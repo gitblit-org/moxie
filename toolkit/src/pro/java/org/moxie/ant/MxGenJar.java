@@ -182,6 +182,15 @@ public class MxGenJar extends GenJar {
 		// automatic manifest entries from Moxie metadata
 		configureManifest(mft);
 
+		if (mainclass == null) {
+			String mc = build.getConfig().getProjectConfig().getMainclass();
+			if (!StringUtils.isEmpty(mc)) {
+				ClassSpec cs = new ClassSpec(getProject());
+				mainclass = cs;
+				mainclass.setName(mc);
+			}
+		}
+		
 		if (mainclass != null) {
 			String mc = mainclass.getName().replace('/', '.');
 			if (mc.endsWith(".class")) {

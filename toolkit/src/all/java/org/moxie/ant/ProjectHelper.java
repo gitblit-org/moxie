@@ -55,6 +55,7 @@ public class ProjectHelper extends ProjectHelper2 {
 			newDeployTarget(project);
 			newCleanTarget(project);
 			newReportTarget(project);
+			newRunTarget(project);
 		}		
 		
 		// continue normal parsing
@@ -152,6 +153,17 @@ public class ProjectHelper extends ProjectHelper2 {
 		target.setDescription("generates a dependency report");
 
 		MxReport task = new MxReport();
+		task.setProject(project);
+		target.addTask(task);
+		return target;
+	}
+	
+	private Target newRunTarget(Project project) {
+		Target target = newTarget(project, "moxie.run");
+		target.setDepends("moxie.compile");
+		target.setDescription("executes a specified main class");
+
+		MxRun task = new MxRun();
 		task.setProject(project);
 		target.addTask(task);
 		return target;

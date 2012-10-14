@@ -52,6 +52,7 @@ public class ToolkitConfig implements Serializable {
 	File baseFolder;
 	Pom pom;
 	long lastModified;
+	String mainclass;
 	
 	List<Proxy> proxies;
 	List<LinkedProject> linkedProjects;
@@ -118,6 +119,10 @@ public class ToolkitConfig implements Serializable {
 	
 	public Pom getPom() {
 		return pom;
+	}
+	
+	public String getMainclass() {
+		return mainclass;
 	}
 
 	@Override
@@ -212,6 +217,8 @@ public class ToolkitConfig implements Serializable {
 		if (StringUtils.isEmpty(pom.name)) {
 			pom.name = pom.artifactId;
 		}
+		
+		mainclass = readString(map, Key.mainclass, null);
 
 		// build parameters
 		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(), true));

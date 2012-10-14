@@ -9,8 +9,6 @@
 	<target name="main">
 		<mx:init />
 		<mx:javac />
-		<mx:jar fatjar="true" includeResources="true" >
-			<mainclass name="org.moxie.proxy.Launcher" />
-		</mx:jar>
+		<mx:jar fatjar="true" includeResources="true" />
 	</target>
 </project>
