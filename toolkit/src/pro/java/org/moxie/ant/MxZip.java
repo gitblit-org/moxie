@@ -16,8 +16,11 @@
 package org.moxie.ant;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tools.ant.taskdefs.Zip;
+import org.apache.tools.ant.types.ZipFileSet;
 import org.moxie.Build;
 import org.moxie.Toolkit.Key;
 import org.moxie.utils.StringUtils;
@@ -30,6 +33,21 @@ public class MxZip extends Zip {
 		setTaskName("mx:zip");
 	}
 	
+	private ZipDependencies dependencies = null;
+	
+	public ZipDependencies createDependencies() {
+		dependencies = new ZipDependencies();
+		return dependencies;
+	}
+
+	private List<ZipArtifact> artifacts = new ArrayList<ZipArtifact>();
+	
+	public ZipArtifact createArtifact() {
+		ZipArtifact artifact = new ZipArtifact();
+		artifacts.add(artifact);
+		return artifact;
+	}
+
 	public void execute() {
 		Build build = (Build) getProject().getReference(Key.build.refId());
 		if (zipFile == null) {
@@ -43,6 +61,34 @@ public class MxZip extends Zip {
 		
 		if (zipFile.getParentFile() != null) {
 			zipFile.getParentFile().mkdirs();
+		}
+		
+		for (ZipArtifact artifact : artifacts) {
+			ZipFileSet fs = new ZipFileSet();
+			fs.setProject(getProject());
+			File file = artifact.getFile();
+			if (file == null) {
+				file = build.getBuildArtifact(artifact.getClassifier());
+			}
+			fs.setDir(file.getParentFile());
+			fs.setIncludes(file.getName());
+			if (!StringUtils.isEmpty(artifact.getPrefix())) {
+				fs.setPrefix(artifact.getPrefix());
+			}
+			addZipfileset(fs);
+		}
+		
+		if (dependencies != null) {
+			for (File jar : build.getSolver().getClasspath(dependencies.getScope())) {
+				ZipFileSet fs = new ZipFileSet();
+				fs.setProject(getProject());
+				if (!StringUtils.isEmpty(dependencies.getPrefix())) {
+					fs.setPrefix(dependencies.getPrefix());
+				}
+				fs.setDir(jar.getParentFile());
+				fs.setIncludes(jar.getName());
+				addZipfileset(fs);
+			}
 		}
 		super.execute();
 	}

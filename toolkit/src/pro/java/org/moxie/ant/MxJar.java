@@ -35,7 +35,6 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.ZipFileSet;
 import org.moxie.Build;
 import org.moxie.MoxieException;
-import org.moxie.Pom;
 import org.moxie.Scope;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
@@ -239,19 +238,7 @@ public class MxJar extends Jar {
 		}
 		
 		if (getDestFile() == null) {
-			// default output jar if file unspecified
-			Pom pom = build.getPom();
-			String name = pom.artifactId;
-			if (!StringUtils.isEmpty(pom.version)) {
-				name += "-" + pom.version;
-			}
-			if (StringUtils.isEmpty(classifier)) {
-				classifier = pom.classifier;
-			}
-			if (!StringUtils.isEmpty(classifier)) {
-				name += "-" + classifier;
-			}
-			setDestFile(new File(build.getConfig().getTargetFolder(), name + ".jar"));
+			setDestFile(build.getBuildArtifact(classifier));
 		}
 		
 		File destFile = getDestFile();

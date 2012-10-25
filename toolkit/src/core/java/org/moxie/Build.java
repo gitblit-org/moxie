@@ -83,6 +83,20 @@ public class Build {
 		return config.getPom();
 	}
 	
+	public File getBuildArtifact(String classifier) {
+		String name = config.getPom().artifactId;
+		if (!StringUtils.isEmpty(config.getPom().version)) {
+			name += "-" + config.getPom().version;
+		}
+		if (StringUtils.isEmpty(classifier)) {
+			classifier = config.getPom().classifier;
+		}
+		if (!StringUtils.isEmpty(classifier)) {
+			name += "-" + classifier;
+		}
+		return new File(getConfig().getTargetFolder(), name + ".jar");
+	}
+	
 	public void setup() {
 		if (config.getRepositories().isEmpty()) {
 			console.warn("No dependency repositories have been defined!");
