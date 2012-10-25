@@ -7,8 +7,23 @@
 	</taskdef>
 	
 	<target name="main">
+		
+		<!-- Run Moxie setup -->
 		<mx:init />
+		
+		<!-- Compile -->
 		<mx:javac />
-		<mx:jar fatjar="true" includeResources="true" />
+		
+		<!-- Build the jar with and use the Moxie Launcher helper -->
+		<mx:jar includeResources="true" >
+			<launcher />
+		</mx:jar>
+		
+		<!-- Create a zip deployment -->
+		<mx:zip>
+			<artifact />
+			<dependencies prefix="ext" />
+		</mx:zip>
+		
 	</target>
 </project>
