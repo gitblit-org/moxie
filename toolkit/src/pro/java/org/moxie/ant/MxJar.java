@@ -16,10 +16,13 @@
 package org.moxie.ant;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -35,6 +38,7 @@ import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.ZipFileSet;
 import org.moxie.Build;
 import org.moxie.MoxieException;
+import org.moxie.MxLauncher;
 import org.moxie.Scope;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
@@ -49,6 +53,7 @@ public class MxJar extends Jar {
 	Build build;
 	Console console;
 
+	LauncherSpec launcher;
 	ClassSpec mainclass;
 	boolean fatjar;
 	boolean includeResources;
@@ -77,6 +82,20 @@ public class MxJar extends Jar {
 			return cs;
 		}
 		throw new MoxieException("Can only specify one main class");
+	}
+	
+	/**
+	 * Builds a <launcher> element.
+	 * 
+	 * @return A <launcher> element.
+	 */
+	public LauncherSpec createLauncher() {
+		if (launcher == null) {
+			LauncherSpec cs = new LauncherSpec(getProject());
+			launcher = cs;			
+			return cs;
+		}
+		throw new MoxieException("Can only specify one launcher class");
 	}
 	
 	public boolean getFatjar() {
@@ -183,7 +202,22 @@ public class MxJar extends Jar {
 			if (mc.endsWith(".class")) {
 				mc = mc.substring(0, mc.length() - ".class".length());
 			}
-			setManifest(manifest, "Main-Class", mc);
+			if (launcher == null) {
+				// use specified mainclass
+				setManifest(manifest, "Main-Class", mc);
+			} else {
+				// inject Moxie Launcher class
+				String mx = launcher.getName().replace('/', '.');
+				if (mx.endsWith(".class")) {
+					mx = mx.substring(0, mx.length() - ".class".length());
+				}
+				setManifest(manifest, "Main-Class", mx);
+				setManifest(manifest, "mxMain-Class", mc);
+				String paths = launcher.getPaths();
+				if (!StringUtils.isEmpty(paths)) {
+					setManifest(manifest, "mxMain-Paths", paths);	
+				}
+			}
 		}
 		try {
 			addConfiguredManifest(manifest);
@@ -257,6 +291,40 @@ public class MxJar extends Jar {
 		MaxmlMap attributes = build.getConfig().getTaskAttributes(getTaskName());
 		AttributeReflector.logAttributes(this, attributes, console);
 
+		// optionally inject MxLauncher utility
+		if (launcher != null) {
+			if (launcher.getName().equals(MxLauncher.class.getName().replace('.', '/') + ".class")) {
+				// inject MxLauncher into the output folder of the project
+				for (String cn : Arrays.asList(MxLauncher.class.getName(), MxLauncher.class.getName() + "$1")) {						
+					try {
+						String fn = cn.replace('.', '/') + ".class";
+						InputStream is = MxLauncher.class.getResourceAsStream("/" + fn);
+						if (is == null) {
+							continue;
+						}
+						build.getConsole().log("Injecting {0} into output folder", cn);
+						File file = new File(outputFolder, fn.replace('/', File.separatorChar));
+						if (file.exists()) {
+							file.delete();
+						}
+						file.getParentFile().mkdirs();
+						FileOutputStream os = new FileOutputStream(file, false);
+						byte [] buffer = new byte[4096];
+						int len = 0;
+						while ((len = is.read(buffer)) > 0) {
+							os.write(buffer,  0,  len);
+						}
+						is.close();
+						os.flush();
+						os.close();
+					} catch (Exception e) {
+						build.getConsole().error(e, "Failed to inject {0} into {1}",
+								launcher.getName(), outputFolder);
+					}
+				}
+			}
+		}
+		
 		long start = System.currentTimeMillis();
 		super.execute();
 
