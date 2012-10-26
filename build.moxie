@@ -1,9 +1,19 @@
+name : Moxie Build Toolkit
 groupId : org.moxie
 artifactId : moxie-parent
 version: 0.5.0-SNAPSHOT
 organization : James Moger 
 inceptionYear : 2012
 url : http://gitblit.github.com/moxie
+apply: eclipse, intellij, pom, cache
 properties: {
   ant.version : 1.8.4
 }
+modules:
+- toolkit
+- maxml
+- moxie+ant
+- proxy
+- common
+- site
+

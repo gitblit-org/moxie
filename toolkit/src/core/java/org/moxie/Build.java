@@ -121,6 +121,7 @@ public class Build {
             // create/update IntelliJ IDEA configuration files
             if (solutionBuilt && (project.apply(Toolkit.APPLY_INTELLIJ)
                     || project.apply(Toolkit.APPLY_INTELLIJ_VAR))) {
+           		writeIntelliJProject();
                 writeIntelliJClasspath();
                 console.notice(1, "rebuilt IntelliJ IDEA configuration");
                 applied = true;
@@ -153,6 +154,10 @@ public class Build {
 	}
 	
 	private void writeEclipseClasspath() {
+    	if (!config.getModules().isEmpty()) {
+    		// do not write classpath file for a parent descriptor
+    		return;
+    	}
 		StringBuilder sb = new StringBuilder();
 		File projectFolder = config.getProjectFolder();
 		for (SourceFolder sourceFolder : config.getProjectConfig().getSourceFolders()) {
@@ -256,6 +261,10 @@ public class Build {
 	}
 	
 	private void writeEclipseProject() {
+    	if (!config.getModules().isEmpty()) {
+    		// do not write project file for a parent descriptor
+    		return;
+    	}
 		File dotProject = new File(config.getProjectFolder(), ".project");
 		if (dotProject.exists()) {
 			// update name and description
@@ -334,8 +343,66 @@ public class Build {
 		
 		FileUtils.writeContent(dotProject, sb.toString());
 	}
+	
+	private void writeIntelliJProject() {
+    	if (config.getModules().isEmpty()) {
+    		// no modules to write project files
+    		return;
+    	}
+		ToolkitConfig project = config.getProjectConfig();
+		File dotIdea = new File(project.baseFolder, ".idea");
+		dotIdea.mkdirs();
+		
+		// Group name prefers name attribute, but will use groupId if required
+		String groupName = project.pom.getGroupId();
+		if (!project.pom.getArtifactId().equals(project.pom.getName())) {
+			groupName = project.pom.getName();
+		}
+		
+        StringBuilder sb = new StringBuilder();
+		for (Module module : project.modules) {
+			File moduleFolder = new File(project.baseFolder, module.folder);
+			File configFile = new File(moduleFolder, module.descriptor);
+			if (!configFile.exists()) {
+				continue;
+			}
+			ToolkitConfig moduleConfig;
+			try {
+				moduleConfig = new ToolkitConfig(configFile, moduleFolder, Toolkit.MOXIE_DEFAULTS);
+				if (StringUtils.isEmpty(moduleConfig.getPom().artifactId)) {
+					console.warn(1, "excluding module ''{0}'' from IntelliJ IDEA project because it has no artifactId!", module.folder);
+					continue;
+				}
+				sb.append(format("<module fileurl=\"file://$PROJECT_DIR$/{0}/{1}.iml\" filepath=\"$PROJECT_DIR$/{0}/{1}.iml\" group=\"{2}\" />\n",
+						module.folder, moduleConfig.getPom().artifactId, groupName));	
+			} catch (Exception e) {
+				console.error(e, "Failed to parse {0} for module {1}!", module.descriptor, module.folder);
+			}
+		}
+
+        StringBuilder modules = new StringBuilder();
+        modules.append("<modules>\n");
+        modules.append(StringUtils.insertHalfTab(sb.toString()));
+        modules.append("</modules>");
+
+        StringBuilder component = new StringBuilder();
+        component.append("<component name=\"ProjectModuleManager\">\n");
+        component.append(StringUtils.insertHalfTab(modules.toString()));
+        component.append("</component>");
+		
+        StringBuilder file = new StringBuilder();
+        file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        file.append("<project version=\"4\">\n");
+        file.append(StringUtils.insertHalfTab(component.toString()));
+        file.append("</project>\n\n");
+        FileUtils.writeContent(new File(dotIdea, "modules.xml"), file.toString());
+	}
 
     private void writeIntelliJClasspath() {
+    	if (!config.getModules().isEmpty()) {
+    		// do not write classpath file for a parent descriptor
+    		return;
+    	}
         File projectFolder = config.getProjectFolder();
 
         StringBuilder sb = new StringBuilder();
@@ -441,8 +508,8 @@ public class Build {
         }
 
         for (Build linkedProject : solver.getLinkedProjects()) {
-            String projectName = linkedProject.getPom().getName();
-            sb.append(format("<orderEntry type=\"module\" module-name=\"{0}\" />\n", projectName));
+            String artifactId = linkedProject.getPom().getArtifactId();
+            sb.append(format("<orderEntry type=\"module\" module-name=\"{0}\" />\n", artifactId));
         }
         sb.append("<orderEntry type=\"inheritedJdk\" />\n");
 
@@ -456,10 +523,16 @@ public class Build {
         file.append("<module type=\"JAVA_MODULE\" version=\"4\">\n");
         file.append(StringUtils.insertHalfTab(component.toString()));
         file.append("</module>\n\n");
-        FileUtils.writeContent(new File(projectFolder, config.getPom().getName() + ".iml"), file.toString());
+        
+        String name = config.getPom().getArtifactId();
+        FileUtils.writeContent(new File(projectFolder, name + ".iml"), file.toString());
     }
 	
 	private void writePOM() {
+    	if (!config.getModules().isEmpty()) {
+    		// do not write a POM file for a parent descriptor
+    		return;
+    	}
 		StringBuilder sb = new StringBuilder();
 		sb.append("<!-- This file is automatically generated by Moxie. DO NOT HAND EDIT! -->\n");
 		sb.append(getPom().toXML(false));

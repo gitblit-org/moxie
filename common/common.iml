@@ -29,7 +29,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module" module-name="Moxie-Maxml" />
+    <orderEntry type="module" module-name="maxml" />
     <orderEntry type="inheritedJdk" />
   </component>
 </module>

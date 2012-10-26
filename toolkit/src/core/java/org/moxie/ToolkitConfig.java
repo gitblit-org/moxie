@@ -55,6 +55,7 @@ public class ToolkitConfig implements Serializable {
 	String mainclass;
 	
 	List<Proxy> proxies;
+	List<Module> modules;
 	List<LinkedProject> linkedProjects;
 	List<String> repositories;
 	List<RemoteRepository> registeredRepositories;
@@ -90,6 +91,7 @@ public class ToolkitConfig implements Serializable {
 		dependencyFolder = null;
 		apply = new TreeSet<String>();
 		proxies = new ArrayList<Proxy>();
+		modules = new ArrayList<Module>();
 		dependencyAliases = new HashMap<String, Dependency>();
 		dependencyOverrides = new HashMap<Scope, Map<String, Pom>>();
 		tasks = new MaxmlMap();
@@ -191,6 +193,7 @@ public class ToolkitConfig implements Serializable {
 		pom.organization = readString(map, Key.organization, pom.organization);
 		pom.organizationUrl = readString(map, Key.organizationUrl, pom.organizationUrl);
 		pom.inceptionYear = readString(map, Key.inceptionYear, pom.inceptionYear);
+		pom.packaging = readString(map, Key.packaging, pom.packaging);
 		pom.getDevelopers().addAll(readPersons(map, Key.developers));
 		pom.getContributors().addAll(readPersons(map, Key.contributors));
 		pom.getLicenses().addAll(readLicenses(map, Key.licenses));
@@ -221,10 +224,11 @@ public class ToolkitConfig implements Serializable {
 		mainclass = readString(map, Key.mainclass, null);
 
 		// build parameters
-		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(), true));
+		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(apply), true));
 		outputFolder = readFile(map, Key.outputFolder, new File(baseFolder, "build"));
 		targetFolder = readFile(map, Key.targetFolder, new File(baseFolder, "target"));
-		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);		
+		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);
+		modules = readModules(map, Key.modules);
 		linkedProjects = readLinkedProjects(map, Key.linkedProjects);
 		dependencyFolder = readFile(map, Key.dependencyFolder, null);
 		
@@ -592,6 +596,15 @@ public class ToolkitConfig implements Serializable {
 			}			
 		}
 		return resolved;
+	}
+	
+	List<Module> readModules(MaxmlMap map, Key key) {
+		List<Module> list = new ArrayList<Module>();
+		for (String def : readStrings(map, key, new ArrayList<String>())) {
+			Module module = new Module(def);
+			list.add(module);
+		}
+		return list;
 	}
 	
 	List<LinkedProject> readLinkedProjects(MaxmlMap map, Key key) {

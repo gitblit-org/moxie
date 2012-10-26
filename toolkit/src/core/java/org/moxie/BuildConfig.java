@@ -212,6 +212,10 @@ public class BuildConfig {
 		return folders;
 	}
 	
+	public List<Module> getModules() {
+		return projectConfig.modules;
+	}
+	
 	public Collection<Repository> getRepositories() {
 		return repositories;
 	}

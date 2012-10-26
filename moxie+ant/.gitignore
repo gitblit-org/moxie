@@ -3,3 +3,4 @@
 /target
 /ext
 /*.classpath
+/pom.xml
