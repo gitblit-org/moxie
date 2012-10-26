@@ -16,7 +16,7 @@
 package org.moxie;
 
 
-public class Module {
+public class Module implements Comparable<Module> {
 
 	final String folder;
 	final String descriptor;
@@ -35,5 +35,10 @@ public class Module {
 		}
 		this.script = "build.xml";
 		this.target = null;
+	}
+	
+	@Override
+	public int compareTo(Module module) {
+		return folder.toLowerCase().compareTo(module.folder.toLowerCase());
 	}
 }

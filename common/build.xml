@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project default="main" xmlns:mx="antlib:org.moxie">
+<project name="common" default="main" xmlns:mx="antlib:org.moxie">
 
 	<!-- Moxie tasks -->
 	<taskdef resource="tasks.properties" uri="antlib:org.moxie">

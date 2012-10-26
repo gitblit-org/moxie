@@ -21,6 +21,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -122,6 +124,7 @@ public class Build {
             if (solutionBuilt && (project.apply(Toolkit.APPLY_INTELLIJ)
                     || project.apply(Toolkit.APPLY_INTELLIJ_VAR))) {
            		writeIntelliJProject();
+           		writeIntelliJAnt();
                 writeIntelliJClasspath();
                 console.notice(1, "rebuilt IntelliJ IDEA configuration");
                 applied = true;
@@ -154,12 +157,16 @@ public class Build {
 	}
 	
 	private void writeEclipseClasspath() {
-    	if (!config.getModules().isEmpty()) {
-    		// do not write classpath file for a parent descriptor
+		if (config.getSourceFolders().isEmpty()
+    			|| config.getPom().isPOM()
+    			|| !config.getModules().isEmpty()) {
+    		// no classpath to write
     		return;
     	}
-		StringBuilder sb = new StringBuilder();
+
 		File projectFolder = config.getProjectFolder();
+		
+		StringBuilder sb = new StringBuilder();
 		for (SourceFolder sourceFolder : config.getProjectConfig().getSourceFolders()) {
 			if (Scope.site.equals(sourceFolder.scope)) {
 				continue;
@@ -349,7 +356,9 @@ public class Build {
     		// no modules to write project files
     		return;
     	}
+    	
 		ToolkitConfig project = config.getProjectConfig();
+		
 		File dotIdea = new File(project.baseFolder, ".idea");
 		dotIdea.mkdirs();
 		
@@ -359,8 +368,11 @@ public class Build {
 			groupName = project.pom.getName();
 		}
 		
+		List<Module> modules = new ArrayList<Module>(config.getModules());
+		Collections.sort(modules);
+		
         StringBuilder sb = new StringBuilder();
-		for (Module module : project.modules) {
+		for (Module module : modules) {
 			File moduleFolder = new File(project.baseFolder, module.folder);
 			File configFile = new File(moduleFolder, module.descriptor);
 			if (!configFile.exists()) {
@@ -370,7 +382,17 @@ public class Build {
 			try {
 				moduleConfig = new ToolkitConfig(configFile, moduleFolder, Toolkit.MOXIE_DEFAULTS);
 				if (StringUtils.isEmpty(moduleConfig.getPom().artifactId)) {
-					console.warn(1, "excluding module ''{0}'' from IntelliJ IDEA project because it has no artifactId!", module.folder);
+					console.warn(2, "excluding module ''{0}'' from IntelliJ IDEA project because it has no artifactId!", module.folder);
+					continue;
+				}
+				if (moduleConfig.getPom().isPOM()) {
+					// skip pom modules
+					console.warn(2, "excluding module ''{0}'' from IntelliJ IDEA project because it is a POM module!", module.folder);
+					continue;
+				}
+				if (moduleConfig.getSourceFolders().isEmpty()) {
+					// skip modules without source folders
+					console.warn(2, "excluding module ''{0}'' from IntelliJ IDEA project because it has no source folders!", module.folder);
 					continue;
 				}
 				sb.append(format("<module fileurl=\"file://$PROJECT_DIR$/{0}/{1}.iml\" filepath=\"$PROJECT_DIR$/{0}/{1}.iml\" group=\"{2}\" />\n",
@@ -380,14 +402,14 @@ public class Build {
 			}
 		}
 
-        StringBuilder modules = new StringBuilder();
-        modules.append("<modules>\n");
-        modules.append(StringUtils.insertHalfTab(sb.toString()));
-        modules.append("</modules>");
+        StringBuilder modulesStr = new StringBuilder();
+        modulesStr.append("<modules>\n");
+        modulesStr.append(StringUtils.insertHalfTab(sb.toString()));
+        modulesStr.append("</modules>");
 
         StringBuilder component = new StringBuilder();
         component.append("<component name=\"ProjectModuleManager\">\n");
-        component.append(StringUtils.insertHalfTab(modules.toString()));
+        component.append(StringUtils.insertHalfTab(modulesStr.toString()));
         component.append("</component>");
 		
         StringBuilder file = new StringBuilder();
@@ -397,12 +419,60 @@ public class Build {
         file.append("</project>\n\n");
         FileUtils.writeContent(new File(dotIdea, "modules.xml"), file.toString());
 	}
-
-    private void writeIntelliJClasspath() {
-    	if (!config.getModules().isEmpty()) {
-    		// do not write classpath file for a parent descriptor
+	
+	private void writeIntelliJAnt() {
+    	if (config.getModules().isEmpty()) {
+    		// no modules to write project files
     		return;
     	}
+    	
+		ToolkitConfig project = config.getProjectConfig();
+		
+		File dotIdea = new File(project.baseFolder, ".idea");
+		dotIdea.mkdirs();
+    	File antFile = new File(dotIdea, "ant.xml");
+    	if (antFile.exists()) {
+    		// do not attempt to update this file
+    		return;
+    	}
+		
+        StringBuilder sb = new StringBuilder();
+
+        File rootAnt = new File(project.baseFolder, "build.xml");
+        if (rootAnt.exists()) {
+        	sb.append(format("<buildFile url=\"file://$PROJECT_DIR$/{0}\" />\n", rootAnt.getName()));
+        }
+
+		for (Module module : project.modules) {
+			File moduleFolder = new File(project.baseFolder, module.folder);
+			File scriptFile = new File(moduleFolder, module.script);
+			if (!scriptFile.exists()) {
+				continue;
+			}
+			sb.append(format("<buildFile url=\"file://$PROJECT_DIR$/{0}/{1}\" />\n", module.folder, module.script));
+		}
+
+        StringBuilder component = new StringBuilder();
+        component.append("<component name=\"AntConfiguration\">\n");
+        component.append(StringUtils.insertHalfTab(sb.toString()));
+        component.append("</component>");
+		
+        StringBuilder file = new StringBuilder();
+        file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        file.append("<project version=\"4\">\n");
+        file.append(StringUtils.insertHalfTab(component.toString()));
+        file.append("</project>\n\n");
+        FileUtils.writeContent(antFile, file.toString());
+	}
+
+    private void writeIntelliJClasspath() {
+    	if (config.getSourceFolders().isEmpty()
+    			|| config.getPom().isPOM()
+    			|| !config.getModules().isEmpty()) {
+    		// no classpath to write
+    		return;
+    	}
+
         File projectFolder = config.getProjectFolder();
 
         StringBuilder sb = new StringBuilder();
@@ -529,8 +599,10 @@ public class Build {
     }
 	
 	private void writePOM() {
-    	if (!config.getModules().isEmpty()) {
-    		// do not write a POM file for a parent descriptor
+		if (config.getSourceFolders().isEmpty()
+    			|| config.getPom().isPOM()
+    			|| !config.getModules().isEmpty()) {
+    		// no POM to write
     		return;
     	}
 		StringBuilder sb = new StringBuilder();

@@ -17,6 +17,13 @@
 		<subant buildpath="${basedir}/proxy" />
 		<subant buildpath="${basedir}/common" />
 		<subant buildpath="${basedir}/site" />
+		
+		<!-- Update IntelliJ IDEA .idea folder -->
+		<taskdef resource="tasks.properties" uri="antlib:org.moxie">
+			<classpath location="${basedir}/toolkit/target/moxie.jar" />
+		</taskdef>
+		<mx:init />
+		
 	</target>
 
 </project>
