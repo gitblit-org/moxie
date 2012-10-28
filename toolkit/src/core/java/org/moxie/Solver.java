@@ -65,7 +65,7 @@ public class Solver {
 	private final Map<Scope, List<File>> classpaths;
 	private final Set<String> registeredUrls;
 	
-	private List<Build> linkedProjects;
+	private List<Build> linkedModuleBuilds;
 	
 	private boolean silent;
 	private boolean verbose;
@@ -77,7 +77,7 @@ public class Solver {
 		this.moxieCache = new MoxieCache(config.getMoxieRoot());
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
 		this.classpaths = new HashMap<Scope, List<File>>();
-		this.linkedProjects = new ArrayList<Build>();
+		this.linkedModuleBuilds = new ArrayList<Build>();
 		this.registeredUrls = new HashSet<String>();
 		this.console = console == null ? new Console(config.isColor()) : console;
 	}
@@ -152,7 +152,7 @@ public class Solver {
 	}
 		
 	public List<Build> getLinkedProjects() {
-		return linkedProjects;
+		return linkedModuleBuilds;
 	}
 
 	public MoxieCache getMoxieCache() {
@@ -222,19 +222,19 @@ public class Solver {
 	}
 	
 	private void solveLinkedProjects(Set<Build> solvedProjects) {
-		if (config.getProjectConfig().linkedProjects.size() > 0) {
+		if (config.getProjectConfig().linkedModules.size() > 0) {
 			console.separator();
 			console.log("solving {0} linked projects", config.getPom().getManagementId());
 			console.separator();
 		}
 		Set<Build> builds = new LinkedHashSet<Build>();
-		for (LinkedProject linkedProject : config.getProjectConfig().linkedProjects) {
+		for (Module linkedProject : config.getProjectConfig().linkedModules) {
 			console.debug(Console.SEP);
-			String resolvedName = config.getPom().resolveProperties(linkedProject.name);
-			if (resolvedName.equals(linkedProject.name)) {
-				console.debug("locating linked project {0}", linkedProject.name);
+			String resolvedName = config.getPom().resolveProperties(linkedProject.folder);
+			if (resolvedName.equals(linkedProject.folder)) {
+				console.debug("locating linked project {0}", linkedProject.folder);
 			} else {
-				console.debug("locating linked project {0} ({1})", linkedProject.name, resolvedName);
+				console.debug("locating linked project {0} ({1})", linkedProject.folder, resolvedName);
 			}
 			File projectDir = new File(resolvedName);
 			console.debug(1, "trying {0}", projectDir.getAbsolutePath());
@@ -242,7 +242,7 @@ public class Solver {
 				projectDir = new File(config.getProjectFolder().getParentFile(), resolvedName);
 				console.debug(1, "trying {0}", projectDir.getAbsolutePath());
 				if (!projectDir.exists()) {
-					String msg = console.error("failed to find linked project \"{0}\".", linkedProject.name);
+					String msg = console.error("failed to find linked project \"{0}\".", linkedProject.folder);
 					throw new MoxieException(msg);
 				}
 			}
@@ -250,7 +250,7 @@ public class Solver {
 				File file = new File(projectDir, linkedProject.descriptor);
 				if (file.exists()) {
 					// use Moxie config
-					console.debug("located linked project {0} ({1})", linkedProject.name, file.getAbsolutePath());
+					console.debug("located linked project {0} ({1})", linkedProject.folder, file.getAbsolutePath());
 					Build subProject = new Build(file.getAbsoluteFile(), null);
 					if (solvedProjects.contains(subProject)) {
 						for (Build solvedProject: solvedProjects) {
@@ -284,16 +284,16 @@ public class Solver {
 						}
 					}
 				} else {
-					console.error("linked project {0} does not have a {1} descriptor!", linkedProject.name, linkedProject.descriptor);
+					console.error("linked module {0} does not have a {1} descriptor!", linkedProject.folder, linkedProject.descriptor);
 				}
 			} catch (Exception e) {
-				console.error(e, "failed to parse linked project {0}", linkedProject.name);
+				console.error(e, "failed to parse linked project {0}", linkedProject.folder);
 				throw new RuntimeException(e);
 			}
 		}
 		
 		// add the list of unique builds
-		linkedProjects.addAll(builds);
+		linkedModuleBuilds.addAll(builds);
 	}
 	
 	private void retrievePOMs() {

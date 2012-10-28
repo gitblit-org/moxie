@@ -56,7 +56,7 @@ public class ToolkitConfig implements Serializable {
 	
 	List<Proxy> proxies;
 	List<Module> modules;
-	List<LinkedProject> linkedProjects;
+	List<Module> linkedModules;
 	List<String> repositories;
 	List<RemoteRepository> registeredRepositories;
 	
@@ -84,7 +84,7 @@ public class ToolkitConfig implements Serializable {
 				new SourceFolder("src/site", Scope.site));
 		outputFolder = new File("build");
 		targetFolder = new File("target");
-		linkedProjects = new ArrayList<LinkedProject>();
+		linkedModules = new ArrayList<Module>();
 		repositories = Arrays.asList("central");
 		registeredRepositories = Arrays.asList(new RemoteRepository("central", "http://repo1.maven.org/maven2"));		
 		pom = new Pom();
@@ -228,8 +228,16 @@ public class ToolkitConfig implements Serializable {
 		outputFolder = readFile(map, Key.outputFolder, new File(baseFolder, "build"));
 		targetFolder = readFile(map, Key.targetFolder, new File(baseFolder, "target"));
 		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);
-		modules = readModules(map, Key.modules);
-		linkedProjects = readLinkedProjects(map, Key.linkedProjects);
+		if (sourceFolders.isEmpty()) {
+			// container descriptors (e.g. POM) can define modules 
+			modules = readModules(map, Key.modules);
+		} else {
+			// standard project/modules can define linkedProjects or modules			
+			linkedModules = readModules(map, Key.modules);
+			if (linkedModules.isEmpty()) {
+				linkedModules = readModules(map, Key.linkedProjects);	
+			}
+		}
 		dependencyFolder = readFile(map, Key.dependencyFolder, null);
 		
 		String policy = readString(map, Key.updatePolicy, null);
@@ -607,15 +615,6 @@ public class ToolkitConfig implements Serializable {
 		return list;
 	}
 	
-	List<LinkedProject> readLinkedProjects(MaxmlMap map, Key key) {
-		List<LinkedProject> list = new ArrayList<LinkedProject>();
-		for (String def : readStrings(map, key, new ArrayList<String>())) {
-			LinkedProject project = new LinkedProject(def);
-			list.add(project);
-		}
-		return list;
-	}
-	
 	List<Person> readPersons(MaxmlMap map, Key key) {
 		List<Person> list = new ArrayList<Person>();
 		if (map.containsKey(key)) {
@@ -724,7 +723,7 @@ public class ToolkitConfig implements Serializable {
 		lastModified = Math.max(lastModified, parent.lastModified);
 
 		proxies = parent.proxies;
-		linkedProjects = parent.linkedProjects;
+		linkedModules = parent.linkedModules;
 		repositories = parent.repositories;
 		registeredRepositories = parent.registeredRepositories;
 

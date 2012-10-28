@@ -3,7 +3,7 @@ description : Java Project Build Toolkit for Ant
 groupId : org.moxie
 artifactId : toolkit
 parent : ../build.moxie
-linkedProjects :
+modules :
 - common
 sourceFolders : 
 - compile src/core/java

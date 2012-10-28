@@ -2,7 +2,7 @@ name : Moxie-Proxy
 description : Stand-alone Maven 2 artifact server and artifact proxy
 parent: ../build.moxie
 artifactId : proxy
-linkedProjects :
+modules :
 - maxml
 - common
 mainclass: org.moxie.proxy.Launcher
