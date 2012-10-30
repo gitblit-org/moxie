@@ -34,7 +34,7 @@ registeredRepositories:
 # Default repositories for dependency retrieval
 repositories: central
 
-apply: color, #debug
+apply: #color, #debug
 
 # Managed dependencies are used to specify versions of dependencies
 # if those versions are not specified in the project's build.moxie.
