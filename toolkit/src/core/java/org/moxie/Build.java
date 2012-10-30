@@ -228,7 +228,7 @@ public class Build {
 		}
 		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(Scope.compile))));
 				
-		for (Build linkedProject : solver.getLinkedProjects()) {
+		for (Build linkedProject : solver.getLinkedModules()) {
 			String projectName = null;
 			File dotProject = new File(linkedProject.config.getProjectFolder(), ".project");
 			if (dotProject.exists()) {
@@ -577,7 +577,7 @@ public class Build {
             sb.append("</orderEntry>\n");
         }
 
-        for (Build linkedProject : solver.getLinkedProjects()) {
+        for (Build linkedProject : solver.getLinkedModules()) {
             String artifactId = linkedProject.getPom().getArtifactId();
             sb.append(format("<orderEntry type=\"module\" module-name=\"{0}\" />\n", artifactId));
         }

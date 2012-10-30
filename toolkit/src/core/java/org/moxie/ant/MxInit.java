@@ -229,7 +229,7 @@ public class MxInit extends MxTask {
 	
 	private List<File> buildDependentProjectsClasspath(Build build) {
 		List<File> folders = new ArrayList<File>();
-		List<Build> libraryProjects = build.getSolver().getLinkedProjects();
+		List<Build> libraryProjects = build.getSolver().getLinkedModules();
 		for (Build project : libraryProjects) {
 			File outputFolder = project.getConfig().getOutputFolder(Scope.compile);
 			folders.add(outputFolder);

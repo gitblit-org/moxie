@@ -151,7 +151,7 @@ public class Solver {
 		}
 	}
 		
-	public List<Build> getLinkedProjects() {
+	public List<Build> getLinkedModules() {
 		return linkedModuleBuilds;
 	}
 
@@ -187,7 +187,7 @@ public class Solver {
 		readProjectSolution();
 		if (solutions.size() == 0) {
 			// solve linked projects
-			solveLinkedProjects(solvedProjects);
+			solveLinkedModules(solvedProjects);
 			
 			// substitute aliases with definitions
 			resolveAliasedDependencies();
@@ -221,73 +221,73 @@ public class Solver {
 		return solutionBuilt;
 	}
 	
-	private void solveLinkedProjects(Set<Build> solvedProjects) {
+	private void solveLinkedModules(Set<Build> solvedModules) {
 		if (config.getProjectConfig().linkedModules.size() > 0) {
 			console.separator();
-			console.log("solving {0} linked projects", config.getPom().getManagementId());
+			console.log("solving {0} modules", config.getPom().getManagementId());
 			console.separator();
 		}
 		Set<Build> builds = new LinkedHashSet<Build>();
-		for (Module linkedProject : config.getProjectConfig().linkedModules) {
+		for (Module linkedModule : config.getProjectConfig().linkedModules) {
 			console.debug(Console.SEP);
-			String resolvedName = config.getPom().resolveProperties(linkedProject.folder);
-			if (resolvedName.equals(linkedProject.folder)) {
-				console.debug("locating linked project {0}", linkedProject.folder);
+			String resolvedName = config.getPom().resolveProperties(linkedModule.folder);
+			if (resolvedName.equals(linkedModule.folder)) {
+				console.debug("locating module {0}", linkedModule.folder);
 			} else {
-				console.debug("locating linked project {0} ({1})", linkedProject.folder, resolvedName);
+				console.debug("locating module {0} ({1})", linkedModule.folder, resolvedName);
 			}
-			File projectDir = new File(resolvedName);
-			console.debug(1, "trying {0}", projectDir.getAbsolutePath());
-			if (!projectDir.exists()) {
-				projectDir = new File(config.getProjectFolder().getParentFile(), resolvedName);
-				console.debug(1, "trying {0}", projectDir.getAbsolutePath());
-				if (!projectDir.exists()) {
-					String msg = console.error("failed to find linked project \"{0}\".", linkedProject.folder);
+			File moduleDir = new File(resolvedName);
+			console.debug(1, "trying {0}", moduleDir.getAbsolutePath());
+			if (!moduleDir.exists()) {
+				moduleDir = new File(config.getProjectFolder().getParentFile(), resolvedName);
+				console.debug(1, "trying {0}", moduleDir.getAbsolutePath());
+				if (!moduleDir.exists()) {
+					String msg = console.error("failed to find module \"{0}\".", linkedModule.folder);
 					throw new MoxieException(msg);
 				}
 			}
 			try {
-				File file = new File(projectDir, linkedProject.descriptor);
+				File file = new File(moduleDir, linkedModule.descriptor);
 				if (file.exists()) {
 					// use Moxie config
-					console.debug("located linked project {0} ({1})", linkedProject.folder, file.getAbsolutePath());
-					Build subProject = new Build(file.getAbsoluteFile(), null);
-					if (solvedProjects.contains(subProject)) {
-						for (Build solvedProject: solvedProjects) {
-							if (solvedProject.equals(subProject)) {
-								// add this subproject and it's dependent projects
-								builds.add(subProject);
-								builds.addAll(subProject.getSolver().getLinkedProjects());
+					console.debug("located module {0} ({1})", linkedModule.folder, file.getAbsolutePath());
+					Build subModule = new Build(file.getAbsoluteFile(), null);
+					if (solvedModules.contains(subModule)) {
+						for (Build solvedProject: solvedModules) {
+							if (solvedProject.equals(subModule)) {
+								// add this submodule and it's dependent modules
+								builds.add(subModule);
+								builds.addAll(subModule.getSolver().getLinkedModules());
 								break;
 							}
 						}
-						console.log(1, "=> already solved project {0}", subProject.getPom().getCoordinates());
+						console.log(1, "=> already solved module {0}", subModule.getPom().getCoordinates());
 						continue;
 					}
-					console.log(1, "=> solving project {0}", subProject.getPom().getCoordinates());
-					subProject.getSolver().silent = true;
-					subProject.getSolver().solve(solvedProjects);
+					console.log(1, "=> solving module {0}", subModule.getPom().getCoordinates());
+					subModule.getSolver().silent = true;
+					subModule.getSolver().solve(solvedModules);
 
-					// add this subproject and it's dependent projects
-					// as solvedProjects for recursive, cross-linked projects
-					solvedProjects.add(subProject);
-					solvedProjects.addAll(subProject.getSolver().getLinkedProjects());
+					// add this subproject and it's dependent modules
+					// as solvedModules for recursive, cross-linked modules
+					solvedModules.add(subModule);
+					solvedModules.addAll(subModule.getSolver().getLinkedModules());
 
-					// add this subproject and it's dependent projects
-					builds.add(subProject);
-					builds.addAll(subProject.getSolver().getLinkedProjects());
+					// add this submodule and it's dependent modules
+					builds.add(subModule);
+					builds.addAll(subModule.getSolver().getLinkedModules());
 					
-					// linked project dependencies are considered ring-1
+					// linked module dependencies are considered ring-1
 					for (Scope scope : new Scope[] { Scope.compile }) {
-						for (Dependency dep : subProject.getPom().getDependencies(scope, Constants.RING1)) {
+						for (Dependency dep : subModule.getPom().getDependencies(scope, Constants.RING1)) {
 							config.getPom().addDependency(dep, scope);
 						}
 					}
 				} else {
-					console.error("linked module {0} does not have a {1} descriptor!", linkedProject.folder, linkedProject.descriptor);
+					console.error("module {0} does not have a {1} descriptor!", linkedModule.folder, linkedModule.descriptor);
 				}
 			} catch (Exception e) {
-				console.error(e, "failed to parse linked project {0}", linkedProject.folder);
+				console.error(e, "failed to parse module {0}", linkedModule.folder);
 				throw new RuntimeException(e);
 			}
 		}

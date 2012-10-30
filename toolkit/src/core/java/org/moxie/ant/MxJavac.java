@@ -148,7 +148,7 @@ public class MxJavac extends Javac {
 		}
 		
 		if (compileLinkedProjects) {
-			for (Build linkedProject: build.getSolver().getLinkedProjects()) {
+			for (Build linkedProject: build.getSolver().getLinkedModules()) {
 				if (builds.contains(linkedProject)) {
 					// already built, skip
 					console.debug(1, "skipping {0}, already compiled", linkedProject.getPom().getManagementId());
@@ -207,7 +207,7 @@ public class MxJavac extends Javac {
 			PathElement element = classpath.createPathElement();
 			element.setLocation(file);
 		}
-		for (Build subbuild : build.getSolver().getLinkedProjects()) {
+		for (Build subbuild : build.getSolver().getLinkedModules()) {
 			PathElement element = classpath.createPathElement();
 			element.setLocation(subbuild.getConfig().getOutputFolder(Scope.compile));
 		}

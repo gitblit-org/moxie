@@ -259,7 +259,7 @@ public class MxJar extends Jar {
 		addFileset(outputSet);
 		
 		// add the output folders of linked projects
-		for (Build linkedProject : build.getSolver().getLinkedProjects()) {
+		for (Build linkedProject : build.getSolver().getLinkedModules()) {
 			FileSet projectOutputSet = new FileSet();
 			projectOutputSet.setProject(getProject());
 			File dir = linkedProject.getConfig().getOutputFolder(Scope.compile);
