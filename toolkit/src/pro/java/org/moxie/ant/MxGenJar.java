@@ -103,7 +103,8 @@ public class MxGenJar extends GenJar {
 	public LauncherSpec createLauncher() {
 		if (launcher == null) {
 			LauncherSpec cs = new LauncherSpec(getProject());
-			launcher = cs;			
+			launcher = cs;
+			jarSpecs.add(cs);
 			return cs;
 		}
 		throw new MoxieException("Can only specify one launcher class");
@@ -205,6 +206,7 @@ public class MxGenJar extends GenJar {
 				ClassSpec cs = new ClassSpec(getProject());
 				mainclass = cs;
 				mainclass.setName(mc);
+				jarSpecs.add(cs);
 			}
 		}
 		
