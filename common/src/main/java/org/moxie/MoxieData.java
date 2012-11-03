@@ -270,11 +270,11 @@ public class MoxieData implements Serializable {
 		if (StringUtils.isEmpty(value)) {
 			return "";
 		}
-		return MessageFormat.format("{0} : {1}\n", key, value);
+		return MessageFormat.format("{0}: {1}\n", key, value);
 	}
 
 	private String kvp(Object key, int value) {
-		return MessageFormat.format("{0} : {1,number,0}\n", key, value);
+		return MessageFormat.format("{0}: {1,number,0}\n", key, value);
 	}
 
 	private String kvp(Object key, Date value) {
@@ -282,7 +282,7 @@ public class MoxieData implements Serializable {
 			return "";
 		}
 		DateFormat df = getDateFormat();
-		return MessageFormat.format("{0} : {1}\n", key, df.format(value));
+		return MessageFormat.format("{0}: {1}\n", key, df.format(value));
 	}
 
 	public String toMaxML() {
@@ -299,7 +299,7 @@ public class MoxieData implements Serializable {
 		
 		sb.append("\n# Moxie metadata\n");
 		sb.append(kvp(Key.solutionVersion, currentSolutionVersion));
-		sb.append(kvp(Key.origin, origin));
+		sb.append(kvp(Key.origin, StringUtils.quote(origin)));
 		sb.append(kvp(Key.lastDownloaded, lastDownloaded));
 		sb.append(kvp(Key.lastChecked, lastChecked));
 		sb.append(kvp(Key.lastUpdated, lastUpdated));
@@ -307,11 +307,11 @@ public class MoxieData implements Serializable {
 		
 		sb.append("\n# transitive solution\n");
 		if (dependencies.size() > 0) {
-			sb.append(MessageFormat.format("{0} :\n", Key.dependencies.name()));
+			sb.append(MessageFormat.format("{0}:\n", Key.dependencies.name()));
 			for (Map.Entry<Scope, Set<Dependency>> entry : dependencies.entrySet()) {
 				for (Dependency dep : entry.getValue()) {
 					// - solutionScope ring coordinates dependencyScope
-					sb.append(MessageFormat.format("- {0} {1,number,0} {2} {3}\n", entry.getKey(), dep.ring, dep.getDetailedCoordinates(), dep.definedScope));
+					sb.append(MessageFormat.format("- {0} {1,number,0} \"{2}\" {3}\n", entry.getKey(), dep.ring, dep.getDetailedCoordinates(), dep.definedScope));
 				}
 			}
 		}

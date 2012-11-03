@@ -286,6 +286,10 @@ public class StringUtils {
 		return value;
 	}
 	
+	public static String quote(String value) {
+		return "\"" + value + "\"";
+	}
+	
 	/**
 	 * Breaks the CSV line into strings.
 	 * 
