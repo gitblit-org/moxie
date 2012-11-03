@@ -1,12 +1,12 @@
-name : Moxie+Ant
-description : Moxie+Ant distribution
-groupId : org.moxie
-artifactId : moxie+ant
-parent : ../build.moxie
-properties : {
+name: Moxie+Ant
+description: Moxie+Ant distribution
+groupId: org.moxie
+artifactId: moxie+ant
+parent: ../build.moxie
+properties: {
  groovy.version : 1.8.8
 }
 dependencyFolder: ext
-dependencies :
-- provided commons-net:commons-net:1.4.0@jar
-- provided org.codehaus.groovy:groovy-all:${groovy.version}
+dependencies:
+- provided "commons-net:commons-net:1.4.0" @jar
+- provided "org.codehaus.groovy:groovy-all:${groovy.version}"

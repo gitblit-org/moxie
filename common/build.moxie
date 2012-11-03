@@ -1,13 +1,13 @@
-name : Moxie-Common
-description : Common classes for Moxie
-groupId : org.moxie
-artifactId : common
-parent : ../build.moxie
-linkedProjects :
+name: Moxie-Common
+description: Common classes for Moxie
+groupId: org.moxie
+artifactId: common
+parent: ../build.moxie
+modules:
 - maxml
-sourceFolders :
-- compile src/main/java
-- test src/test/java
-dependencies :
-- test junit
-- build jacoco
+sourceFolders:
+- compile "src/main/java"
+- test "src/test/java"
+dependencies:
+- test "junit"
+- build "jacoco"

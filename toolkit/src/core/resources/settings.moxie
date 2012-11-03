@@ -15,11 +15,11 @@ proxies:
 #
 # Default minimum count of snapshot revisions to keep
 # minimum acceptable value is 1
-revisionRetentionCount : 1
+revisionRetentionCount: 1
 
 # if the count of snapshot revisions exceeds the specified retention count,
 # then delete all snapshot revisions older than this count of days
-revisionPurgeAfterDays  : 0
+revisionPurgeAfterDays: 0
 
 # Registered Maven 2 repositories.  This section is used to define id-url
 # pairs so that project descriptors can specify an repository id, rather than
@@ -28,7 +28,7 @@ revisionPurgeAfterDays  : 0
 registeredRepositories:
 - { id: central, url: "http://repo1.maven.org/maven2" }
 - { id: mavencentral, url: "http://repo1.maven.org/maven2" }
-- { id: restlet, url: "http://maven.restlet.org", revisionRetentionCount : 1, revisionPurgeAfterDays : 0 }
+- { id: restlet, url: "http://maven.restlet.org", revisionRetentionCount: 1, revisionPurgeAfterDays: 0 }
 - { id: codehaus, url: "http://repository.codehaus.org" }
 
 # Default repositories for dependency retrieval
@@ -39,27 +39,27 @@ apply: #color, #debug
 # Managed dependencies are used to specify versions of dependencies
 # if those versions are not specified in the project's build.moxie.
 dependencyManagement:
-- junit:junit:4.10
-- org.testng:testng:6.7
-- net.sourceforge.cobertura:cobertura:1.9.4.1
-- emma:emma:2.1.5320
-- org.eclipse.jgit:org.eclipse.jgit:2.0.0.201206130900-r
-- org.tautua.markdownpapers:markdownpapers-core:1.2.7
-- org.freemarker:freemarker:2.3.19
-- org.mozilla:rhino:1.7R3
-- org.jacoco:org.jacoco.ant:0.5.9.201207300726
+- "junit:junit:4.10"
+- "org.testng:testng:6.7"
+- "net.sourceforge.cobertura:cobertura:1.9.4.1"
+- "emma:emma:2.1.5320"
+- "org.eclipse.jgit:org.eclipse.jgit:2.0.0.201206130900-r"
+- "org.tautua.markdownpapers:markdownpapers-core:1.2.7"
+- "org.freemarker:freemarker:2.3.19"
+- "org.mozilla:rhino:1.7R3"
+- "org.jacoco:org.jacoco.ant:0.5.9.201207300726"
 
 # dependency aliases allow you to specify shorthand notation for a dependency
 # which will be resolved at runtime to the full coordinates.
 dependencyAliases: {
-	junit : junit:junit
-	testng : org.testng:testng
-	cobertura : net.sourceforge.cobertura:cobertura
-	emma : emma:emma
-	jacoco : org.jacoco:org.jacoco.ant
-	"mx:jgit" : org.eclipse.jgit:org.eclipse.jgit
-	"mx:markdownpapers" : org.tautua.markdownpapers:markdownpapers-core
-	"mx:rhino" : org.mozilla:rhino
+	junit: "junit:junit"
+	testng: "org.testng:testng"
+	cobertura: "net.sourceforge.cobertura:cobertura"
+	emma: "emma:emma"
+	jacoco: "org.jacoco:org.jacoco.ant"
+	"mx:jgit" : "org.eclipse.jgit:org.eclipse.jgit"
+	"mx:markdownpapers" : "org.tautua.markdownpapers:markdownpapers-core"
+	"mx:rhino" : "org.mozilla:rhino"
 }
 
 # Dependency overrides are used to redefine the dependencies of released/published
@@ -80,17 +80,17 @@ dependencyOverrides: {
 	"net.sourceforge.cobertura:cobertura:1.9.4.1" : {
 		scope: build
 		dependencies:
-		- compile oro:oro:2.0.8
-		- compile asm:asm:3.0
-		- compile asm:asm-tree:3.0
-		- compile log4j:log4j:1.2.9
-		- compile org.apache.ant:ant:1.7.0 optional
+		- compile "oro:oro:2.0.8"
+		- compile "asm:asm:3.0"
+		- compile "asm:asm-tree:3.0"
+		- compile "log4j:log4j:1.2.9"
+		- compile "org.apache.ant:ant:1.7.0" optional
 	}
 
 # emma: add emma_ant dependency for build scope
     "emma:emma:2.1.5320" : {
 		scope: build
 		dependencies:
-		- compile emma:emma_ant:2.1.5320
+		- compile "emma:emma_ant:2.1.5320"
 	}
 }

@@ -1,28 +1,28 @@
-name : Moxie-Proxy
-description : Stand-alone Maven 2 artifact server and artifact proxy
+name: Moxie-Proxy
+description: Stand-alone Maven 2 artifact server and artifact proxy
 parent: ../build.moxie
-artifactId : proxy
-modules :
+artifactId: proxy
+modules:
 - maxml
 - common
 mainclass: org.moxie.proxy.Launcher
-sourceFolders :
-- compile src/main/java
-- compile src/main/resources
-- test src/test/java
-- test src/test/resources
-repositories : restlet, central
+sourceFolders:
+- compile "src/main/java"
+- compile "src/main/resources"
+- test "src/test/java"
+- test "src/test/resources"
+repositories: restlet, central
 properties: {
-	restlet.version : 2.1.0
+  restlet.version : 2.1.0
 }
-dependencies :
-- compile org.bouncycastle:bcprov-jdk16:1.46
-- compile org.bouncycastle:bcmail-jdk16:1.46
-- compile org.apache.lucene:lucene-core:3.6.0
-- compile org.restlet.jse:org.restlet.ext.ssl:${restlet.version}
-- compile org.restlet.jse:org.restlet.ext.atom:${restlet.version}
-- compile org.restlet.jse:org.restlet.ext.freemarker:${restlet.version}
-- compile org.restlet.jse:org.restlet.ext.jetty:${restlet.version}
-- compile commons-httpclient:commons-httpclient:3.1
-- compile com.beust:jcommander:1.17
-- test junit
+dependencies:
+- compile "org.bouncycastle:bcprov-jdk16:1.46"
+- compile "org.bouncycastle:bcmail-jdk16:1.46"
+- compile "org.apache.lucene:lucene-core:3.6.0"
+- compile "org.restlet.jse:org.restlet.ext.ssl:${restlet.version}"
+- compile "org.restlet.jse:org.restlet.ext.atom:${restlet.version}"
+- compile "org.restlet.jse:org.restlet.ext.freemarker:${restlet.version}"
+- compile "org.restlet.jse:org.restlet.ext.jetty:${restlet.version}"
+- compile "commons-httpclient:commons-httpclient:3.1"
+- compile "com.beust:jcommander:1.17"
+- test "junit"

@@ -1,11 +1,11 @@
-name : Moxie-Maxml
-description : Maxml parser
-groupId : org.moxie
-artifactId : maxml
-parent : ../build.moxie
-sourceFolders :
-- compile src/main/java
-- test src/test/java
-dependencies :
-- test testng
-- build cobertura
+name: Moxie-Maxml
+description: Maxml parser
+groupId: org.moxie
+artifactId: maxml
+parent: ../build.moxie
+sourceFolders:
+- compile "src/main/java"
+- test "src/test/java"
+dependencies:
+- test "testng"
+- build "cobertura"

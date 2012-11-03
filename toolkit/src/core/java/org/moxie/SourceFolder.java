@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.Serializable;
 import java.text.MessageFormat;
 
+import org.moxie.utils.StringUtils;
+
 
 /**
  * SourceFolder represents a scoped source folder.
@@ -33,7 +35,7 @@ public class SourceFolder implements Serializable {
 	private File classes;
 
 	SourceFolder(String name, Scope scope) {
-		this.name = name;
+		this.name = StringUtils.stripQuotes(name);
 		this.scope = scope;
 	}
 	
