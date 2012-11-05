@@ -333,6 +333,11 @@ public class MxGenJar extends GenJar {
 		long start = System.currentTimeMillis();
 		super.execute();
 
+		if (fatjar) {
+			// try to merge duplicate META-INF/services files
+			JarUtils.mergeMetaInfServices(console, destFile);
+		}
+
 		console.log(1, destFile.getAbsolutePath());
 		console.log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
 		

@@ -236,7 +236,7 @@ public class MxJar extends Jar {
 						ZipFileSet zip = new ZipFileSet();
 						zip.setProject(getProject());
 						zip.setSrc(new File(path));
-						zip.setExcludes("META-INF/*.DSA, META-INF/*.SF, META-INF/*.RSA");
+						zip.setExcludes("about.html, META-INF/*.DSA, META-INF/*.SF, META-INF/*.RSA, META-INF/LICENSE*, META-INF/NOTICE*, META-INF/ASL2.0, META-INF/eclipse.inf");
 						addZipfileset(zip);
 					}
 				}
@@ -328,6 +328,11 @@ public class MxJar extends Jar {
 		long start = System.currentTimeMillis();
 		super.execute();
 
+		if (fatjar) {
+			// try to merge duplicate META-INF/services files
+			JarUtils.mergeMetaInfServices(console, destFile);
+		}
+		
 		console.log(1, "{0} KB, generated in {1} ms", (destFile.length()/1024), System.currentTimeMillis() - start);
 		
 		/*
@@ -382,7 +387,6 @@ public class MxJar extends Jar {
 			
 			start = System.currentTimeMillis();	
 			jar.execute();
-						
 			console.log(1, "{0} KB, generated in {1} ms", (sourcesFile.length()/1024), System.currentTimeMillis() - start);
 		}
 	}
