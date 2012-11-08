@@ -3,13 +3,13 @@ description: project for ${groupId}:${artifactId}
 groupId: ${groupId}
 artifactId: ${artifactId}
 version: ${version}
-type: jar
+packaging: jar
 apply: ${apply}
 sourceFolders:
-- compile src/main/java
-- compile src/main/resources
-- test src/test/java
-- test src/test/resources
+- compile "src/main/java"
+- compile "src/main/resources"
+- test "src/test/java"
+- test "src/test/resources"
 dependencies:
-- test junit
-- build jacoco
+- test "junit"
+- build "jacoco"

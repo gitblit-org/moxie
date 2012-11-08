@@ -333,7 +333,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	
     	// write build.xml
     	try {
-    		is = getClass().getResourceAsStream("/archetypes/build.xml");
+    		is = getClass().getResourceAsStream(MessageFormat.format("/archetypes/{0}.build.xml", project.type));
     		FileOutputStream os = new FileOutputStream(new File(basedir, "build.xml"));
     		byte [] buffer = new byte[4096];
     		int len = 0;

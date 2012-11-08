@@ -1,0 +1,10 @@
+name: ${groupId}:${artifactId}
+description: parent project for ${groupId}
+groupId: ${groupId}
+artifactId: ${artifactId}
+version: ${version}
+packaging: pom
+apply: ${apply}
+modules:
+- module1
+- module2
