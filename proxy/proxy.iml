@@ -45,13 +45,13 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.restlet.ext.ssl-2.1.0.jar">
+      <library name="org.restlet.ext.ssl-2.1.1.jar">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.ssl/2.1.0/org.restlet.ext.ssl-2.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.ssl/2.1.1/org.restlet.ext.ssl-2.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.ssl/2.1.0/org.restlet.ext.ssl-2.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.ssl/2.1.1/org.restlet.ext.ssl-2.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -67,46 +67,46 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.restlet-2.1.0.jar">
+      <library name="org.restlet-2.1.1.jar">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet/2.1.0/org.restlet-2.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet/2.1.1/org.restlet-2.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet/2.1.0/org.restlet-2.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet/2.1.1/org.restlet-2.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.restlet.ext.atom-2.1.0.jar">
+      <library name="org.restlet.ext.atom-2.1.1.jar">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.atom/2.1.0/org.restlet.ext.atom-2.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.atom/2.1.1/org.restlet.ext.atom-2.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.atom/2.1.0/org.restlet.ext.atom-2.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.atom/2.1.1/org.restlet.ext.atom-2.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.restlet.ext.xml-2.1.0.jar">
+      <library name="org.restlet.ext.xml-2.1.1.jar">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.xml/2.1.0/org.restlet.ext.xml-2.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.xml/2.1.1/org.restlet.ext.xml-2.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.xml/2.1.0/org.restlet.ext.xml-2.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.xml/2.1.1/org.restlet.ext.xml-2.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.restlet.ext.freemarker-2.1.0.jar">
+      <library name="org.restlet.ext.freemarker-2.1.1.jar">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.freemarker/2.1.0/org.restlet.ext.freemarker-2.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.freemarker/2.1.1/org.restlet.ext.freemarker-2.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.freemarker/2.1.0/org.restlet.ext.freemarker-2.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.freemarker/2.1.1/org.restlet.ext.freemarker-2.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
@@ -122,13 +122,13 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.restlet.ext.jetty-2.1.0.jar">
+      <library name="org.restlet.ext.jetty-2.1.1.jar">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.jetty/2.1.0/org.restlet.ext.jetty-2.1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.jetty/2.1.1/org.restlet.ext.jetty-2.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.jetty/2.1.0/org.restlet.ext.jetty-2.1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/maven.restlet.org/org/restlet/jse/org.restlet.ext.jetty/2.1.1/org.restlet.ext.jetty-2.1.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
