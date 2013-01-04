@@ -4,8 +4,8 @@ groupId: org.moxie
 artifactId: maxml
 parent: ../build.moxie
 sourceFolders:
-- compile "src/main/java"
-- test "src/test/java"
+- compile 'src/main/java'
+- test 'src/test/java'
 dependencies:
-- test "testng"
-- build "cobertura"
+- test 'testng'
+- build 'cobertura'

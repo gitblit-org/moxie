@@ -6,8 +6,8 @@ parent: ../build.moxie
 modules:
 - maxml
 sourceFolders:
-- compile "src/main/java"
-- test "src/test/java"
+- compile 'src/main/java'
+- test 'src/test/java'
 dependencies:
-- test "junit"
-- build "jacoco"
+- test 'junit'
+- build 'jacoco'
