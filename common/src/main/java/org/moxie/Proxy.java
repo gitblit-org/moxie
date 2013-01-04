@@ -42,12 +42,22 @@ public class Proxy {
 	public List<String> nonProxyHosts = Collections.emptyList();
 
 	public boolean matches(String repositoryId, String url) {
-		if (!StringUtils.isEmpty(repositoryId) && repositories.contains(repositoryId)) {
-			return true;
-		}
-		if (url.startsWith(protocol)) {
-			String host = StringUtils.getHost(url);
+		String host = StringUtils.getHost(url);
+		
+		if (repositories.size() > 0) {
+			// repository id and/or hostname
+			if (!StringUtils.isEmpty(repositoryId) && repositories.contains(repositoryId)) {
+				return true;
+			}
 
+			if (repositories.contains(host)) {
+				// specify host as repository id
+				return true;
+			}
+			return false;
+		}
+		
+		if (url.startsWith(protocol)) {
 			if (proxyHosts.size() > 0) {
 				for (String proxyHost : proxyHosts) {
 					if (host.equalsIgnoreCase(proxyHost)

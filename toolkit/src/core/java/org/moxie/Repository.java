@@ -356,14 +356,19 @@ public class Repository {
 			
 			return file;
 		} catch (MalformedURLException m) {
-			m.printStackTrace();
+			solver.getConsole().error(m);
 		} catch (FileNotFoundException e) {
 			// this repository does not have the requested artifact
 		} catch (IOException e) {
 			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuildConfig().getMoxieConfig().file.getAbsolutePath()), e);
+				java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, repositoryUrl);
+				if (java.net.Proxy.Type.DIRECT == proxy.type()) {
+					throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuildConfig().getMoxieConfig().file.getAbsolutePath()), e);
+				} else {
+					throw new RuntimeException(MessageFormat.format("Failed to use proxy {0} for {1}", proxy, repositoryUrl));
+				}
 			}
 		}
 		return null;
@@ -374,11 +379,13 @@ public class Repository {
 		ByteArrayOutputStream buff = new ByteArrayOutputStream();
 
 		java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, repositoryUrl);
+		solver.getConsole().debug(2, "opening {0} ({1})", repositoryUrl, proxy.toString());
 		URLConnection conn = url.openConnection(proxy);
 		if (java.net.Proxy.Type.DIRECT != proxy.type()) {
 			String auth = solver.getBuildConfig().getProxyAuthorization(name, repositoryUrl);
 			conn.setRequestProperty("Proxy-Authorization", auth);
 		}
+
 		// try to get the server-specified last-modified date of this artifact
 		lastModified = conn.getHeaderFieldDate("Last-Modified", lastModified);
 		
