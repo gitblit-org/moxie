@@ -42,7 +42,8 @@ public class Dependency implements Serializable {
 	public int ring;
 	public String origin;
     public Scope definedScope;
-	
+    public String repositoryId;
+    
 	public Dependency() {
 		type = "jar";
 		resolveDependencies = true;
@@ -108,6 +109,9 @@ public class Dependency implements Serializable {
 				// fixed extension retrieval
 				type = option.substring(1);			
 				resolveDependencies = false;
+			} else if (option.charAt(0) == '#') {
+				// repository preference
+				repositoryId = option.substring(1);			
 			} else {
 				// option
 				options.add(option.toLowerCase());

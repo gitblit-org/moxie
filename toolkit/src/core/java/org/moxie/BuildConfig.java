@@ -219,7 +219,28 @@ public class BuildConfig {
 	public Collection<Repository> getRepositories() {
 		return repositories;
 	}
-	
+
+	public Collection<Repository> getRepositories(String repositoryId) {
+		if (StringUtils.isEmpty(repositoryId)) {
+			return repositories;
+		}
+		Repository preferredRepository = null;
+		List<Repository> list = new ArrayList<Repository>();
+		for (Repository repository : repositories) {
+			list.add(repository);
+			String host = StringUtils.getHost(repository.repositoryUrl);
+			if (repositoryId.equalsIgnoreCase(repository.name)
+					|| repositoryId.equalsIgnoreCase(host)) {
+				preferredRepository = repository;
+			}
+		}
+		if (preferredRepository != null) {
+			list.remove(preferredRepository);
+			list.add(0, preferredRepository);
+		}
+		return list;
+	}
+
 	public java.net.Proxy getProxy(String repositoryId, String url) {
 		if (proxies.size() == 0) {
 			return java.net.Proxy.NO_PROXY;

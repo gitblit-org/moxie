@@ -709,7 +709,7 @@ public class Solver {
 			// POM dependencies do not have other artifacts
 			if (dependency.isSnapshot()) {
 				// ... but we still have to purge old pom snapshots
-				for (Repository repository : config.getRepositories()) {
+				for (Repository repository : config.getRepositories(dependency.repositoryId)) {
 					if (!repository.isSource(dependency)) {
 						// dependency incompatible with repository
 						continue;
@@ -723,7 +723,7 @@ public class Solver {
 		}
 		
 		// standard artifact
-		for (Repository repository : config.getRepositories()) {
+		for (Repository repository : config.getRepositories(dependency.repositoryId)) {
 			if (!repository.isSource(dependency)) {
 				// dependency incompatible with repository
 				continue;
