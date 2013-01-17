@@ -38,6 +38,7 @@ public class Dependency implements Serializable {
 	public boolean optional;	
 	public boolean resolveDependencies;
 	public Set<String> exclusions;
+	public Set<String> tags;
 
 	public int ring;
 	public String origin;
@@ -48,6 +49,7 @@ public class Dependency implements Serializable {
 		type = "jar";
 		resolveDependencies = true;
 		exclusions = new TreeSet<String>();
+		tags = new TreeSet<String>();
 	}
 	
 	public Dependency(String def) {
@@ -100,6 +102,7 @@ public class Dependency implements Serializable {
 
 		// determine dependency options and transitive dependency exclusions
 		exclusions = new TreeSet<String>();
+		tags = new TreeSet<String>();
 		Set<String> options = new TreeSet<String>();
 		for (String option : principals) {
 			if (option.charAt(0) == '-' || option.charAt(0) == '!') {
@@ -112,9 +115,12 @@ public class Dependency implements Serializable {
 			} else if (option.charAt(0) == '^') {
 				// repository preference
 				repositoryId = option.substring(1);
+			} else if (option.charAt(0) == ':') {
+				// tag
+				tags.add(option.substring(1).toLowerCase());			
 			} else if (option.charAt(0) == '#') {
 				// comment
-				break;				
+				break;
 			} else {
 				// option
 				options.add(option.toLowerCase());

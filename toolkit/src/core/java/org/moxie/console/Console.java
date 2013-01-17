@@ -160,6 +160,10 @@ public class Console {
 				rs.append(md).append(license.url).append('\n');
 			}
 		}
+		if (!dependency.tags.isEmpty()) {
+			out.append(md).println(ansi().fg(Color.YELLOW).a(dependency.tags).reset());
+			rs.append('\n').append(md).append(dependency.tags);
+		}
 		return rs.toString();
 	}
 	

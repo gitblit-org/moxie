@@ -51,7 +51,7 @@ public class DependencyReport implements MoxieReport {
 			first = false;
 			sb.append("<div class=\"row-fluid\">\n");
 			sb.append("<table class=\"table table-striped table-bordered table-condensed\">\n");
-			sb.append(format("<thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th><th>{4}</th></tr></thead>\n", "ring", "artifact", "size", "links", "license"));
+			sb.append(format("<thead><tr><th>{0}</th><th>{1}</th><th>{2}</th><th>{3}</th><th>{4}</th><th>{5}</th></tr></thead>\n", "ring", "artifact", "size", "groups", "links", "license"));
 			sb.append("<tbody>\n");
 			for (Dependency dep : dependencies) {
 				File file = build.getSolver().getArtifact(dep);
@@ -74,7 +74,7 @@ public class DependencyReport implements MoxieReport {
 				sb.append(format("<tr><td><span class=\"badge {1}\">{0,number,0}</span></td>", dep.ring, badge));
 				if (!dep.isMavenObject()) {
 					// not a Maven artifact
-					sb.append(format("<td>{0}</td><td>{1}</td><td></td>", depPom.getCoordinates(), size));
+					sb.append(format("<td>{0}</td><td>{1}</td><td></td><td>{2}</td>", depPom.getCoordinates(), size, dep.tags));
 				} else {
 					// Maven artifact
 					String mvnrepository = format("http://mvnrepository.com/artifact/{0}/{1}/{2}", depPom.groupId, depPom.artifactId, depPom.version);
@@ -87,7 +87,7 @@ public class DependencyReport implements MoxieReport {
 					if (!StringUtils.isEmpty(depPom.issuesUrl)) {
 						issuesLink = format(aPattern, "issues", depPom.issuesUrl);
 					}
-					sb.append("<td>").append(mvnLink).append(format("</td><td>{0}</td><td>{1}</td>", size, siteLink + "&nbsp;" + issuesLink));
+					sb.append("<td>").append(mvnLink).append(format("</td><td>{0}</td><td>{1}</td><td>{2}</td>", size, dep.tags, siteLink + "&nbsp;" + issuesLink));
 				}
 				sb.append("<td>");
 				if (depPom.getLicenses().size() == 0) {

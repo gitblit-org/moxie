@@ -467,6 +467,7 @@ public class Solver {
 		if (dependencies.size() > 0) {			
 			for (Dependency dep : dependencies) {
 				if (!dependency.excludes(dep)) {
+					dep.tags.addAll(dependency.tags);
 					resolved.add(dep);
 					resolved.addAll(solve(scope, dep));
 				}
@@ -916,7 +917,12 @@ public class Solver {
 	}
 	
 	public List<File> getClasspath(Scope scope) {
-		if (classpaths.containsKey(scope)) {
+		return getClasspath(scope, null);
+	}
+	
+	public List<File> getClasspath(Scope scope, String tag) {
+		if (classpaths.containsKey(scope) && StringUtils.isEmpty(tag)) {
+			// return scoped classpath for non-tag query
 			return classpaths.get(scope);
 		}
 		
@@ -925,10 +931,20 @@ public class Solver {
 				&& config.getProjectConfig().getDependencyFolder().exists()) {
 			projectFolder = config.getProjectConfig().getDependencyFolder();
 		}
-		console.debug("solving {0} classpath", scope);
+		if (StringUtils.isEmpty(tag)) {
+			console.debug("solving {0} classpath", scope);
+		} else {
+			console.debug("solving {0} {1} classpath", tag, scope);
+		}
 		Set<Dependency> dependencies = solve(scope);
 		List<File> jars = new ArrayList<File>();
 		for (Dependency dependency : dependencies) {
+			if (!StringUtils.isEmpty(tag)) {
+				// filter deps by tag
+				if (!dependency.tags.contains(tag.toLowerCase())) {
+					continue;
+				}
+			}
 			File jar;
 			if (dependency instanceof SystemDependency) {
 				SystemDependency sys = (SystemDependency) dependency;				
@@ -944,7 +960,10 @@ public class Solver {
 			}
 			jars.add(jar);
 		}
-		classpaths.put(scope, jars);
+		if (StringUtils.isEmpty(tag)) {
+			// store scoped classpath if not filtering by tag
+			classpaths.put(scope, jars);
+		}
 		return jars;
 	}
 }

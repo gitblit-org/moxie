@@ -16,6 +16,7 @@
 package org.moxie.ant;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +80,7 @@ public class MxZip extends Zip {
 		}
 		
 		if (dependencies != null) {
-			for (File jar : build.getSolver().getClasspath(dependencies.getScope())) {
+			for (File jar : build.getSolver().getClasspath(dependencies.getScope(), dependencies.getTag())) {
 				ZipFileSet fs = new ZipFileSet();
 				fs.setProject(getProject());
 				if (!StringUtils.isEmpty(dependencies.getPrefix())) {

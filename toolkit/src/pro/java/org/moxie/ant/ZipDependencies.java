@@ -20,7 +20,8 @@ import org.moxie.Scope;
 public class ZipDependencies {
 
 	private Scope scope;
-	private String prefix; 
+	private String prefix;
+	private String tag;
 	
 	public ZipDependencies() {
 		scope = Scope.compile;
@@ -40,5 +41,13 @@ public class ZipDependencies {
 	
 	public String getPrefix() {
 		return prefix;
+	}
+	
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+	
+	public String getTag() {
+		return tag;
 	}
 }
