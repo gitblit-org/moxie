@@ -192,6 +192,8 @@
 			<class name="org.moxie.ant.MxExtract" />
 			<class name="org.moxie.ant.MxGitId" />
 			<class name="org.moxie.ant.MxGhPages" />
+			<class name="org.moxie.ant.MxThumbs" />
+			<class name="org.moxie.ant.MxWebXml" />
 
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
@@ -243,6 +245,8 @@
 			<class name="org.moxie.ant.MxExtract" />
 			<class name="org.moxie.ant.MxGitId" />
 			<class name="org.moxie.ant.MxGhPages" />
+			<class name="org.moxie.ant.MxThumbs" />
+			<class name="org.moxie.ant.MxWebXml" />
 			
 			<!-- all -->
 			<class name="org.moxie.ant.MxDoc" />

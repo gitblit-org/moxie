@@ -47,7 +47,7 @@ dependencyManagement:
 - "org.tautua.markdownpapers:markdownpapers-core:1.2.7"
 - "org.freemarker:freemarker:2.3.19"
 - "org.mozilla:rhino:1.7R3"
-- "org.jacoco:org.jacoco.ant:0.5.9.201207300726"
+- "org.jacoco:org.jacoco.ant:0.6.0.201210061924"
 
 # dependency aliases allow you to specify shorthand notation for a dependency
 # which will be resolved at runtime to the full coordinates.
