@@ -109,9 +109,12 @@ public class Dependency implements Serializable {
 				// fixed extension retrieval
 				type = option.substring(1);			
 				resolveDependencies = false;
-			} else if (option.charAt(0) == '#') {
+			} else if (option.charAt(0) == '^') {
 				// repository preference
-				repositoryId = option.substring(1);			
+				repositoryId = option.substring(1);
+			} else if (option.charAt(0) == '#') {
+				// comment
+				break;				
 			} else {
 				// option
 				options.add(option.toLowerCase());
