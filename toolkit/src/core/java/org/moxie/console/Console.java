@@ -162,7 +162,7 @@ public class Console {
 		}
 		if (!dependency.tags.isEmpty()) {
 			out.append(md).println(ansi().fg(Color.YELLOW).a(dependency.tags).reset());
-			rs.append('\n').append(md).append(dependency.tags);
+			rs.append(md).append(dependency.tags).append('\n');
 		}
 		return rs.toString();
 	}
