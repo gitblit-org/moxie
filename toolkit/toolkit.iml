@@ -228,55 +228,57 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="PROVIDED">
-      <library name="org.jacoco.ant-0.5.9.201207300726.jar">
+      <library name="org.jacoco.ant-0.6.0.201210061924.jar">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.ant/0.5.9.201207300726/org.jacoco.ant-0.5.9.201207300726.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.ant/0.6.0.201210061924/org.jacoco.ant-0.6.0.201210061924.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.ant/0.5.9.201207300726/org.jacoco.ant-0.5.9.201207300726-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.ant/0.6.0.201210061924/org.jacoco.ant-0.6.0.201210061924-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.jacoco.core-0.5.9.201207300726.jar">
+      <library name="org.jacoco.core-0.6.0.201210061924.jar">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.core/0.5.9.201207300726/org.jacoco.core-0.5.9.201207300726.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.core/0.6.0.201210061924/org.jacoco.core-0.6.0.201210061924.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.core/0.5.9.201207300726/org.jacoco.core-0.5.9.201207300726-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.core/0.6.0.201210061924/org.jacoco.core-0.6.0.201210061924-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="asm-commons-3.3.1.jar">
+      <library name="asm-all-4.0.jar">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/asm/asm-commons/3.3.1/asm-commons-3.3.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="org.jacoco.report-0.5.9.201207300726.jar">
-        <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.report/0.5.9.201207300726/org.jacoco.report-0.5.9.201207300726.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/ow2/asm/asm-all/4.0/asm-all-4.0.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.report/0.5.9.201207300726/org.jacoco.report-0.5.9.201207300726-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/ow2/asm/asm-all/4.0/asm-all-4.0-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
-      <library name="org.jacoco.agent-0.5.9.201207300726.jar">
+      <library name="org.jacoco.report-0.6.0.201210061924.jar">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.agent/0.5.9.201207300726/org.jacoco.agent-0.5.9.201207300726.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.report/0.6.0.201210061924/org.jacoco.report-0.6.0.201210061924.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.agent/0.5.9.201207300726/org.jacoco.agent-0.5.9.201207300726-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.report/0.6.0.201210061924/org.jacoco.report-0.6.0.201210061924-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.jacoco.agent-0.6.0.201210061924.jar">
+        <CLASSES>
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.agent/0.6.0.201210061924/org.jacoco.agent-0.6.0.201210061924.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$USER_HOME$/.moxie/remote/repo1.maven.org_maven2/org/jacoco/org.jacoco.agent/0.6.0.201210061924/org.jacoco.agent-0.6.0.201210061924-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
