@@ -104,7 +104,8 @@ public class MxKeys extends MxTask {
 			fw.write(root.generateClass(className));
 			fw.close();
 			getConsole().title(getClass(), className);
-			getConsole().log("{0} generated from {1}", file, propertiesFile);
+			getConsole().key("input",propertiesFile.getAbsolutePath());
+			getConsole().key("output", file.getAbsolutePath());
 		} catch (Throwable t) {
 			getConsole().error(t);
 		}
