@@ -101,6 +101,9 @@ abstract class PathResolver {
 	protected Logger log;
 
 	private static SimpleDateFormat dateFmt = null;
+	
+	/** flag to indicate classes from resolver should be completely excluded */
+	private boolean excluded;
 
 	/**
 	 * Constructor for the PathResolver object
@@ -108,7 +111,8 @@ abstract class PathResolver {
 	 * @param log
 	 *            Description of the Parameter
 	 */
-	PathResolver(Logger log) {
+	PathResolver(boolean excluded, Logger log) {
+		this.excluded = excluded;
 		this.log = log;
 		if (dateFmt == null) {
 			dateFmt = new SimpleDateFormat(RFC1123, Locale.getDefault());
@@ -179,5 +183,16 @@ abstract class PathResolver {
 	 */
 	protected String formatDate(long l) {
 		return formatDate(new Date(l));
+	}
+	
+	
+	/**
+	 * Used to determine if classes from a resolver should be excluded from
+	 * target jars.
+	 * 
+	 * @return
+	 */
+	protected boolean isExcluded() {
+		return excluded;
 	}
 }

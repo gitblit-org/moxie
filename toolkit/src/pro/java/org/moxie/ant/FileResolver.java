@@ -87,7 +87,7 @@ class FileResolver extends PathResolver {
 	 *            an ant logging mechanism
 	 */
 	FileResolver(File base, Logger log) {
-		super(log);
+		super(false, log);
 
 		this.base = base;
 		log.verbose("Resolver: " + base);
@@ -152,4 +152,10 @@ class FileResolver extends PathResolver {
 		}
 		return is;
 	}
+	
+	@Override
+	public String toString() {
+		return "Resolver " + (isExcluded() ? "EXCLUDED" : "") + " (" + base.getPath() + ")";
+	}
+
 }

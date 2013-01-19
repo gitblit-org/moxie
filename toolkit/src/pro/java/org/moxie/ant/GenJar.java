@@ -56,6 +56,7 @@ import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -92,6 +93,8 @@ public class GenJar extends Task {
 	protected Manifest mft = Manifest.getDefaultManifest();
 
 	protected Path classpath = null;
+	
+	protected Path librarypath = null;
 
 	private ClassFilter classFilter = null;
 
@@ -108,6 +111,8 @@ public class GenJar extends Task {
 	private Logger logger = null;
 	
 	protected String version;
+	
+	boolean excludeClasspathJars;
 	
 	/**
 	 * main execute for genjar
@@ -139,31 +144,19 @@ public class GenJar extends Task {
 		try {
 			if (classpath == null) {
 				classpath = new Path(getProject());
-			}
-			if (!classpath.isReference()) {
-				//
-				// don't like this - I could find no way to build
-				// the classpath dynamically from the LibrarySpec
-				// objects - the path just disappeared (has something
-				// with actual execution order I think) - so here's the
-				// brute force approach - if the library is of jar type
-				// then it'll return a Path object that we can insert
-				//
-				for (LibrarySpec lib : libraries) {
-					Path p = lib.getPathElement();
-					if (p != null) {
-						classpath.addExisting(p);
-					}
-				}
-
-				//
-				// add the system path now - AFTER all other paths are
-				// specified
-				//
 				classpath.addExisting(Path.systemClasspath);
+			}
+			librarypath = new Path(getProject());
+
+			for (LibrarySpec lib : libraries) {
+				Path p = lib.getPathElement();
+				if (p != null) {
+					librarypath.addExisting(p);
+				}
 			}
 			logger.verbose("Initializing Path Resolvers");
 			logger.verbose("Classpath:" + classpath);
+			logger.verbose("Librarypath:" + librarypath);
 			initPathResolvers();
 		} catch (IOException ioe) {
 			throw new MoxieException("Unable to process classpath: " + ioe,
@@ -184,9 +177,7 @@ public class GenJar extends Task {
 			try {
 				js.resolve(this);
 			} catch (FileNotFoundException ioe) {
-				throw new MoxieException("Unable to resolve: " + js.getName()
-						+ "\nFileNotFound=" + ioe.getMessage(), ioe,
-						getLocation());
+				throw new ResolutionFailedException(js.getName(), ioe.getMessage());
 			} catch (IOException ioe) {
 				throw new MoxieException("Unable to resolve: " + js.getName()
 						+ "\nMSG=" + ioe.getMessage(), ioe, getLocation());
@@ -449,22 +440,31 @@ public class GenJar extends Task {
 	 *             Description of the Exception
 	 */
 	private void initPathResolvers() throws IOException {
-		for (String pc : classpath.list()) {
+		// classes classpath can be excluded if class source is jar
+		initPathResolvers(classpath, excludeClasspathJars);
+		// classes on the library path are never excluded
+		initPathResolvers(librarypath, false);
+	}
+	
+	private void initPathResolvers(Path path, boolean excludeJars) throws IOException {
+		for (String pc : path.list()) {
 			File f = new File(pc);
 			if (!f.exists()) {
 				continue;
 			}
-
+			PathResolver resolver = null;
 			if (f.isDirectory()) {
-				resolvers.add(new FileResolver(f, logger));
+				resolver = new FileResolver(f, logger);
 			} else if (f.getName().toLowerCase().endsWith(".jar")) {
-				resolvers.add(new JarResolver(f, logger));
+				resolver = new JarResolver(f, excludeJars, logger);
 			} else if (f.getName().toLowerCase().endsWith(".zip")) {
-				resolvers.add(new ZipResolver(f, logger));
+				resolver = new ZipResolver(f, logger);
 			} else {
 				throw new MoxieException(f.getName()
 						+ " is not a valid classpath component", getLocation());
 			}
+			logger.debug("added " + resolver);
+			resolvers.add(resolver);
 		}
 	}
 
@@ -509,12 +509,16 @@ public class GenJar extends Task {
 	 * @throws IOException
 	 *             Description of the Exception
 	 */
-	InputStream resolveEntry(String cname) throws IOException {
+	InputStream resolveEntry(String cname) throws IOException, ExcludedResolverException {
 		InputStream is = null;
 
 		for (PathResolver resolver : resolvers) {
 			is = resolver.resolve(cname);
 			if (is != null) {
+				if (resolver.isExcluded()) {
+					is.close();
+					throw new ExcludedResolverException(resolver.toString());
+				}
 				return is;
 			}
 		}
@@ -533,8 +537,13 @@ public class GenJar extends Task {
 	void generateDependencies(List<JarEntrySpec> entries) throws IOException {
 		Set<String> dependents = new TreeSet<String>();
 
-		for (JarEntrySpec js : entries) {
-			generateClassDependencies(js.getJarName(), dependents);
+		Iterator<JarEntrySpec> itr = entries.iterator();
+		while (itr.hasNext()) {
+			JarEntrySpec js = itr.next();
+			if (!generateClassDependencies(js.getJarName(), dependents)) {
+				// class is located in an excluded source, exclude entry
+				itr.remove();
+			}
 		}
 
 		for (String dependent : dependents) {
@@ -551,16 +560,27 @@ public class GenJar extends Task {
 	 *            Description of the Parameter
 	 * @throws IOException
 	 *             Description of the Exception
+	 * @return true if the class should be kept
 	 */
-	void generateClassDependencies(String classFileName, Set<String> classes)
+	boolean generateClassDependencies(String classFileName, Set<String> classes)
 			throws IOException {
 		if (!resolved.contains(classFileName)) {
 			resolved.add(classFileName);
-			InputStream is = resolveEntry(classFileName);
+			
+			InputStream is = null;
+			try {			
+				is = resolveEntry(classFileName);
+			} catch (ExcludedResolverException e) {
+				// class is located in an excluded source
+				// remove from entry list
+				logger.debug(MessageFormat.format("{0} is located in {1}", classFileName, e.getMessage()));
+				return false;
+			}
+
 			if (is == null) {
 				throw new FileNotFoundException(classFileName);
 			}
-
+			
 			List<String> referenced = ClassUtil.getDependencies(is);
 
 			for (String name : referenced) {
@@ -571,9 +591,23 @@ public class GenJar extends Task {
 				}
 
 				classes.add(cname);
-				generateClassDependencies(cname, classes);
+				if (!generateClassDependencies(cname, classes)) {
+					// dependent class is located in an excluded source
+					// remove from list
+					classes.remove(cname);
+				}
 			}
 			is.close();
+		}
+		return true;
+	}
+	
+	private static class ExcludedResolverException extends Exception {
+		
+		private static final long serialVersionUID = 1L;
+
+		public ExcludedResolverException(String source) {
+			super(source);
 		}
 	}
 }

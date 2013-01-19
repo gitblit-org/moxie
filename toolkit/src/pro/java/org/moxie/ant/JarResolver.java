@@ -95,8 +95,8 @@ class JarResolver extends PathResolver {
 	 * @throws IOException
 	 *             Oops!
 	 */
-	JarResolver(File file, Logger log) throws IOException {
-		super(log);
+	JarResolver(File file, boolean excluded, Logger log) throws IOException {
+		super(excluded, log);
 
 		this.file = file;
 		this.jarFile = new JarFile(file);
@@ -154,5 +154,10 @@ class JarResolver extends PathResolver {
 			log.debug(fname + "->" + file);
 		}
 		return is;
+	}
+	
+	@Override
+	public String toString() {
+		return "Resolver " + (isExcluded() ? "EXCLUDED" : "") + " (" + file.getPath() + ")";
 	}
 }

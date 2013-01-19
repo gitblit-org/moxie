@@ -71,6 +71,7 @@ public class MxGenJar extends GenJar {
 	String includes;
 	String excludes;
 	boolean packageSources;
+	String tag;
 
 	String classifier;
 	private boolean configured;
@@ -118,6 +119,14 @@ public class MxGenJar extends GenJar {
 		this.fatjar = value;
 	}
 	
+	public boolean getExcludeclasspathjars() {
+		return excludeClasspathJars;
+	}
+
+	public void setExcludeclasspathjars(boolean value) {
+		this.excludeClasspathJars = value;
+	}
+	
 	public boolean getExcludepomfiles() {
 		return excludePomFiles;
 	}
@@ -148,6 +157,14 @@ public class MxGenJar extends GenJar {
 
 	public void setExcludes(String excludes) {
 		this.excludes = excludes;
+	}
+
+	public String getDependencies() {
+		return tag;
+	}
+
+	public void setDependencies(String tag) {
+		this.tag = tag;
 	}
 
 	public String getClassifier() {
@@ -197,6 +214,10 @@ public class MxGenJar extends GenJar {
 			configure(build);
 		}
 		
+		if (fatjar && excludeClasspathJars) {
+			throw new BuildException("Can not specify fatjar and excludeClasspathJars!");
+		}
+		
 		// automatic manifest entries from Moxie metadata
 		configureManifest(mft);
 
@@ -235,25 +256,22 @@ public class MxGenJar extends GenJar {
 
 		// automatic classpath resolution, if not manually specified
 		if (classpath == null) {
-			Object o = getProject().getReference(Key.compile_classpath.refId());
-			if (o != null && o instanceof Path) {
-				Path cp = (Path) o;
-				if (fatjar) {
-					// FatJar generation
-					classpath = createClasspath();					
-					for (String path : cp.list()) {
-						if (path.toLowerCase().endsWith(".jar")) {
-							LibrarySpec lib = createLibrary();
-							lib.setJar(path);
-						} else {
-							PathElement element = classpath.createPathElement();
-							element.setPath(path);
-						}
+			Path cp = buildClasspath(build, Scope.compile, tag);
+			if (fatjar) {
+				// FatJar generation
+				classpath = createClasspath();					
+				for (String path : cp.list()) {
+					if (path.toLowerCase().endsWith(".jar")) {
+						LibrarySpec lib = createLibrary();
+						lib.setJar(path);
+					} else {
+						PathElement element = classpath.createPathElement();
+						element.setPath(path);
 					}
-				} else {
-					// standard GenJar class dependency resolution
-					classpath = cp;
 				}
+			} else {
+				// standard GenJar class dependency resolution
+				classpath = cp;
 			}
 		}
 		
@@ -331,7 +349,19 @@ public class MxGenJar extends GenJar {
 		}
 		
 		long start = System.currentTimeMillis();
-		super.execute();
+		try {
+			super.execute();
+		} catch (ResolutionFailedException e) {
+			String msg;
+			if (tag == null) {
+				String template = "Unable to resolve: {0}\n\n{1} could not be located on the classpath.\n";
+				msg = MessageFormat.format(template, e.resolvingclass, e.missingclass, tag == null ? "classpath" : ("\"" + tag + "\" classpath"), tag);
+			} else {
+				String template = "Unable to resolve: {0}\n\n{1} could not be located on the \"{2}\" classpath.\nPlease add the \":{2}\" tag to the appropriate dependency in your Moxie descriptor file.\n";
+				msg = MessageFormat.format(template, e.resolvingclass, e.missingclass, tag);
+			}
+			throw new MoxieException(msg);
+		}
 
 		if (fatjar) {
 			// try to merge duplicate META-INF/services files
@@ -525,4 +555,38 @@ public class MxGenJar extends GenJar {
 		}
 	}
 
+	private Path buildClasspath(Build build, Scope scope, String tag) {
+		List<File> jars = build.getSolver().getClasspath(scope, tag);
+		Path cp = new Path(getProject());
+		// output folder
+		PathElement of = cp.createPathElement();
+		of.setLocation(build.getConfig().getOutputFolder(scope));
+		if (!scope.isDefault()) {
+			of.setLocation(build.getConfig().getOutputFolder(Scope.compile));
+		}
+		
+		// add project dependencies 
+		for (File folder : buildDependentProjectsClasspath(build)) {
+			PathElement element = cp.createPathElement();
+			element.setLocation(folder);
+		}
+		
+		// jars
+		for (File jar : jars) {
+			PathElement element = cp.createPathElement();
+			element.setLocation(jar);
+		}
+
+		return cp;
+	}
+	
+	private List<File> buildDependentProjectsClasspath(Build build) {
+		List<File> folders = new ArrayList<File>();
+		List<Build> libraryProjects = build.getSolver().getLinkedModules();
+		for (Build project : libraryProjects) {
+			File outputFolder = project.getConfig().getOutputFolder(Scope.compile);
+			folders.add(outputFolder);
+		}		
+		return folders;
+	}
 }

@@ -91,7 +91,7 @@ class ZipResolver extends PathResolver {
 	 *             Oops!
 	 */
 	ZipResolver(File f, Logger log) throws IOException {
-		super(log);
+		super(false, log);
 
 		file = f;
 		zip = new ZipFile(file);
@@ -147,4 +147,10 @@ class ZipResolver extends PathResolver {
 		}
 		return is;
 	}
+	
+	@Override
+	public String toString() {
+		return "Resolver " + (isExcluded() ? "EXCLUDED" : "") + " (" + file.getPath() + ")";
+	}
+
 }
