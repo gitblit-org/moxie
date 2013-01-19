@@ -19,10 +19,10 @@ dependencies:
 - compile 'org.bouncycastle:bcprov-jdk16:1.46'
 - compile 'org.bouncycastle:bcmail-jdk16:1.46'
 - compile 'org.apache.lucene:lucene-core:3.6.0'
-- compile 'org.restlet.jse:org.restlet.ext.ssl:${restlet.version}' #restlet
-- compile 'org.restlet.jse:org.restlet.ext.atom:${restlet.version}' #restlet
-- compile 'org.restlet.jse:org.restlet.ext.freemarker:${restlet.version}' #restlet
-- compile 'org.restlet.jse:org.restlet.ext.jetty:${restlet.version}' #restlet
+- compile 'org.restlet.jse:org.restlet.ext.ssl:${restlet.version}' ^restlet
+- compile 'org.restlet.jse:org.restlet.ext.atom:${restlet.version}' ^restlet
+- compile 'org.restlet.jse:org.restlet.ext.freemarker:${restlet.version}' ^restlet
+- compile 'org.restlet.jse:org.restlet.ext.jetty:${restlet.version}' ^restlet
 - compile 'commons-httpclient:commons-httpclient:3.1'
 - compile 'com.beust:jcommander:1.17'
 - test 'junit'
