@@ -326,13 +326,20 @@ public class Pom {
 		}
 		Pattern p = Pattern.compile("\\$\\{[a-zA-Z0-9-_\\.]+\\}");			
 		StringBuilder sb = new StringBuilder(string);
+		int start = 0;
 		while (true) {
 			Matcher m = p.matcher(sb.toString());
-			if (m.find()) {
+			if (m.find(start)) {
 				String prop = m.group();
 				prop = prop.substring(2, prop.length() - 1);
 				String value = getProperty(prop);
+				if (value.equals(prop)) {
+					// leave property intact, it will stand out
+					start = m.end();
+					continue;
+				}
 				sb.replace(m.start(), m.end(), value);
+				start = m.start() + value.length();
 			} else {
 				return sb.toString();
 			}
