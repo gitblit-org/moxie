@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -73,7 +74,8 @@ public class PomReader {
 				
 		Element docElement = doc.getDocumentElement();
 		
-		Pom pom = new Pom();				
+		Pom pom = new Pom();
+		List<Dependency> dependencyList = new ArrayList<Dependency>();
 		
 		NodeList projectNodes = docElement.getChildNodes();
 		for (int i = 0; i < projectNodes.getLength(); i++) {
@@ -143,7 +145,11 @@ public class PomReader {
 							// dependencies.dependency
 							Dependency dep = readDependency(node);							
 							Scope scope = Scope.fromString(readStringTag(node, Key.scope));
-                            dep.definedScope = pom.addDependency(dep, scope);
+							if (scope == null) {
+								scope = Scope.compile;
+							}
+                            dep.definedScope = scope;
+                           	dependencyList.add(dep);
 						}
 					}
 				} else if ("licenses".equalsIgnoreCase(element.getTagName())) {
@@ -226,6 +232,12 @@ public class PomReader {
 			}
 		}
 		pom.resolveProperties();
+		
+		// Add dependencies after resolving all properties
+		for (Dependency dep : dependencyList) {
+			 Scope addedScope = pom.addDependency(dep, dep.definedScope);
+			 dep.definedScope = addedScope;
+		}
 		return pom;
 	}
 	
