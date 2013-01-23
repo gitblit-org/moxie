@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -581,6 +582,19 @@ public class Solver {
 		if (retrieved != null && retrieved.contains(dependency)) {
 			return null;
 		}
+		
+		// check for version ranges (not implemented)
+		switch (dependency.version.charAt(0)) {
+		case '[':
+			String minVersion = dependency.version.substring(1).split(",")[0];			
+			console.warn("{0} requests {1}, setting to {2} because version ranges are not supported!", dependency.getManagementId(), dependency.version, minVersion);
+			dependency.version = minVersion;
+		case '(':
+			throw new MoxieException(MessageFormat.format("Exclusive minimum version ranges are not implemented! {0}", dependency.getCoordinates()));
+		default:
+			break;
+		}
+		
 		if (dependency.isMetaVersion()) {
 			// Support SNAPSHOT, RELEASE and LATEST versions
 			File metadataFile = moxieCache.getMetadata(dependency, Constants.XML);
