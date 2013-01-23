@@ -1,0 +1,150 @@
+{
+    "ring" : "0",
+    "name" : "toolkit 0.5.0",
+    "children" : [
+    {
+        "ring" : "1",
+        "name" : "ant 1.8.4",
+        "children" : [
+        {
+            "ring" : "2",
+            "name" : "ant-launcher 1.8.4"
+        }
+    
+        ]
+    
+    }
+,
+    {
+        "ring" : "1",
+        "name" : "ant-junit 1.8.4"
+    }
+,
+    {
+        "ring" : "1",
+        "name" : "org.eclipse.jgit 1.3.0.201202151440-r",
+        "children" : [
+        {
+            "ring" : "2",
+            "name" : "jsch 0.1.44-1"
+        }
+    
+        ]
+    
+    }
+,
+    {
+        "ring" : "1",
+        "name" : "markdownpapers-core 1.2.7"
+    }
+,
+    {
+        "ring" : "1",
+        "name" : "rhino 1.7R3"
+    }
+,
+    {
+        "ring" : "1",
+        "name" : "cobertura 1.9.4.1",
+        "children" : [
+        {
+            "ring" : "2",
+            "name" : "oro 2.0.8"
+        }
+    ,
+        {
+            "ring" : "2",
+            "name" : "asm 3.0"
+        }
+    ,
+        {
+            "ring" : "2",
+            "name" : "asm-tree 3.0"
+        }
+    ,
+        {
+            "ring" : "2",
+            "name" : "log4j 1.2.9"
+        }
+    
+        ]
+    
+    }
+,
+    {
+        "ring" : "1",
+        "name" : "emma 2.1.5320"
+    }
+,
+    {
+        "ring" : "1",
+        "name" : "emma_ant 2.1.5320"
+    }
+,
+    {
+        "ring" : "1",
+        "name" : "testng 6.7"
+    }
+,
+    {
+        "ring" : "1",
+        "name" : "junit 4.10",
+        "children" : [
+        {
+            "ring" : "2",
+            "name" : "hamcrest-core 1.1"
+        }
+    ,
+        {
+            "ring" : "2",
+            "name" : "bsh 2.0b4"
+        }
+    ,
+        {
+            "ring" : "2",
+            "name" : "jcommander 1.12"
+        }
+    ,
+        {
+            "ring" : "2",
+            "name" : "snakeyaml 1.6"
+        }
+    
+        ]
+    
+    }
+,
+    {
+        "ring" : "1",
+        "name" : "org.jacoco.ant 0.6.0.201210061924",
+        "children" : [
+        {
+            "ring" : "2",
+            "name" : "org.jacoco.core 0.6.0.201210061924",
+            "children" : [
+            {
+                "ring" : "3",
+                "name" : "asm-all 4.0"
+            }
+        
+            ]
+        
+        }
+    
+        ]
+    
+    }
+,
+    {
+        "ring" : "2",
+        "name" : "org.jacoco.report 0.6.0.201210061924"
+    }
+,
+    {
+        "ring" : "2",
+        "name" : "org.jacoco.agent 0.6.0.201210061924"
+    }
+
+    ]
+
+}

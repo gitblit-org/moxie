@@ -1,0 +1,324 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- Begin Header -->
+<title>Moxie-Toolkit</title>
+<meta charset="utf-8">
+<meta name="ROBOTS" content="INDEX">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+<link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+<!-- Responsive CSS must be included after the above body css! -->
+<link rel="stylesheet" href="./bootstrap/css/bootstrap-responsive.min.css">
+<link rel='shortcut icon' type='image/png' href='./moxie-favicon.png' />
+<link rel="stylesheet" href="./prettify/prettify.css" />
+<!-- Google Plus One -->
+<link rel="canonical" href="http://gitblit.github.com/moxie" />
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+<style type="text/css"> div.gplusone { margin-top:12px; } </style>
+
+</head>
+<body onload='prettyPrint()'>		<!-- Navigation Bar -->
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+          			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            			<span class="icon-bar"></span>
+            			<span class="icon-bar"></span>
+            			<span class="icon-bar"></span>
+          			</a>
+          			<a class="brand" href="#"><img src="./moxie.png" alt="Moxie-Toolkit"></img></a>
+					<div class="nav-collapse">
+						<ul class="nav">
+							<li><a href='index.html'>overview</a></li>
+<li><a href='why.html'>why?!</a></li>
+<li><a href='gettingstarted.html'>getting started</a></li>
+<li><a href='moxiedescriptor.html'>build.moxie</a></li>
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='mxclean.html'>mx:Clean</a></li>
+<li><a href='mxdoc.html'>mx:Doc</a></li>
+<li><a href='mxextract.html'>mx:Extract</a></li>
+<li><a href='mxgenjar.html'>mx:GenJar</a></li>
+<li><a href='mxget.html'>mx:Get</a></li>
+<li><a href='mxghpages.html'>mx:GhPages</a></li>
+<li><a href='mxgitid.html'>mx:GitId</a></li>
+<li><a href='mxif.html'>mx:If</a></li>
+<li><a href='mxinstall.html'>mx:Install</a></li>
+<li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxjar.html'>mx:Jar</a></li>
+<li><a href='mxjavac.html'>mx:Javac</a></li>
+<li><a href='mxkeys.html'>mx:Keys</a></li>
+<li><a href='mxreport.html'>mx:Report</a></li>
+<li><a href='mxrun.html'>mx:Run</a></li>
+<li><a href='mxtest.html'>mx:Test</a></li>
+<li><a href='mxwar.html'>mx:War</a></li>
+<li><a href='mxwebxml.html'>mx:WebXml</a></li>
+<li><a href='mxzip.html'>mx:Zip</a></li>
+</ul></li> <!-- End Menu -->
+<li class='active'><a href='maxml.html'>maxml</a></li>
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>download<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='moxie+ant-0.5.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='moxie+ant-0.5.0.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li class='divider'></li>
+<li><a href='moxie-0.5.0-core.jar'>moxie-core</a></li>
+<li><a href='moxie-0.5.0-pro.jar'>moxie-pro</a></li>
+<li><a href='moxie-0.5.0-all.jar'>moxie-all</a></li>
+<li class='divider'></li>
+<li><a href='moxie-proxy-0.5.0.jar'>moxie-proxy</a></li>
+<li class='divider'></li>
+<li><a href='maxml-0.5.0.jar'>maxml</a></li>
+<li><a href='maxml-0.5.0-sources.jar'>maxml-sources</a></li>
+<li class='divider'></li>
+<li><a href='releases.html'>release log</a></li>
+<li class='divider'></li>
+<li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
+</ul></li> <!-- End Menu -->
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>reports<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='moxie-project.html'>project data</a></li>
+<li><a href='moxie-dependencies.html'>dependencies</a></li>
+</ul></li> <!-- End Menu -->
+<li class='divider-vertical'></li>
+<li><div class='gplusone'><g:plusone size='small' href='http://gitblit.github.com/moxie'></g:plusone></div></li>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		</div><!-- end Navigation Bar -->
+<div class='container-fluid'>
+<div class='row-fluid'>
+<!-- sidebar -->
+<div class='span3'>
+<div class='well sidebar-nav'>
+<ul class='nav nav-list'>
+<li class='nav-header'>Table of Contents</li>
+<li><a href='#2.1'>Maxml</a></li>
+
+<li><a href='#3.1'>Why Maxml?</a></li>
+
+<li><a href='#3.2'>Processing Rules</a></li>
+
+<li><a href='#3.3'>Value Fall-Through Interpretation</a></li>
+
+<li><a href='#3.4'>Key Definitions</a></li>
+
+<li><a href='#3.5'>Value Definitions</a></li>
+
+<li><a href='#4.1'>Strings</a></li>
+
+<li><a href='#4.2'>Numerics</a></li>
+
+<li><a href='#4.3'>Booleans</a></li>
+
+<li><a href='#4.4'>Dates</a></li>
+
+<li><a href='#4.5'>Miscellaneous</a></li>
+
+<li><a href='#3.6'>Collections</a></li>
+
+<li><a href='#4.6'>Lists/Sequences</a></li>
+
+<li><a href='#4.7'>Maps</a></li>
+
+</ul>
+</div>
+</div>
+<div class='span9'>
+<!-- Begin Markdown -->
+<h2 id="2.1">Maxml</h2>
+<p>Maxml (pronounced <em>maximal</em>) looks and feels like very simple <a href="http://yaml.org">YAML</a>, but it is not YAML.  Maxml is meant to be a very small and simple subset of YAML with some significant structural changes.</p>
+
+<p>The Maxml binary package is &lt; 10KB.</p>
+
+<h3 id="3.1">Why Maxml?</h3>
+<p>I like JSON.<br/>
+I would have been satisfied with a simple, really small JSON parser.  The closest I found was <a href="http://json-simple.googlecode.com">JSON-Simple</a>, but that relies on a JFlex-generated parser class.<br/>
+<strong>Verdict:</strong> Unmaintainable.</p>
+
+<p>I like YAML.<br/>
+I would have been satisfied with a simple, really small YAML parser.  The closest I found was <a href="http://snakeyaml.googlecode.com">SnakeYaml</a>, but that is ~250KB.<br/>
+<strong>Verdict:</strong> Too large to bundle.</p>
+
+<p>Because Moxie needs to have a bundled parser for the <code>build.moxie</code> project descriptor and I could not find a parser that suited my needs, I wrote a custom YAML-ish parser.</p>
+
+<h3 id="3.2">Processing Rules</h3>
+<ol>
+<li>Maxml files must be UTF-8 encoded.</li>
+<li>Leading whitespace is completely irrelevant and ignored (except for text blocks) so indent all you want.</li>
+<li>All lines are expected to begin with a <code>key:</code> or <code>&quot;my:key:name&quot;:</code> sequence unless<ol>
+<li>the line equals <strong>"""</strong> <em>(start/end text block)</em></li>
+<li>the line is blank <em>(included in a text block, otherwise ignored)</em></li>
+<li>the line starts with <strong>#</strong> <em>(comment, ignored)</em></li>
+<li>the line equals <strong>---</strong> or <strong>...</strong> <em>(reserved, ignored)</em></li>
+<li>the line equals <strong>}</strong> <em>(end map)</em></li>
+<li>the line begins with a <strong>-</strong> dash <em>(list item)</em></li>
+</ol>
+</li>
+<li>Values that equal <strong>{</strong> define a map and all subsequent lines will fill the map until a <strong>}</strong> line is processed  </li>
+<li>Values that equals <strong>"""</strong> define a text block and all subsequent lines will be appended to that text block until a <strong>"""</strong> line is processed</li>
+<li>All remaining values are subject to fall-through interpretation</li>
+</ol>
+
+<h3 id="3.3">Value Fall-Through Interpretation</h3>
+<p>Values are deserialized based on the following algorithm.  If a step is successful the interpreted value is returned, otherwise the next step is checked until it falls-through the bottom of the check and a string is returned.</p>
+
+<ol>
+<li>Empty value is an empty string</li>
+<li>Explicit Null value <em>~</em></li>
+<li>Single-quoted strings <em>'my string'</em></li>
+<li>Double-quoted strings <em>"my string"</em></li>
+<li>Inline-list <em>[a, b, c, d]</em></li>
+<li>Inline-map <em>{a:1, b:2, c:3, d:4}</em></li>
+<li>Boolean interpretation <em>true, false, yes, no, on, off</em></li>
+<li>Numeric interpretation <em>octal</em> (32-bit signed integer, 64-bit signed long), <em>whole number</em> (32-bit signed integer, 64-bit signed long), <em>hexadecimal</em> (32-bit signed integer, 64-bit signed long), <em>decimal</em> (float, double)<br/>
+if the value fits in the <em>smaller</em> container, the smaller container will be used.<br/>
+e.g. 1 is an integer but 4,000,000,000 is a long</li>
+<li>Date interpretation: <em>canonical, iso8601, simple date</em></li>
+<li>String</li>
+</ol>
+
+<h3 id="3.4">Key Definitions</h3>
+<p>Maxml is a key-value serialization format.</p>
+
+<ol>
+<li>Keys may only be strings</li>
+<li>Keys may have colons, if they are quoted</li>
+<li>Keys are case-insensitive</li>
+</ol>
+
+<h3 id="3.5">Value Definitions</h3>
+<h4 id="4.1">Strings</h4>
+<p><pre class='prettyprint lang-yaml'>
+# fall-through string
+myString1: this is a\nstring
+# explicit single-quoted string, leading/trailing quotes are stripped
+myString2: 'this is another\nstring'
+# explicit double-quoted string, leading/trailing quotes are stripped
+myString2: &quot;this is another\nstring&quot;
+# explicit multi-line string, leading/trailing quotes are stripped
+myString3: &quot;&quot;&quot;
+this is another string
+which contains
+several lines
+&quot;&quot;&quot;
+# explicit multi-line string, leading/trailing quotes are stripped
+myString4: &quot;&quot;&quot;
+this is another string
+which contains
+several lines&quot;&quot;&quot;
+
+</pre>
+<h4 id="4.2">Numerics</h4></p>
+
+<p><pre class='prettyprint lang-yaml'>
+myInt: 12345
+myLong: 4000000000
+myFloat1: 2.3
+myFloat2: 6.0E+23
+myDouble: 6.0E+56
+# octals lead with 0
+myOctal: 010
+# hexadecimals lead with 0x
+myHex: 0x12345
+</pre>
+<h4 id="4.3">Booleans</h4></p>
+
+<p><pre class='prettyprint lang-yaml'>
+# true values
+myBool1: true
+myBool2: yes
+myBool3: on
+# false values
+myBool4: false
+myBool5: no
+myBool6: off
+</pre>
+<h4 id="4.4">Dates</h4></p>
+
+<p>Dates support second resolution.  When Date objects are deserialized, the msecs value is manually set to 0.</p>
+
+<p><pre class='prettyprint lang-yaml'>
+# Simple Date, local timezone
+myDate1: 2012-02-01
+# Canonical, GMT
+myDate2: 2012-02-01T15:30:45Z
+# ISO8601, timezone-specified
+myDate3: 2012-02-01T15:30:45-0400
+</pre>
+<h4 id="4.5">Miscellaneous</h4></p>
+
+<p><pre class='prettyprint lang-yaml'>
+# null
+myNull: ~
+</pre>
+<h3 id="3.6">Collections</h3></p>
+
+<p>Parsed collections preserve definition order.</p>
+
+<h4 id="4.6">Lists/Sequences</h4>
+<p><em>java.util.ArrayList</em></p>
+
+<p>Lists may be defined using the following notation where each item in the list is defined on a separate line with a leading dash character.</p>
+
+<p><pre class='prettyprint lang-yaml'>
+# multi-line list
+myList2:
+- src
+- tests
+- extra
+</pre>
+Simple lists may also be defined inline as key-value pairs.<br/>
+Inline lists may not have nested collections.</p>
+
+<p><pre class='prettyprint lang-yaml'>
+# inline list
+myList1: [src, tests, extra]
+# a list of inline lists
+myList3:
+- [apple, banana, strawberry]
+- [celery, carrot, lettuce]
+</pre>
+<h4 id="4.7">Maps</h4>
+<em>java.util.LinkedHashMap</em></p>
+
+<p>Maps may be defined using the familiar curly brace notation.<br/>
+Indentation is used for readability but is otherwise ignored by the parser. </p>
+
+<p><pre class='prettyprint lang-yaml'>
+myMap1: {
+    field1: test
+    field2: {
+        subfield1: 10
+        subfield2: [a, b, c]
+    }
+    field3:
+     - src
+     - tests
+     - extra
+}
+</pre>
+Simple maps may also be defined inline as key-value pairs.<br/>
+Inline maps may not have nested collections and they may not have strings with commas.</p>
+
+<p><pre class='prettyprint lang-yaml'>
+myMap2: { field1: test, field2: 100, field3: true }
+</pre>
+<!-- End Markdown -->
+<footer class="footer"><p class="pull-right">generated 2013-01-23</p>
+<p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
+</footer>
+</div>
+</div></div>
+
+<!-- Include scripts at end for faster page loading -->
+<script src="./prettify/prettify.js"></script>
+<script src="./bootstrap/js/jquery.js"></script>
+<script src="./bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

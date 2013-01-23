@@ -1,0 +1,262 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- Begin Header -->
+<title>Moxie-Toolkit</title>
+<meta charset="utf-8">
+<meta name="ROBOTS" content="INDEX">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+<link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+<!-- Responsive CSS must be included after the above body css! -->
+<link rel="stylesheet" href="./bootstrap/css/bootstrap-responsive.min.css">
+<link rel='shortcut icon' type='image/png' href='./moxie-favicon.png' />
+<link rel="stylesheet" href="./prettify/prettify.css" />
+<!-- Google Plus One -->
+<link rel="canonical" href="http://gitblit.github.com/moxie" />
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+<style type="text/css"> div.gplusone { margin-top:12px; } </style>
+
+</head>
+<body onload='prettyPrint()'>		<!-- Navigation Bar -->
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+          			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            			<span class="icon-bar"></span>
+            			<span class="icon-bar"></span>
+            			<span class="icon-bar"></span>
+          			</a>
+          			<a class="brand" href="#"><img src="./moxie.png" alt="Moxie-Toolkit"></img></a>
+					<div class="nav-collapse">
+						<ul class="nav">
+							<li><a href='index.html'>overview</a></li>
+<li><a href='why.html'>why?!</a></li>
+<li class='active'><a href='gettingstarted.html'>getting started</a></li>
+<li><a href='moxiedescriptor.html'>build.moxie</a></li>
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='mxclean.html'>mx:Clean</a></li>
+<li><a href='mxdoc.html'>mx:Doc</a></li>
+<li><a href='mxextract.html'>mx:Extract</a></li>
+<li><a href='mxgenjar.html'>mx:GenJar</a></li>
+<li><a href='mxget.html'>mx:Get</a></li>
+<li><a href='mxghpages.html'>mx:GhPages</a></li>
+<li><a href='mxgitid.html'>mx:GitId</a></li>
+<li><a href='mxif.html'>mx:If</a></li>
+<li><a href='mxinstall.html'>mx:Install</a></li>
+<li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxjar.html'>mx:Jar</a></li>
+<li><a href='mxjavac.html'>mx:Javac</a></li>
+<li><a href='mxkeys.html'>mx:Keys</a></li>
+<li><a href='mxreport.html'>mx:Report</a></li>
+<li><a href='mxrun.html'>mx:Run</a></li>
+<li><a href='mxtest.html'>mx:Test</a></li>
+<li><a href='mxwar.html'>mx:War</a></li>
+<li><a href='mxwebxml.html'>mx:WebXml</a></li>
+<li><a href='mxzip.html'>mx:Zip</a></li>
+</ul></li> <!-- End Menu -->
+<li><a href='maxml.html'>maxml</a></li>
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>download<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='moxie+ant-0.5.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='moxie+ant-0.5.0.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li class='divider'></li>
+<li><a href='moxie-0.5.0-core.jar'>moxie-core</a></li>
+<li><a href='moxie-0.5.0-pro.jar'>moxie-pro</a></li>
+<li><a href='moxie-0.5.0-all.jar'>moxie-all</a></li>
+<li class='divider'></li>
+<li><a href='moxie-proxy-0.5.0.jar'>moxie-proxy</a></li>
+<li class='divider'></li>
+<li><a href='maxml-0.5.0.jar'>maxml</a></li>
+<li><a href='maxml-0.5.0-sources.jar'>maxml-sources</a></li>
+<li class='divider'></li>
+<li><a href='releases.html'>release log</a></li>
+<li class='divider'></li>
+<li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
+</ul></li> <!-- End Menu -->
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>reports<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='moxie-project.html'>project data</a></li>
+<li><a href='moxie-dependencies.html'>dependencies</a></li>
+</ul></li> <!-- End Menu -->
+<li class='divider-vertical'></li>
+<li><div class='gplusone'><g:plusone size='small' href='http://gitblit.github.com/moxie'></g:plusone></div></li>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		</div><!-- end Navigation Bar -->
+<div class='container'>
+<!-- Begin Markdown -->
+<h2> Getting Started</h2>
+
+<p>Moxie does not use Maven's pom.xml nor Ivy's ixy.xml to describe your project.  Moxie uses the <code>build.moxie</code> project descriptor.  This file employs a <i>key:value</i> format which is very similar to YAML.</p>
+
+<h3> Minimal build.moxie</h3>
+
+<div class="row">
+<div class="span8">
+Like Maven, Moxie supports convention-over-configuration so that the minimal build.moxie project descriptor can be defined as shown.  This example assumes that your project uses the <a href="http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html">Apache Standard Directory Layout</a>.
+</div>
+
+<div class="span4">
+<pre class='prettyprint lang-yaml'>
+groupId : org.example
+artifactId : demo
+version : 1.2.3-SNAPSHOT
+</pre>
+<i>minimal Moxie project descriptor</i>
+</div></div>
+<h3> A realistic build.moxie</h3>
+
+<div class="row">
+<div class="span6">
+
+Minimal examples are cute, but they are not very realistic except for the simplest of projects.  Here is a more complete example.
+<br/><br/>
+Moxie borrows ideas from both Maven and Gradle so anyone familiar with those tools should feel fairly comfortable with the <code>build.moxie</code> descriptor.
+<br/><br/>
+For more information on the <code>build.moxie</code> descriptor please review the <a href="moxiedescriptor.html">build.moxie documentation</a>. 
+</div>
+
+<div class="span6">
+<pre class='prettyprint lang-yaml'>
+name: Example 1
+description: A better example
+groupId: org.example
+artifactId: demo
+version: 1.2.3-SNAPSHOT
+organization: Example Writers
+url: 'http://demo.example.org'
+apply: eclipse, intellij, pom
+sourceFolders: 
+- compile 'src/main/java'
+- compile 'src/main/resources'
+- test 'src/test/java'
+- test 'src/test/resources'
+properties: {
+  clang.version : 3.1
+}
+dependencies:
+- compile 'org.apache.commons:commons-lang3:${clang.version}'
+- test 'junit'
+- build 'cobertura'
+</pre>
+<i>a more elaborate Moxie project descriptor</i>
+</div></div>
+<h2> Ant build.xml</h2>
+
+<p>Moxie does not specify exactly how you must use it.  You may choose to use the Moxie targets; you may choose to use the Moxie tasks; or you can use both.</p>
+
+<div class="row">
+
+<div class="span6">
+<h3>Minimal, Maven-style</h3>
+This is the minimal <code>build.xml</code> you can write to use Moxie.
+<p/>
+
+<pre class='prettyprint lang-xml'>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project&gt;
+
+    &lt;!-- Register Moxie tasks and targets --&gt;
+    &lt;include&gt;
+        &lt;javaresource name=&quot;moxie.xml&quot; classpath=&quot;moxie.jar&quot; /&gt;
+    &lt;/include&gt;
+    
+&lt;/project&gt;
+</pre>
+In this build file we include an Ant build script (moxie.xml) which is embedded within the Moxie jar file.  Assuming we are using either the <i>pro</i> or <i>all</i> variant we will have the following targets available:
+<dl class="dl-horizontal">
+ <dt>moxie.init</dt>
+ <dd>validates project configuration, retrieves dependencies, and configures Ant properties</dd>
+ <dt>moxie.compile</dt>
+ <dd>compile the source code of the project</dd>
+ <dt>moxie.test</dt>
+ <dd>test the compiled source code using a unit testing framework. optionally generates code coverage reports.</dd>
+ <dt>moxie.package</dt>
+ <dd>take the compiled code and package it in its distributable format, such as a JAR</dd>
+ <dt>moxie.install</dt>
+ <dd>install the package into the local repository, for use as a dependency in other projects locally</dd>
+ <dt>moxie.report</dt>
+ <dd>generates a dependency report to the console or to a text file</dd>
+ <dt>moxie.clean</dt>
+ <dd>clean build and target folders</dd>
+</dl>
+
+Unfortunately, this script will not work properly in Eclipse, and perhaps other IDEs, because Eclipse does not know how to include targets from a resource.
+<p/>
+
+</div>
+
+
+<div class="span6">
+<h3>Eclipse-friendly, Maven-style</h3>
+
+Since Eclipse does not like targets included from a resource we have to define a default local target and use an Antcall to execute the desired Moxie target.
+<p/>
+<pre class='prettyprint lang-xml'>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project default=&quot;main&quot;&gt;
+
+    &lt;!-- Register Moxie tasks and targets --&gt;
+    &lt;include&gt;
+        &lt;javaresource name=&quot;moxie.xml&quot; classpath=&quot;moxie.jar&quot; /&gt;
+    &lt;/include&gt;
+
+    &lt;target name=&quot;main&quot;&gt;
+        &lt;antcall target=&quot;moxie.install&quot; /&gt;		
+    &lt;/target&gt;
+
+&lt;/project&gt;
+</pre>
+<p/>
+</div></div>
+<hr/>
+<h3>Ant-style</h3>
+<div class="row">
+<div class="span6">
+
+The following <code>build.xml</code> file is the Ant-style equivalent of what happened when we executed the <i>moxie.install</i> target.
+<p/>
+<pre class='prettyprint lang-xml'>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project default=&quot;main&quot; xmlns:mx=&quot;antlib:org.moxie&quot;&gt;
+
+    &lt;!-- Register Moxie tasks and targets --&gt;
+    &lt;include&gt;
+        &lt;javaresource name=&quot;moxie.xml&quot; classpath=&quot;moxie.jar&quot; /&gt;
+    &lt;/include&gt;
+
+    &lt;target name=&quot;main&quot;&gt;
+        &lt;mx:init /&gt;
+        &lt;mx:compile /&gt;
+        &lt;mx:test /&gt;
+        &lt;mx:jar includeResources=&quot;true&quot; packageSources=&quot;true&quot; /&gt;
+        &lt;mx:install /&gt;
+    &lt;/target&gt;
+
+&lt;/project&gt;
+</pre>
+</div>
+<div class="span6">
+<div class="alert alert-info"><h4>mx: xml namespace</h4> In this build file we define Moxie's xml namespace (<code>mx:</code>) in the project definition.  This is critical for the Moxie tasks!
+</div></div>
+</div>
+<!-- End Markdown -->
+<footer class="footer"><p class="pull-right">generated 2013-01-23</p>
+<p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
+</footer>
+</div>
+
+<!-- Include scripts at end for faster page loading -->
+<script src="./prettify/prettify.js"></script>
+<script src="./bootstrap/js/jquery.js"></script>
+<script src="./bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>

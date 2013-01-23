@@ -1,0 +1,241 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<!-- Begin Header -->
+<title>Moxie-Toolkit</title>
+<meta charset="utf-8">
+<meta name="ROBOTS" content="INDEX">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		
+<link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
+<!-- Responsive CSS must be included after the above body css! -->
+<link rel="stylesheet" href="./bootstrap/css/bootstrap-responsive.min.css">
+<link rel='shortcut icon' type='image/png' href='./moxie-favicon.png' />
+<link rel="stylesheet" href="./prettify/prettify.css" />
+<!-- Google Plus One -->
+<link rel="canonical" href="http://gitblit.github.com/moxie" />
+<script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
+<style type="text/css"> div.gplusone { margin-top:12px; } </style>
+
+</head>
+<body onload='prettyPrint()'>		<!-- Navigation Bar -->
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+          			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            			<span class="icon-bar"></span>
+            			<span class="icon-bar"></span>
+            			<span class="icon-bar"></span>
+          			</a>
+          			<a class="brand" href="#"><img src="./moxie.png" alt="Moxie-Toolkit"></img></a>
+					<div class="nav-collapse">
+						<ul class="nav">
+							<li><a href='index.html'>overview</a></li>
+<li><a href='why.html'>why?!</a></li>
+<li><a href='gettingstarted.html'>getting started</a></li>
+<li class='active'><a href='moxiedescriptor.html'>build.moxie</a></li>
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='mxclean.html'>mx:Clean</a></li>
+<li><a href='mxdoc.html'>mx:Doc</a></li>
+<li><a href='mxextract.html'>mx:Extract</a></li>
+<li><a href='mxgenjar.html'>mx:GenJar</a></li>
+<li><a href='mxget.html'>mx:Get</a></li>
+<li><a href='mxghpages.html'>mx:GhPages</a></li>
+<li><a href='mxgitid.html'>mx:GitId</a></li>
+<li><a href='mxif.html'>mx:If</a></li>
+<li><a href='mxinstall.html'>mx:Install</a></li>
+<li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxjar.html'>mx:Jar</a></li>
+<li><a href='mxjavac.html'>mx:Javac</a></li>
+<li><a href='mxkeys.html'>mx:Keys</a></li>
+<li><a href='mxreport.html'>mx:Report</a></li>
+<li><a href='mxrun.html'>mx:Run</a></li>
+<li><a href='mxtest.html'>mx:Test</a></li>
+<li><a href='mxwar.html'>mx:War</a></li>
+<li><a href='mxwebxml.html'>mx:WebXml</a></li>
+<li><a href='mxzip.html'>mx:Zip</a></li>
+</ul></li> <!-- End Menu -->
+<li><a href='maxml.html'>maxml</a></li>
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>download<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='moxie+ant-0.5.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='moxie+ant-0.5.0.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li class='divider'></li>
+<li><a href='moxie-0.5.0-core.jar'>moxie-core</a></li>
+<li><a href='moxie-0.5.0-pro.jar'>moxie-pro</a></li>
+<li><a href='moxie-0.5.0-all.jar'>moxie-all</a></li>
+<li class='divider'></li>
+<li><a href='moxie-proxy-0.5.0.jar'>moxie-proxy</a></li>
+<li class='divider'></li>
+<li><a href='maxml-0.5.0.jar'>maxml</a></li>
+<li><a href='maxml-0.5.0-sources.jar'>maxml-sources</a></li>
+<li class='divider'></li>
+<li><a href='releases.html'>release log</a></li>
+<li class='divider'></li>
+<li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
+</ul></li> <!-- End Menu -->
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>reports<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='moxie-project.html'>project data</a></li>
+<li><a href='moxie-dependencies.html'>dependencies</a></li>
+</ul></li> <!-- End Menu -->
+<li class='divider-vertical'></li>
+<li><div class='gplusone'><g:plusone size='small' href='http://gitblit.github.com/moxie'></g:plusone></div></li>
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		</div><!-- end Navigation Bar -->
+<div class='container'>
+<!-- Begin Markdown -->
+<h2> Moxie Project Descriptor</h2>
+
+<p>The default Moxie project descriptor used by the <code>mx:init</code> task and all the <em>Moxie targets</em> is <code>build.moxie</code>.</p>
+
+<h3> Metadata Keys</h3>
+
+<table class="table table-striped table-bordered table-condensed">
+<tbody>
+<tr><th>name</th>         <td>Moxie</td></tr>
+<tr><th>description</th>  <td>Java Project Build Toolkit</td></tr>
+<tr><th>organization</th> <td>James Moger </td></tr>
+<tr><th>url</th>          <td>http://gitblit.github.com/moxie</td></tr>
+</tbody>
+</table>
+<h3> Artifact Keys</h3>
+
+<table class="table table-striped table-bordered table-condensed">
+<tbody>
+<tr><th>groupId</th>     <td>org.moxie</td></tr>
+<tr><th>artifactId</th>  <td>moxie</td></tr>
+<tr><th>version</th>     <td>0.4.0-SNAPSHOT</td></tr>
+</tbody>
+</table>
+<hr/>
+<h3> Apply</h3>
+
+<div class="row">
+<div class="span8">
+special behaviors for your build script
+<dl>
+ <dt>eclipse</dt>
+ <dd>creates Eclipse .project and .classpath files</dd>
+ <dt>pom</dt>
+ <dd>creates and maintains a Maven pom.xml file</dd>
+ <dt>cache</dt>
+ <dd>build and caches a transitive dependency solution for re-use to accelerate builds (does not apply to SNAPSHOTs)</dd>
+ <dt>debug</dt>
+ <dd>enable Moxie's debug logging</dd>
+ <dt>color</dt>
+ <dd>console logging will use ansi color escape sequences</dd>
+</dl>
+</div>
+
+<div class="span4">
+<pre>
+apply : eclipse, pom, cache
+</pre>
+</div>
+</div>
+<hr/>
+<h3> Source Folders</h3>
+
+<div class="row">
+<div class="span8">
+Example
+</div>
+
+<div class="span4">
+<pre>
+sourceFolders : 
+- compile src/main/core, src/main/mxgit
+- compile src/main/mxjar
+- compile src/main/mxdoc
+- compile src/main/cobertura
+- compile src/less/java
+- compile src/main/resources
+- { scope: test, folder: src/test/java }
+</pre>
+</div>
+</div>
+<hr/>
+<h3> Properties</h3>
+
+<div class="row">
+<div class="span8">
+used in dependency management and dependencies
+exported as ant properties
+</div>
+
+<div class="span4">
+<pre>
+properties: {
+  jgit.version : 1.3.0.201202151440-r
+}
+</pre>
+</div>
+</div>
+<hr/>
+<h3> Dependency Management</h3>
+
+<div class="row">
+<div class="span8">
+Example
+</div>
+
+<div class="span4">
+<pre>
+dependencyManagement :
+- org.apache.ant:ant:1.8.3
+</pre>
+</div>
+</div>
+<hr/>
+<h3> Dependencies</h3>
+
+<div class="row">
+<div class="span8">
+Example
+
+scopes, @ext, excludes
+</div>
+
+<div class="span4">
+<pre>
+dependencies :
+- compile org.apache.ant:ant
+- compile org.apache.commons-lang3:3.1
+- test junit
+</pre>
+</div>
+</div>
+<p>dependencyFolder
+repositories
+targetFolder
+proxies
+parent
+exclusions
+mxjar
+mxjavac
+compilerArgs
+mxreport
+reportsFolder
+dependencyOverrides
+dependencyAliases
+<!-- End Markdown -->
+<footer class="footer"><p class="pull-right">generated 2013-01-23</p>
+<p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
+</footer>
+</div>
+
+<!-- Include scripts at end for faster page loading -->
+<script src="./prettify/prettify.js"></script>
+<script src="./bootstrap/js/jquery.js"></script>
+<script src="./bootstrap/js/bootstrap.min.js"></script>
+</body>
+</html>
