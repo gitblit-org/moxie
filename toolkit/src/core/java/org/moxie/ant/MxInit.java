@@ -16,6 +16,7 @@
 package org.moxie.ant;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -92,6 +93,10 @@ public class MxInit extends MxTask {
 				// specified configuration
 				FileUtils futils = FileUtils.getFileUtils();				
 				configFile = futils.resolveFile(basedir, config);
+			}
+			
+			if (!configFile.exists()) {
+				throw new MoxieException(MessageFormat.format("Failed to find Moxie descriptor {0}", configFile));
 			}
 			
 			// parse the config files and Moxie settings
