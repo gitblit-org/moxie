@@ -4,7 +4,7 @@
 
 ## Why not Gradle?
 
-Conceptually I like the idea of Gradle, but the IDE support is lacking and it does not seem much more debuggable than Ant.
+I like the idea of Gradle.  I may use it in other projects, but I feel that Ant doesn't have to be put out to pasture quite yet.
 
 ## Why not Maven?
 
@@ -18,24 +18,18 @@ Maven has done some tremendous things and has moved the Java ecosystem forward. 
 2. transitive dependency management is *really* brilliant
 3. convention-over-configuration simplifies the build process, but convention-instead-of-configuration is too restrictive
 
-
 ## Why Moxie?
 
 During Moxie's development I have asked myself that question many times, and I still ask it.  
 When there is such pressure to move to Maven is there a need, or even room, for an alternative?
 
-My answer is, yes.
-
-And my reasons are two-fold:
-
-1. Size Matters 
-2. Ubiquity Matters
+I think so.
 
 ### Size Matters
 
 Moxie is a small, lightweight dependency retriever with some convenience tasks for building and packaging Java sources, generating project documentation, and setting up an Eclipse project.
 
-Moxie comes in three package variants: core, pro, and all.  Core, the smallest variant, gives you transitive dependency retrieval, similar to Ivy, at 1/10th the footprint. All, the largest variant, is < 400KB.  Either of these can be embedded within a repository.
+Moxie comes in three package variants: core, pro, and all.  Core, the smallest variant, gives you transitive dependency retrieval, similar to Ivy, at 1/10th the footprint. All, the full toolkit, is < 600KB.  Either of these can be embedded within a repository.
 
 Why would you want to embed Moxie in your project's repository?
 
@@ -50,5 +44,4 @@ If the following limitations are of concern, then Moxie may not suit your needs.
 
 1. Moxie employs the Maven 2 transitive dependency resolution mechanism<div class="alert">Currently, Maven 2.0 only supports using the "nearest definition" which means that it will use the version of the closest dependency to your project in the tree of dependencies. You can always guarantee a version by declaring it explicitly in your project's POM. Note that if two dependency versions are at the same depth in the dependency tree ... the first declaration wins.</div>
 2. Moxie does not support version ranges<div class="alert">I can see the attraction of version ranges, but in practice it seems that they are discouraged because they lead to build reproducibilty issues.  Not supporting version ranges simplifies Moxie while at the same time enforcing dependency clarity.</alert>
-3. Moxie only supports building JARs and WARs
-4. Moxie is not designed to build enterprise-level software
+3. Moxie is mostly a client-side tool.  It has preliminary support to install artifacts into a repository, but this is unfinished.

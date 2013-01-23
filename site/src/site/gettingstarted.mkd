@@ -32,26 +32,26 @@ For more information on the <code>build.moxie</code> descriptor please review th
 
 <div class="span6">
 %BEGINMAXML%
-name : Example 1
-description : A better example
-groupId : org.example
-artifactId : demo
-version : 1.2.3-SNAPSHOT
-organization : Example Writers
-url : http://demo.example.org
-apply : eclipse, pom, cache
-sourceFolders : 
-- compile src/main/java
-- compile src/main/resources
-- test src/test/java
-- test src/test/resources
+name: Example 1
+description: A better example
+groupId: org.example
+artifactId: demo
+version: 1.2.3-SNAPSHOT
+organization: Example Writers
+url: 'http://demo.example.org'
+apply: eclipse, intellij, pom
+sourceFolders: 
+- compile 'src/main/java'
+- compile 'src/main/resources'
+- test 'src/test/java'
+- test 'src/test/resources'
 properties: {
   clang.version : 3.1
 }
-dependencies :
-- compile org.apache.commons:commons-lang3:${clang.version}
-- test junit
-- build cobertura
+dependencies:
+- compile 'org.apache.commons:commons-lang3:${clang.version}'
+- test 'junit'
+- build 'cobertura'
 %ENDMAXML%
 
 <i>a more elaborate Moxie project descriptor</i>
@@ -126,7 +126,6 @@ Since Eclipse does not like targets included from a resource we have to define a
 %ENDXML%
 
 <p></p>
-<div class="alert alert-info"><h4>moxie.test</h4> Most of the <i>moxie targets</i> are simple, 1-liners which call the appropriate dependent targets and then executes the corresponding <code>mx:</code> task.  The exception to this is the <i>moxie.test</i> target which runs your unit tests, generates unit test reports, and optionally generates code coverage reports.</div>
 </div></div>
 
 <hr/>

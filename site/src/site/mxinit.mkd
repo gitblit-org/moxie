@@ -1,0 +1,5 @@
+## mx:Init
+
+%BEGINXML%
+<mx:init />
+%ENDXML%

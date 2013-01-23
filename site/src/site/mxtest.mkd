@@ -1,0 +1,5 @@
+## mx:Test
+
+%BEGINXML%
+<mx:test />
+%ENDXML%

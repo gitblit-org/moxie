@@ -1,18 +1,5 @@
-## Mx:Jar
+## mx:Jar
 
 %BEGINXML%
-<mx:jar destfile="moxie-all.jar">
-	<classfilter>
-		<exclude name="org.apache." />
-	</classfilter>
-	<class name="org.moxie.ant.MaxSetup" />
-	<class name="org.moxie.ant.MaxJar" />
-	<class name="org.moxie.ant.MaxExtract" />
-	<class name="org.moxie.ant.MaxDoc" />
-	<resource file="${basedir}/defs/all/tasks.properties" />
-			
-	<resource>
-		<fileset dir="${moxie.bin}" includes="*.zip" />					
-	</resource>
-</mx:jar>
+<mx:jar includeResources="true" packageSources="true" />
 %ENDXML%

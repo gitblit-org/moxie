@@ -1,0 +1,5 @@
+## mx:Javac
+
+%BEGINXML%
+<mx:javac />
+%ENDXML%

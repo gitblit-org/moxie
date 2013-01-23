@@ -1,5 +1,5 @@
-## MaxCommitId
+## mx:GitId
 
 %BEGINXML%
-<maxcommitid repositoryFolder="${basedir}" property="gb.version" />
+<mx:gitid repositoryFolder="${basedir}" property="gb.version" />
 %ENDXML%

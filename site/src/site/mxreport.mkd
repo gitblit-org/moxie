@@ -1,0 +1,5 @@
+## mx:Report
+
+%BEGINXML%
+<mx:report scope="compile" destfile="${project.target.dir}/dependencies.txt" verbose="true" />
+%ENDXML%

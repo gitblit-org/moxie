@@ -1,5 +1,5 @@
-## MaxExtract
+## mx:Extract
 
 %BEGINXML%
-<maxextract property="gb.version" field="VERSION" srcfile="${basedir}/src/com/gitblit/Constants.java" />
+<mx:extract property="gb.version" field="VERSION" srcfile="${basedir}/src/com/gitblit/Constants.java" />
 %ENDXML%
