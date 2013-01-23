@@ -92,7 +92,8 @@ public class BuildConfig {
 	}
 	
 	public boolean isColor() {
-		String mxColor = System.getProperty(Toolkit.MX_COLOR, null);
+		String mxColor = System.getenv("MX_COLOR");
+		mxColor = System.getProperty(Toolkit.MX_COLOR, mxColor);
 		if (StringUtils.isEmpty(mxColor)) {
 			// use Moxie apply setting
 			return toolkitConfig.apply(Toolkit.APPLY_COLOR) || projectConfig.apply(Toolkit.APPLY_COLOR);
@@ -103,7 +104,8 @@ public class BuildConfig {
 	}
 	
 	public boolean isDebug() {
-		String mxDebug = System.getProperty(Toolkit.MX_DEBUG, null);
+		String mxDebug = System.getenv("MX_DEBUG");
+		mxDebug = System.getProperty(Toolkit.MX_DEBUG, mxDebug);
 		if (StringUtils.isEmpty(mxDebug)) {
 			// use Moxie apply setting
 			return toolkitConfig.apply(Toolkit.APPLY_DEBUG) || projectConfig.apply(Toolkit.APPLY_DEBUG);
