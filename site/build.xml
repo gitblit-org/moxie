@@ -50,7 +50,7 @@
 					<link name="moxie-pro" src="moxie-${project.version}-pro.jar" />
 					<link name="moxie-all" src="moxie-${project.version}-all.jar" />
 					<divider />
-					<link name="moxie-proxy" src="moxie-proxy-${project.version}.jar" />
+					<link name="moxie-proxy" src="moxie-proxy-${project.version}.zip" />
 					<divider />
 					<link name="maxml" src="maxml-${project.version}.jar" />
 					<link name="maxml-sources" src="maxml-${project.version}-sources.jar" />
@@ -69,10 +69,10 @@
 			
 			<!-- Copy the generated artifacts from the other projects -->
 			<resource>
-				<fileset dir="${basedir}/../toolkit/target/" includes="*.jar" excludes="*-sources.jar,moxie.jar" />
-				<fileset dir="${basedir}/../proxy/target/" includes="*.jar" excludes="*-sources.jar" />
-				<fileset dir="${basedir}/../moxie+ant/target/" includes="*.zip,*.gz" />
-				<fileset dir="${basedir}/../maxml/target/" includes="*.jar" />
+				<fileset dir="${basedir}/../toolkit/target/" includes="*${project.version}-*.jar" excludes="*${project.version}-sources.jar" />
+				<fileset dir="${basedir}/../proxy/target/" includes="*${project.version}.zip" />
+				<fileset dir="${basedir}/../moxie+ant/target/" includes="*${project.version}.zip,*${project.version}.tar.gz" />
+				<fileset dir="${basedir}/../maxml/target/" includes="*${project.version}.jar" />
 			</resource>
 			
 			<!-- Set the logo from the mx:doc resources -->
