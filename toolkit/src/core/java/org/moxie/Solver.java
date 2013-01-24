@@ -469,6 +469,7 @@ public class Solver {
 			for (Dependency dep : dependencies) {
 				if (!dependency.excludes(dep)) {
 					dep.tags.addAll(dependency.tags);
+					dep.exclusions.addAll(dependency.exclusions);
 					resolved.add(dep);
 					resolved.addAll(solve(scope, dep));
 				}
