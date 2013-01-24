@@ -85,7 +85,7 @@
 	Build the Moxie gh-pages branch
 	-->
 	<target name="ghpages" depends="main">
-		<mx:ghpages sourceFolder="${mxp.targetFolder}/site" obliterate="true" />
+		<mx:ghpages sourceFolder="${mxp.targetFolder}/site" obliterate="true" repositoryfolder="${basedir}/../" />
 	</target>
 	
 </project>
