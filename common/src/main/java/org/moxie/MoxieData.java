@@ -47,7 +47,7 @@ public class MoxieData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final int currentSolutionVersion = 1;
+	private static final int currentSolutionVersion = 2;
 	
 	private final File file;
 
@@ -109,6 +109,11 @@ public class MoxieData implements Serializable {
 		lastUpdated = parseDate(map, Key.lastUpdated, lastUpdated);
 		lastSolved = parseDate(map, Key.lastSolved, lastSolved);
 		origin = map.getString(Key.origin.name(), null);
+		if ("null".equals(origin)) {
+			// Moxie <= 0.5.0 workaround
+			// null origin b/c of .m2/repository copy persisted as "null"
+			origin = null;
+		}
 		solutionVersion = map.getInt("solutionVersion", 0);
 		return this;
 	}
@@ -311,7 +316,7 @@ public class MoxieData implements Serializable {
 			for (Map.Entry<Scope, Set<Dependency>> entry : dependencies.entrySet()) {
 				for (Dependency dep : entry.getValue()) {
 					// - solutionScope ring coordinates dependencyScope
-					sb.append(MessageFormat.format("- {0} {1,number,0} \"{2}\" {3}\n", entry.getKey(), dep.ring, dep.getDetailedCoordinates(), dep.definedScope));
+					sb.append(MessageFormat.format("- {0} {1,number,0} ''{2}'' {3}\n", entry.getKey(), dep.ring, dep.getDetailedCoordinates(), dep.definedScope));
 				}
 			}
 		}

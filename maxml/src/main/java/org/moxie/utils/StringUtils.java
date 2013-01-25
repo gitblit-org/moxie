@@ -287,7 +287,10 @@ public class StringUtils {
 	}
 	
 	public static String quote(String value) {
-		return "\"" + value + "\"";
+		if (value == null) {
+			return "";
+		}
+		return "'" + value + "'";
 	}
 	
 	/**
