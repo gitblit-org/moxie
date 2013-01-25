@@ -32,6 +32,7 @@ public class MxRun extends Java {
 	public MxRun() {
 		super();
 		setTaskName("mx:run");
+		setFork(true);
 	}
 	
 	@Override
