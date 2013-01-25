@@ -43,7 +43,7 @@ public class Dependency implements Serializable {
 	public int ring;
 	public String origin;
     public Scope definedScope;
-    public String repositoryId;
+    public String preferredRepositoryId;
     
 	public Dependency() {
 		type = "jar";
@@ -114,7 +114,7 @@ public class Dependency implements Serializable {
 				resolveDependencies = false;
 			} else if (option.charAt(0) == '^') {
 				// repository preference
-				repositoryId = option.substring(1);
+				preferredRepositoryId = option.substring(1);
 			} else if (option.charAt(0) == ':') {
 				// tag
 				tags.add(option.substring(1).toLowerCase());			

@@ -312,10 +312,6 @@ public class Repository {
 		
 		try {
 			URL url = getURL(dep, ext);
-
-			// log url attempts
-			solver.getConsole().debug("trying " + url.toString());
-
 			DownloadData data = download(solver, url);
 			verifySHA1(solver, expectedSHA1, data);
 			
@@ -359,9 +355,11 @@ public class Repository {
 			solver.getConsole().error(m);
 		} catch (FileNotFoundException e) {
 			// this repository does not have the requested artifact
+			solver.getConsole().debug(2, "{0} not found @ {1} repository", dep.getCoordinates(), name);
 		} catch (IOException e) {
 			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
 				// disregard bad request and not found responses
+				solver.getConsole().debug(2, "{0} not found @ {1} repository", dep.getCoordinates(), name);
 			} else {
 				java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, repositoryUrl);
 				if (java.net.Proxy.Type.DIRECT == proxy.type()) {
@@ -388,7 +386,9 @@ public class Repository {
 
 		// try to get the server-specified last-modified date of this artifact
 		lastModified = conn.getHeaderFieldDate("Last-Modified", lastModified);
-		
+
+		solver.getConsole().debug(2, "trying " + url.toString());
+
 		InputStream in = new BufferedInputStream(conn.getInputStream());
 		byte[] buffer = new byte[32767];
 

@@ -219,26 +219,45 @@ public class BuildConfig {
 	}
 	
 	public Collection<Repository> getRepositories() {
-		return repositories;
+		return new ArrayList<Repository>(repositories);
 	}
 
-	public Collection<Repository> getRepositories(String repositoryId) {
-		if (StringUtils.isEmpty(repositoryId)) {
+	/**
+	 * Return a list of repositories to check for the dependency.  Origin and
+	 * repository preference are considered for ordering the repositories.
+	 * 
+	 * @param dep
+	 * @return a list of repositories
+	 */
+	public Collection<Repository> getRepositories(Dependency dep) {
+		if (repositories.size() == 1 || 
+				(StringUtils.isEmpty(dep.origin) && StringUtils.isEmpty(dep.preferredRepositoryId))) {
 			return repositories;
 		}
-		Repository preferredRepository = null;
+		
+		Repository boostedRepository = null;
 		List<Repository> list = new ArrayList<Repository>();
 		for (Repository repository : repositories) {
 			list.add(repository);
-			String host = StringUtils.getHost(repository.repositoryUrl);
-			if (repositoryId.equalsIgnoreCase(repository.name)
-					|| repositoryId.equalsIgnoreCase(host)) {
-				preferredRepository = repository;
+			if (boostedRepository == null) {
+				if (!StringUtils.isEmpty(dep.origin)) {
+					// origin preference
+					if (dep.origin.equalsIgnoreCase(repository.name)) {
+						boostedRepository = repository;
+					}
+				} else if (!StringUtils.isEmpty(dep.preferredRepositoryId)) {
+					// repository preference
+					if (dep.preferredRepositoryId.equalsIgnoreCase(repository.name)) {
+						boostedRepository = repository;
+					}
+				}
 			}
 		}
-		if (preferredRepository != null) {
-			list.remove(preferredRepository);
-			list.add(0, preferredRepository);
+		
+		if (boostedRepository != null) {
+			// reorder repositories with preferred repository first
+			list.remove(boostedRepository);
+			list.add(0, boostedRepository);
 		}
 		return list;
 	}

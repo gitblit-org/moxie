@@ -24,6 +24,7 @@ import java.net.URLClassLoader;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -658,7 +659,7 @@ public class Solver {
 		if ((!pomFile.exists() || (dependency.isSnapshot() && moxiedata.isRefreshRequired())) && isOnline()) {
 			// download the POM
 			console.debug(1, "locating POM for {0}", dependency.getDetailedCoordinates());
-			for (Repository repository : config.getRepositories()) {
+			for (Repository repository : config.getRepositories(dependency)) {
 				if (!repository.isMavenSource()) {
 					// skip non-Maven repositories
 					continue;
@@ -725,9 +726,10 @@ public class Solver {
 			// POM dependencies do not have other artifacts
 			if (dependency.isSnapshot()) {
 				// ... but we still have to purge old pom snapshots
-				for (Repository repository : config.getRepositories(dependency.repositoryId)) {
+				for (Repository repository : config.getRepositories(dependency)) {
 					if (!repository.isSource(dependency)) {
 						// dependency incompatible with repository
+						console.debug(1, "{0} is not source of {1}, skipping", repository.name, dependency.getCoordinates());
 						continue;
 					}
 
@@ -739,9 +741,10 @@ public class Solver {
 		}
 		
 		// standard artifact
-		for (Repository repository : config.getRepositories(dependency.repositoryId)) {
+		for (Repository repository : config.getRepositories(dependency)) {
 			if (!repository.isSource(dependency)) {
 				// dependency incompatible with repository
+				console.debug(1, "{0} is not source of {1}, skipping", repository.name, dependency.getCoordinates());
 				continue;
 			}
 			
@@ -761,15 +764,21 @@ public class Solver {
 			if (downloadDependency && isOnline()) {
 				// Download primary artifact (e.g. jar)
 				artifactFile = repository.download(this, dependency, dependency.type);
-				// Download sources artifact (e.g. -sources.jar)
-				Dependency sources = dependency.getSourcesArtifact();
-				repository.download(this, sources, sources.type);
+				
+				if (artifactFile != null) {
+					// Download sources artifact (e.g. -sources.jar)
+					Dependency sources = dependency.getSourcesArtifact();
+					repository.download(this, sources, sources.type);
+				}
 			}
 			
 			// purge snapshots for this dependency			
 			moxieCache.purgeSnapshots(dependency, repository.purgePolicy);
 			
-			return artifactFile;
+			// artifact retrieved
+			if (artifactFile != null) {
+				return artifactFile;
+			}
 		}
 		
 		return null;
