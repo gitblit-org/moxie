@@ -305,6 +305,10 @@ public class BuildConfig {
 		return new File(projectConfig.targetFolder, "reports");
 	}
 
+	public File getJavadocFolder() {
+		return new File(projectConfig.targetFolder, "javadoc");
+	}
+
 	public File getTargetFolder() {
 		return projectConfig.targetFolder;
 	}

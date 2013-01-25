@@ -33,6 +33,7 @@
 					<page name="mx:Init" src="mxinit.mkd" />
 					<page name="mx:Jar" src="mxjar.mkd" />
 					<page name="mx:Javac" src="mxjavac.mkd" />
+					<page name="mx:Javadoc" src="mxjavadoc.mkd" />
 					<page name="mx:Keys" src="mxkeys.mkd" />
 					<page name="mx:Report" src="mxreport.mkd" />
 					<page name="mx:Run" src="mxrun.mkd" />
