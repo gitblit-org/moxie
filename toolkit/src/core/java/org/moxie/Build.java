@@ -670,7 +670,7 @@ public class Build {
 	void describeSettings() {
 		if (config.isVerbose()) {
 			console.log("Moxie parameters");
-			describe(Toolkit.MX_ROOT, solver.getMoxieCache().getMoxieRoot().getAbsolutePath());
+			describe(Toolkit.MX_ROOT, solver.getMoxieCache().getRootFolder().getAbsolutePath());
 			describe(Toolkit.MX_ONLINE, "" + solver.isOnline());
 			describe(Toolkit.MX_UPDATEMETADATA, "" + solver.isUpdateMetadata());
 			describe(Toolkit.MX_DEBUG, "" + config.isDebug());

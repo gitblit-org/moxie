@@ -31,6 +31,10 @@ public class MavenCache implements IMavenCache {
 		this.root = root;
 	}
 	
+	public File getRootFolder() {
+		return root;
+	}
+	
 	protected Dependency resolveRevision(Dependency dependency) {
 		if ((dependency.isSnapshot() && StringUtils.isEmpty(dependency.revision))
 				|| dependency.version.equalsIgnoreCase(Constants.RELEASE)

@@ -5,6 +5,8 @@ import java.util.Collection;
 
 public interface IMavenCache {
 	
+	File getRootFolder();
+	
 	Collection<File> getFiles(String extension);
 
 	File getArtifact(Dependency dep, String ext);

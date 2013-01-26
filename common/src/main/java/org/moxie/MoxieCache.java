@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.moxie.utils.DeepCopier;
@@ -28,6 +29,10 @@ import org.moxie.utils.StringUtils;
 
 
 public class MoxieCache implements IMavenCache {
+	
+	public enum MavenCacheStrategy {
+		IGNORE, LINK, COPY
+	}
 
 	final File moxieRoot;
 	final File moxiedataRoot;
@@ -36,6 +41,7 @@ public class MoxieCache implements IMavenCache {
 	final File localRoot;
 	final File remoteRoot;
 	final IMavenCache dotM2Cache;
+	MavenCacheStrategy m2Strategy;
 
 	public MoxieCache() {
 		this(new File(System.getProperty("user.home") + "/.moxie"));
@@ -58,8 +64,13 @@ public class MoxieCache implements IMavenCache {
 		localSnapshotsRoot.mkdirs();
 	}
 	
-	public File getMoxieRoot() {
+	@Override
+	public File getRootFolder() {
 		return moxieRoot;
+	}
+	
+	public void setMavenCacheStrategy(MavenCacheStrategy value) {
+		m2Strategy = value;
 	}
 	
 	/*
@@ -135,18 +146,32 @@ public class MoxieCache implements IMavenCache {
 			if (downloaded != null) {
 				// found a downloaded file
 				moxieFile = downloaded;
-			} else {
+			} else if (MavenCacheStrategy.IGNORE != m2Strategy) {
 				// look in .m2/repository
 				File mavenFile = dotM2Cache.getArtifact(dep, ext);
 				if (mavenFile.exists()) {
-					// transparently copy from Maven cache to Moxie cache
-					try {
-						FileUtils.copy(moxieFile.getParentFile(), mavenFile);
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
+					if (MavenCacheStrategy.COPY == m2Strategy) {
+						// transparently copy from Maven cache to Moxie cache
+						try {
+							FileUtils.copy(moxieFile.getParentFile(), mavenFile);
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else {
+						// directly use artifact from Maven M2 repository
+						moxieFile = mavenFile;
 					}
+
+					// update Moxie data with the M2 file:/ url origin
+					Date now = new Date();
+					MoxieData moxiedata = readMoxieData(dep);
+					moxiedata.setOrigin(dotM2Cache.getRootFolder().toURI().toString());
+					moxiedata.setLastDownloaded(now);
+					moxiedata.setLastChecked(now);
+					moxiedata.setLastUpdated(new Date(mavenFile.lastModified()));
+					writeMoxieData(dep, moxiedata);
 				}
 			}
 		}
@@ -175,17 +200,22 @@ public class MoxieCache implements IMavenCache {
 			if (downloaded != null) {
 				// found a downloaded file
 				moxieFile = downloaded;
-			} else {
+			} else if (MavenCacheStrategy.IGNORE != m2Strategy) {
 				// look in .m2/repository
 				File mavenFile = dotM2Cache.getMetadata(dep, ext);
 				if (mavenFile.exists()) {
-					// transparently copy from Maven cache to Moxie cache
-					try {
-						FileUtils.copy(moxieFile.getParentFile(), mavenFile);
-					} catch (FileNotFoundException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
+					if (MavenCacheStrategy.COPY == m2Strategy) {
+						// transparently copy from Maven cache to Moxie cache
+						try {
+							FileUtils.copy(moxieFile.getParentFile(), mavenFile);
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					} else {
+						// directly use the Maven metadata file
+						moxieFile = mavenFile;
 					}
 				}
 			}

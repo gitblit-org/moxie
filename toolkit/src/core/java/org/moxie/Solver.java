@@ -24,7 +24,6 @@ import java.net.URLClassLoader;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.moxie.MoxieCache.MavenCacheStrategy;
 import org.moxie.console.Console;
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
@@ -82,6 +82,8 @@ public class Solver {
 		this.linkedModuleBuilds = new ArrayList<Build>();
 		this.registeredUrls = new HashSet<String>();
 		this.console = console == null ? new Console(config.isColor()) : console;
+		
+		this.moxieCache.setMavenCacheStrategy(MavenCacheStrategy.IGNORE);
 	}
 	
 	boolean isOnline() {
@@ -686,7 +688,8 @@ public class Solver {
 			
 			// confirm we have the repository url in our repository list
 			if (!StringUtils.isEmpty(moxiedata.getOrigin()) 
-					&& !registeredUrls.contains(moxiedata.getOrigin())) {
+					&& !registeredUrls.contains(moxiedata.getOrigin())
+					&& !moxiedata.getOrigin().startsWith("file:/")) {
 				console.warn("WARNING: You must add {0} to your repositories for {1}!", 
 						moxiedata.getOrigin(), dependency.getManagementId());
 			}
