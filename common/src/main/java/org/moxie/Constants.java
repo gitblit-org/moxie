@@ -15,6 +15,7 @@
  */
 package org.moxie;
 
+
 public class Constants {
 	
 	public static final String MAVEN2_PATTERN = "${groupId}/${artifactId}/${version}/${artifactId}-${revision}${classifier}.${ext}";
@@ -43,5 +44,21 @@ public class Constants {
 		lastDownloaded, origin, release, latest, revision, packaging, solutionVersion,
 		id, email, organizationUrl, connection, developerConnection, tag, distribution,
 		comments;
+	}
+	
+	public enum MavenCacheStrategy {
+		IGNORE, LINK, COPY;
+		
+		public static MavenCacheStrategy fromString(String value) {
+			if (value == null) {
+				return null;
+			}
+			for (MavenCacheStrategy strategy : values()) {
+				if (strategy.name().equalsIgnoreCase(value)) {
+					return strategy;
+				}
+			}
+			return null;
+		}
 	}
 }

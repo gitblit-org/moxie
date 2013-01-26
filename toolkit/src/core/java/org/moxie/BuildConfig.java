@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.moxie.Constants.MavenCacheStrategy;
 import org.moxie.maxml.MaxmlException;
 import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.Base64;
@@ -121,6 +122,16 @@ public class BuildConfig {
 	
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
+	}
+	
+	public MavenCacheStrategy getMavenCacheStrategy() {
+		if (projectConfig.mavenCacheStrategy != null) {
+			return projectConfig.mavenCacheStrategy;
+		}
+		if (toolkitConfig.mavenCacheStrategy != null) {
+			return toolkitConfig.mavenCacheStrategy;
+		}
+		return MavenCacheStrategy.IGNORE;
 	}
 	
 	private void determineProxies() {		

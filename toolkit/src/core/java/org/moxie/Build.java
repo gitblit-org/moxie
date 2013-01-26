@@ -675,6 +675,7 @@ public class Build {
 			describe(Toolkit.MX_UPDATEMETADATA, "" + solver.isUpdateMetadata());
 			describe(Toolkit.MX_DEBUG, "" + config.isDebug());
 			describe(Toolkit.MX_VERBOSE, "" + config.isVerbose());
+			describe(Toolkit.Key.mavenCacheStrategy, config.getMavenCacheStrategy().name());
 			
 			console.log("dependency sources");
 			if (config.getRepositories().size() == 0) {

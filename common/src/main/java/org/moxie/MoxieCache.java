@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.moxie.Constants.MavenCacheStrategy;
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
@@ -30,10 +31,6 @@ import org.moxie.utils.StringUtils;
 
 public class MoxieCache implements IMavenCache {
 	
-	public enum MavenCacheStrategy {
-		IGNORE, LINK, COPY
-	}
-
 	final File moxieRoot;
 	final File moxiedataRoot;
 	final File localReleasesRoot;

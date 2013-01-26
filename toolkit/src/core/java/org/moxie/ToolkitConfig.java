@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.moxie.Constants.MavenCacheStrategy;
 import org.moxie.Toolkit.Key;
 import org.moxie.maxml.Maxml;
 import org.moxie.maxml.MaxmlException;
@@ -72,6 +73,7 @@ public class ToolkitConfig implements Serializable {
 	UpdatePolicy updatePolicy;
 	int revisionRetentionCount;
 	int revisionPurgeAfterDays;
+	MavenCacheStrategy mavenCacheStrategy;
 
 	public ToolkitConfig() {
 		// default configuration
@@ -224,6 +226,7 @@ public class ToolkitConfig implements Serializable {
 		mainclass = readString(map, Key.mainclass, null);
 
 		// build parameters
+		mavenCacheStrategy = MavenCacheStrategy.fromString(map.getString(Key.mavenCacheStrategy.name(), mavenCacheStrategy == null ? null : mavenCacheStrategy.name()));
 		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(apply), true));
 		outputFolder = readFile(map, Key.outputFolder, new File(baseFolder, "build"));
 		targetFolder = readFile(map, Key.targetFolder, new File(baseFolder, "target"));
@@ -739,5 +742,6 @@ public class ToolkitConfig implements Serializable {
 		updatePolicy = parent.updatePolicy;
 		revisionRetentionCount = parent.revisionRetentionCount;
 		revisionPurgeAfterDays = parent.revisionPurgeAfterDays;
+		mavenCacheStrategy = parent.mavenCacheStrategy;
 	}
 }

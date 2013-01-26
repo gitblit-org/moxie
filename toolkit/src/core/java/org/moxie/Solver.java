@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.moxie.MoxieCache.MavenCacheStrategy;
 import org.moxie.console.Console;
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
@@ -83,7 +82,7 @@ public class Solver {
 		this.registeredUrls = new HashSet<String>();
 		this.console = console == null ? new Console(config.isColor()) : console;
 		
-		this.moxieCache.setMavenCacheStrategy(MavenCacheStrategy.IGNORE);
+		this.moxieCache.setMavenCacheStrategy(config.getMavenCacheStrategy());
 	}
 	
 	boolean isOnline() {
