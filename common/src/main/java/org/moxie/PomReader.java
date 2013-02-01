@@ -75,6 +75,7 @@ public class PomReader {
 		Element docElement = doc.getDocumentElement();
 		
 		Pom pom = new Pom();
+		List<Dependency> managedList = new ArrayList<Dependency>();
 		List<Dependency> dependencyList = new ArrayList<Dependency>();
 		
 		NodeList projectNodes = docElement.getChildNodes();
@@ -123,17 +124,9 @@ public class PomReader {
 							// dependencyManagement.dependency
 							Dependency dep = readDependency(node);
 							Scope scope = Scope.fromString(readStringTag(node, Key.scope));
+							dep.definedScope = scope;
 							
-							if (Scope.imprt.equals(scope)) {
-								// dependencyManagement import 
-								Pom importPom = readPom(cache, dep);
-								if (importPom != null) {
-									pom.importManagedDependencies(importPom);
-								}					
-							} else {
-								// add dependency management definition
-								pom.addManagedDependency(dep, scope);
-							}
+							managedList.add(dep);
 						}
 					}
 				} else if ("dependencies".equalsIgnoreCase(element.getTagName())) {
@@ -233,7 +226,21 @@ public class PomReader {
 		}
 		pom.resolveProperties();
 		
-		// Add dependencies after resolving all properties
+		// Add managed dependencies after resolving all properties
+		for (Dependency dep : managedList) {
+			if (Scope.imprt.equals(dep.definedScope)) {
+				// dependencyManagement import 
+				Pom importPom = readPom(cache, dep);
+				if (importPom != null) {
+					pom.importManagedDependencies(importPom);
+				}					
+			} else {
+				// add dependency management definition
+				pom.addManagedDependency(dep, dep.definedScope);
+			}
+		}
+		
+		// Add dependencies after adding all managed dependencies
 		for (Dependency dep : dependencyList) {
 			 Scope addedScope = pom.addDependency(dep, dep.definedScope);
 			 dep.definedScope = addedScope;
