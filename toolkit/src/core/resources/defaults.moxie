@@ -50,6 +50,7 @@ tasks: {
 		fork: false
 		failOnError: true
 		includeAntRuntime: true
+		encoding: UTF-8
 		excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
 	}
 

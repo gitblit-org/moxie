@@ -16,7 +16,9 @@
 package org.moxie.ant;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.tools.ant.Project;
@@ -32,7 +34,9 @@ import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
 import org.moxie.console.Console;
 import org.moxie.maxml.MaxmlMap;
+import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
+import org.moxie.utils.StringUtils;
 
 
 public class MxJavac extends Javac {
@@ -125,8 +129,28 @@ public class MxJavac extends Javac {
 			build.getConsole().error(getTaskName() + " attributes are null!");
 			return;
 		}
-		
+		// clone the original attributes because we remove the compiler args
+		attributes = DeepCopier.copy(attributes);
+		Object args = attributes.remove(Key.compilerArgs.name());
+
 		AttributeReflector.setAttributes(getProject(), this, attributes);
+		
+		if (args != null) {
+			// set the compiler args, if any
+			List<Object> list = new ArrayList<Object>();
+			if (args instanceof List) {
+				list = (List<Object>) args;
+			} else if (args instanceof String) {
+				for (String value : StringUtils.breakCSV(args.toString())) {
+					if (!StringUtils.isEmpty(value)) {
+						list.add(value);
+					}
+				}
+			}
+			for (Object o : list) {
+				createCompilerArg().setValue(o.toString());
+			}
+		}
 	}
 
 	public void execute() {

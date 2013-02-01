@@ -1,11 +1,20 @@
-name : Moxie Build Toolkit
-groupId : org.moxie
-artifactId : moxie-parent
+name: Moxie Build Toolkit
+groupId: org.moxie
+artifactId: moxie-parent
 version: 0.5.1-SNAPSHOT
-organization : James Moger 
-inceptionYear : 2012
-url : http://gitblit.github.com/moxie
+organization: James Moger 
+inceptionYear: 2012
+url: 'http://gitblit.github.com/moxie'
 apply: eclipse, intellij, pom
+tasks: {
+    "mx:javac": {
+        source: 1.6
+        target: 1.6
+        compiler: javac1.6
+        encoding: UTF-8
+        compilerArgs: '-Xlint:-options'  
+    }
+}
 properties: {
   ant.version : 1.8.4
 }
