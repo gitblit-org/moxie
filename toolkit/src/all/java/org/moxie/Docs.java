@@ -250,37 +250,39 @@ public class Docs {
 					}
 
 					// page navigation
-					if (link.sidebar) {
-						Map<String, AtomicInteger> counts = new HashMap<String, AtomicInteger>();
-						StringBuilder sb = new StringBuilder();
-						for (String line : Arrays.asList(markdownContent.split("\n"))) {
-							if (line.length() == 0) {
-								sb.append('\n');
-								continue;
-							}
-							if (line.charAt(0) == '#') {
-								String section = line.substring(0, line.indexOf(' '));
-								String name = line.substring(line.indexOf(' ') + 1) .trim();
-								if (name.endsWith(section)) {
-									name = name.substring(0, name.indexOf(section)) .trim();
-								}
-								String h = "h" + section.length();
-								if (!counts.containsKey(h)) {
-									counts.put(h,  new AtomicInteger());
-								}
-								String id = section.length() + "." + counts.get(h).addAndGet(1);
-								sections.add(new Section(id, name));							
-								sb.append(MessageFormat.format("<{0} id=''{2}''>{1}</{0}>\n", h, name, id));
-							} else {
-								// preserve line
-								sb.append(line);
-								sb.append('\n');
-							}
+					Map<String, AtomicInteger> counts = new HashMap<String, AtomicInteger>();
+					StringBuilder sb = new StringBuilder();
+					for (String line : Arrays.asList(markdownContent.split("\n"))) {
+						if (line.length() == 0) {
+							sb.append('\n');
+							continue;
 						}
-
-						// replace markdown content with the navigable content
-						markdownContent = sb.toString();
+						if (line.charAt(0) == '#') {
+							String section = line.substring(0, line.indexOf(' '));
+							String name = line.substring(line.indexOf(' ') + 1) .trim();
+							if (name.endsWith(section)) {
+								name = name.substring(0, name.indexOf(section)) .trim();
+							}
+							String h = "h" + section.length();
+							if (!counts.containsKey(h)) {
+								counts.put(h,  new AtomicInteger());
+							}
+							String id = section.length() + "." + counts.get(h).addAndGet(1);
+							sections.add(new Section(id, name));
+							if (link.sectionLinks) {
+								sb.append(MessageFormat.format("<{0} id=''{2}''>{1} <a href=\"#{2}\" class=\"sectionlink\">§</a></{0}>\n", h, name, id));
+							} else {
+								sb.append(MessageFormat.format("<{0} id=''{2}''>{1}</{0}>\n", h, name, id));
+							}
+						} else {
+							// preserve line
+							sb.append(line);
+							sb.append('\n');
+						}
 					}
+
+					// replace markdown content with the navigable content
+					markdownContent = sb.toString();
 
 					// transform markdown to html
 					content = transformMarkdown(markdownContent.toString());
@@ -344,7 +346,7 @@ public class Docs {
 					writer.write("\n<body>");
 				}
 				writer.write(links);
-				if (link.sidebar) {
+				if (link.toc) {
 					writer.write("\n<div class='container-fluid'>");
 					writer.write("\n<div class='row-fluid'>");
 					writer.write("\n<!-- sidebar -->");
@@ -368,7 +370,7 @@ public class Docs {
 				writer.write("<footer class=\"footer\">");
 				writer.write(footer);
 				writer.write("\n</footer>\n</div>");
-				if (link.sidebar) {
+				if (link.toc) {
 					writer.write("\n</div></div>");
 				}
 				writer.write("\n\n<!-- Include scripts at end for faster page loading -->");

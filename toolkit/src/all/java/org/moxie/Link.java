@@ -34,7 +34,8 @@ public class Link implements Serializable {
 	boolean isMenu;
 	boolean isReport;	
 	boolean isDivider;
-	boolean sidebar;
+	boolean toc;
+	boolean sectionLinks;
 
 	public void setName(String name) {
 		this.name = name;
@@ -56,8 +57,12 @@ public class Link implements Serializable {
 		this.content = content;
 	}
 
-	public void setSidebar(boolean value) {
-		this.sidebar = value;
+	public void setToc(boolean value) {
+		this.toc = value;
+	}
+
+	public void setSectionlinks(boolean value) {
+		this.sectionLinks = value;
 	}
 
 	public Link createPage() {
