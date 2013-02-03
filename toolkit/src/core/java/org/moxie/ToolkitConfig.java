@@ -74,6 +74,8 @@ public class ToolkitConfig implements Serializable {
 	int revisionRetentionCount;
 	int revisionPurgeAfterDays;
 	MavenCacheStrategy mavenCacheStrategy;
+	String releaseVersion;
+	String releaseDate;
 
 	public ToolkitConfig() {
 		// default configuration
@@ -127,6 +129,14 @@ public class ToolkitConfig implements Serializable {
 	
 	public String getMainclass() {
 		return mainclass;
+	}
+	
+	public String getReleaseVersion() {
+		return releaseVersion;
+	}
+
+	public String getReleaseDate() {
+		return releaseDate;
 	}
 
 	@Override
@@ -224,6 +234,8 @@ public class ToolkitConfig implements Serializable {
 		}
 		
 		mainclass = readString(map, Key.mainclass, null);
+		releaseVersion = readString(map, Key.releaseVersion, null);
+		releaseDate = readString(map, Key.releaseDate, null);
 
 		// build parameters
 		mavenCacheStrategy = MavenCacheStrategy.fromString(map.getString(Key.mavenCacheStrategy.name(), mavenCacheStrategy == null ? null : mavenCacheStrategy.name()));

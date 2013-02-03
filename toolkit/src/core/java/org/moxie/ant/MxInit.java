@@ -146,6 +146,9 @@ public class MxInit extends MxTask {
 			setProjectProperty(Key.version, pom.version);
 			setProjectProperty(Key.organization, pom.organization);
 			setProjectProperty(Key.url, pom.url);
+			setProjectProperty(Key.mainclass, buildConfig.getProjectConfig().getMainclass());
+			setProjectProperty(Key.releaseVersion, buildConfig.getProjectConfig().getReleaseVersion());
+			setProjectProperty(Key.releaseDate, buildConfig.getProjectConfig().getReleaseDate());
 
 			setProperty(Key.outputFolder, buildConfig.getOutputFolder(null).toString());
 			setProperty(Key.compile_outputFolder, buildConfig.getOutputFolder(Scope.compile).toString());
