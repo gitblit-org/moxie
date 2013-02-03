@@ -48,6 +48,10 @@ public class Link implements Serializable {
 		this.as = as;
 	}
 
+	public void setOut(String as) {
+		this.as = as;
+	}
+
 	public void setContent(String content) {
 		this.content = content;
 	}
