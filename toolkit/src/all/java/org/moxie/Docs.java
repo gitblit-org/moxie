@@ -548,9 +548,12 @@ public class Docs {
 			return link.src;
 		} else if (link.isPage) {
 			// page link
-			String html = link.src.substring(0, link.src.lastIndexOf('.'))
+			if (StringUtils.isEmpty(link.as)) {
+				String html = link.src.substring(0, link.src.lastIndexOf('.'))
 					+ ".html";
-			return html;
+				return html;
+			}
+			return link.as;
 		}
 		return null;
 	}

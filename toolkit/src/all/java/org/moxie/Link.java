@@ -25,6 +25,7 @@ public class Link implements Serializable {
 
 	String name;
 	String src;
+	String as;
 	List<Link> sublinks;	
 	String content;
 
@@ -41,6 +42,10 @@ public class Link implements Serializable {
 
 	public void setSrc(String src) {
 		this.src = src;
+	}
+
+	public void setAs(String as) {
+		this.as = as;
 	}
 
 	public void setContent(String content) {
