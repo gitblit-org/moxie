@@ -104,12 +104,7 @@ public class Repository {
 	public boolean isSource(Dependency dependency) {
 		if (dependency.isMavenObject() && isMavenSource()) {
 			// dependency is a Maven object AND the repository is a Maven source
-			if (StringUtils.isEmpty(dependency.origin)) {
-				// dependency has no origin specified
-				return true;
-			}
-			// return true if this repository is the origin of the dependency
-			return repositoryUrl.equals(dependency.origin);
+			return true;
 		} else if (!dependency.isMavenObject() && !isMavenSource()) {
 			// dependency is NOT a Maven object AND the repository is NOT a Maven source
 			return true;
