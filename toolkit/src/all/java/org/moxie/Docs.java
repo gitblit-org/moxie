@@ -250,7 +250,7 @@ public class Docs {
 					}
 
 					// page navigation
-					Map<String, AtomicInteger> counts = new HashMap<String, AtomicInteger>();
+					AtomicInteger sectionCounter = new AtomicInteger();
 					StringBuilder sb = new StringBuilder();
 					for (String line : Arrays.asList(markdownContent.split("\n"))) {
 						if (line.length() == 0) {
@@ -264,13 +264,10 @@ public class Docs {
 								name = name.substring(0, name.indexOf(section)) .trim();
 							}
 							String h = "h" + section.length();
-							if (!counts.containsKey(h)) {
-								counts.put(h,  new AtomicInteger());
-							}
-							String id = section.length() + "." + counts.get(h).addAndGet(1);
+							String id = "H" + sectionCounter.addAndGet(1);
 							sections.add(new Section(id, name));
-							if (link.sectionLinks) {
-								sb.append(MessageFormat.format("<{0} id=''{2}''>{1} <a href=\"#{2}\" class=\"sectionlink\">§</a></{0}>\n", h, name, id));
+							if (link.showSectionLinks) {
+								sb.append(MessageFormat.format("<{0} class=\"section\" id=''{2}''><a href=\"#{2}\" class=\"sectionlink\"><i class=\"icon-share-alt\"> </i></a>{1}</{0}>\n", h, name, id));
 							} else {
 								sb.append(MessageFormat.format("<{0} id=''{2}''>{1}</{0}>\n", h, name, id));
 							}
@@ -346,9 +343,14 @@ public class Docs {
 					writer.write("\n<body>");
 				}
 				writer.write(links);
-				if (link.toc) {
-					writer.write("\n<div class='container-fluid'>");
-					writer.write("\n<div class='row-fluid'>");
+				if (link.showToc) {
+					if (link.isFluidLayout) {
+						writer.write("\n<div class='container-fluid'>");
+						writer.write("\n<div class='row-fluid'>");
+					} else {
+						writer.write("\n<div class='container'>");
+						writer.write("\n<div class='row'>");
+					}
 					writer.write("\n<!-- sidebar -->");
 					writer.write("\n<div class='span3'>");
 					writer.write("\n<div class='well sidebar-nav'>");
@@ -362,7 +364,11 @@ public class Docs {
 					writer.write("\n</div>");
 					writer.write("\n<div class='span9'>");
 				} else {
-					writer.write("\n<div class='container'>");
+					if (link.isFluidLayout) {
+						writer.write("\n<div class='container-fluid'>");
+					} else {
+						writer.write("\n<div class='container'>");
+					}
 				}
 				writer.write("\n<!-- Begin Markdown -->\n");
 				writer.write(content);
@@ -370,7 +376,7 @@ public class Docs {
 				writer.write("<footer class=\"footer\">");
 				writer.write(footer);
 				writer.write("\n</footer>\n</div>");
-				if (link.toc) {
+				if (link.showToc) {
 					writer.write("\n</div></div>");
 				}
 				writer.write("\n\n<!-- Include scripts at end for faster page loading -->");
@@ -577,6 +583,11 @@ public class Docs {
 		String header = readResource(doc, "header.html");
 		header = header.replace("%PROJECTNAME%", projectName);
 		sb.append(header);
+		
+		if (doc.isResponsiveLayout) {
+			sb.append("<!-- Responsive CSS must be included after the above body css! -->\n");
+			sb.append("<link rel='stylesheet' href='./bootstrap/css/bootstrap-responsive.min.css'>\n");
+		}
 
 		if (doc.keywords != null && doc.keywords.size() > 0) {
 			String keywords = StringUtils.flattenStrings(doc.keywords);

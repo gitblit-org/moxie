@@ -139,6 +139,10 @@ public class MxDoc extends MxTask {
 	public void setGooglePlusOne(boolean value) {
 		doc.googlePlusOne = value;
 	}
+	
+	public void setResponsiveLayout(boolean value) {
+		doc.isResponsiveLayout = value;
+	}
 
 	@Override
 	public void execute() throws BuildException {
@@ -212,6 +216,7 @@ public class MxDoc extends MxTask {
 	protected void extractHtmlResources(File outputFolder) {
 
 		// extract resources
+		extractResource(outputFolder, "bootstrap/css/moxie.less");
 		extractResource(outputFolder, "bootstrap/css/bootstrap.less");
 		extractResource(outputFolder, "bootstrap/css/bootstrap-responsive.min.css");
 		extractResource(outputFolder, "bootstrap/js/bootstrap.min.js");

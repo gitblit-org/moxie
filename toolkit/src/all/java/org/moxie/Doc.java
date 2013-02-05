@@ -68,6 +68,8 @@ public class Doc implements Serializable {
 	public Logo logo;
 	
 	public Logo favicon;
+	
+	public boolean isResponsiveLayout;
 
 	public List<File> getSources() {
 		List<File> files = new ArrayList<File>();

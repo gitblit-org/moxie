@@ -34,8 +34,9 @@ public class Link implements Serializable {
 	boolean isMenu;
 	boolean isReport;	
 	boolean isDivider;
-	boolean toc;
-	boolean sectionLinks;
+	boolean showToc;
+	boolean showSectionLinks;
+	boolean isFluidLayout;
 
 	public void setName(String name) {
 		this.name = name;
@@ -58,11 +59,15 @@ public class Link implements Serializable {
 	}
 
 	public void setToc(boolean value) {
-		this.toc = value;
+		this.showToc = value;
 	}
 
 	public void setSectionlinks(boolean value) {
-		this.sectionLinks = value;
+		this.showSectionLinks = value;
+	}
+
+	public void setFluidlayout(boolean value) {
+		this.isFluidLayout = value;
 	}
 
 	public Link createPage() {

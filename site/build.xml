@@ -42,7 +42,7 @@
 					<page name="mx:WebXml" src="mxwebxml.mkd" />
 					<page name="mx:Zip" src="mxzip.mkd" />
 				</menu>
-				<page name="maxml" src="maxml.mkd" toc="true" />
+				<page name="maxml" src="maxml.mkd" toc="yes" sectionLinks="true" />
 				<menu name="download">
 					<link name="moxie+ant (zip)" src="moxie+ant-${project.version}.zip" />
 					<link name="moxie+ant (tar.gz)" src="moxie+ant-${project.version}.tar.gz" />
