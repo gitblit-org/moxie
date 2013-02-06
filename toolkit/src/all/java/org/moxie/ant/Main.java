@@ -37,6 +37,7 @@ import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.InitCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.StoredConfig;
 import org.moxie.MoxieException;
@@ -350,7 +351,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	return project;
     }
     
-    private void initGit() {
+    private void initGit() throws GitAPIException {
     	// create the repository
     	InitCommand init = Git.init();
     	init.setBare(false);
@@ -546,7 +547,11 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 	public void buildFinished(BuildEvent event) {
 		if (newProject != null && newProject.initGit) {
 			// init Git repository after running moxie.init
-			initGit();
+			try {
+				initGit();
+			} catch (GitAPIException e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

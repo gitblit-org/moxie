@@ -63,12 +63,12 @@ public class MaxmlParser {
 		while ((line = reader.readLine()) != null) {
 			// text block processing
 			if (appendTextBuffer) {
-				if (line.equals("\"\"\"")) {
+				if (line.equals("\"\"\"") || line.equals("'''")) {
 					// end block
 					map.put(lastKey, textBlock.toString());
 					textBlock.setLength(0);
 					appendTextBuffer = false;
-				} else if (line.endsWith("\"\"\"")) {
+				} else if (line.endsWith("\"\"\"") || line.endsWith("'''")) {
 					// end block
 					textBlock.append(line.substring(0, line.length() - 3));
 					map.put(lastKey, textBlock.toString());
@@ -97,7 +97,7 @@ public class MaxmlParser {
 			} else if (line.equals("---")) {
 				// ignore new document
 				continue;
-			} else if (line.equals("\"\"\"")) {
+			} else if (line.equals("\"\"\"") || line.equals("'''")) {
 				// start text block
 				textBlock.setLength(0);
 				appendTextBuffer = true;
@@ -132,6 +132,16 @@ public class MaxmlParser {
 					value = line.substring(quote + 1).trim();
 					int colon = value.indexOf(':');
 					value = value.substring(colon + 1).trim();
+				} else if (line.charAt(0) == '\'') {
+					// 'key' : value
+					// quoted key because of colons
+					int quote = line.indexOf('\'', 1);
+					key = line.substring(1, quote).trim();
+					
+					value = line.substring(quote + 1).trim();
+					int colon = value.indexOf(':');
+					value = value.substring(colon + 1).trim();
+
 				} else {
 					// key : value
 					int colon = line.indexOf(':');
@@ -146,7 +156,7 @@ public class MaxmlParser {
 					// map
 					Map<String, Object> submap = parse(reader);
 					o = submap;
-				} else if (value.equals("\"\"\"")) {
+				} else if (value.equals("\"\"\"") || value.equals("'''")) {
 					// start text block
 					textBlock.setLength(0);
 					appendTextBuffer = true;
