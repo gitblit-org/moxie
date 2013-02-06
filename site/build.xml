@@ -37,7 +37,9 @@
 					<page name="mx:Keys" src="mxkeys.mkd" />
 					<page name="mx:Report" src="mxreport.mkd" />
 					<page name="mx:Run" src="mxrun.mkd" />
+					<page name="mx:Tar" src="mxtar.mkd" />
 					<page name="mx:Test" src="mxtest.mkd" />
+					<page name="mx:Thumb" src="mxthumb.mkd" />
 					<page name="mx:War" src="mxwar.mkd" />
 					<page name="mx:WebXml" src="mxwebxml.mkd" />
 					<page name="mx:Zip" src="mxzip.mkd" />

@@ -195,6 +195,7 @@
 			<class name="org.moxie.ant.MxThumbs" />
 			<class name="org.moxie.ant.MxWebXml" />
 			<class name="org.moxie.ant.MxJavadoc" />
+			<class name="org.moxie.ant.MxTar" />
 
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
@@ -249,6 +250,7 @@
 			<class name="org.moxie.ant.MxThumbs" />
 			<class name="org.moxie.ant.MxWebXml" />
 			<class name="org.moxie.ant.MxJavadoc" />
+			<class name="org.moxie.ant.MxTar" />
 			
 			<!-- all -->
 			<class name="org.moxie.ant.MxDoc" />

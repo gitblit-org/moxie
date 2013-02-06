@@ -1,0 +1,8 @@
+## mx:Thumb
+
+%BEGINXML%
+<!-- Generate thumbnails of screenshots -->
+<mx:thumbs input="png" output="png" maximumDimension="250" 
+	sourceFolder="${project.docs.dir}/screenshots"
+	destFolder="${project.site.dir}/thumbs" />
+%ENDXML%
