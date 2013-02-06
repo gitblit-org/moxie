@@ -14,10 +14,6 @@
 
 package org.moxie.less;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,10 +34,9 @@ import org.mozilla.javascript.tools.shell.Global;
  */
 public class LessEngine {
 	
+	
 	private Scriptable scope;
-	private ClassLoader classLoader;
-	private Function compileString;
-	private Function compileFile;
+	private Function compile;
 	
 	public LessEngine() {
 		try {
@@ -60,71 +55,22 @@ public class LessEngine {
 			cx.evaluateReader(scope, new InputStreamReader(less.openConnection().getInputStream()), less.getFile(), 1, null);
 			cx.evaluateReader(scope, new InputStreamReader(cssmin.openConnection().getInputStream()), cssmin.getFile(), 1, null);
 			cx.evaluateReader(scope, new InputStreamReader(engine.openConnection().getInputStream()), engine.getFile(), 1, null);
-			compileString = (Function) scope.get("compileString", scope);
-			compileFile = (Function) scope.get("compileFile", scope);
+			compile = (Function) scope.get("compile", scope);
 			Context.exit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public String compile(String input) throws LessException {
-		return compile(input, false);
-	}
-	
 	public String compile(String input, boolean compress) throws LessException {
-		try {
-			String result = call(compileString, new Object[] {input, compress});
+		try {			
+			String result = call(compile, new Object[] { input, "", compress });
 			return result;
 		} catch (Exception e) {
 			throw parseLessException(e);
 		}
 	}
 	
-	public String compile(URL input) throws LessException {
-		return compile(input, false);
-	}
-	
-	public String compile(URL input, boolean compress) throws LessException {
-		try {
-			String result = call(compileFile, new Object[] {input.getProtocol() + ":" + input.getFile(), classLoader, compress});
-			return result;
-		} catch (Exception e) {
-			throw parseLessException(e);
-		}
-	}
-	
-	public String compile(File input) throws LessException {
-		return compile(input, false);
-	}
-	
-	public String compile(File input, boolean compress) throws LessException {
-		try {
-			String result = call(compileFile, new Object[] {"file:" + input.getAbsolutePath(), classLoader, compress});
-			return result;
-		} catch (Exception e) {
-			throw parseLessException(e);
-		}
-	}
-	
-	public void compile(File input, File output) throws LessException, IOException {
-		compile(input, output, false);
-	}
-	
-	public void compile(File input, File output, boolean compress) throws LessException, IOException {
-		try {
-			String content = compile(input, compress);
-			if (!output.exists()) {
-				output.createNewFile();
-			}
-			BufferedWriter bw = new BufferedWriter(new FileWriter(output));
-			bw.write(content);
-			bw.close();
-		} catch (Exception e) {
-			throw parseLessException(e);
-		}
-	}
-
 	private synchronized String call(Function fn, Object[] args) {
 		return (String) Context.call(null, fn, scope, scope, args);
 	}
@@ -132,22 +78,22 @@ public class LessEngine {
 	private LessException parseLessException(Exception root) throws LessException {
 		if (root instanceof JavaScriptException) {
 			Scriptable value = (Scriptable) ((JavaScriptException) root).getValue();
-			String type = (String) ScriptableObject.getProperty(value, "type") + " Error";
-			String message = (String) ScriptableObject.getProperty(value, "message");
+			String type = ScriptableObject.getProperty(value, "type").toString() + " Error";
+			String message = ScriptableObject.getProperty(value, "message").toString();
 			String filename = "";
-			if (ScriptableObject.hasProperty(value, "filename")) {
-				filename = (String) ScriptableObject.getProperty(value, "filename"); 
+			if (ScriptableObject.getProperty(value, "filename") != null) {
+				filename = ScriptableObject.getProperty(value, "filename").toString();
 			}
 			int line = -1;
-			if (ScriptableObject.hasProperty(value, "line")) {
-				line = ((Double) ScriptableObject.getProperty(value, "line")).intValue(); 
+			if (ScriptableObject.getProperty(value, "line") != null) {
+				line = ((Double) ScriptableObject.getProperty(value, "line")).intValue();
 			}
 			int column = -1;
-			if (ScriptableObject.hasProperty(value, "column")) {
+			if (ScriptableObject.getProperty(value, "column") != null) {
 				column = ((Double) ScriptableObject.getProperty(value, "column")).intValue();
-			}				
+			}
 			List<String> extractList = new ArrayList<String>();
-			if (ScriptableObject.hasProperty(value, "extract")) {
+			if (ScriptableObject.getProperty(value, "extract") != null) {
 				NativeArray extract = (NativeArray) ScriptableObject.getProperty(value, "extract");
 				for (int i = 0; i < extract.getLength(); i++) {
 					if (extract.get(i, extract) instanceof String) {
