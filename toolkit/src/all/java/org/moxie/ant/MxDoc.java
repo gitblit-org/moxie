@@ -124,10 +124,6 @@ public class MxDoc extends MxTask {
 		doc.injectPrettify = value;
 	}
 
-	public void setInjectfancybox(boolean value) {
-		doc.injectFancybox = value;
-	}
-
 	public void setGoogleAnalyticsid(String value) {
 		doc.googleAnalyticsId = value;
 	}

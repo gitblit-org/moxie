@@ -336,6 +336,14 @@ public class Docs {
 								fileName)), Charset.forName("UTF-8"));
 				writer.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n<html>\n<head>\n");
 				writer.write(header);
+
+				if (doc.injectPrettify) {
+					writer.append("\n<script src=\"./prettify/prettify.js\"></script>");
+				}
+
+				writer.append("\n<script src=\"./bootstrap/js/jquery.js\"></script>");
+				writer.append("\n<script src=\"./bootstrap/js/bootstrap.min.js\"></script>");
+				
 				writer.write("\n</head>");
 				if (doc.injectPrettify) {
 					writer.write("\n<body onload='prettyPrint()'>");
@@ -379,21 +387,7 @@ public class Docs {
 				if (link.showToc) {
 					writer.write("\n</div></div>");
 				}
-				writer.write("\n\n<!-- Include scripts at end for faster page loading -->");
-				if (doc.injectPrettify) {
-					writer.append("\n<script src=\"./prettify/prettify.js\"></script>");
-				}
-
-				writer.append("\n<script src=\"./bootstrap/js/jquery.js\"></script>");
-				writer.append("\n<script src=\"./bootstrap/js/bootstrap.min.js\"></script>");
-
-				if (doc.injectFancybox) {
-					String fancybox = readResource(doc, "fancybox.html");
-					writer.append('\n');
-					writer.append(fancybox);
-					writer.append('\n');
-				}
-
+				
 				if (!StringUtils.isEmpty(doc.googleAnalyticsId)) {
 					String analytics = readResource(doc, "analytics.html");
 					analytics = analytics.replace("%ANALYTICSID%", doc.googleAnalyticsId);

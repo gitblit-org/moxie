@@ -53,8 +53,6 @@ public class Doc implements Serializable {
 
 	public boolean injectPrettify;
 
-	public boolean injectFancybox;
-
 	public List<Substitute> substitutions = new ArrayList<Substitute>();
 
 	public List<Load> loads = new ArrayList<Load>();
@@ -95,7 +93,6 @@ public class Doc implements Serializable {
 		describe(console, Key.outputFolder, outputFolder.toString());
 		describe(console, Key.googleAnalyticsId, googleAnalyticsId);
 		describe(console, Key.googlePlusId, googlePlusId);
-		describe(console, "injectFancybox", String.valueOf(injectFancybox));
 		describe(console, "injectPrettify", String.valueOf(injectPrettify));
 		if (header != null && header.exists()) {
 			describe(console, "header", header.toString());
