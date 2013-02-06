@@ -14,12 +14,16 @@
 		<mx:init config="${basedir}/../toolkit/build.moxie" basedir="${basedir}" />
 		
 		<!-- Build the site documentation -->
-		<mx:doc googlePlusOne="true" injectPrettify="true">
+		<mx:doc googlePlusOne="true" injectPrettify="true" minify="true">
 			<structure>
-				<page name="overview" src="index.mkd" />
-				<page name="why?!" src="why.mkd" />
-				<page name="getting started" src="gettingstarted.mkd" />
-				<page name="build.moxie" src="moxiedescriptor.mkd" />
+				<menu name="about">
+					<page name="overview" src="index.mkd" />
+					<page name="why?!" src="why.mkd" />
+				</menu>
+				<menu name="documentation">
+					<page name="getting started" src="gettingstarted.mkd" />
+					<page name="build.moxie" src="moxiedescriptor.mkd" />
+				</menu>
 				<menu name="tasks">
 					<page name="mx:Clean" src="mxclean.mkd" />
 					<page name="mx:Doc" src="mxdoc.mkd" />
@@ -44,28 +48,29 @@
 					<page name="mx:WebXml" src="mxwebxml.mkd" />
 					<page name="mx:Zip" src="mxzip.mkd" />
 				</menu>
+				<page name="proxy" src="proxy.mkd" sectionLinks="true" />
 				<page name="maxml" src="maxml.mkd" toc="yes" sectionLinks="true" />
 				<menu name="download">
-					<link name="moxie+ant (zip)" src="moxie+ant-${project.version}.zip" />
-					<link name="moxie+ant (tar.gz)" src="moxie+ant-${project.version}.tar.gz" />
+					<link name="moxie+ant (zip)" src="moxie+ant-${project.releaseVersion}.zip" />
+					<link name="moxie+ant (tar.gz)" src="moxie+ant-${project.releaseVersion}.tar.gz" />
 					<divider />
-					<link name="moxie-core" src="moxie-${project.version}-core.jar" />
-					<link name="moxie-pro" src="moxie-${project.version}-pro.jar" />
-					<link name="moxie-all" src="moxie-${project.version}-all.jar" />
+					<link name="moxie-core" src="moxie-${project.releaseVersion}-core.jar" />
+					<link name="moxie-pro" src="moxie-${project.releaseVersion}-pro.jar" />
+					<link name="moxie-all" src="moxie-${project.releaseVersion}-all.jar" />
 					<divider />
-					<link name="moxie-proxy" src="moxie-proxy-${project.version}.zip" />
+					<link name="moxie-proxy" src="moxie-proxy-${project.releaseVersion}.zip" />
 					<divider />
-					<link name="maxml" src="maxml-${project.version}.jar" />
-					<link name="maxml-sources" src="maxml-${project.version}-sources.jar" />
+					<link name="maxml" src="maxml-${project.releaseVersion}.jar" />
+					<link name="maxml-sources" src="maxml-${project.releaseVersion}-sources.jar" />
 					<divider />
-					<page name="release log" src="releases.mkd" />
+					<page name="current release" src="releasecurrent.mkd" />
+					<page name="older releases" src="releases.mkd" />
 					<divider />
 					<link name="Github Project" src="http://github.com/gitblit/moxie" />
 				</menu>
 				<report name="reports" />
 				<divider />
 			</structure>
-			<substitute token="%VERSION%" value="${mxp.version}" />
 			<nomarkdown startToken="%BEGINMAXML%" endToken="%ENDMAXML%" prettify="true" lang="lang-yaml" />
 			<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />
 			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />

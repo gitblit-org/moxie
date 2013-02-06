@@ -7,37 +7,37 @@ The Moxie binaries and this site are built with Moxie.
 <div class="span7">
 <pre>
   [mx:init] =========================================================
-  [mx:init] Moxie  (0.5.0-SNAPSHOT)
+  [mx:init] ${project.name}  (${project.releaseVersion})
   [mx:init] ---------------------------------------------------------
   [mx:init] project metadata
-  [mx:init]            name: Moxie
-  [mx:init]     description: Java Project Build Toolkit
-  [mx:init]         groupId: org.moxie
-  [mx:init]      artifactId: moxie
-  [mx:init]         version: 0.5.0-SNAPSHOT
-  [mx:init]    organization: James Moger
-  [mx:init]             url: http://gitblit.github.com/moxie
+  [mx:init]            name: ${project.name}
+  [mx:init]     description: ${project.description}
+  [mx:init]         groupId: ${project.groupId}
+  [mx:init]      artifactId: ${project.artifactId}
+  [mx:init]         version: ${project.releaseVersion}
+  [mx:init]    organization: ${project.organization}
+  [mx:init]             url: ${project.url}
   [mx:init] ---------------------------------------------------------
   [mx:init] apply
   [mx:init]    rebuilt Eclipse configuration
   [mx:init]    rebuilt pom.xml
  [mx:javac] =========================================================
- [mx:javac] mx:Javac  (org.moxie:moxie:0.5.0-SNAPSHOT, compile)
+ [mx:javac] mx:Javac  (${project.coordinates}, compile)
  [mx:javac] ---------------------------------------------------------
- [mx:javac] Compiling 41 source files to C:\projects\git\moxie\build\classes
- [mx:javac] Copying 20 files to C:\projects\git\moxie\build\classes
+ [mx:javac] Compiling 41 source files to C:\git\moxie\build\classes
+ [mx:javac] Copying 20 files to C:\git\moxie\build\classes
    [mx:jar] =========================================================
-   [mx:jar] mx:Jar  (moxie-0.5.0-SNAPSHOT-all.jar)
+   [mx:jar] mx:Jar  (${project.artifactId}-${project.releaseVersion})
    [mx:jar] ---------------------------------------------------------
-   [mx:jar] Building jar: C:\projects\git\moxie\target\moxie-0.4.0-SNAPSHOT-all.jar
-   [mx:jar]    331 KB, generated in 460 ms
-   [mx:jar] Building jar: C:\projects\git\moxie\target\moxie-0.4.0-SNAPSHOT-sources.jar
+   [mx:jar] Building jar: C:\git\moxie\target\${project.artifactId}-${project.releaseVersion}.jar
+   [mx:jar]    550 KB, generated in 460 ms
+   [mx:jar] Building jar: C:\git\moxie\target\${project.artifactId}-${project.releaseVersion}-sources.jar
    [mx:jar]    148 KB, generated in 80 ms
 [mx:install] =========================================================
-[mx:install] mx:Install  (moxie-0.5.0-SNAPSHOT)
+[mx:install] mx:Install  (${project.artifactId}-${project.releaseVersion})
 [mx:install] ---------------------------------------------------------
-[mx:install] Copying 2 files to C:\Users\James Moger\.moxie\repository\org.moxie\moxie\0.4.0-SNAPSHOT
-[mx:install] generating pom for moxie-0.5.0-SNAPSHOT
+[mx:install] Copying 2 files to C:\Users\James Moger\.moxie\local\${project.groupId}\${project.artifactId}\${project.releaseVersion}
+[mx:install] generating pom for ${project.artifactId}-${project.releaseVersion}
 [mx:install] calculating checksums for installed artifacts
 </pre>
 </div>

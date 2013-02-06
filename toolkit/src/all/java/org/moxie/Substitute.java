@@ -26,4 +26,9 @@ public class Substitute {
 	public void setValue(String value) {
 		this.value = value;
 	}
+	
+	public void set(String token, String value) {
+		this.token = token;
+		this.value = value;
+	}
 }

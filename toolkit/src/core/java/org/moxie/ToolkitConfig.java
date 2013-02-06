@@ -204,11 +204,16 @@ public class ToolkitConfig implements Serializable {
 		pom.url = readString(map, Key.url, pom.url);
 		pom.organization = readString(map, Key.organization, pom.organization);
 		pom.organizationUrl = readString(map, Key.organizationUrl, pom.organizationUrl);
+		pom.issuesUrl = readString(map, Key.issuesUrl, pom.issuesUrl);
 		pom.inceptionYear = readString(map, Key.inceptionYear, pom.inceptionYear);
 		pom.packaging = readString(map, Key.packaging, pom.packaging);
 		pom.getDevelopers().addAll(readPersons(map, Key.developers));
 		pom.getContributors().addAll(readPersons(map, Key.contributors));
 		pom.getLicenses().addAll(readLicenses(map, Key.licenses));
+		pom.forumUrl = readString(map, Key.forumUrl, pom.forumUrl);
+		pom.socialNetworkUrl = readString(map, Key.socialNetworkUrl, pom.socialNetworkUrl);
+		pom.blogUrl = readString(map, Key.blogUrl, pom.blogUrl);
+		pom.ciUrl = readString(map, Key.ciUrl, pom.ciUrl);
 		
 		String parentPom = map.getString(Key.parentPom.name(), null);
 		if (!StringUtils.isEmpty(parentPom)) {
@@ -234,8 +239,8 @@ public class ToolkitConfig implements Serializable {
 		}
 		
 		mainclass = readString(map, Key.mainclass, null);
-		releaseVersion = readString(map, Key.releaseVersion, null);
-		releaseDate = readString(map, Key.releaseDate, null);
+		releaseVersion = readString(map, Key.releaseVersion, releaseVersion);
+		releaseDate = readString(map, Key.releaseDate, releaseDate);
 
 		// build parameters
 		mavenCacheStrategy = MavenCacheStrategy.fromString(map.getString(Key.mavenCacheStrategy.name(), mavenCacheStrategy == null ? null : mavenCacheStrategy.name()));
@@ -736,6 +741,9 @@ public class ToolkitConfig implements Serializable {
 	void setDefaultsFrom(ToolkitConfig parent) {
 		pom = parent.pom;
 		lastModified = Math.max(lastModified, parent.lastModified);
+
+		releaseVersion = parent.releaseVersion;
+		releaseDate = parent.releaseDate;
 
 		proxies = parent.proxies;
 		linkedModules = parent.linkedModules;

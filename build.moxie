@@ -3,8 +3,13 @@ groupId: org.moxie
 artifactId: moxie-parent
 version: 0.5.1-SNAPSHOT
 organization: James Moger 
+organizationUrl: 'https://plus.google.com/u/0/116428776452027956920'
 inceptionYear: 2012
 url: 'http://gitblit.github.com/moxie'
+
+releaseVersion: 0.5.0
+releaseDate: '2013-01-23'
+
 apply: eclipse, intellij, pom
 tasks: {
     "mx:javac": {

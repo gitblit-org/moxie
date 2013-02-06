@@ -145,10 +145,21 @@ public class MxInit extends MxTask {
 			setProjectProperty(Key.artifactId, pom.artifactId);
 			setProjectProperty(Key.version, pom.version);
 			setProjectProperty(Key.organization, pom.organization);
+			setProjectProperty(Key.organizationUrl, pom.organizationUrl);
+			setProjectProperty(Key.issuesUrl, pom.issuesUrl);
+			setProjectProperty(Key.forumUrl, pom.forumUrl);
+			setProjectProperty(Key.socialNetworkUrl, pom.socialNetworkUrl);
+			setProjectProperty(Key.blogUrl, pom.blogUrl);
+			setProjectProperty(Key.ciUrl, pom.ciUrl);
 			setProjectProperty(Key.url, pom.url);
+			if (pom.scm != null) {
+				setProjectProperty(Key.scmUrl, pom.scm.url);
+			}
 			setProjectProperty(Key.mainclass, buildConfig.getProjectConfig().getMainclass());
 			setProjectProperty(Key.releaseVersion, buildConfig.getProjectConfig().getReleaseVersion());
 			setProjectProperty(Key.releaseDate, buildConfig.getProjectConfig().getReleaseDate());
+			setProjectProperty(Key.buildDate, build.getBuildDate());
+			setProjectProperty(Key.buildTimestamp, build.getBuildTimestamp());
 
 			setProperty(Key.outputFolder, buildConfig.getOutputFolder(null).toString());
 			setProperty(Key.compile_outputFolder, buildConfig.getOutputFolder(Scope.compile).toString());

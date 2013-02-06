@@ -72,7 +72,8 @@ public class Toolkit {
 		lastDownloaded, origin, release, latest, revision, packaging, registeredRepositories,
 		revisionRetentionCount, revisionPurgeAfterDays, inceptionYear, organizationUrl, developers,
 		contributors, id, email, roles, scm, connection, developerConnection, tag, requires, licenses,
-		parentPom, mainclass, modules, mavenCacheStrategy, releaseVersion, releaseDate;
+		parentPom, mainclass, modules, mavenCacheStrategy, coordinates, releaseVersion, releaseDate,
+		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.tools.ant.BuildException;
@@ -37,6 +38,8 @@ import org.moxie.Prop;
 import org.moxie.Regex;
 import org.moxie.Scope;
 import org.moxie.Substitute;
+import org.moxie.Toolkit;
+import org.moxie.Toolkit.Key;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.LessUtils;
 import org.moxie.utils.StringUtils;
@@ -124,6 +127,10 @@ public class MxDoc extends MxTask {
 		doc.injectPrettify = value;
 	}
 
+	public void setMinify(boolean value) {
+		doc.minify = value;
+	}
+
 	public void setGoogleAnalyticsid(String value) {
 		doc.googleAnalyticsId = value;
 	}
@@ -139,10 +146,48 @@ public class MxDoc extends MxTask {
 	public void setResponsiveLayout(boolean value) {
 		doc.isResponsiveLayout = value;
 	}
+	
+	protected void setToken(String token, String value) {
+		if (value == null) {
+			value = "${" + token + "}";
+		}
+		createSubstitute().set("${" + token + "}", value);
+	}
 
 	@Override
 	public void execute() throws BuildException {
 		Build build = getBuild();
+		
+		// automatically setup substitution tokens
+		setToken(Toolkit.Key.name.projectId(), build.getPom().name);
+		setToken(Toolkit.Key.description.projectId(), build.getPom().description);
+		setToken(Toolkit.Key.url.projectId(), build.getPom().url);
+		setToken(Toolkit.Key.issuesUrl.projectId(), build.getPom().issuesUrl);
+		setToken(Toolkit.Key.inceptionYear.projectId(), build.getPom().inceptionYear);
+		setToken(Toolkit.Key.organization.projectId(), build.getPom().organization);
+		setToken(Toolkit.Key.organizationUrl.projectId(), build.getPom().organizationUrl);
+		setToken(Toolkit.Key.forumUrl.projectId(), build.getPom().forumUrl);
+		setToken(Toolkit.Key.socialNetworkUrl.projectId(), build.getPom().socialNetworkUrl);
+		setToken(Toolkit.Key.blogUrl.projectId(), build.getPom().blogUrl);
+		setToken(Toolkit.Key.ciUrl.projectId(), build.getPom().ciUrl);
+		if (build.getPom().scm != null) {
+			setToken(Key.scmUrl.projectId(), build.getPom().scm.url);
+		}
+
+		setToken(Toolkit.Key.groupId.projectId(), build.getPom().groupId);
+		setToken(Toolkit.Key.artifactId.projectId(), build.getPom().artifactId);
+		setToken(Toolkit.Key.version.projectId(), build.getPom().version);
+		setToken(Toolkit.Key.coordinates.projectId(), build.getPom().getCoordinates());
+		
+		setToken(Toolkit.Key.buildDate.projectId(), build.getBuildDate());
+		setToken(Toolkit.Key.buildTimestamp.projectId(), build.getBuildTimestamp());
+		
+		setToken(Toolkit.Key.releaseVersion.projectId(), build.getConfig().getProjectConfig().getReleaseVersion());
+		setToken(Toolkit.Key.releaseDate.projectId(), build.getConfig().getProjectConfig().getReleaseDate());
+		
+		for (Map.Entry<String, String> entry : build.getPom().getProperties().entrySet()) {
+			setToken(entry.getKey(), entry.getValue());
+		}
 		
 		if (doc.sourceFolder == null) {
 			doc.sourceFolder = build.getConfig().getSiteSourceFolder();
@@ -234,10 +279,19 @@ public class MxDoc extends MxTask {
 		// compile Bootstrap and custom.less overrides into css
 		try {
 			LessUtils.compile(new File(outputFolder, "bootstrap/css/bootstrap.less"),
-					new File(outputFolder, "bootstrap/css/bootstrap.css"), false);
+					new File(outputFolder, "bootstrap/css/bootstrap.css"), doc.minify);
 		} catch (Exception e) {
 			getConsole().error(e,  "Failed to compile LESS!");
 		}
+		
+		// delete temporary resources
+		deleteResource(outputFolder, "bootstrap/css/custom.less");
+		deleteResource(outputFolder, "bootstrap/css/moxie.less");
+		deleteResource(outputFolder, "bootstrap/css/bootstrap.less");
+	}
+	
+	protected void deleteResource(File baseFolder, String file) {
+		new File(baseFolder, file).delete();
 	}
 	
 	void writeDependenciesAsJson() {

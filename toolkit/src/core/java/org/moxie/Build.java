@@ -21,8 +21,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Scanner;
@@ -46,6 +48,7 @@ public class Build {
 	private final BuildConfig config;
 	private final Console console;
 	private final Solver solver;
+	private final Date buildDate;
 	
 	public Build(File configFile, File basedir) throws MaxmlException, IOException {
 		this.config = new BuildConfig(configFile, basedir);
@@ -54,6 +57,7 @@ public class Build {
 		this.console.setDebug(config.isDebug());
 
 		this.solver = new Solver(console, config);
+		this.buildDate = new Date();
 	}
 	
 	@Override
@@ -69,6 +73,18 @@ public class Build {
 		return false;
 	}
 	
+	public Date getDate() {
+		return buildDate;
+	}
+	
+	public String getBuildDate() {
+		return new SimpleDateFormat("yyyy-MM-dd").format(buildDate);
+	}
+
+	public String getBuildTimestamp() {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(buildDate);
+	}
+
 	public Solver getSolver() {
 		return solver;
 	}

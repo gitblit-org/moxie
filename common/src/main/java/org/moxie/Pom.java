@@ -53,6 +53,11 @@ public class Pom {
 	public String parentArtifactId;
 	public String parentVersion;
 	
+	public String forumUrl;
+	public String socialNetworkUrl;
+	public String blogUrl;
+	public String ciUrl;
+
 	public SCM scm;
 
 	private final Map<String, String> properties;

@@ -5,19 +5,30 @@ The default Moxie project descriptor used by the `mx:init` task and all the *Mox
 ### Metadata Keys
 <table class="table table-striped table-bordered table-condensed">
 <tbody>
-<tr><th>name</th>         <td>Moxie</td></tr>
-<tr><th>description</th>  <td>Java Project Build Toolkit</td></tr>
-<tr><th>organization</th> <td>James Moger </td></tr>
-<tr><th>url</th>          <td>http://gitblit.github.com/moxie</td></tr>
+<tr><th>name</th>            <td>${project.name}</td></tr>
+<tr><th>description</th>     <td>${project.description}</td></tr>
+<tr><th>organization</th>    <td>${project.organization}</td></tr>
+<tr><th>organizationUrl</th> <td>${project.organizationUrl}</td></tr>
+<tr><th>issuesUrl</th>       <td>${project.issuesUrl}</td></tr>
+<tr><th>forumUrl</th>        <td>${project.forumUrl}</td></tr>
+<tr><th>blogUrl</th>         <td>${project.blogUrl}</td></tr>
+<tr><th>socialNetworkUrl</th><td>${project.socialNetworkUrl}</td></tr>
+<tr><th>ciUrl</th>           <td>${project.ciUrl}</td></tr>
+<tr><th>url</th>             <td>${project.url}</td></tr>
+<tr><th>inceptionYear</th>   <td>${project.inceptionYear}</td></tr>
 </tbody>
 </table>
 
 ### Artifact Keys
 <table class="table table-striped table-bordered table-condensed">
 <tbody>
-<tr><th>groupId</th>     <td>org.moxie</td></tr>
-<tr><th>artifactId</th>  <td>moxie</td></tr>
-<tr><th>version</th>     <td>0.4.0-SNAPSHOT</td></tr>
+<tr><th>groupId</th>       <td>${project.groupId}</td></tr>
+<tr><th>artifactId</th>    <td>${project.artifactId}</td></tr>
+<tr><th>version</th>       <td>${project.version}</td></tr>
+<tr><th>buildDate</th>     <td>${project.buildDate}</td></tr>
+<tr><th>buildTimestamp</th><td>${project.buildTimestamp}</td></tr>
+<tr><th>releaseVersion</th><td>${project.releaseVersion}</td></tr>
+<tr><th>releaseDate</th>   <td>${project.releaseDate}</td></tr>
 </tbody>
 </table>
 
@@ -42,9 +53,10 @@ special behaviors for your build script
 </div>
 
 <div class="span4">
-<pre>
+%BEGINMAXML%
 apply : eclipse, pom, cache
-</pre>
+%ENDMAXML%
+
 </div>
 </div>
 
@@ -58,16 +70,17 @@ Example
 </div>
 
 <div class="span4">
-<pre>
+%BEGINMAXML%
 sourceFolders : 
-- compile src/main/core, src/main/mxgit
-- compile src/main/mxjar
-- compile src/main/mxdoc
-- compile src/main/cobertura
-- compile src/less/java
-- compile src/main/resources
-- { scope: test, folder: src/test/java }
-</pre>
+- compile 'src/main/core', 'src/main/mxgit'
+- compile 'src/main/mxjar'
+- compile 'src/main/mxdoc'
+- compile 'src/main/cobertura'
+- compile 'src/less/java'
+- compile 'src/main/resources'
+- { scope: 'test', folder: 'src/test/java' }
+%ENDMAXML%
+
 </div>
 </div>
 
@@ -82,11 +95,12 @@ exported as ant properties
 </div>
 
 <div class="span4">
-<pre>
+%BEGINMAXML%
 properties: {
   jgit.version : 1.3.0.201202151440-r
 }
-</pre>
+%ENDMAXML%
+
 </div>
 </div>
 
@@ -100,10 +114,11 @@ Example
 </div>
 
 <div class="span4">
-<pre>
+%BEGINMAXML%
 dependencyManagement :
-- org.apache.ant:ant:1.8.3
-</pre>
+- 'org.apache.ant:ant:1.8.3'
+%ENDMAXML%
+
 </div>
 </div>
 
@@ -119,12 +134,13 @@ scopes, @ext, excludes
 </div>
 
 <div class="span4">
-<pre>
+%BEGINMAXML%
 dependencies :
-- compile org.apache.ant:ant
-- compile org.apache.commons-lang3:3.1
-- test junit
-</pre>
+- compile 'org.apache.ant:ant'
+- compile 'org.apache.commons-lang3:3.1'
+- test 'junit'
+%ENDMAXML%
+
 </div>
 </div>
 

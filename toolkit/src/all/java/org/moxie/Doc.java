@@ -52,6 +52,8 @@ public class Doc implements Serializable {
 	public List<String> keywords;
 
 	public boolean injectPrettify;
+	
+	public boolean minify;
 
 	public List<Substitute> substitutions = new ArrayList<Substitute>();
 

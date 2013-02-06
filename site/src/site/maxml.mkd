@@ -2,17 +2,17 @@
 
 Maxml (pronounced *maximal*) looks and feels like very simple [YAML](http://yaml.org), but it is not YAML.  Maxml is meant to be a very small and simple subset of YAML with some significant structural changes.
  
-The Maxml binary package is < 10KB.
+The Maxml binary package is < 20KB with debug symbols.
 
 ### Why Maxml?
 
 I like JSON.  
 I would have been satisfied with a simple, really small JSON parser.  The closest I found was [JSON-Simple](http://json-simple.googlecode.com), but that relies on a JFlex-generated parser class.  
-**Verdict:** Unmaintainable.
+**Verdict:** Debugging JFlex-generated code is not for humans.
 
 I like YAML.  
 I would have been satisfied with a simple, really small YAML parser.  The closest I found was [SnakeYaml](http://snakeyaml.googlecode.com), but that is ~250KB.  
-**Verdict:** Too large to bundle.
+**Verdict:** Almost as large as the pro toolkit; too large.
 
 Because Moxie needs to have a bundled parser for the `build.moxie` project descriptor and I could not find a parser that suited my needs, I wrote a custom YAML-ish parser.
 
@@ -68,11 +68,17 @@ myString2: 'this is another\nstring'
 # explicit double-quoted string, leading/trailing quotes are stripped
 myString2: "this is another\nstring"
 # explicit multi-line string, leading/trailing quotes are stripped
-myString3: """
+myString3a: """
 this is another string
 which contains
 several lines
 """
+# explicit multi-line string, leading/trailing quotes are stripped
+myString3b: '''
+this is another string
+which contains
+several lines
+'''
 # explicit multi-line string, leading/trailing quotes are stripped
 myString4: """
 this is another string
