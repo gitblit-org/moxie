@@ -61,7 +61,7 @@ public class Toolkit {
 	
 	public static enum Key {
 		build, name, description, url, organization, scope, groupId, artifactId, version,
-		type, classifier, optional, folder, sourceDirectory, sourceDirectories, compileSourcePath,
+		type, classifier, optional, dir, sourceDirectory, sourceDirectories, compileSourcePath,
 		testSourcePath, outputDirectory, compileOutputDirectory, testOutputDirectory, linkedProjects,
 		dependencyDirectory, repositories, properties, dependencies, apply,
 		googleAnalyticsId, googlePlusId, runtimeClasspath, compileClasspath, testClasspath,

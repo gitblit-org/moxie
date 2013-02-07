@@ -44,7 +44,7 @@ public class Emma {
 		instr.setProject(mxtest.getProject());
 		instr.setMetadatafile(mxtest.getEmmaData());
 		instr.setDestdir(mxtest.getInstrumentedBuild());
-		instr.createInstrpath().setLocation(mxtest.getClassesFolder());
+		instr.createInstrpath().setLocation(mxtest.getClassesDir());
 		MaxmlMap instrAttributes = mxtest.getBuild().getConfig().getTaskAttributes("emma");
 		if (instrAttributes != null) {
 			AttributeReflector.setAttributes(mxtest.getProject(), instr, instrAttributes);

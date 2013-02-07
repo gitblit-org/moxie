@@ -42,12 +42,12 @@ public class MxGitId extends MxGitTask {
 		Build build = (Build) getProject().getReference(Key.build.refId());
 		loadDependency(build);
 
-		if (repositoryFolder == null || !repositoryFolder.exists()) {
-			repositoryFolder = new File(getProject().getProperty("basedir"));			
+		if (repositoryDirectory == null || !repositoryDirectory.exists()) {
+			repositoryDirectory = new File(getProject().getProperty("basedir"));			
 		}
-		String hashid = JGitUtils.getCommitId(repositoryFolder);
+		String hashid = JGitUtils.getCommitId(repositoryDirectory);
 
-		getConsole().title(getClass(), repositoryFolder.getAbsolutePath());
+		getConsole().title(getClass(), repositoryDirectory.getAbsolutePath());
 
 		setVerbose(false);
 		if (StringUtils.isEmpty(property)) {

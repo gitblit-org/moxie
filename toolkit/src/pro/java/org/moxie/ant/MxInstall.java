@@ -31,14 +31,14 @@ import org.moxie.utils.StringUtils;
 
 public class MxInstall extends MxTask {
 	
-	private File baseFolder;
+	private File baseDir;
 	
-	public void setBaseFolder(File folder) {
-		this.baseFolder = folder;
+	public void setBaseDir(File dir) {
+		this.baseDir = dir;
 	}
 	
-	public File getBaseFolder() {
-		return baseFolder;
+	public File getBaseDir() {
+		return baseDir;
 	}
 	
 	public MxInstall() {
@@ -57,14 +57,14 @@ public class MxInstall extends MxTask {
 		
 		Dependency asDependency = new Dependency(pom.getCoordinates());
 		File destinationFolder;
-		if (baseFolder == null) {
+		if (baseDir == null) {
 			// install to local repository
 			File moxieFile = build.getSolver().getMoxieCache().getArtifact(asDependency, asDependency.type);
 			destinationFolder = moxieFile.getParentFile();
 		} else {
 			// install to specified repository
 			String path = Dependency.getMavenPath(asDependency, asDependency.type, Constants.MAVEN2_PATTERN);
-			File moxieFile = new File(baseFolder, path);
+			File moxieFile = new File(baseDir, path);
 			destinationFolder = moxieFile.getParentFile();
 		}
 		

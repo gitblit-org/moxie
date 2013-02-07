@@ -80,7 +80,7 @@ public class Jacoco {
 		// classfiles
 		Union classfiles = structure.createClassfiles();
 		Path outputpath = new Path(mxtest.getProject());
-		outputpath.setPath(mxtest.getClassesFolder().getAbsolutePath());
+		outputpath.setPath(mxtest.getClassesDir().getAbsolutePath());
 		classfiles.add(outputpath);
 		
 		MaxmlMap attributes = mxtest.getBuild().getConfig().getTaskAttributes(mxtest.getTaskName());

@@ -30,7 +30,7 @@ public class MxGet extends MxTask {
 
 	List<ScopedDependency> deps;
 	Scope scope;
-	File destinationFolder;
+	File destinationDirectory;
 
 	public MxGet() {
 		super();
@@ -54,12 +54,20 @@ public class MxGet extends MxTask {
 		return scope;
 	}
 
-	public File getDest() {
-		return destinationFolder;
+	public File getTodir() {
+		return destinationDirectory;
 	}
 
-	public void setDest(File folder) {
-		this.destinationFolder = folder;
+	public void setTodir(File dir) {
+		this.destinationDirectory = dir;
+	}
+
+	public File getDestdir() {
+		return destinationDirectory;
+	}
+
+	public void setDestdir(File dir) {
+		this.destinationDirectory = dir;
 	}
 
 	@Override
@@ -72,8 +80,8 @@ public class MxGet extends MxTask {
 			scope = Scope.defaultScope;
 		}
 
-		if (destinationFolder == null) {
-			throw new MoxieException("Destination folder must be set!");
+		if (destinationDirectory == null) {
+			throw new MoxieException("Destination directory must be set!");
 		}
 
 		Build build = getBuild();
@@ -88,9 +96,9 @@ public class MxGet extends MxTask {
 				dependencies.toArray(new Dependency[dependencies.size()]));
 
 		if (artifacts.size() > 0) {
-			getConsole().log(1, "copying {0} artifacts => {1}", artifacts.size(), destinationFolder);
+			getConsole().log(1, "copying {0} artifacts => {1}", artifacts.size(), destinationDirectory);
 			try {
-				FileUtils.copy(destinationFolder, artifacts.toArray(new File[artifacts.size()]));
+				FileUtils.copy(destinationDirectory, artifacts.toArray(new File[artifacts.size()]));
 			} catch (Exception e) {
 				throw new MoxieException(e);
 			}

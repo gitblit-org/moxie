@@ -119,8 +119,12 @@ public class MxDoc extends MxTask {
 		doc.sourceDirectory = folder;
 	}
 
-	public void setOutputFolder(File folder) {
-		doc.outputDirectory = folder;
+	public void setTodir(File dir) {
+		doc.outputDirectory = dir;
+	}
+
+	public void setDestdir(File dir) {
+		doc.outputDirectory = dir;
 	}
 
 	public void setInjectprettify(boolean value) {

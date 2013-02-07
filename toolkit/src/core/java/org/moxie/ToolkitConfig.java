@@ -583,7 +583,7 @@ public class ToolkitConfig implements Serializable {
 						}
 					} else if (value instanceof MaxmlMap) {
 						MaxmlMap dirMap = (MaxmlMap) value;
-						String dir = readRequiredString(dirMap, Key.folder);
+						String dir = readRequiredString(dirMap, Key.dir);
 						Scope scope = Scope.fromString(readRequiredString(dirMap, Key.scope));
 						if (scope == null) {
 							scope = Scope.defaultScope;

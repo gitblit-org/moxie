@@ -33,7 +33,7 @@ public class Cobertura {
 	public static void instrument(MxTest mxtest) {
 		FileSet fileSet = new FileSet();
 		fileSet.setProject(mxtest.getProject());
-		fileSet.setDir(mxtest.getClassesFolder());
+		fileSet.setDir(mxtest.getClassesDir());
 		fileSet.createInclude().setName("**/*.class");
 		
 		InstrumentTask task = new InstrumentTask();

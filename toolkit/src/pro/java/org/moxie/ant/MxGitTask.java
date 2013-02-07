@@ -23,10 +23,10 @@ import org.moxie.Dependency;
 
 public class MxGitTask extends MxTask {
 
-	protected File repositoryFolder;
+	protected File repositoryDirectory;
 
-	public void setRepositoryFolder(String path) {
-		this.repositoryFolder = new File(path);
+	public void setRepositoryDir(String path) {
+		this.repositoryDirectory = new File(path);
 	}
 
 	protected void loadDependency(Build build) {

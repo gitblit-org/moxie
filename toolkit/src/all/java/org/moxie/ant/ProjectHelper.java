@@ -139,7 +139,7 @@ public class ProjectHelper extends ProjectHelper2 {
 	private Target newCleanTarget(Project project) {		
 		Target target = newTarget(project, "moxie.clean");
 		target.setDepends("moxie.init");
-		target.setDescription("clean build and target folders");
+		target.setDescription("clean build and target directories");
 
 		MxClean task = new MxClean();
 		task.setProject(project);

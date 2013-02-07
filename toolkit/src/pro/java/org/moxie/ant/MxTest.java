@@ -37,15 +37,15 @@ import org.moxie.utils.FileUtils;
 
 public class MxTest extends MxTask {
 
-	File unitTestOutputFolder;
+	File unitTestOutputDirectory;
 	File testReports;
 	File coverageReports;
 	File instrumentedBuild;
 	File coberturaData;
 	File emmaData;
 	File jacocoData;
-	File classesFolder;
-	File testClassesFolder;
+	File classesDirectory;
+	File testClassesDirectory;
 	Path unitTestClasspath;
 	FileSet unitTests;
 	String failureProperty;
@@ -56,8 +56,8 @@ public class MxTest extends MxTask {
 		setTaskName("mx:test");
 	}
 	
-	public File getUnitTestOutputFolder() {
-		return unitTestOutputFolder;
+	public File getUnitTestOutputDir() {
+		return unitTestOutputDirectory;
 	}
 	
 	public File getTestReports() {
@@ -84,12 +84,12 @@ public class MxTest extends MxTask {
 		return jacocoData;
 	}
 
-	public File getClassesFolder() {
-		return classesFolder;
+	public File getClassesDir() {
+		return classesDirectory;
 	}
 	
-	public File getTestClassesFolder() {
-		return testClassesFolder;
+	public File getTestClassesDir() {
+		return testClassesDirectory;
 	}
 	
 	public Path getUnitTestClasspath() {
@@ -149,9 +149,9 @@ public class MxTest extends MxTask {
 		BuildConfig config = build.getConfig();
 		
 		// generate unit test info into build/tests
-		unitTestOutputFolder = new File(config.getOutputDirectory(null), "tests");
-		FileUtils.delete(unitTestOutputFolder);
-		unitTestOutputFolder.mkdirs();
+		unitTestOutputDirectory = new File(config.getOutputDirectory(null), "tests");
+		FileUtils.delete(unitTestOutputDirectory);
+		unitTestOutputDirectory.mkdirs();
 
 		// generate unit test info into target/tests
 		testReports = new File(config.getReportsTargetDirectory(), "tests");
@@ -180,13 +180,13 @@ public class MxTest extends MxTask {
 		jacocoData = new File(config.getOutputDirectory(null), "jacoco.exec");
 		jacocoData.delete();
 
-		classesFolder = config.getOutputDirectory(Scope.compile);
-		testClassesFolder = config.getOutputDirectory(Scope.test);
+		classesDirectory = config.getOutputDirectory(Scope.compile);
+		testClassesDirectory = config.getOutputDirectory(Scope.test);
 
 		// define the test class fileset
 		unitTests = new FileSet();
 		unitTests.setProject(getProject());
-		unitTests.setDir(testClassesFolder);
+		unitTests.setDir(testClassesDirectory);
 
 		MaxmlMap attributes = config.getTaskAttributes(getTaskName());
 		failureProperty = attributes.getString("failureProperty", "unit.test.failed");
@@ -199,7 +199,7 @@ public class MxTest extends MxTask {
 		unitTestClasspath.createPathElement().setPath(instrumentedBuild.getAbsolutePath());
 		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.testClasspath.refId()));
 		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.buildClasspath.refId()));
-		unitTestClasspath.createPathElement().setPath(testClassesFolder.getAbsolutePath());
+		unitTestClasspath.createPathElement().setPath(testClassesDirectory.getAbsolutePath());
 		
 		// log the unit test classpath to the console in debug mode		
 		build.getConsole().debug("unit test classpath");

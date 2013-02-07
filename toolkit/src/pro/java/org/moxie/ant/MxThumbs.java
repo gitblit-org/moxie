@@ -36,11 +36,11 @@ import org.moxie.Build;
  */
 public class MxThumbs extends MxTask {
 	
-	File sourceFolder;
+	File sourceDirectory;
 	
 	int maxDimension;
 	
-	File destinationFolder;
+	File destinationDirectory;
 	
 	String input = "png";
 	
@@ -55,12 +55,16 @@ public class MxThumbs extends MxTask {
 		this.maxDimension = max;
 	}
 	
-	public void setSourcefolder(File inputFolder) {
-		this.sourceFolder = inputFolder;
+	public void setSourcedir(File dir) {
+		this.sourceDirectory = dir;
 	}
 
-	public void setDestfolder(File outputFolder) {
-		this.destinationFolder = outputFolder;
+	public void setDestdir(File dir) {
+		this.destinationDirectory = dir;
+	}
+
+	public void setTodir(File dir) {
+		this.destinationDirectory = dir;
 	}
 
 	public void setInput(String type) {
@@ -74,8 +78,8 @@ public class MxThumbs extends MxTask {
 	public void execute() {
 		Build build = getBuild();
 		
-		if (destinationFolder == null) {
-			getConsole().error("Please specify a destination folder!");
+		if (destinationDirectory == null) {
+			getConsole().error("Please specify a destination directory!");
 			throw new RuntimeException();
 		}
 
@@ -84,13 +88,13 @@ public class MxThumbs extends MxTask {
 			throw new RuntimeException();
 		}
 		
-		if (sourceFolder == null) {
-			getConsole().error("Please specify an input folder!");
+		if (sourceDirectory == null) {
+			getConsole().error("Please specify an source directory!");
 			throw new RuntimeException();
 		}
 
-		destinationFolder.mkdirs();
-		File[] sourceFiles = sourceFolder.listFiles(new FilenameFilter() {
+		destinationDirectory.mkdirs();
+		File[] sourceFiles = sourceDirectory.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
 				return name.toLowerCase().endsWith("." + input);
@@ -101,7 +105,7 @@ public class MxThumbs extends MxTask {
 		for (File sourceFile : sourceFiles) {
 			String name = sourceFile.getName();
 			name = name.substring(0, name.lastIndexOf('.') + 1) + output;
-			File destinationFile = new File(destinationFolder, name);
+			File destinationFile = new File(destinationDirectory, name);
 			try {
 				Dimension sz = getImageDimensions(sourceFile);
 				int w = 0;

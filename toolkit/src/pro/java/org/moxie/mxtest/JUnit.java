@@ -56,7 +56,7 @@ public class JUnit {
 		
 		BatchTest batchTest = junit.createBatchTest();
 		batchTest.setFork(true);
-		batchTest.setTodir(mxtest.getUnitTestOutputFolder());
+		batchTest.setTodir(mxtest.getUnitTestOutputDir());
 		batchTest.addFileSet(mxtest.getUnitTests());
 		
 		TypeAttribute xml = (TypeAttribute) TypeAttribute.getInstance(TypeAttribute.class, "xml");
@@ -80,7 +80,7 @@ public class JUnit {
 				
 		FileSet fileSet = new FileSet();
 		fileSet.setProject(mxtest.getProject());
-		fileSet.setDir(mxtest.getUnitTestOutputFolder());
+		fileSet.setDir(mxtest.getUnitTestOutputDir());
 		fileSet.setIncludes("TEST-*.xml");	 	
 		junitReport.addFileSet(fileSet);
 		
@@ -92,7 +92,7 @@ public class JUnit {
 		}
 		report.setTodir(mxtest.getTestReports());
 		
-		junitReport.setTodir(mxtest.getUnitTestOutputFolder());
+		junitReport.setTodir(mxtest.getUnitTestOutputDir());
 
 		junitReport.execute();
 	}

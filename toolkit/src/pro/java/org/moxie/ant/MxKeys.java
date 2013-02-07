@@ -34,7 +34,7 @@ public class MxKeys extends MxTask {
 	
 	String className;
 	
-	File outputFolder;
+	File destDir;
 	
 	public MxKeys() {
 		super();
@@ -49,15 +49,19 @@ public class MxKeys extends MxTask {
 		this.className = className;
 	}
 
-	public void setOutputfolder(File outputFolder) {
-		this.outputFolder = outputFolder;
+	public void setDestdir(File dir) {
+		this.destDir = dir;
+	}
+	
+	public void setTodir(File dir) {
+		this.destDir = dir;
 	}
 
 	public void execute() {
 		Build build = getBuild();
 		
-		if (outputFolder == null) {
-			getConsole().error("Please specify an output folder!");
+		if (destDir == null) {
+			getConsole().error("Please specify an destination directory!");
 			throw new RuntimeException();
 		}
 
@@ -98,7 +102,7 @@ public class MxKeys extends MxTask {
 		
 		// Save Keys class definition
 		try {
-			File file = new File(outputFolder, className.replace('.', '/') + ".java");
+			File file = new File(destDir, className.replace('.', '/') + ".java");
 			file.getParentFile().mkdirs();
 			FileWriter fw = new FileWriter(file, false);
 			fw.write(root.generateClass(className));

@@ -16,7 +16,6 @@
 package org.moxie.ant;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
