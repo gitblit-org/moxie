@@ -722,7 +722,12 @@ public class ToolkitConfig implements Serializable {
 			// config object represents internal default resource
 			return;
 		}
-		File propsFile = new File(baseDirectory, file.getName().substring(0, file.getName().lastIndexOf('.')) + ".properties");
+		readExternalProperties(new File(baseDirectory, "moxie.properties"));
+		readExternalProperties(new File(baseDirectory, "project.properties"));
+		readExternalProperties(new File(baseDirectory, file.getName().substring(0, file.getName().lastIndexOf('.')) + ".properties"));
+	}
+	
+	void readExternalProperties(File propsFile) {
 		if (propsFile.exists()) {
 			try {
 				Properties props = new Properties();
