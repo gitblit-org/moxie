@@ -285,7 +285,7 @@ public class MxGenJar extends GenJar {
 		
 		version = build.getPom().version;
 		
-		File outputFolder = build.getConfig().getOutputFolder(Scope.compile);
+		File outputFolder = build.getConfig().getOutputDirectory(Scope.compile);
 
 		// optionally include resources from the outputfolder
 		if (includeResources) {
@@ -403,7 +403,7 @@ public class MxGenJar extends GenJar {
 				console.warn(getTaskName() + " has not resolved any class files local to {0}", build.getPom().getManagementId());
 			}
 			
-			List<File> folders = build.getConfig().getSourceFolders(Scope.compile);
+			List<File> folders = build.getConfig().getSourceDirectories(Scope.compile);
 			for (String className : resolvedLocal) {
 				String sourceName = className.substring(0, className.length() - ".class".length()).replace('.', '/') + ".java";
 				console.debug(sourceName);
@@ -560,9 +560,9 @@ public class MxGenJar extends GenJar {
 		Path cp = new Path(getProject());
 		// output folder
 		PathElement of = cp.createPathElement();
-		of.setLocation(build.getConfig().getOutputFolder(scope));
+		of.setLocation(build.getConfig().getOutputDirectory(scope));
 		if (!scope.isDefault()) {
-			of.setLocation(build.getConfig().getOutputFolder(Scope.compile));
+			of.setLocation(build.getConfig().getOutputDirectory(Scope.compile));
 		}
 		
 		// add project dependencies 
@@ -584,7 +584,7 @@ public class MxGenJar extends GenJar {
 		List<File> folders = new ArrayList<File>();
 		List<Build> libraryProjects = build.getSolver().getLinkedModules();
 		for (Build project : libraryProjects) {
-			File outputFolder = project.getConfig().getOutputFolder(Scope.compile);
+			File outputFolder = project.getConfig().getOutputDirectory(Scope.compile);
 			folders.add(outputFolder);
 		}		
 		return folders;

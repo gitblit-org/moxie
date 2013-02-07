@@ -3,7 +3,7 @@
 
 	<!-- Moxie tasks -->
 	<taskdef resource="tasks.properties" uri="antlib:org.moxie">
-		<classpath location="${basedir}/../toolkit/target/moxie.jar" />
+		<classpath location="${basedir}/../toolkit/build/target/moxie.jar" />
 	</taskdef>
 	
 	<target name="main">

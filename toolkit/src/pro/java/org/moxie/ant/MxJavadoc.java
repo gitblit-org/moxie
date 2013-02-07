@@ -84,12 +84,12 @@ public class MxJavadoc extends Javadoc {
 		
 		if (destDir == null) {
 			// use default output folder
-			super.setDestdir(build.getConfig().getJavadocFolder());
+			super.setDestdir(build.getConfig().getJavadocTargetDirectory());
 		}
 		
 		if (!addedFileset) {
 			// add all compile source folders from project
-			for (File folder : build.getConfig().getSourceFolders(Scope.compile)) {
+			for (File folder : build.getConfig().getSourceDirectories(Scope.compile)) {
 				FileSet fs = new FileSet();
 				fs.setProject(getProject());
 				fs.setDir(folder);

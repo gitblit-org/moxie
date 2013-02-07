@@ -149,39 +149,39 @@ public class MxTest extends MxTask {
 		BuildConfig config = build.getConfig();
 		
 		// generate unit test info into build/tests
-		unitTestOutputFolder = new File(config.getOutputFolder(null), "tests");
+		unitTestOutputFolder = new File(config.getOutputDirectory(null), "tests");
 		FileUtils.delete(unitTestOutputFolder);
 		unitTestOutputFolder.mkdirs();
 
 		// generate unit test info into target/tests
-		testReports = new File(config.getReportsFolder(), "tests");
+		testReports = new File(config.getReportsTargetDirectory(), "tests");
 		FileUtils.delete(testReports);
 		testReports.mkdirs();
 		
 		// instrument classes for code coverages into build/instrumented-classes
-		instrumentedBuild = new File(config.getOutputFolder(null), "instrumented-classes");
+		instrumentedBuild = new File(config.getOutputDirectory(null), "instrumented-classes");
 		FileUtils.delete(instrumentedBuild);
 		instrumentedBuild.mkdirs();
 
 		// generate code coverage report into target/coverage
-		coverageReports = new File(config.getReportsFolder(), "coverage");
+		coverageReports = new File(config.getReportsTargetDirectory(), "coverage");
 		FileUtils.delete(coverageReports);
 		coverageReports.mkdirs();
 
 		// delete Corbertura metadata
-		coberturaData = new File(config.getOutputFolder(null), "cobertura.ser");
+		coberturaData = new File(config.getOutputDirectory(null), "cobertura.ser");
 		coberturaData.delete();
 
 		// delete EMMA metadata
-		emmaData = new File(config.getOutputFolder(null), "metadata.emma");
+		emmaData = new File(config.getOutputDirectory(null), "metadata.emma");
 		emmaData.delete();
 
 		// delete JaCoCo metadata
-		jacocoData = new File(config.getOutputFolder(null), "jacoco.exec");
+		jacocoData = new File(config.getOutputDirectory(null), "jacoco.exec");
 		jacocoData.delete();
 
-		classesFolder = config.getOutputFolder(Scope.compile);
-		testClassesFolder = config.getOutputFolder(Scope.test);
+		classesFolder = config.getOutputDirectory(Scope.compile);
+		testClassesFolder = config.getOutputDirectory(Scope.test);
 
 		// define the test class fileset
 		unitTests = new FileSet();
@@ -197,8 +197,8 @@ public class MxTest extends MxTask {
 		// instrumented classes, unit test classes, and unit test libraries
 		unitTestClasspath = new Path(getProject());
 		unitTestClasspath.createPathElement().setPath(instrumentedBuild.getAbsolutePath());
-		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.test_classpath.refId()));
-		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.build_classpath.refId()));
+		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.testClasspath.refId()));
+		unitTestClasspath.createPath().setRefid(new Reference(getProject(), Key.buildClasspath.refId()));
 		unitTestClasspath.createPathElement().setPath(testClassesFolder.getAbsolutePath());
 		
 		// log the unit test classpath to the console in debug mode		

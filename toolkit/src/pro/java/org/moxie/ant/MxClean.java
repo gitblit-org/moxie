@@ -39,18 +39,18 @@ public class MxClean extends MxTask {
 	public void execute() {
 		if (scope == null) {
 			// clean output folder
-			File dir = new File(getProject().getProperty(Key.outputFolder.propId()));
+			File dir = new File(getProject().getProperty(Key.outputDirectory.projectId()));
 			getConsole().log("cleaning {0}", dir.getAbsolutePath());
 			FileUtils.delete(dir);			
 
 			// clean target folder
-			dir = new File(getProject().getProperty(Key.targetFolder.propId()));
+			dir = new File(getProject().getProperty(Key.targetDirectory.projectId()));
 			getConsole().log("cleaning {0}", dir.getAbsolutePath());
 			FileUtils.delete(dir);
 			
-			if (getProject().getProperty(Key.dependencyFolder.propId()) != null) {
-				// clean project dependency folder
-				dir = new File(getProject().getProperty(Key.dependencyFolder.propId()));
+			if (getProject().getProperty(Key.dependencyDirectory.projectId()) != null) {
+				// clean project dependency directory
+				dir = new File(getProject().getProperty(Key.dependencyDirectory.projectId()));
 				getConsole().log("cleaning {0}", dir.getAbsolutePath());
 				FileUtils.delete(dir);
 			}
@@ -66,7 +66,7 @@ public class MxClean extends MxTask {
 		}
 
 		Build build = getBuild();
-		File dir = build.getConfig().getOutputFolder(scope);
+		File dir = build.getConfig().getOutputDirectory(scope);
 		getConsole().log("cleaning {0}", dir.getAbsolutePath());
 		FileUtils.delete(dir);			
 	}

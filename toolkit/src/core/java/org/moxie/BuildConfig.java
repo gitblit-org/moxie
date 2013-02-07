@@ -45,15 +45,15 @@ public class BuildConfig {
 	
 	private final File moxieRoot;
 	private final File projectConfigFile;
-	private final File projectFolder;
+	private final File projectDirectory;
 	private boolean verbose;
 	
 	public BuildConfig(File configFile, File basedir) throws MaxmlException, IOException {
 		this.projectConfigFile = configFile;
 		if (basedir == null) {
-			this.projectFolder = configFile.getAbsoluteFile().getParentFile();
+			this.projectDirectory = configFile.getAbsoluteFile().getParentFile();
 		} else {
-			this.projectFolder = basedir;
+			this.projectDirectory = basedir;
 		}
 		
 		// allow specifying Moxie root folder
@@ -67,8 +67,8 @@ public class BuildConfig {
 		root.mkdirs();
 		this.moxieRoot = root;
 		
-		this.toolkitConfig = new ToolkitConfig(new File(moxieRoot, Toolkit.MOXIE_SETTINGS), projectFolder, Toolkit.MOXIE_SETTINGS);
-		this.projectConfig = new ToolkitConfig(configFile, projectFolder, Toolkit.MOXIE_DEFAULTS);
+		this.toolkitConfig = new ToolkitConfig(new File(moxieRoot, Toolkit.MOXIE_SETTINGS), projectDirectory, Toolkit.MOXIE_SETTINGS);
+		this.projectConfig = new ToolkitConfig(configFile, projectDirectory, Toolkit.MOXIE_DEFAULTS);
 		
 		this.proxies = new LinkedHashSet<Proxy>();
 		this.repositories = new LinkedHashSet<Repository>();
@@ -211,13 +211,13 @@ public class BuildConfig {
 		return aliases;
 	}
 	
-	public List<SourceFolder> getSourceFolders() {
-		return projectConfig.sourceFolders;
+	public List<SourceDirectory> getSourceDirectories() {
+		return projectConfig.sourceDirectories;
 	}
 
-	public List<File> getSourceFolders(Scope scope) {
+	public List<File> getSourceDirectories(Scope scope) {
 		List<File> folders = new ArrayList<File>();
-		for (SourceFolder sourceFolder : projectConfig.sourceFolders) {
+		for (SourceDirectory sourceFolder : projectConfig.sourceDirectories) {
 			if (scope == null || sourceFolder.scope.equals(scope)) {				
 				folders.add(sourceFolder.getSources());
 			}
@@ -294,58 +294,58 @@ public class BuildConfig {
 		return "";
 	}
 	
-	public File getOutputFolder(Scope scope) {
+	public File getOutputDirectory(Scope scope) {
 		if (scope == null) {
-			return projectConfig.outputFolder;
+			return projectConfig.outputDirectory;
 		}
 		switch (scope) {
 		case test:
-			return new File(projectConfig.outputFolder, "test-classes");
+			return new File(projectConfig.outputDirectory, "test-classes");
 		default:
-			return new File(projectConfig.outputFolder, "classes");
+			return new File(projectConfig.outputDirectory, "classes");
 		}
 	}
 	
 	public File getTargetFile() {
 		Pom pom = projectConfig.pom;
 		String name = pom.groupId + "/" + pom.artifactId + "/" + pom.version + (pom.classifier == null ? "" : ("-" + pom.classifier));
-		return new File(projectConfig.targetFolder, name + ".jar");
+		return new File(projectConfig.targetDirectory, name + ".jar");
 	}
 
-	public File getReportsFolder() {
-		return new File(projectConfig.targetFolder, "reports");
+	public File getReportsTargetDirectory() {
+		return new File(projectConfig.targetDirectory, "reports");
 	}
 
-	public File getJavadocFolder() {
-		return new File(projectConfig.targetFolder, "javadoc");
+	public File getJavadocTargetDirectory() {
+		return new File(projectConfig.targetDirectory, "javadoc");
 	}
 
-	public File getTargetFolder() {
-		return projectConfig.targetFolder;
+	public File getTargetDirectory() {
+		return projectConfig.targetDirectory;
 	}
 	
-	public File getProjectFolder() {
-		return projectFolder;
+	public File getProjectDirectory() {
+		return projectDirectory;
 	}
 	
-	public File getSiteSourceFolder() {
-		for (SourceFolder sourceFolder : projectConfig.sourceFolders) {
+	public File getSiteSourceDirectory() {
+		for (SourceDirectory sourceFolder : projectConfig.sourceDirectories) {
 			if (Scope.site.equals(sourceFolder.scope)) {
 				return sourceFolder.getSources();
 			}
 		}
-		// default site sources folder
-		return new File(projectFolder, "src/site");
+		// default site sources directory
+		return new File(projectDirectory, "src/site");
 	}
 
-	public File getSiteOutputFolder() {
-		for (SourceFolder sourceFolder : projectConfig.sourceFolders) {
+	public File getSiteTargetDirectory() {
+		for (SourceDirectory sourceFolder : projectConfig.sourceDirectories) {
 			if (Scope.site.equals(sourceFolder.scope)) {
-				return sourceFolder.getOutputFolder();
+				return sourceFolder.getOutputDirectory();
 			}
 		}
-		// default site output folder
-		return new File(getTargetFolder(), "site");
+		// default site target directory
+		return new File(projectConfig.targetDirectory, "site");
 	}
 	
 	@Override

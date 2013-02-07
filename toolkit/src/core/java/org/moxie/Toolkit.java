@@ -61,19 +61,20 @@ public class Toolkit {
 	
 	public static enum Key {
 		build, name, description, url, organization, scope, groupId, artifactId, version,
-		type, classifier, optional, folder, sourceFolder, sourceFolders, compile_sourcepath,
-		test_sourcepath, outputFolder, compile_outputFolder, test_outputFolder, linkedProjects,
-		dependencyFolder, repositories, properties, dependencies, apply,
-		googleAnalyticsId, googlePlusId, runtime_classpath, compile_classpath, test_classpath,
-		compile_dependencypath, runtime_dependencypath, test_dependencypath, commit, targetFolder,
+		type, classifier, optional, folder, sourceDirectory, sourceDirectories, compileSourcePath,
+		testSourcePath, outputDirectory, compileOutputDirectory, testOutputDirectory, linkedProjects,
+		dependencyDirectory, repositories, properties, dependencies, apply,
+		googleAnalyticsId, googlePlusId, runtimeClasspath, compileClasspath, testClasspath,
+		compileDependencypath, runtimeDependencypath, testDependencypath, commit, targetDirectory,
 		proxies, parent, exclusions, mxjar, mxjavac, compilerArgs, excludes, includes,
-		dependencyManagement, mxreport, outputFile, verbose, build_classpath, reportsFolder,
+		dependencyManagement, mxreport, outputFile, verbose, buildClasspath, reportTargetDirectory,
 		dependencyOverrides, dependencyAliases, updatePolicy, lastChecked, lastUpdated, lastSolved,
 		lastDownloaded, origin, release, latest, revision, packaging, registeredRepositories,
 		revisionRetentionCount, revisionPurgeAfterDays, inceptionYear, organizationUrl, developers,
 		contributors, id, email, roles, scm, connection, developerConnection, tag, requires, licenses,
 		parentPom, mainclass, modules, mavenCacheStrategy, coordinates, releaseVersion, releaseDate,
-		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl;
+		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl,
+		siteSourceDirectory, siteTargetDirectory;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

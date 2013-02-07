@@ -31,9 +31,9 @@ public class Doc implements Serializable {
 
 	public String name;
 
-	public File sourceFolder;
+	public File sourceDirectory;
 
-	public File outputFolder;
+	public File outputDirectory;
 
 	public File header;
 
@@ -83,7 +83,7 @@ public class Doc implements Serializable {
 			if (link.sublinks != null) {
 				files.addAll(getSources(link.sublinks));
 			} else if (link.isPage) {
-				files.add(new File(sourceFolder, link.src));
+				files.add(new File(sourceDirectory, link.src));
 			}
 		}
 		return files;
@@ -91,8 +91,8 @@ public class Doc implements Serializable {
 
 	void describe(Console console) {
 		console.log("generation settings");
-		describe(console, Key.sourceFolder, sourceFolder.toString());
-		describe(console, Key.outputFolder, outputFolder.toString());
+		describe(console, Key.sourceDirectory, sourceDirectory.toString());
+		describe(console, Key.outputDirectory, outputDirectory.toString());
 		describe(console, Key.googleAnalyticsId, googleAnalyticsId);
 		describe(console, Key.googlePlusId, googlePlusId);
 		describe(console, "injectPrettify", String.valueOf(injectPrettify));

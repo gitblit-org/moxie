@@ -161,28 +161,32 @@ public class MxInit extends MxTask {
 			setProjectProperty(Key.buildDate, build.getBuildDate());
 			setProjectProperty(Key.buildTimestamp, build.getBuildTimestamp());
 
-			setProperty(Key.outputFolder, buildConfig.getOutputFolder(null).toString());
-			setProperty(Key.compile_outputFolder, buildConfig.getOutputFolder(Scope.compile).toString());
-			setProperty(Key.test_outputFolder, buildConfig.getOutputFolder(Scope.test).toString());
-			setProperty(Key.targetFolder, buildConfig.getTargetFolder().toString());
-			setProperty(Key.reportsFolder, buildConfig.getReportsFolder().toString());
+			setProjectProperty(Key.outputDirectory, buildConfig.getOutputDirectory(null).toString());
+			setProjectProperty(Key.compileOutputDirectory, buildConfig.getOutputDirectory(Scope.compile).toString());
+			setProjectProperty(Key.testOutputDirectory, buildConfig.getOutputDirectory(Scope.test).toString());
+			
+			setProjectProperty(Key.targetDirectory, buildConfig.getTargetDirectory().toString());
+			setProjectProperty(Key.reportTargetDirectory, buildConfig.getReportsTargetDirectory().toString());
+			
+			setProjectProperty(Key.siteSourceDirectory, buildConfig.getSiteSourceDirectory().toString());
+			setProjectProperty(Key.siteTargetDirectory, buildConfig.getSiteTargetDirectory().toString());
 
 			if (isVerbose()) {
 				getConsole().separator();
 				getConsole().log("path references");
 			}
 			
-			setSourcepath(Key.compile_sourcepath, buildConfig, Scope.compile);
-			setSourcepath(Key.test_sourcepath, buildConfig, Scope.test);
+			setSourcepath(Key.compileSourcePath, buildConfig, Scope.compile);
+			setSourcepath(Key.testSourcePath, buildConfig, Scope.test);
 
-			setClasspath(Key.compile_classpath, build, Scope.compile);
-			setClasspath(Key.runtime_classpath, build, Scope.runtime);
-			setClasspath(Key.test_classpath, build, Scope.test);
-			setClasspath(Key.build_classpath, build, Scope.build);
+			setClasspath(Key.compileClasspath, build, Scope.compile);
+			setClasspath(Key.runtimeClasspath, build, Scope.runtime);
+			setClasspath(Key.testClasspath, build, Scope.test);
+			setClasspath(Key.buildClasspath, build, Scope.build);
 
-			setDependencypath(Key.compile_dependencypath, build, Scope.compile);
-			setDependencypath(Key.runtime_dependencypath, build, Scope.runtime);
-			setDependencypath(Key.test_dependencypath, build, Scope.test);
+			setDependencypath(Key.compileDependencypath, build, Scope.compile);
+			setDependencypath(Key.runtimeDependencypath, build, Scope.runtime);
+			setDependencypath(Key.testDependencypath, build, Scope.test);
 			
 			updateExecutionClasspath();			
 		} catch (Exception e) {
@@ -200,8 +204,8 @@ public class MxInit extends MxTask {
 	
 	private void setSourcepath(Key key, BuildConfig buildConfig, Scope scope) {
 		Set<File> folders = new LinkedHashSet<File>();
-		folders.addAll(buildConfig.getSourceFolders(scope));
-		folders.addAll(buildConfig.getSourceFolders(Scope.defaultScope));
+		folders.addAll(buildConfig.getSourceDirectories(scope));
+		folders.addAll(buildConfig.getSourceDirectories(Scope.defaultScope));
 		
 		Path sources = new Path(getProject());
 		for (File file : folders) {
@@ -216,9 +220,9 @@ public class MxInit extends MxTask {
 		Path cp = new Path(getProject());
 		// output folder
 		PathElement of = cp.createPathElement();
-		of.setLocation(build.getConfig().getOutputFolder(scope));
+		of.setLocation(build.getConfig().getOutputDirectory(scope));
 		if (!scope.isDefault()) {
-			of.setLocation(build.getConfig().getOutputFolder(Scope.compile));
+			of.setLocation(build.getConfig().getOutputDirectory(Scope.compile));
 		}
 		
 		// add project dependencies 
@@ -250,7 +254,7 @@ public class MxInit extends MxTask {
 		List<File> folders = new ArrayList<File>();
 		List<Build> libraryProjects = build.getSolver().getLinkedModules();
 		for (Build project : libraryProjects) {
-			File outputFolder = project.getConfig().getOutputFolder(Scope.compile);
+			File outputFolder = project.getConfig().getOutputDirectory(Scope.compile);
 			folders.add(outputFolder);
 		}		
 		return folders;

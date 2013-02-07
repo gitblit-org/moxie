@@ -6,7 +6,7 @@ modules:
 - maxml
 - common
 mainclass: org.moxie.proxy.Launcher
-sourceFolders:
+sourceDirectories:
 - compile 'src/main/java'
 - compile 'src/main/resources'
 - test 'src/test/java'

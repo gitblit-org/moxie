@@ -125,9 +125,9 @@
 		<mx:gitid verbose="true" />
 				
 		<!-- Delete the target folder -->
-		<delete dir="${mxp.targetFolder}" />
+		<delete dir="${project.targetDirectory}" />
 		
-		<mx:report scope="compile" destFile = "${mxp.targetFolder}/compile_dependencies.txt"/>
+		<mx:report scope="compile" destFile = "${project.targetDirectory}/compile_dependencies.txt"/>
 
 		<!-- Moxie-Core -->
 		<mx:genjar classifier="core">
@@ -267,7 +267,7 @@
 		Copy the all jar to moxie.jar for use in the other Moxie projects,
 		otherwise we'd have to hard-code versions in the other projects.
 		-->
-		<copy file="${basedir}/target/toolkit-${project.version}-all.jar" tofile="${basedir}/target/moxie.jar" />
+		<copy file="${project.targetDirectory}/toolkit-${project.version}-all.jar" tofile="${project.targetDirectory}/moxie.jar" />
 
 	</target>
 	

@@ -50,7 +50,7 @@ public class ToolkitConfig implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	File file;
-	File baseFolder;
+	File baseDirectory;
 	Pom pom;
 	long lastModified;
 	String mainclass;
@@ -61,10 +61,10 @@ public class ToolkitConfig implements Serializable {
 	List<String> repositories;
 	List<RemoteRepository> registeredRepositories;
 	
-	File dependencyFolder;
-	List<SourceFolder> sourceFolders;
-	File outputFolder;
-	File targetFolder;
+	File dependencyDirectory;
+	List<SourceDirectory> sourceDirectories;
+	File outputDirectory;
+	File targetDirectory;
 	Set<String> apply;
 	Map<String, Dependency> dependencyAliases;
 	Map<Scope, Map<String, Pom>> dependencyOverrides;
@@ -79,20 +79,20 @@ public class ToolkitConfig implements Serializable {
 
 	public ToolkitConfig() {
 		// default configuration
-		sourceFolders = Arrays.asList(
-				new SourceFolder("src/main/java", Scope.compile),
-				new SourceFolder("src/main/webapp", Scope.compile),
-				new SourceFolder("src/main/resources", Scope.compile),
-				new SourceFolder("src/test/java", Scope.test),
-				new SourceFolder("src/test/resources", Scope.test),
-				new SourceFolder("src/site", Scope.site));
-		outputFolder = new File("build");
-		targetFolder = new File("target");
+		sourceDirectories = Arrays.asList(
+				new SourceDirectory("src/main/java", Scope.compile),
+				new SourceDirectory("src/main/webapp", Scope.compile),
+				new SourceDirectory("src/main/resources", Scope.compile),
+				new SourceDirectory("src/test/java", Scope.test),
+				new SourceDirectory("src/test/resources", Scope.test),
+				new SourceDirectory("src/site", Scope.site));
+		outputDirectory = new File("build");
+		targetDirectory = new File("build/target");
 		linkedModules = new ArrayList<Module>();
 		repositories = Arrays.asList("central");
 		registeredRepositories = Arrays.asList(new RemoteRepository("central", "http://repo1.maven.org/maven2"));		
 		pom = new Pom();
-		dependencyFolder = null;
+		dependencyDirectory = null;
 		apply = new TreeSet<String>();
 		proxies = new ArrayList<Proxy>();
 		modules = new ArrayList<Module>();
@@ -105,9 +105,9 @@ public class ToolkitConfig implements Serializable {
 		revisionPurgeAfterDays = 0;
 	}
 	
-	public ToolkitConfig(File file, File baseFolder, String defaultResource) throws IOException, MaxmlException {
+	public ToolkitConfig(File file, File baseDirectory, String defaultResource) throws IOException, MaxmlException {
 		this();
-		parse(file, baseFolder, defaultResource);
+		parse(file, baseDirectory, defaultResource);
 	}
 	
 	private ToolkitConfig(String resource) throws IOException, MaxmlException {
@@ -144,14 +144,14 @@ public class ToolkitConfig implements Serializable {
 		return "ToolkitConfig (" + pom + ")";
 	}
 
-	ToolkitConfig parse(File file, File baseFolder, String defaultResource) throws IOException, MaxmlException {
+	ToolkitConfig parse(File file, File baseDirectory, String defaultResource) throws IOException, MaxmlException {
 		String content = "";
 		if (file != null && file.exists()) {
 			this.file = file;
-			if (baseFolder == null) {
-				this.baseFolder = file.getAbsoluteFile().getParentFile();
+			if (baseDirectory == null) {
+				this.baseDirectory = file.getAbsoluteFile().getParentFile();
 			} else {
-				this.baseFolder = baseFolder;
+				this.baseDirectory = baseDirectory;
 			}
 			this.lastModified = FileUtils.getLastModified(file);
 			content = FileUtils.readContent(file, "\n").trim();
@@ -184,12 +184,12 @@ public class ToolkitConfig implements Serializable {
 					setDefaultsFrom(parent);
 				} else {
 					// local filesystem default is available
-					ToolkitConfig parent = new ToolkitConfig(defaultFile, baseFolder, defaultResource);
+					ToolkitConfig parent = new ToolkitConfig(defaultFile, baseDirectory, defaultResource);
 					setDefaultsFrom(parent);
 				}
 			} else {
 				// parent has been specified
-				ToolkitConfig parent = new ToolkitConfig(parentConfig, baseFolder, defaultResource);
+				ToolkitConfig parent = new ToolkitConfig(parentConfig, baseDirectory, defaultResource);
 				setDefaultsFrom(parent);
 			}
 		}
@@ -245,10 +245,10 @@ public class ToolkitConfig implements Serializable {
 		// build parameters
 		mavenCacheStrategy = MavenCacheStrategy.fromString(map.getString(Key.mavenCacheStrategy.name(), mavenCacheStrategy == null ? null : mavenCacheStrategy.name()));
 		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(apply), true));
-		outputFolder = readFile(map, Key.outputFolder, new File(baseFolder, "build"));
-		targetFolder = readFile(map, Key.targetFolder, new File(baseFolder, "target"));
-		sourceFolders = readSourceFolders(map, Key.sourceFolders, sourceFolders);
-		if (sourceFolders.isEmpty()) {
+		outputDirectory = readFile(map, Key.outputDirectory, new File(baseDirectory, "build"));
+		targetDirectory = readFile(map, Key.targetDirectory, new File(baseDirectory, "build/target"));
+		sourceDirectories = readSourceDirectories(map, Key.sourceDirectories, sourceDirectories);
+		if (sourceDirectories.isEmpty()) {
 			// container descriptors (e.g. POM) can define modules 
 			modules = readModules(map, Key.modules);
 		} else {
@@ -258,7 +258,7 @@ public class ToolkitConfig implements Serializable {
 				linkedModules = readModules(map, Key.linkedProjects);	
 			}
 		}
-		dependencyFolder = readFile(map, Key.dependencyFolder, null);
+		dependencyDirectory = readFile(map, Key.dependencyDirectory, null);
 		
 		String policy = readString(map, Key.updatePolicy, null);
 		if (!StringUtils.isEmpty(policy)) {
@@ -545,7 +545,7 @@ public class ToolkitConfig implements Serializable {
 					keyError(key);
 				} else {
 					org.apache.tools.ant.util.FileUtils futils = org.apache.tools.ant.util.FileUtils.getFileUtils();
-					return futils.resolveFile(baseFolder, dir);
+					return futils.resolveFile(baseDirectory, dir);
 				}
 			}
 		}
@@ -553,8 +553,8 @@ public class ToolkitConfig implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	List<SourceFolder> readSourceFolders(MaxmlMap map, Key key, List<SourceFolder> defaultValue) {
-		List<SourceFolder> values = new ArrayList<SourceFolder>();
+	List<SourceDirectory> readSourceDirectories(MaxmlMap map, Key key, List<SourceDirectory> defaultValue) {
+		List<SourceDirectory> values = new ArrayList<SourceDirectory>();
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());
 			if (o instanceof List) {
@@ -578,7 +578,7 @@ public class ToolkitConfig implements Serializable {
 						def = def.substring(scopeString.length()).trim();
 						for (String dir : StringUtils.breakCSV(def)) {
 							if (!StringUtils.isEmpty(dir)) {
-								values.add(new SourceFolder(dir, scope));
+								values.add(new SourceDirectory(dir, scope));
 							}
 						}
 					} else if (value instanceof MaxmlMap) {
@@ -593,7 +593,7 @@ public class ToolkitConfig implements Serializable {
 							}
 						}
 						if (!StringUtils.isEmpty(dir)) {
-							values.add(new SourceFolder(dir, scope));
+							values.add(new SourceDirectory(dir, scope));
 						}
 					}
 				}				
@@ -602,7 +602,7 @@ public class ToolkitConfig implements Serializable {
 				String list = o.toString();
 				for (String value : StringUtils.breakCSV(list)) {
 					if (!StringUtils.isEmpty(value)) {
-						values.add(new SourceFolder(value, Scope.compile));
+						values.add(new SourceDirectory(value, Scope.compile));
 					}
 				}				
 			}
@@ -612,14 +612,14 @@ public class ToolkitConfig implements Serializable {
 			values.addAll(defaultValue);
 		}
 
-		// resolve source folders
-		List<SourceFolder> resolved = new ArrayList<SourceFolder>();
-		for (SourceFolder sf : values) {
-			File base = baseFolder;
+		// resolve source directories
+		List<SourceDirectory> resolved = new ArrayList<SourceDirectory>();
+		for (SourceDirectory sf : values) {
+			File outDir = outputDirectory;
 			if (Scope.site.equals(sf.scope)) {
-				base = targetFolder;
+				outDir = targetDirectory;
 			}
-			if (sf.resolve(base, outputFolder)) {
+			if (sf.resolve(baseDirectory, outDir)) {
 				resolved.add(sf);
 			}			
 		}
@@ -680,16 +680,16 @@ public class ToolkitConfig implements Serializable {
 		System.err.println(MessageFormat.format("{0} is improperly specified in {1}, using default", key.name(), file.getAbsolutePath()));
 	}
 	
-	public List<SourceFolder> getSourceFolders() {
-		return sourceFolders;
+	public List<SourceDirectory> getSourceDirectories() {
+		return sourceDirectories;
 	}
 	
-	public File getDependencyFolder() {
-		return dependencyFolder;
+	public File getDependencyDirectory() {
+		return dependencyDirectory;
 	}
 	
-	public File getDependencySourceFolder() {
-		return new File(dependencyFolder, "src");
+	public File getDependencySourceDirectory() {
+		return new File(dependencyDirectory, "src");
 	}
 	
 	public List<Proxy> getProxies() {
@@ -722,7 +722,7 @@ public class ToolkitConfig implements Serializable {
 			// config object represents internal default resource
 			return;
 		}
-		File propsFile = new File(baseFolder, file.getName().substring(0, file.getName().lastIndexOf('.')) + ".properties");
+		File propsFile = new File(baseDirectory, file.getName().substring(0, file.getName().lastIndexOf('.')) + ".properties");
 		if (propsFile.exists()) {
 			try {
 				Properties props = new Properties();
@@ -750,10 +750,10 @@ public class ToolkitConfig implements Serializable {
 		repositories = parent.repositories;
 		registeredRepositories = parent.registeredRepositories;
 
-		dependencyFolder = parent.dependencyFolder;
-		sourceFolders = parent.sourceFolders;
-		outputFolder = parent.outputFolder;
-		targetFolder = parent.targetFolder;
+		dependencyDirectory = parent.dependencyDirectory;
+		sourceDirectories = parent.sourceDirectories;
+		outputDirectory = parent.outputDirectory;
+		targetDirectory = parent.targetDirectory;
 		apply = parent.apply;
 		tasks = parent.tasks;
 		dependencyOverrides = parent.dependencyOverrides;

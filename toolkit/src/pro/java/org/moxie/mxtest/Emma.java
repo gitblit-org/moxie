@@ -69,7 +69,7 @@ public class Emma {
 			AttributeReflector.setAttributes(mxtest.getProject(), report, reportAttributes);
 		}
 
-		report.setSourcepathRef(new Reference(mxtest.getProject(), Key.compile_sourcepath.refId()));
+		report.setSourcepathRef(new Reference(mxtest.getProject(), Key.compileSourcePath.refId()));
 		XFileSet fileSet = new XFileSet();
 		fileSet.setProject(mxtest.getProject());
 		fileSet.setFile(mxtest.getEmmaData());

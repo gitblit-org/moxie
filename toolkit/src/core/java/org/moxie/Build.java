@@ -112,7 +112,7 @@ public class Build {
 		if (!StringUtils.isEmpty(classifier)) {
 			name += "-" + classifier;
 		}
-		return new File(getConfig().getTargetFolder(), name + ".jar");
+		return new File(getConfig().getTargetDirectory(), name + ".jar");
 	}
 	
 	public void setup() {
@@ -160,7 +160,7 @@ public class Build {
 	}
 	
 	private File getIDEOutputFolder(Scope scope) {
-		File baseFolder = new File(config.getProjectFolder(), "bin");
+		File baseFolder = new File(config.getProjectDirectory(), "bin");
 		if (scope == null) {
 			return baseFolder;
 		}
@@ -173,17 +173,17 @@ public class Build {
 	}
 	
 	private void writeEclipseClasspath() {
-		if (config.getSourceFolders().isEmpty()
+		if (config.getSourceDirectories().isEmpty()
     			|| config.getPom().isPOM()
     			|| !config.getModules().isEmpty()) {
     		// no classpath to write
     		return;
     	}
 
-		File projectFolder = config.getProjectFolder();
+		File projectFolder = config.getProjectDirectory();
 		
 		StringBuilder sb = new StringBuilder();
-		for (SourceFolder sourceFolder : config.getProjectConfig().getSourceFolders()) {
+		for (SourceDirectory sourceFolder : config.getProjectConfig().getSourceDirectories()) {
 			if (Scope.site.equals(sourceFolder.scope)) {
 				continue;
 			}
@@ -196,7 +196,7 @@ public class Build {
 		
 		// determine how to output dependencies (fixed-path or variable-relative)
 		String kind = getConfig().getProjectConfig().apply(Toolkit.APPLY_ECLIPSE_VAR) ? "var" : "lib";
-		boolean extRelative = getConfig().getProjectConfig().dependencyFolder != null && getConfig().getProjectConfig().dependencyFolder.exists();
+		boolean extRelative = getConfig().getProjectConfig().dependencyDirectory != null && getConfig().getProjectConfig().dependencyDirectory.exists();
 		
 		// always link classpath against Moxie artifact cache
 		Set<Dependency> dependencies = solver.solve(Scope.test);
@@ -218,11 +218,11 @@ public class Build {
 					// filesystem path
 					if (extRelative) {
 						// relative to project dependency folder
-						File baseFolder = config.getProjectConfig().getDependencyFolder();
+						File baseFolder = config.getProjectConfig().getDependencyDirectory();
 						jar = new File(baseFolder, jar.getName());
 						
 						// relative to project dependency source folder
-						baseFolder = config.getProjectConfig().getDependencySourceFolder();
+						baseFolder = config.getProjectConfig().getDependencySourceDirectory();
 						srcJar = new File(baseFolder, srcJar.getName());
 						
 						jarPath = FileUtils.getRelativePath(projectFolder, jar);
@@ -246,7 +246,7 @@ public class Build {
 				
 		for (Build linkedProject : solver.getLinkedModules()) {
 			String projectName = null;
-			File dotProject = new File(linkedProject.config.getProjectFolder(), ".project");
+			File dotProject = new File(linkedProject.config.getProjectDirectory(), ".project");
 			if (dotProject.exists()) {
 				// extract Eclipse project name
 				console.debug("extracting project name from {0}", dotProject.getAbsolutePath());
@@ -268,7 +268,7 @@ public class Build {
 				}
 			} else {
 				// use folder name
-				projectName = linkedProject.config.getProjectFolder().getName();
+				projectName = linkedProject.config.getProjectDirectory().getName();
 			}
 			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\" />\n", projectName));
 		}
@@ -288,7 +288,7 @@ public class Build {
     		// do not write project file for a parent descriptor
     		return;
     	}
-		File dotProject = new File(config.getProjectFolder(), ".project");
+		File dotProject = new File(config.getProjectDirectory(), ".project");
 		if (dotProject.exists()) {
 			// update name and description
 			try {
@@ -350,7 +350,7 @@ public class Build {
 		sb.append("\t</projects>\n");
 		sb.append("\t<buildSpec>\n");
 		sb.append("\t\t<buildCommand>\n");
-		if (config.getSourceFolders().size() > 0) {
+		if (config.getSourceDirectories().size() > 0) {
 			sb.append("\t\t\t<name>org.eclipse.jdt.core.javabuilder</name>\n");
 			sb.append("\t\t\t<arguments>\n");
 			sb.append("\t\t\t</arguments>\n");
@@ -358,7 +358,7 @@ public class Build {
 		sb.append("\t\t</buildCommand>\n");
 		sb.append("\t</buildSpec>\n");
 		sb.append("\t<natures>\n");
-		if (config.getSourceFolders().size() > 0) {
+		if (config.getSourceDirectories().size() > 0) {
 			sb.append("\t\t<nature>org.eclipse.jdt.core.javanature</nature>\n");
 		}
 		sb.append("\t</natures>\n");
@@ -375,7 +375,7 @@ public class Build {
     	
 		ToolkitConfig project = config.getProjectConfig();
 		
-		File dotIdea = new File(project.baseFolder, ".idea");
+		File dotIdea = new File(project.baseDirectory, ".idea");
 		dotIdea.mkdirs();
 		
 		// Group name prefers name attribute, but will use groupId if required
@@ -389,7 +389,7 @@ public class Build {
 		
         StringBuilder sb = new StringBuilder();
 		for (Module module : modules) {
-			File moduleFolder = new File(project.baseFolder, module.folder);
+			File moduleFolder = new File(project.baseDirectory, module.folder);
 			File configFile = new File(moduleFolder, module.descriptor);
 			if (!configFile.exists()) {
 				continue;
@@ -406,7 +406,7 @@ public class Build {
 					console.warn(2, "excluding module ''{0}'' from IntelliJ IDEA project because it is a POM module!", module.folder);
 					continue;
 				}
-				if (moduleConfig.getSourceFolders().isEmpty()) {
+				if (moduleConfig.getSourceDirectories().isEmpty()) {
 					// skip modules without source folders
 					console.warn(2, "excluding module ''{0}'' from IntelliJ IDEA project because it has no source folders!", module.folder);
 					continue;
@@ -444,7 +444,7 @@ public class Build {
     	
 		ToolkitConfig project = config.getProjectConfig();
 		
-		File dotIdea = new File(project.baseFolder, ".idea");
+		File dotIdea = new File(project.baseDirectory, ".idea");
 		dotIdea.mkdirs();
     	File antFile = new File(dotIdea, "ant.xml");
     	if (antFile.exists()) {
@@ -454,13 +454,13 @@ public class Build {
 		
         StringBuilder sb = new StringBuilder();
 
-        File rootAnt = new File(project.baseFolder, "build.xml");
+        File rootAnt = new File(project.baseDirectory, "build.xml");
         if (rootAnt.exists()) {
         	sb.append(format("<buildFile url=\"file://$PROJECT_DIR$/{0}\" />\n", rootAnt.getName()));
         }
 
 		for (Module module : project.modules) {
-			File moduleFolder = new File(project.baseFolder, module.folder);
+			File moduleFolder = new File(project.baseDirectory, module.folder);
 			File scriptFile = new File(moduleFolder, module.script);
 			if (!scriptFile.exists()) {
 				continue;
@@ -482,14 +482,14 @@ public class Build {
 	}
 
     private void writeIntelliJClasspath() {
-    	if (config.getSourceFolders().isEmpty()
+    	if (config.getSourceDirectories().isEmpty()
     			|| config.getPom().isPOM()
     			|| !config.getModules().isEmpty()) {
     		// no classpath to write
     		return;
     	}
 
-        File projectFolder = config.getProjectFolder();
+        File projectFolder = config.getProjectDirectory();
 
         StringBuilder sb = new StringBuilder();
         sb.append(format("<output url=\"file://$MODULE_DIR$/{0}\" />\n", FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(Scope.compile))));
@@ -497,7 +497,7 @@ public class Build {
         sb.append("<exclude-output />\n");
         sb.append("<content url=\"file://$MODULE_DIR$\">\n");
         StringBuilder sf = new StringBuilder();
-        for (SourceFolder sourceFolder : config.getProjectConfig().getSourceFolders()) {
+        for (SourceDirectory sourceFolder : config.getProjectConfig().getSourceDirectories()) {
             if (Scope.site.equals(sourceFolder.scope)) {
                 continue;
             }
@@ -509,7 +509,7 @@ public class Build {
 
         // determine how to output dependencies (fixed-path or variable-relative)
         boolean variableRelative = false;
-        boolean extRelative = getConfig().getProjectConfig().dependencyFolder != null && getConfig().getProjectConfig().dependencyFolder.exists();
+        boolean extRelative = getConfig().getProjectConfig().dependencyDirectory != null && getConfig().getProjectConfig().dependencyDirectory.exists();
 
         // always link classpath against Moxie artifact cache
         Set<Dependency> dependencies = new LinkedHashSet<Dependency>();
@@ -549,11 +549,11 @@ public class Build {
                     // filesystem path
                     if (extRelative) {
                         // relative to project dependency folder
-                        File baseFolder = config.getProjectConfig().getDependencyFolder();
+                        File baseFolder = config.getProjectConfig().getDependencyDirectory();
                         jar = new File(baseFolder, jar.getName());
 
                         // relative to project dependency source folder
-                        baseFolder = config.getProjectConfig().getDependencySourceFolder();
+                        baseFolder = config.getProjectConfig().getDependencySourceDirectory();
                         srcJar = new File(baseFolder, srcJar.getName());
 
                         jarPath = format("jar://$MODULE_DIR$/{0}!/", FileUtils.getRelativePath(projectFolder, jar));
@@ -615,7 +615,7 @@ public class Build {
     }
 	
 	private void writePOM() {
-		if (config.getSourceFolders().isEmpty()
+		if (config.getSourceDirectories().isEmpty()
     			|| config.getPom().isPOM()
     			|| !config.getModules().isEmpty()) {
     		// no POM to write
@@ -624,7 +624,7 @@ public class Build {
 		StringBuilder sb = new StringBuilder();
 		sb.append("<!-- This file is automatically generated by Moxie. DO NOT HAND EDIT! -->\n");
 		sb.append(getPom().toXML(false));
-		FileUtils.writeContent(new File(config.getProjectFolder(), "pom.xml"), sb.toString());
+		FileUtils.writeContent(new File(config.getProjectDirectory(), "pom.xml"), sb.toString());
 	}
 	
 	public String getCustomLess() {
@@ -635,7 +635,7 @@ public class Build {
 		
 		// try projectFolder-relative LESS
 		if (!less.exists()) {
-			less = new File(config.getProjectFolder(), lessName);
+			less = new File(config.getProjectDirectory(), lessName);
 		}
 		
 		if (less.exists()) {
@@ -672,13 +672,13 @@ public class Build {
 		if (config.isVerbose()) {
 			console.separator();
 			console.log("source folders");
-			for (SourceFolder folder : config.getSourceFolders()) {
+			for (SourceDirectory folder : config.getSourceDirectories()) {
 				console.sourceFolder(folder);
 			}
 			console.separator();
 
 			console.log("output folder");
-			console.log(1, config.getOutputFolder(null).toString());
+			console.log(1, config.getOutputDirectory(null).toString());
 			console.separator();
 		}
 	}

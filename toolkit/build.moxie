@@ -5,7 +5,7 @@ artifactId: toolkit
 parent: ../build.moxie
 modules:
 - common
-sourceFolders:
+sourceDirectories:
 - compile 'src/core/java'
 - compile 'src/core/resources'
 - compile 'src/pro/java'

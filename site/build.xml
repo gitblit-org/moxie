@@ -3,7 +3,7 @@
 
 	<!-- Moxie tasks -->
 	<taskdef resource="tasks.properties" uri="antlib:org.moxie">
-		<classpath location="${basedir}/../toolkit/target/moxie.jar" />
+		<classpath location="${basedir}/../toolkit/build/target/moxie.jar" />
 	</taskdef>
 
 	<!--
@@ -77,10 +77,10 @@
 			
 			<!-- Copy the generated artifacts from the other projects -->
 			<resource>
-				<fileset dir="${basedir}/../toolkit/target/" includes="*${project.version}-*.jar" excludes="*${project.version}-sources.jar" />
-				<fileset dir="${basedir}/../proxy/target/" includes="*${project.version}.zip" />
-				<fileset dir="${basedir}/../moxie+ant/target/" includes="*${project.version}.zip,*${project.version}.tar.gz" />
-				<fileset dir="${basedir}/../maxml/target/" includes="*${project.version}.jar" />
+				<fileset dir="${basedir}/../toolkit/build/target/" includes="*${project.version}-*.jar" excludes="*${project.version}-sources.jar" />
+				<fileset dir="${basedir}/../proxy/build/target/" includes="*${project.version}.zip" />
+				<fileset dir="${basedir}/../moxie+ant/build/target/" includes="*${project.version}.zip,*${project.version}.tar.gz" />
+				<fileset dir="${basedir}/../maxml/build/target/" includes="*${project.version}.jar" />
 			</resource>
 			
 			<!-- Set the logo from the mx:doc resources -->
@@ -93,7 +93,7 @@
 	Build the Moxie gh-pages branch
 	-->
 	<target name="ghpages" depends="main">
-		<mx:ghpages sourceFolder="${mxp.targetFolder}/site" obliterate="true" repositoryfolder="${basedir}/../" />
+		<mx:ghpages obliterate="true" repositoryfolder="${basedir}/../" />
 	</target>
 	
 </project>

@@ -184,7 +184,7 @@ public class MxJavac extends Javac {
 				try {
 					// compile the linked project
 					Project project = new Project();
-					project.setBaseDir(linkedProject.getConfig().getProjectFolder());
+					project.setBaseDir(linkedProject.getConfig().getProjectDirectory());
 					project.addReference(Key.build.refId(), linkedProject);
 
 					MxJavac subCompile = new MxJavac(builds);
@@ -206,18 +206,18 @@ public class MxJavac extends Javac {
 		AttributeReflector.logAttributes(this, attributes, console);
 		
 		// project folder
-		console.debug(1, "projectdir = {0}", build.getConfig().getProjectFolder());
+		console.debug(1, "projectdir = {0}", build.getConfig().getProjectDirectory());
 
 		// create sourcepath
 		Path sources = createSrc();
-		for (File file : build.getConfig().getSourceFolders(scope)) {
+		for (File file : build.getConfig().getSourceDirectories(scope)) {
 			PathElement element = sources.createPathElement();
 			element.setLocation(file);
 		}
 		console.debug(1, "sources = {0}", sources);
 
 		// set output folder
-		setDestdir(build.getConfig().getOutputFolder(scope));
+		setDestdir(build.getConfig().getOutputDirectory(scope));
 		console.debug(1, "destdir = {0}", getDestdir());
 		
 		// create classpath
@@ -225,7 +225,7 @@ public class MxJavac extends Javac {
 		if (Scope.test.equals(scope)) {
 			// add the compile output folder
 			PathElement element = classpath.createPathElement();
-			element.setLocation(build.getConfig().getOutputFolder(Scope.compile));
+			element.setLocation(build.getConfig().getOutputDirectory(Scope.compile));
 		}
 		for (File file : build.getSolver().getClasspath(scope)) {
 			PathElement element = classpath.createPathElement();
@@ -233,7 +233,7 @@ public class MxJavac extends Javac {
 		}
 		for (Build subbuild : build.getSolver().getLinkedModules()) {
 			PathElement element = classpath.createPathElement();
-			element.setLocation(subbuild.getConfig().getOutputFolder(Scope.compile));
+			element.setLocation(subbuild.getConfig().getOutputDirectory(Scope.compile));
 		}
 		console.debug(1, "classpath = {0}", classpath);
 				

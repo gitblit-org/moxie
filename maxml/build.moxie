@@ -3,7 +3,7 @@ description: Maxml parser
 groupId: org.moxie
 artifactId: maxml
 parent: ../build.moxie
-sourceFolders:
+sourceDirectories:
 - compile 'src/main/java'
 - test 'src/test/java'
 dependencies:

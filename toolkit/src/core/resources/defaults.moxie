@@ -9,24 +9,24 @@
 #   COPY     (copy Maven cache artifacts into Moxie's local repository)
 mavenCacheStrategy: COPY
 
-# Source folders are verified during initialization.
-# Defined folders that do not exist are excluded.
+# Source directories are verified during initialization.
+# Defined directories that do not exist are excluded.
 # Defined order is preserved.
-sourceFolders:
-- compile "src/main/java"
-- compile "src/main/webapp"
-- compile "src/main/resources"
-- test "src/test/java"
-- test "src/test/resources"
-- site "src/site"
+sourceDirectories:
+- compile 'src/main/java'
+- compile 'src/main/webapp'
+- compile 'src/main/resources'
+- test 'src/test/java'
+- test 'src/test/resources'
+- site 'src/site'
 
-# Default base folder within the project for compiled classes.
+# Default base directory within the project for compiled classes.
 # Consider NOT sharing the output folder with your IDE.
 # The default (build) is separate from the Eclipse default (bin).
-outputFolder: build
+outputDirectory: build
 
-# The base folder within the project for build artifacts.
-targetFolder: target
+# The base directory within the project for build artifacts.
+targetDirectory: build/target
 
 # Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT
 #   always - always check when for newer versions
@@ -40,7 +40,7 @@ updatePolicy: daily
 tasks: {
 	# mx:Javac compiler attributes
 	# These defaults may be overriden in your build.moxie file.
-	"mx:javac" : {
+	'mx:javac' : {
 		clean: true
 		compileLinkedProjects: true
 		copyResources: true
@@ -56,21 +56,21 @@ tasks: {
 
 	# mx:Jar attributes
 	# These defaults may be overriden in your build.moxie file.
-	"mx:jar" : {
+	'mx:jar' : {
 		excludePomFiles: false
 		excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
 	}
 
 	# mx:GenJar attributes
 	# These defaults may be overriden in your build.moxie file.
-	"mx:genjar" : {
+	'mx:genjar' : {
 		excludePomFiles: false
 		excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
 	}
 	
 	# mx:Test attributes
 	# These defaults may be overriden in your build.moxie file.
-	"mx:test" : {
+	'mx:test' : {
 		include: **/*Test.class
 		encoding: UTF-8
 		failureProperty: unit.test.failed
@@ -79,7 +79,7 @@ tasks: {
 	
 	# testng attributes
 	# These defaults may be overriden in your build.moxie file.
-	"testng" : {
+	'testng' : {
 		mode: mixed
 		useDefaultListeners: true
 		suiteName: Moxie+Ant Suite
@@ -87,7 +87,7 @@ tasks: {
 	
 	# junit test attributes
 	# These defaults may be overriden in your build.moxie file.
-	"junit" : {
+	'junit' : {
 		fork: yes
 		forkMode: once
 		printSummary: yes
@@ -96,24 +96,24 @@ tasks: {
 	
 	# junit report attributes
 	# These defaults may be overriden in your build.moxie file.
-	"junitreport" : {
+	'junitreport' : {
 		format: frames
 	}
 
 	# emma instrumentation attributes
 	# These defaults may be overriden in your build.moxie file.
-	"emma" : {
+	'emma' : {
 		merge: true		
 	}
 
 	# emma report attributes
 	# These defaults may be overriden in your build.moxie file.
-	"emmareport" : {
+	'emmareport' : {
 	}
 	
 	# cobertura report attributes
 	# These defaults may be overriden in your build.moxie file.
-	"cobertura" : {
+	'cobertura' : {
 		format: html
 	}
 }

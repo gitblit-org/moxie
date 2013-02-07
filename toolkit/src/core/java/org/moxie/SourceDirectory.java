@@ -23,9 +23,9 @@ import org.moxie.utils.StringUtils;
 
 
 /**
- * SourceFolder represents a scoped source folder.
+ * SourceDirectory represents a scoped source directory.
  */
-public class SourceFolder implements Serializable {
+public class SourceDirectory implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -34,29 +34,29 @@ public class SourceFolder implements Serializable {
 	private File sources;
 	private File classes;
 
-	SourceFolder(String name, Scope scope) {
+	SourceDirectory(String name, Scope scope) {
 		this.name = StringUtils.stripQuotes(name);
 		this.scope = scope;
 	}
 	
-	boolean resolve(File projectFolder, File outputFolder) {
-		sources = new File(projectFolder, name);
+	boolean resolve(File projectDirectory, File outputDirectory) {
+		sources = new File(projectDirectory, name);
 		if (sources.exists()) {
-			String folder = null;
+			String dir = null;
 			switch (scope) {
 			case compile:
-				folder = "classes";
+				dir = "classes";
 				break;
 			case test:
-				folder = "test-classes";
+				dir = "test-classes";
 				break;
 			case site:
-				folder = "site";
+				dir = "site";
 				break;
 			default:
 				break;
 			}
-			classes = new File(outputFolder, folder);
+			classes = new File(outputDirectory, dir);
 			return true;
 		}
 		return false;
@@ -64,14 +64,14 @@ public class SourceFolder implements Serializable {
 	
 	public File getSources() {
 		if (sources == null) {
-			throw new RuntimeException(MessageFormat.format("SourceFolder {0} has not been resolved!", name));
+			throw new RuntimeException(MessageFormat.format("SourceDirectory {0} has not been resolved!", name));
 		}
 		return sources;
 	}
 	
-	public File getOutputFolder() {
+	public File getOutputDirectory() {
 		if (classes == null) {
-			throw new RuntimeException(MessageFormat.format("SourceFolder {0} has not been resolved!", name));
+			throw new RuntimeException(MessageFormat.format("SourceDirectory {0} has not been resolved!", name));
 		}
 		return classes;
 	}
@@ -83,7 +83,7 @@ public class SourceFolder implements Serializable {
 	
 	@Override
 	public boolean equals(Object o) {
-		if (o instanceof SourceFolder) {
+		if (o instanceof SourceDirectory) {
 			return hashCode() == o.hashCode();
 		}
 		return false;

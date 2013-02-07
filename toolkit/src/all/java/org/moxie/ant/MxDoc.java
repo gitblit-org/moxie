@@ -116,11 +116,11 @@ public class MxDoc extends MxTask {
 	}
 
 	public void setSourceFolder(File folder) {
-		doc.sourceFolder = folder;
+		doc.sourceDirectory = folder;
 	}
 
 	public void setOutputFolder(File folder) {
-		doc.outputFolder = folder;
+		doc.outputDirectory = folder;
 	}
 
 	public void setInjectprettify(boolean value) {
@@ -189,28 +189,28 @@ public class MxDoc extends MxTask {
 			setToken(entry.getKey(), entry.getValue());
 		}
 		
-		if (doc.sourceFolder == null) {
-			doc.sourceFolder = build.getConfig().getSiteSourceFolder();
+		if (doc.sourceDirectory == null) {
+			doc.sourceDirectory = build.getConfig().getSiteSourceDirectory();
 		}
 
-		if (doc.outputFolder == null) {
-			doc.outputFolder = build.getConfig().getSiteOutputFolder();
+		if (doc.outputDirectory == null) {
+			doc.outputDirectory = build.getConfig().getSiteTargetDirectory();
 		}
 		
 		getConsole().title(getClass(), build.getPom().name);
 		
 		build.getSolver().loadDependency(new Dependency("mx:markdownpapers"));
 
-		if (doc.outputFolder.exists()) {
-			FileUtils.delete(doc.outputFolder);
+		if (doc.outputDirectory.exists()) {
+			FileUtils.delete(doc.outputDirectory);
 		}
-		doc.outputFolder.mkdirs();
+		doc.outputDirectory.mkdirs();
 
-		extractHtmlResources(doc.outputFolder);
+		extractHtmlResources(doc.outputDirectory);
 		
 		if (doc.logo != null) {
 			try {
-				FileUtils.copy(doc.outputFolder, doc.logo.getFile());
+				FileUtils.copy(doc.outputDirectory, doc.logo.getFile());
 			} catch (IOException e) {
 				getConsole().error(e, "Failed to copy logo file!");
 			}
@@ -218,7 +218,7 @@ public class MxDoc extends MxTask {
 		
 		if (doc.favicon != null) {
 			try {
-				FileUtils.copy(doc.outputFolder, doc.favicon.getFile());
+				FileUtils.copy(doc.outputDirectory, doc.favicon.getFile());
 			} catch (IOException e) {
 				getConsole().error(e, "Failed to copy favicon file!");
 			}
@@ -231,7 +231,7 @@ public class MxDoc extends MxTask {
 		for (org.moxie.Resource resource : resources) {
 			try {
 				if (resource.file != null) {
-					FileUtils.copy(doc.outputFolder, resource.file);
+					FileUtils.copy(doc.outputDirectory, resource.file);
 				} else {
 					for (FileSet fs : resource.filesets) {
 						DirectoryScanner ds = fs.getDirectoryScanner(getProject());
@@ -239,12 +239,12 @@ public class MxDoc extends MxTask {
 
 						for (String srcFile : ds.getIncludedFiles()) {
 							File file = new File(fromDir, srcFile);
-							FileUtils.copy(doc.outputFolder, file);
+							FileUtils.copy(doc.outputDirectory, file);
 						}
 
 						for (String srcDir : ds.getIncludedDirectories()) {
 							File file = new File(fromDir, srcDir);
-							FileUtils.copy(doc.outputFolder, file);
+							FileUtils.copy(doc.outputDirectory, file);
 						}
 					}
 				}
@@ -314,7 +314,7 @@ public class MxDoc extends MxTask {
 			}
 		}
 		String json = root.asJSON();
-		File file  = new File(getBuild().getConfig().getSiteOutputFolder(), "moxie-dependencies.json");
+		File file  = new File(getBuild().getConfig().getSiteTargetDirectory(), "moxie-dependencies.json");
 		FileUtils.writeContent(file, json);
 	}
 	

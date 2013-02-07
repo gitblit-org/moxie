@@ -5,11 +5,11 @@ artifactId: ${artifactId}
 version: ${version}
 packaging: jar
 apply: ${apply}
-sourceFolders:
-- compile "src/main/java"
-- compile "src/main/resources"
-- test "src/test/java"
-- test "src/test/resources"
+sourceDirectories:
+- compile 'src/main/java'
+- compile 'src/main/resources'
+- test 'src/test/java'
+- test 'src/test/resources'
 dependencies:
-- test "junit"
-- build "jacoco"
+- test 'junit'
+- build 'jacoco'

@@ -31,11 +31,11 @@ public class ProjectReport implements MoxieReport {
 		sb.append("</table>\n");
 
 		// source folders
-		if (build.getConfig().getSourceFolders().size() > 0) {
+		if (build.getConfig().getSourceDirectories().size() > 0) {
 			sb.append("<p />\n");
 			sb.append(format(h2Pattern,"source folders"));
 			sb.append("<table class='table'>\n");
-			for (SourceFolder sourceFolder : build.getConfig().getSourceFolders()) {
+			for (SourceDirectory sourceFolder : build.getConfig().getSourceDirectories()) {
 				sb.append(format(kvpPattern, sourceFolder.name, sourceFolder.scope));	
 			}
 			sb.append("</table>\n");

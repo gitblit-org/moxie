@@ -310,7 +310,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	}
     	
     	// create the source folders
-    	List<String> folders = map.getStrings(Key.sourceFolders.name(), Arrays.asList(new String [0]));
+    	List<String> folders = map.getStrings(Key.sourceDirectories.name(), Arrays.asList(new String [0]));
     	for (String scopedFolder : folders) {
     		String s = scopedFolder.substring(0, scopedFolder.indexOf(' ')).trim();
     		Scope scope = Scope.fromString(s);
@@ -325,7 +325,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	
     	// Eclipse-ext dependency folder
     	if (Eclipse.ext.equals(project.eclipse)) {
-    		map.put(Toolkit.Key.dependencyFolder.name(), "ext");
+    		map.put(Toolkit.Key.dependencyDirectory.name(), "ext");
     	}
 
     	// write build.moxie

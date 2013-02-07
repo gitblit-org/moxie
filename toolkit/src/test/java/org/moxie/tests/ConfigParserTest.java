@@ -19,7 +19,7 @@ public class ConfigParserTest extends Assert {
 	public void testBuildMoxie() throws Exception {
 		ToolkitConfig config = new ToolkitConfig(new File("build.moxie"), null, null);
 		assertEquals("Moxie-Toolkit", config.getPom().name);
-		assertEquals(6, config.getSourceFolders().size());
+		assertEquals(6, config.getSourceDirectories().size());
 	}
 	
 	@Test

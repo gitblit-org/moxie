@@ -95,7 +95,7 @@ public class MxTar extends Tar {
 			} else if ("bzip2".equals(mode.getValue())) {
 				ext = ".tar.bzip2";
 			}
-			destFile = new File(build.getConfig().getTargetFolder(), name + ext);
+			destFile = new File(build.getConfig().getTargetDirectory(), name + ext);
 			super.setDestFile(destFile);
 		}
 		

@@ -25,9 +25,9 @@ import org.moxie.utils.JGitUtils;
 
 public class MxGhPages extends MxGitTask {
 
-	private File sourceFolder;
+	private File sourceDir;
 
-	private File repositoryFolder;
+	private File repositoryDir;
 
 	private boolean obliterate;
 	
@@ -36,12 +36,12 @@ public class MxGhPages extends MxGitTask {
 		setTaskName("mx:ghPages");
 	}
 
-	public void setSourceFolder(String path) {
-		this.sourceFolder = new File(path);
+	public void setSourceDir(String path) {
+		this.sourceDir = new File(path);
 	}
 
-	public void setRepositoryFolder(String path) {
-		this.repositoryFolder = new File(path);
+	public void setRepositoryDir(String path) {
+		this.repositoryDir = new File(path);
 	}
 
 	public void setObliterate(boolean value) {
@@ -54,18 +54,18 @@ public class MxGhPages extends MxGitTask {
 		getConsole().title(getClass());
 		loadDependency(build);
 
-		if (sourceFolder == null) {
-			throw new MoxieException("You did not specify a sourceFolder!");
+		if (sourceDir == null) {
+			sourceDir = build.getConfig().getSiteTargetDirectory();
 		}
 
-		if (!sourceFolder.exists()) {
+		if (!sourceDir.exists()) {
 			throw new MoxieException("Source folder does not exist!");
 		}
 
-		if (repositoryFolder == null || !repositoryFolder.exists()) {
-			repositoryFolder = new File(getProject().getProperty("basedir"));
+		if (repositoryDir == null || !repositoryDir.exists()) {
+			repositoryDir = new File(getProject().getProperty("basedir"));
 		}
 
-		JGitUtils.updateGhPages(repositoryFolder, sourceFolder, obliterate);
+		JGitUtils.updateGhPages(repositoryDir, sourceDir, obliterate);
 	}
 }

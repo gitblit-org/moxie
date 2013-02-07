@@ -3,7 +3,7 @@
 
 	<!-- Moxie tasks -->
 	<taskdef resource="tasks.properties" uri="antlib:org.moxie">
-		<classpath location="${basedir}/../toolkit/target/moxie.jar" />
+		<classpath location="${basedir}/../toolkit/build/target/moxie.jar" />
 	</taskdef>
 	
 	<target name="main">
@@ -21,22 +21,22 @@
 			<dependency coordinates="mx:rhino" />
 		</mx:get>
 			
-		<delete dir="${mxp.targetFolder}" includes="**/*" quiet="true" failonerror="false"/>
+		<delete dir="${project.targetDirectory}" includes="**/*" quiet="true" failonerror="false"/>
 		
 		<property name="ant.release" value="apache-ant-${ant.version}" />
 		<property name="ant.distribution" value="${ant.release}-bin.zip" />
 		
 		<!-- retrieve the Ant distribution, if necessary -->
-		<mkdir dir="${mxp.outputFolder}"/>
-		<get dest="${mxp.outputFolder}" skipexisting="true" verbose="true"
+		<mkdir dir="${project.outputDirectory}"/>
+		<get dest="${project.outputDirectory}" skipexisting="true" verbose="true"
 			src="http://www.apache.org/dist/ant/binaries/${ant.distribution}" />
 
 		<!-- build a new Moxie+Ant distribution -->
-		<delete dir="${mxp.outputFolder}/dist" includes="**/*" quiet="true" failonerror="false"/>
-		<unzip dest="${mxp.outputFolder}/dist" src="${mxp.outputFolder}/${ant.distribution}" />
+		<delete dir="${project.outputDirectory}/dist" includes="**/*" quiet="true" failonerror="false"/>
+		<unzip dest="${project.outputDirectory}/dist" src="${project.outputDirectory}/${ant.distribution}" />
 
 		<!-- rename ant scripts to moxie scripts, this avoids path confusion -->
-		<property name="antbin" value="${mxp.outputFolder}/dist/${ant.release}/bin" />
+		<property name="antbin" value="${project.outputDirectory}/dist/${ant.release}/bin" />
 		<property name="moxieMain" value="org.moxie.ant.Main" />
 		
 		<patchfile tofile="${antbin}/moxie" file="${antbin}/ant" main="${moxieMain}" />
@@ -51,15 +51,15 @@
 		<patchfile tofile="${antbin}/moxieenv.cmd" file="${antbin}/antenv.cmd" main="${moxieMain}" />
 
 		<!-- create zip distribution -->
-		<zip destfile="${mxp.targetFolder}/moxie+ant-${project.version}.zip">
-			<zipfileset dir="${mxp.outputFolder}/dist/${ant.release}" prefix="moxie-${project.version}" />
+		<zip destfile="${project.targetDirectory}/moxie+ant-${project.version}.zip">
+			<zipfileset dir="${project.outputDirectory}/dist/${ant.release}" prefix="moxie-${project.version}" />
 			<zipfileset file="${basedir}/../toolkit/target/moxie.jar" prefix="moxie-${project.version}/lib" />
 			<zipfileset dir="ext" prefix="moxie-${project.version}/lib" />
 		</zip>
 		
 		<!-- create gzip distribution (preserves script execute permissions) -->
-		<tar longfile="gnu" destfile="${mxp.outputFolder}/dist/moxie+ant-${project.version}.tar">
-			<tarfileset dir="${mxp.outputFolder}/dist/${ant.release}" prefix="moxie-${project.version}"
+		<tar longfile="gnu" destfile="${project.outputDirectory}/dist/moxie+ant-${project.version}.tar">
+			<tarfileset dir="${project.outputDirectory}/dist/${ant.release}" prefix="moxie-${project.version}"
 				filemode="755" username="ant" group="ant">
 				<include name="bin/moxie"/>
 				<include name="bin/moxieRun"/>
@@ -68,7 +68,7 @@
 				<include name="bin/runmoxie.pl"/>
 				<include name="bin/runmoxie.py"/>
 			</tarfileset>
-			<tarfileset dir="${mxp.outputFolder}/dist/${ant.release}" prefix="moxie-${project.version}"
+			<tarfileset dir="${project.outputDirectory}/dist/${ant.release}" prefix="moxie-${project.version}"
 				username="ant" group="ant">
 				<include name="**/*"/>
 				<exclude name="bin/*.pl"/>
@@ -84,8 +84,8 @@
 			<tarfileset file="${basedir}/../toolkit/target/moxie.jar" prefix="moxie-${project.version}/lib"
 				username="ant" group="ant" />
 		</tar>		
-		<gzip destfile="${mxp.targetFolder}/moxie+ant-${project.version}.tar.gz" 
-			src="${mxp.outputFolder}/dist/moxie+ant-${project.version}.tar" />
+		<gzip destfile="${project.targetDirectory}/moxie+ant-${project.version}.tar.gz" 
+			src="${project.outputDirectory}/dist/moxie+ant-${project.version}.tar" />
 	</target>
 	
 	<!-- Renames bin scripts and replaces all Ant-specific variables, paths, -->

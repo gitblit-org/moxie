@@ -76,8 +76,8 @@ public class Docs {
 				depReport.setContent(new DependencyReport().report(build));
 				depReport.setSrc("moxie-dependencies.html");
 
-				File testOutput = new File(build.getConfig().getReportsFolder(), "tests");
-				File coverageOutput = new File(build.getConfig().getReportsFolder(), "coverage");
+				File testOutput = new File(build.getConfig().getReportsTargetDirectory(), "tests");
+				File coverageOutput = new File(build.getConfig().getReportsTargetDirectory(), "coverage");
 				
 				boolean hasTests = testOutput.exists();
 				boolean hasCoverage = coverageOutput.exists();
@@ -88,7 +88,7 @@ public class Docs {
 					if (hasTests) {
 						// test report
 						try {
-							FileUtils.copy(new File(doc.outputFolder, "tests"), testOutput);
+							FileUtils.copy(new File(doc.outputDirectory, "tests"), testOutput);
 						} catch (IOException e) {
 							build.getConsole().error(e, "failed to copy test report");
 						}
@@ -101,7 +101,7 @@ public class Docs {
 					if (hasCoverage) {
 						// code coverage report
 						try {
-							FileUtils.copy(new File(doc.outputFolder, "coverage"), coverageOutput);
+							FileUtils.copy(new File(doc.outputDirectory, "coverage"), coverageOutput);
 						} catch (IOException e) {
 							build.getConsole().error(e, "failed to copy coverage report");
 						}
@@ -146,7 +146,7 @@ public class Docs {
 		String header = generateHeader(projectName, build.getConfig().getProjectConfig(), doc);
 		String footer = generateFooter(doc);
 
-		build.getConsole().log("Generating HTML from Markdown files in {0} ", doc.sourceFolder.getAbsolutePath());
+		build.getConsole().log("Generating HTML from Markdown files in {0} ", doc.sourceDirectory.getAbsolutePath());
 
 		for (Link link : allLinks) {
 			if (link.isMenu || link.isDivider || link.isLink) {
@@ -164,10 +164,10 @@ public class Docs {
 					content = link.content;
 				} else if (link.src.endsWith(".html") || link.src.endsWith(".htm")) {
 					// static html content
-					content = FileUtils.readContent(new File(doc.sourceFolder, link.src), "\n");
+					content = FileUtils.readContent(new File(doc.sourceDirectory, link.src), "\n");
 				} else {
 					// begin markdown
-					String markdownContent = FileUtils.readContent(new File(doc.sourceFolder, link.src), "\n");
+					String markdownContent = FileUtils.readContent(new File(doc.sourceDirectory, link.src), "\n");
 
 					Map<String, String> nomarkdownMap = new HashMap<String, String>();
 
@@ -332,7 +332,7 @@ public class Docs {
 
 				// write final document
 				OutputStreamWriter writer = new OutputStreamWriter(
-						new FileOutputStream(new File(doc.outputFolder,
+						new FileOutputStream(new File(doc.outputDirectory,
 								fileName)), Charset.forName("UTF-8"));
 				writer.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n<html>\n<head>\n");
 				writer.write(header);
@@ -421,9 +421,9 @@ public class Docs {
 					.getResourceAsStream("/" + resource));
 			File destFolder;
 			if (StringUtils.isEmpty(folder)) {
-				destFolder = doc.outputFolder;
+				destFolder = doc.outputDirectory;
 			} else {
-				destFolder = new File(doc.outputFolder, folder);
+				destFolder = new File(doc.outputDirectory, folder);
 			}
 			destFolder.mkdirs();
 			ZipEntry entry = null;
@@ -464,9 +464,9 @@ public class Docs {
 			is.close();
 			File outputFile;
 			if (StringUtils.isEmpty(folder)) {
-				outputFile = new File(doc.outputFolder, resource);
+				outputFile = new File(doc.outputDirectory, resource);
 			} else {
-				outputFile = new File(new File(doc.outputFolder, folder),
+				outputFile = new File(new File(doc.outputDirectory, folder),
 						resource);
 			}
 			FileUtils.writeContent(outputFile, content);

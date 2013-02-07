@@ -27,7 +27,7 @@ import org.moxie.Dependency;
 import org.moxie.License;
 import org.moxie.Pom;
 import org.moxie.Scope;
-import org.moxie.SourceFolder;
+import org.moxie.SourceDirectory;
 import org.moxie.console.Ansi.Color;
 import org.moxie.utils.StringUtils;
 
@@ -119,7 +119,7 @@ public class Console {
 		subheader();
 	}
 	
-	public void sourceFolder(SourceFolder sourceFolder) {
+	public void sourceFolder(SourceDirectory sourceFolder) {
 		out.append(INDENT);
 		out.print(ansi().fg(Color.GREEN).a(sourceFolder.name).reset());
 		out.print(" (");

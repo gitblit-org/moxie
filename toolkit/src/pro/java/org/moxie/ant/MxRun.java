@@ -53,7 +53,7 @@ public class MxRun extends Java {
 		
 		Path classpath = createClasspath();
 		// add project compiled output path
-		classpath.createPathElement().setLocation(build.getConfig().getOutputFolder(Scope.compile));
+		classpath.createPathElement().setLocation(build.getConfig().getOutputDirectory(Scope.compile));
 
 		// add jar classpaths
 		for (File jarFile : build.getSolver().getClasspath(Scope.compile)) {
@@ -62,7 +62,7 @@ public class MxRun extends Java {
 
 		// add linked projects compiled output path and jar files
 		for (Build linkedProject : build.getSolver().getLinkedModules()) {
-			classpath.createPathElement().setLocation(linkedProject.getConfig().getOutputFolder(Scope.compile));
+			classpath.createPathElement().setLocation(linkedProject.getConfig().getOutputDirectory(Scope.compile));
 			for (File jarFile : linkedProject.getSolver().getClasspath(Scope.compile)) {
 				classpath.createPathElement().setLocation(jarFile);
 			}

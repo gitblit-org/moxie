@@ -242,7 +242,7 @@ public class Solver {
 			File moduleDir = new File(resolvedName);
 			console.debug(1, "trying {0}", moduleDir.getAbsolutePath());
 			if (!moduleDir.exists()) {
-				moduleDir = new File(config.getProjectFolder().getParentFile(), resolvedName);
+				moduleDir = new File(config.getProjectDirectory().getParentFile(), resolvedName);
 				console.debug(1, "trying {0}", moduleDir.getAbsolutePath());
 				if (!moduleDir.exists()) {
 					String msg = console.error("failed to find module \"{0}\".", linkedModule.folder);
@@ -789,9 +789,9 @@ public class Solver {
 	private void copyArtifact(Dependency dependency, File artifactFile) {
 		// optionally copy artifact to project-specified folder
 		if (artifactFile != null && artifactFile.exists()) {
-			if (config.getProjectConfig().getDependencyFolder() != null) {
+			if (config.getProjectConfig().getDependencyDirectory() != null) {
 				// copy jar
-				File projectFile = new File(config.getProjectConfig().getDependencyFolder(), artifactFile.getName());
+				File projectFile = new File(config.getProjectConfig().getDependencyDirectory(), artifactFile.getName());
 				if (dependency.isSnapshot() || !projectFile.exists()) {
 					console.debug(1, "copying {0} to {1}", artifactFile.getName(), projectFile.getParent());
 					try {
@@ -805,7 +805,7 @@ public class Solver {
 				// copy source jar
 				Dependency source = dependency.getSourcesArtifact();
 				File sourceFile = moxieCache.getArtifact(source, source.type);					
-				File projectSourceFile = new File(config.getProjectConfig().getDependencySourceFolder(), sourceFile.getName());
+				File projectSourceFile = new File(config.getProjectConfig().getDependencySourceDirectory(), sourceFile.getName());
 				if (dependency.isSnapshot() || !projectSourceFile.exists()) {
 					console.debug(1, "copying {0} to {1}", sourceFile.getName(), projectSourceFile.getParent());
 					try {
@@ -953,9 +953,9 @@ public class Solver {
 		}
 		
 		File projectFolder = null;
-		if (config.getProjectConfig().getDependencyFolder() != null
-				&& config.getProjectConfig().getDependencyFolder().exists()) {
-			projectFolder = config.getProjectConfig().getDependencyFolder();
+		if (config.getProjectConfig().getDependencyDirectory() != null
+				&& config.getProjectConfig().getDependencyDirectory().exists()) {
+			projectFolder = config.getProjectConfig().getDependencyDirectory();
 		}
 		if (StringUtils.isEmpty(tag)) {
 			console.debug("solving {0} classpath", scope);
