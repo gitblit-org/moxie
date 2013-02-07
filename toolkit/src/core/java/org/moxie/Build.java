@@ -233,6 +233,10 @@ public class Build {
 						srcPath = srcJar.getAbsolutePath();
 					}
 				}
+				if (!jar.exists()) {
+					console.error("Excluding {0} from Eclipse classpath because artifact does not exist!", dependency.getCoordinates());
+					continue;
+				}
 				if (srcJar.exists() && srcJar.length() > 1024) {
 					// has non-placeholder sources jar
 					sb.append(format("<classpathentry kind=\"{0}\" path=\"{1}\" sourcepath=\"{2}\" />\n", kind, jarPath, srcPath));
@@ -565,6 +569,11 @@ public class Build {
                     }
                 }
             }
+
+			if (!jar.exists()) {
+				console.error("Excluding {0} from IntelliJ IDEA classpath because artifact does not exist!", dependency.getCoordinates());
+				continue;
+			}
 
             if (scope == null) {
                 sb.append("<orderEntry type=\"module-library\">\n");
