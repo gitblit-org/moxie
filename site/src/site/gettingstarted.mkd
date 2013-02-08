@@ -10,9 +10,9 @@ Like Maven, Moxie supports convention-over-configuration so that the minimal bui
 
 <div class="span4">
 %BEGINMAXML%
-groupId : org.example
-artifactId : demo
-version : 1.2.3-SNAPSHOT
+groupId: org.example
+artifactId: demo
+version: 1.2.3-SNAPSHOT
 %ENDMAXML%
 
 <i>minimal Moxie project descriptor</i>
@@ -40,7 +40,7 @@ version: 1.2.3-SNAPSHOT
 organization: Example Writers
 url: 'http://demo.example.org'
 apply: eclipse, intellij, pom
-sourceFolders: 
+sourceDirectories: 
 - compile 'src/main/java'
 - compile 'src/main/resources'
 - test 'src/test/java'
@@ -51,7 +51,7 @@ properties: {
 dependencies:
 - compile 'org.apache.commons:commons-lang3:${clang.version}'
 - test 'junit'
-- build 'cobertura'
+- build 'jacoco'
 %ENDMAXML%
 
 <i>a more elaborate Moxie project descriptor</i>
@@ -59,97 +59,29 @@ dependencies:
 
 ## Ant build.xml
 
-Moxie does not specify exactly how you must use it.  You may choose to use the Moxie targets; you may choose to use the Moxie tasks; or you can use both.
-
 <div class="row">
-
-<div class="span6">
-<h3>Minimal, Maven-style</h3>
-This is the minimal <code>build.xml</code> you can write to use Moxie.
-<p></p>
-
-%BEGINXML%
-<?xml version="1.0" encoding="UTF-8"?>
-<project>
-
-    <!-- Register Moxie tasks and targets -->
-    <include>
-        <javaresource name="moxie.xml" classpath="moxie.jar" />
-    </include>
-    
-</project>
-%ENDXML% 
-
-In this build file we include an Ant build script (moxie.xml) which is embedded within the Moxie jar file.  Assuming we are using either the <i>pro</i> or <i>all</i> variant we will have the following targets available:
-<dl class="dl-horizontal">
- <dt>moxie.init</dt>
- <dd>validates project configuration, retrieves dependencies, and configures Ant properties</dd>
- <dt>moxie.compile</dt>
- <dd>compile the source code of the project</dd>
- <dt>moxie.test</dt>
- <dd>test the compiled source code using a unit testing framework. optionally generates code coverage reports.</dd>
- <dt>moxie.package</dt>
- <dd>take the compiled code and package it in its distributable format, such as a JAR</dd>
- <dt>moxie.install</dt>
- <dd>install the package into the local repository, for use as a dependency in other projects locally</dd>
- <dt>moxie.report</dt>
- <dd>generates a dependency report to the console or to a text file</dd>
- <dt>moxie.clean</dt>
- <dd>clean build and target folders</dd>
-</dl>
-
-Unfortunately, this script will not work properly in Eclipse, and perhaps other IDEs, because Eclipse does not know how to include targets from a resource.
-<p></p>
-
-</div>
-
-
-<div class="span6">
-<h3>Eclipse-friendly, Maven-style</h3>
-
-Since Eclipse does not like targets included from a resource we have to define a default local target and use an Antcall to execute the desired Moxie target.
-<p></p>
-%BEGINXML%
-<?xml version="1.0" encoding="UTF-8"?>
-<project default="main">
-
-    <!-- Register Moxie tasks and targets -->
-    <include>
-        <javaresource name="moxie.xml" classpath="moxie.jar" />
-    </include>
-
-    <target name="main">
-        <antcall target="moxie.install" />		
-    </target>
-
-</project>
-%ENDXML%
-
-<p></p>
-</div></div>
-
-<hr/>
-
-<h3>Ant-style</h3>
-<div class="row">
-<div class="span6">
-
-The following <code>build.xml</code> file is the Ant-style equivalent of what happened when we executed the <i>moxie.install</i> target.
+<div class="span8">
+Moxie super-charges Ant and allows you to build your artifacts with easier to read build scripts.
 <p />
 %BEGINXML%
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="main" xmlns:mx="antlib:org.moxie">
 
-    <!-- Register Moxie tasks and targets -->
-    <include>
-        <javaresource name="moxie.xml" classpath="moxie.jar" />
-    </include>
+    <!-- Moxie tasks -->
+    <taskdef resource="tasks.properties" uri="antlib:org.moxie">
+        <classpath location="${basedir}/moxie.jar" />
+    </taskdef>
 
     <target name="main">
+        <!-- Setup ant build properties, resolve, and retrieve Maven dependencies -->
         <mx:init />
+        <!-- Compile your project -->
         <mx:compile />
+        <!-- Compile your unit tests and execute them -->
         <mx:test />
+        <!-- Generate class and source jars of your project -->
         <mx:jar includeResources="true" packageSources="true" />
+        <!-- Install your generated artifacts to your local Moxie cache -->
         <mx:install />
     </target>
 
@@ -157,7 +89,6 @@ The following <code>build.xml</code> file is the Ant-style equivalent of what ha
 %ENDXML%
 
 </div>
-<div class="span6">
-<div class="alert alert-info"><h4>mx: xml namespace</h4> In this build file we define Moxie's xml namespace (<code>mx:</code>) in the project definition.  This is critical for the Moxie tasks!
+<div class="span4">
 </div></div>
 

@@ -1,4 +1,4 @@
-## mx:Install
+## mx:Install <span class="label label-success">pro</span> <span class="label label-info">all</span>
 
 This task is incomplete.
 

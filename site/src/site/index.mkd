@@ -45,24 +45,31 @@ The Moxie binaries and this site are built with Moxie.
 <div class="span5">
 <h3>Core Package (180KB)</h3>
 
-The core package includes <code>mx:init</code> for project setup & dependency retrieval, and <code>mx:report</code> to create a text report about your transitive dependencies and their licenses.
-<br/><br/>
-The core package has no external dependencies.
+The core package includes the tasks necessary to retrieve & report on Maven-sourced dependencies and to generate Eclipse and IntelliJ IDEA project files.
 
+<br/><br/>
 <h3>Pro Package (300KB)</h3>
 
-The pro package builds on the core package by adding a Maven-ish set of targets (<i>moxie.compile, moxie.test, etc</i>) and tasks to handle compiling your sources, packaging your compiled code, and installing artifacts into your local Moxie repository.
-<br/><br/>
-Also included in the pro package are a private copy of the [AntContrib](http://ant-contrib.sourceforge.net) <i>if</i> task (included as <code>mx:if</code>), Git tasks to grab the hash id of the checked-out of your project and a task to update a <i>ghpages</i> branch for <a href="http://www.github.com">Github</a> or <a href="http://gitblit.com">Gitblit</a>.
-<br/><br/>
-The git tasks depend on <a href="http://eclipse.org/jgit">JGit</a> which is resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.
+The pro package builds on the core package by adding Moxie extension tasks to compile your sources, execute your unit tests, and package your compiled code.
 
+<br/><br/>
 <h3>All Package (550KB)</h3>
 
 The all package includes the pro package plus <code>mx:doc</code>, the Moxie site/document-generation tool.
 <br/><br/>
-The <code>mx:doc</code> task generates a project site or project documentation from markdown source files.  It depends on <a href="http://markdown.tautua.org">MarkdownPapers</a> and <a href="http://www.mozilla.org/rhino">Rhino</a>, which are resolved automatically either from your local Maven repository, your local Moxie repository, or MavenCentral.  It also incorporates a private copy of <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>, <a href="https://code.google.com/p/google-code-prettify">GoogleCode Prettify</a>, and a partial subset of <a href="http://www.asual.com/lesscss">lesscss-engine</a> to allow customization of the look of your documentation. 
+<code>mx:doc</code> generates a project site or project documentation from markdown source files and styles your output with Twitter Bootstrap.
 
+<br/><br/>
+<h3>Moxie+Ant (15MB)</h3>
+
+Moxie+Ant is a bundled distribution of Moxie and Ant.
+
+<br/><br/>
+<h3>Moxie Proxy (7MB)</h3>
+
+Moxie Proxy is a simple Maven artifact proxy server based on Jetty, Restlet, Freemarker, Lucene, and Dead Simple Maven Proxy.
+
+<br/><br/>
 <h3>License</h3>
 
 Moxie is distributed under the Apache Software License, version 2.0.

@@ -21,8 +21,10 @@
 					<page name="why?!" src="why.mkd" />
 				</menu>
 				<menu name="documentation">
-					<page name="getting started" src="gettingstarted.mkd" />
-					<page name="build.moxie" src="moxiedescriptor.mkd" />
+					<page name="getting started" src="gettingstarted.mkd" sectionLinks="true" />
+					<page name="build.moxie" src="moxiedescriptor.mkd" sectionLinks="true" />
+					<page name="settings.moxie" src="settings.mkd" sectionLinks="true" />
+					<page name="defaults.moxie" src="defaults.mkd" sectionLinks="true" />
 				</menu>
 				<menu name="tasks">
 					<page name="mx:Clean" src="mxclean.mkd" />
@@ -48,6 +50,7 @@
 					<page name="mx:WebXml" src="mxwebxml.mkd" />
 					<page name="mx:Zip" src="mxzip.mkd" />
 				</menu>
+				<page name="moxie+ant" src="moxie+ant.mkd" sectionLinks="true" />
 				<page name="proxy" src="proxy.mkd" sectionLinks="true" />
 				<page name="maxml" src="maxml.mkd" toc="yes" sectionLinks="true" />
 				<menu name="download">

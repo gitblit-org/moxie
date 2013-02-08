@@ -1,4 +1,4 @@
-## mx:Clean
+## mx:Clean <span class="label">core</span> <span class="label label-success">pro</span> <span class="label label-info">all</span>
 
 %BEGINXML%
 <mx:clean />

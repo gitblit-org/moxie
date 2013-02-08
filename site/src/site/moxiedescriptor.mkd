@@ -54,7 +54,7 @@ special behaviors for your build script
 
 <div class="span4">
 %BEGINMAXML%
-apply : eclipse, pom, cache
+apply: eclipse, pom, cache
 %ENDMAXML%
 
 </div>
@@ -62,7 +62,7 @@ apply : eclipse, pom, cache
 
 <hr/>
 
-### Source Folders
+### Source Directories
 
 <div class="row">
 <div class="span8">
@@ -71,14 +71,12 @@ Example
 
 <div class="span4">
 %BEGINMAXML%
-sourceFolders : 
-- compile 'src/main/core', 'src/main/mxgit'
-- compile 'src/main/mxjar'
-- compile 'src/main/mxdoc'
-- compile 'src/main/cobertura'
-- compile 'src/less/java'
+sourceDirectories: 
+- compile 'src/main/core'
+- compile 'src/main/pro'
+- compile 'src/main/all'
 - compile 'src/main/resources'
-- { scope: 'test', folder: 'src/test/java' }
+- { scope: 'test', dir: 'src/test/java' }
 %ENDMAXML%
 
 </div>
@@ -115,7 +113,7 @@ Example
 
 <div class="span4">
 %BEGINMAXML%
-dependencyManagement :
+dependencyManagement:
 - 'org.apache.ant:ant:1.8.3'
 %ENDMAXML%
 
@@ -135,7 +133,7 @@ scopes, @ext, excludes
 
 <div class="span4">
 %BEGINMAXML%
-dependencies :
+dependencies:
 - compile 'org.apache.ant:ant'
 - compile 'org.apache.commons-lang3:3.1'
 - test 'junit'
@@ -144,16 +142,19 @@ dependencies :
 </div>
 </div>
 
-dependencyFolder
+dependencyDirectory
 repositories
-targetFolder
-proxies
+targetDirectory
 parent
-exclusions
-mxjar
-mxjavac
-compilerArgs
-mxreport
-reportsFolder
+tasks: {
+    'mx:jar': {
+	    exclusions: yada
+	}
+    'mx:javac': {
+        compilerArgs: yada
+	}
+    'mx:report': {
+	}
+}
 dependencyOverrides
 dependencyAliases

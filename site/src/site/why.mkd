@@ -43,5 +43,6 @@ Some will consider Moxie [rinky-dink](http://www.merriam-webster.com/dictionary/
 If the following limitations are of concern, then Moxie may not suit your needs. 
 
 1. Moxie employs the Maven 2 transitive dependency resolution mechanism<div class="alert">Currently, Maven 2.0 only supports using the "nearest definition" which means that it will use the version of the closest dependency to your project in the tree of dependencies. You can always guarantee a version by declaring it explicitly in your project's POM. Note that if two dependency versions are at the same depth in the dependency tree ... the first declaration wins.</div>
-2. Moxie does not support version ranges<div class="alert">I can see the attraction of version ranges, but in practice it seems that they are discouraged because they lead to build reproducibilty issues.  Not supporting version ranges simplifies Moxie while at the same time enforcing dependency clarity.</alert>
-3. Moxie is mostly a client-side tool.  It has preliminary support to install artifacts into a repository, but this is unfinished.
+2. Moxie does not support version ranges.<br/><br/>I can see the attraction of version ranges, but in practice it seems that they are discouraged because they lead to build reproducibilty issues.  Not supporting version ranges simplifies Moxie while at the same time enforcing dependency clarity.<br/><br/>If Moxie encounters an inclusive minimum range definition (e.g. [1.2.3,]) it will resolve version 1.2.3.  If it encounters an exclusive minimum range definition (e.g. (1.2.3,]) it will fail with an exception.<br/>
+3. Moxie can not currently publish artifacts to a remote repository.
+4. Moxie does not retrieve *-javadoc.jar* artifacts.
