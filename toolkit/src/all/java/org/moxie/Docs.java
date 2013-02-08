@@ -148,6 +148,14 @@ public class Docs {
 
 		build.getConsole().log("Generating HTML from Markdown files in {0} ", doc.sourceDirectory.getAbsolutePath());
 
+		// read references
+		if (doc.references == null) {
+			doc.references = new References();			
+		} else {
+			String content = FileUtils.readContent(new File(doc.sourceDirectory, doc.references.src), "\n");
+			doc.references.content = "\n\n" + content; 
+		}
+		
 		for (Link link : allLinks) {
 			if (link.isMenu || link.isDivider || link.isLink) {
 				// nothing to generate
@@ -168,6 +176,11 @@ public class Docs {
 				} else {
 					// begin markdown
 					String markdownContent = FileUtils.readContent(new File(doc.sourceDirectory, link.src), "\n");
+					
+					// append references, if specified
+					if (!StringUtils.isEmpty(doc.references.content)) {
+						markdownContent += doc.references.content;
+					}
 
 					Map<String, String> nomarkdownMap = new HashMap<String, String>();
 

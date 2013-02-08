@@ -48,6 +48,8 @@ public class Doc implements Serializable {
 	public File ads;
 
 	public Link structure;
+	
+	public References references;
 
 	public List<String> keywords;
 

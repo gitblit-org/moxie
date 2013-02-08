@@ -74,6 +74,7 @@
 				<report name="reports" />
 				<divider />
 			</structure>
+			<references src="references.mkd" />
 			<nomarkdown startToken="%BEGINMAXML%" endToken="%ENDMAXML%" prettify="true" lang="lang-yaml" />
 			<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />
 			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />

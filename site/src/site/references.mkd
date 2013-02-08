@@ -1,0 +1,26 @@
+[Ant]: http://ant.apache.org "Apache Ant"
+[Maven]: http://maven.apache.org "Apache Maven"
+[Gradle]: http://www.gradle.org "Gradle"
+[Ivy]: http://ant.apache.org/ivy "Apache Ivy"
+[DSMP]: http://www.pdark.de/dsmp "Dead Simple Maven Proxy"
+[Jetty]: http://eclipse.org/jetty "Jetty"
+[Lucene]: http://lucene.apache.org "Apache Lucene"
+[GenJar]: http://genjar.sourceforge.net "GenJar"
+[Restlet]: http://restlet.org "Restlet"
+[Freemarker]: http://freemarker.sourceforge.net "Freemarker"
+[Moxie+Ant]: moxie+ant.html "Moxie+Ant distribution"
+[YAML]: http://yaml.org "YAML"
+[SnakeYaml]: http://snakeyaml.googlecode.com "SnakeYaml"
+[Bootstrap]: http://twitter.github.com/bootstrap "Twitter Bootstrap"
+[Markdown]: http://daringfireball.net/projects/markdown "Markdown"
+[DRY]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself "Don't Repeat Yourself"
+
+[ivyxml]: https://ant.apache.org/ivy/history/latest-milestone/ivyfile.html "Apache Ivy File Reference"
+[pomxml]: https://maven.apache.org/pom.html "Apache Maven POM Reference"
+[mvnresolution]: http://www.sonatype.com/people/2009/12/maven-dependency-resolution-a-repository-perspective
+[mvnsnapshot]: http://docs.codehaus.org/display/MAVEN/Repository+-+SNAPSHOT+Handling
+[mvn3notes]: https://cwiki.apache.org/MAVEN/maven-3x-compatibility-notes.html
+[mvnsettings]: http://maven.apache.org/ref/3.0.3/maven-settings/settings.html
+[mvnlifecycle]: http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+[mvnproperties]: http://www.sonatype.com/books/mvnref-book/reference/resource-filtering-sect-properties.html
+[gradlecache]: http://forums.gradle.org/gradle/topics/improved_gradle_dependency_cache

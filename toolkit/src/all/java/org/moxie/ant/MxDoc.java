@@ -35,6 +35,7 @@ import org.moxie.Load;
 import org.moxie.Logo;
 import org.moxie.NoMarkdown;
 import org.moxie.Prop;
+import org.moxie.References;
 import org.moxie.Regex;
 import org.moxie.Scope;
 import org.moxie.Substitute;
@@ -60,6 +61,12 @@ public class MxDoc extends MxTask {
 		Link link = new Link();
 		doc.structure = link;
 		return link;
+	}
+	
+	public References createReferences() {
+		References references = new References();
+		doc.references = references;
+		return references;
 	}
 
 	public Substitute createSubstitute() {
