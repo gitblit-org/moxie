@@ -190,10 +190,15 @@ public class Console {
 	}
 	
 	public void log(int indent, String message, Object... args) {
-		for (int i = 0; i < indent; i++) {
-			out.append(INDENT);
+		if (!StringUtils.isEmpty(message)) {
+			String [] lines = message.split("\n");
+			for (String line : lines) {
+				for (int i = 0; i < indent; i++) {
+					out.append(INDENT);
+				}
+				out.println(MessageFormat.format(line, args));
+			}
 		}
-		out.println(MessageFormat.format(message, args));		
 	}
 
 	public void debug(String message) {
@@ -208,10 +213,15 @@ public class Console {
 		if (!debug) {
 			return;
 		}
-		for (int i = 0; i < indent; i++) {
-			out.append(INDENT);
+		if (!StringUtils.isEmpty(message)) {
+			String [] lines = message.split("\n");
+			for (String line : lines) {
+				for (int i = 0; i < indent; i++) {
+					out.append(INDENT);
+				}
+				out.println(ansi().bold().fg(Color.BLUE).a(MessageFormat.format(line, args)).boldOff().reset());
+			}
 		}
-		out.println(ansi().bold().fg(Color.BLUE).a(MessageFormat.format(message, args)).boldOff().reset());		
 	}
 
 	public void key(String key, String value) {
@@ -234,10 +244,15 @@ public class Console {
 	}
 
 	public void notice(int indent, String message, Object... args) {
-		for (int i = 0; i < indent; i++) {
-			out.append(INDENT);
+		if (!StringUtils.isEmpty(message)) {
+			String [] lines = message.split("\n");
+			for (String line : lines) {
+				for (int i = 0; i < indent; i++) {
+					out.append(INDENT);
+				}
+				out.println(ansi().fg(Color.YELLOW).a(MessageFormat.format(line, args)).reset());
+			}
 		}
-		out.println(ansi().fg(Color.YELLOW).a(MessageFormat.format(message, args)).reset());
 	}
 	
 	public final void warn(Throwable t) {
@@ -253,21 +268,35 @@ public class Console {
 	}
 	
 	public void warn(int indent, String message, Object... args) {
-		for (int i = 0; i < indent; i++) {
-			out.append(INDENT);
+		if (!StringUtils.isEmpty(message)) {
+			String [] lines = message.split("\n");
+			for (String line : lines) {
+				for (int i = 0; i < indent; i++) {
+					out.append(INDENT);
+				}
+				out.println(ansi().bold().fg(Color.YELLOW).a(MessageFormat.format(line, args)).boldOff().reset());
+			}
 		}
-		out.println(ansi().bold().fg(Color.YELLOW).a(MessageFormat.format(message, args)).boldOff().reset());
 	}
 
 	public String warn(Throwable t, String message, Object... args) {
+		StringBuilder sb = new StringBuilder();
 		if (!StringUtils.isEmpty(message)) {
-			message = MessageFormat.format(message, args);
-			out.println(ansi().bold().fg(Color.YELLOW).a(message).boldOff().reset());
+			String [] lines = message.split("\n");
+			for (String line : lines) {
+				String formatted = MessageFormat.format(line, args);
+				sb.append(formatted).append('\n');
+				out.println(ansi().bold().fg(Color.YELLOW).a(formatted).boldOff().reset());
+			}
 		}
 		if (t != null) {
 			t.printStackTrace(out);
 		}
-		return message;
+		if (sb.length() > 0) {
+			// trim trailiing \n
+			sb.setLength(sb.length() - 1);
+		}
+		return sb.toString();
 	}
 
 	public final void error(Throwable t) {
@@ -287,13 +316,22 @@ public class Console {
 	}
 
 	public String error(Throwable t, String message, Object... args) {
+		StringBuilder sb = new StringBuilder();
 		if (!StringUtils.isEmpty(message)) {
-			message = MessageFormat.format(message, args);
-			err.println(ansi().bold().fg(Color.RED).a(message).boldOff().reset());
+			String [] lines = message.split("\n");
+			for (String line : lines) {
+				String formatted = MessageFormat.format(line, args);
+				err.println(ansi().bold().fg(Color.RED).a(formatted).boldOff().reset());
+				sb.append(formatted).append('\n');
+			}
 		}
 		if (t != null) {
 			t.printStackTrace(err);
+		}		
+		if (sb.length() > 0) {
+			// trim trailiing \n
+			sb.setLength(sb.length() - 1);
 		}
-		return message;
+		return sb.toString();
 	}
 }
