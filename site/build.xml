@@ -18,13 +18,13 @@
 			<structure>
 				<menu name="about">
 					<page name="overview" src="index.mkd" />
-					<page name="why?!" src="why.mkd" />
+					<page name="why?!" src="why.mkd" headerLinks="true" />
 				</menu>
 				<menu name="documentation">
-					<page name="getting started" src="gettingstarted.mkd" sectionLinks="true" />
-					<page name="build.moxie" src="moxiedescriptor.mkd" sectionLinks="true" />
-					<page name="settings.moxie" src="settings.mkd" sectionLinks="true" />
-					<page name="defaults.moxie" src="defaults.mkd" sectionLinks="true" />
+					<page name="getting started" src="gettingstarted.mkd" headerLinks="true" />
+					<page name="build.moxie" src="moxiedescriptor.mkd" headerLinks="true" />
+					<page name="settings.moxie" src="settings.mkd" headerLinks="true" />
+					<page name="defaults.moxie" src="defaults.mkd" headerLinks="true" />
 				</menu>
 				<menu name="tasks">
 					<page name="mx:Clean" src="mxclean.mkd" />
@@ -50,9 +50,9 @@
 					<page name="mx:WebXml" src="mxwebxml.mkd" />
 					<page name="mx:Zip" src="mxzip.mkd" />
 				</menu>
-				<page name="moxie+ant" src="moxie+ant.mkd" sectionLinks="true" />
-				<page name="proxy" src="proxy.mkd" sectionLinks="true" />
-				<page name="maxml" src="maxml.mkd" toc="yes" sectionLinks="true" />
+				<page name="moxie+ant" src="moxie+ant.mkd" headerLinks="true" />
+				<page name="proxy" src="proxy.mkd" headerLinks="true" />
+				<page name="maxml" src="maxml.mkd" toc="yes" headerLinks="true" />
 				<menu name="download">
 					<link name="moxie+ant (zip)" src="moxie+ant-${project.releaseVersion}.zip" />
 					<link name="moxie+ant (tar.gz)" src="moxie+ant-${project.releaseVersion}.tar.gz" />

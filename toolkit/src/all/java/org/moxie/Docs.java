@@ -279,7 +279,7 @@ public class Docs {
 							String h = "h" + section.length();
 							String id = "H" + sectionCounter.addAndGet(1);
 							sections.add(new Section(id, name));
-							if (link.showSectionLinks) {
+							if (link.showHeaderLinks) {
 								sb.append(MessageFormat.format("<{0} class=\"section\" id=''{2}''><a href=\"#{2}\" class=\"sectionlink\"><i class=\"icon-share-alt\"> </i></a>{1}</{0}>\n", h, name, id));
 							} else {
 								sb.append(MessageFormat.format("<{0} id=''{2}''>{1}</{0}>\n", h, name, id));
