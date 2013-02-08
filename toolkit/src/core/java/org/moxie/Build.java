@@ -268,6 +268,7 @@ public class Build {
 							break;
 						}
 					}
+					scanner.close();
 				} catch (FileNotFoundException e) {
 				}
 			} else {
