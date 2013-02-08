@@ -166,6 +166,7 @@ public class Docs {
 				build.getConsole().log(1, "{0} => {1}", link.src, fileName);
 				String content;
 				List<Section> sections = new ArrayList<Section>();
+				String pager = "";
 
 				if (link.content != null) {
 					// generated content
@@ -262,7 +263,34 @@ public class Docs {
 						markdownContent = strippedContent.toString();
 					}
 
-					// page navigation
+					// prev/next pager links
+					if (link.showPager) {
+						String prev;
+						if (link.prevLink == null) {
+							prev = "";
+						} else {
+							prev = MessageFormat.format("<li class=\"previous\"><a href=\"{0}\">&larr; {1}</a></li>", getHref(link.prevLink), link.prevLink.name);
+						}
+						String next;
+						if (link.nextLink == null) {
+							next = "";
+						} else {
+							next = MessageFormat.format("<li class=\"next\"><a href=\"{0}\">{1} &rarr;</a></li>", getHref(link.nextLink), link.nextLink.name);
+						}
+						String divClass = "";
+						String pagerClass = "";
+						if (!StringUtils.isEmpty(link.pagerLayout)) {
+							if ("right".equals(link.pagerLayout)) {
+								divClass = "class=\"pull-right\"";
+								pagerClass = "class=\"pager\"";
+							} else if ("justified".equals(link.pagerLayout)) {
+								pagerClass = "class=\"pager\"";
+							}
+						}
+						pager = MessageFormat.format("<div {0}><ul {1}>{2} {3}</ul></div>", divClass, pagerClass, prev, next);
+					}
+
+					// header links
 					AtomicInteger sectionCounter = new AtomicInteger();
 					StringBuilder sb = new StringBuilder();
 					for (String line : Arrays.asList(markdownContent.split("\n"))) {
@@ -391,9 +419,32 @@ public class Docs {
 						writer.write("\n<div class='container'>");
 					}
 				}
+				
+				boolean manualPagerPlacement = false;
+				// replace %PAGER%
+				if (content.contains("%PAGER%")) {
+					manualPagerPlacement = true;
+					content = content.replace("%PAGER%", pager);
+				}
+				
+				if (!manualPagerPlacement) {
+					if (!StringUtils.isEmpty(link.pagerPlacement) && link.pagerPlacement.contains("top")) {
+						// top pager
+						writer.write(pager);
+					}
+				}
+				
 				writer.write("\n<!-- Begin Markdown -->\n");
 				writer.write(content);
 				writer.write("\n<!-- End Markdown -->\n");
+								
+				if (!manualPagerPlacement) {
+					if (!StringUtils.isEmpty(link.pagerPlacement) && link.pagerPlacement.contains("bottom")) {
+						// bottom pager
+						writer.write(pager);
+					}
+				}
+
 				writer.write("<footer class=\"footer\">");
 				writer.write(footer);
 				writer.write("\n</footer>\n</div>");

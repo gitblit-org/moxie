@@ -23,20 +23,27 @@ public class Link implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	String name;
-	String src;
-	String as;
-	List<Link> sublinks;	
-	String content;
+	public String name;
+	public String src;
+	public String as;
+	public List<Link> sublinks;	
+	public String content;
+	
+	public Link prevLink;
+	public Link nextLink;
 
-	boolean isLink;
-	boolean isPage;
-	boolean isMenu;
-	boolean isReport;	
-	boolean isDivider;
-	boolean showToc;
-	boolean showHeaderLinks;
-	boolean isFluidLayout;
+	public boolean isLink;
+	public boolean isPage;
+	public boolean isMenu;
+	public boolean isReport;	
+	public boolean isDivider;
+	public boolean showToc;
+	public boolean showHeaderLinks;
+	public boolean isFluidLayout;
+	public boolean showPager;
+	
+	public String pagerPlacement;
+	public String pagerLayout;
 
 	public void setName(String name) {
 		this.name = name;
@@ -64,6 +71,18 @@ public class Link implements Serializable {
 
 	public void setHeaderlinks(boolean value) {
 		this.showHeaderLinks = value;
+	}
+
+	public void setPager(boolean value) {
+		this.showPager = value;
+	}
+	
+	public void setPagerplacement(String value) {
+		pagerPlacement = value;
+	}
+
+	public void setPagerlayout(String value) {
+		pagerLayout = value;
 	}
 
 	public void setFluidlayout(boolean value) {

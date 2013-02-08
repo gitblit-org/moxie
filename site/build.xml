@@ -20,13 +20,13 @@
 					<page name="overview" src="index.mkd" />
 					<page name="why?!" src="why.mkd" headerLinks="true" />
 				</menu>
-				<menu name="documentation">
+				<menu name="documentation" pager="true" pagerPlacement="bottom" pagerLayout="justified">
 					<page name="getting started" src="gettingstarted.mkd" headerLinks="true" />
 					<page name="build.moxie" src="moxiedescriptor.mkd" headerLinks="true" />
 					<page name="settings.moxie" src="settings.mkd" headerLinks="true" />
 					<page name="defaults.moxie" src="defaults.mkd" headerLinks="true" />
 				</menu>
-				<menu name="tasks">
+				<menu name="tasks" pager="true" pagerPlacement="bottom" pagerLayout="justified">
 					<page name="mx:Clean" src="mxclean.mkd" />
 					<page name="mx:Doc" src="mxdoc.mkd" />
 					<page name="mx:Extract" src="mxextract.mkd" />

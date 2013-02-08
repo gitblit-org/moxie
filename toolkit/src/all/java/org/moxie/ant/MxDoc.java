@@ -235,6 +235,33 @@ public class MxDoc extends MxTask {
 			}
 		}
 		
+		// setup prev/next pager links
+		for (Link menuLink : doc.structure.sublinks) {
+			if (menuLink.isMenu && menuLink.showPager) {
+				for (int i = 0, maxIndex = menuLink.sublinks.size() - 1; i <= maxIndex; i++) {
+					Link pageLink = menuLink.sublinks.get(i);
+					if (pageLink.isPage) {							
+						// link to previous page
+						Link prev = i == 0 ? null : menuLink.sublinks.get(i - 1);
+						if (prev != null && prev.isPage) {
+							pageLink.prevLink = prev;
+						}
+
+						// link to next page
+						Link next = i == maxIndex ? null : menuLink.sublinks.get(i + 1);
+						if (next != null && next.isPage) {
+							pageLink.nextLink = next;
+						}
+
+						// show pager is dependent on having at least a prev or next
+						pageLink.showPager = pageLink.prevLink != null || pageLink.nextLink != null;
+						pageLink.pagerLayout = menuLink.pagerLayout;
+						pageLink.pagerPlacement = menuLink.pagerPlacement;
+					}
+				}
+			}
+		}
+		
 		Docs.execute(build, doc, isVerbose());
 		
 		writeDependenciesAsJson();
