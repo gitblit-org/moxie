@@ -1,4 +1,4 @@
-## mx:GhPages <span class="label label-success">pro</span> <span class="label label-info">all</span>
+## mx:GhPages %PRO% %ALL%
 
 %BEGINXML%
 <mx:ghpages repositoryFolder="${basedir}" sourceFolder="${basedir}/site" obliterate="true"/>

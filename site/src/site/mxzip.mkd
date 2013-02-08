@@ -1,4 +1,4 @@
-## mx:Zip <span class="label label-success">pro</span> <span class="label label-info">all</span>
+## mx:Zip %PRO% %ALL%
 
 %BEGINXML%
 <mx:zip destfile="${project.target.dir}/${manager.zipfile}">

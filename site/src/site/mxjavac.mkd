@@ -1,4 +1,4 @@
-## mx:Javac <span class="label label-success">pro</span> <span class="label label-info">all</span>
+## mx:Javac %PRO% %ALL%
 
 %BEGINXML%
 <mx:javac />

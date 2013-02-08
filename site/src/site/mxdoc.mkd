@@ -1,4 +1,4 @@
-## mx:Doc <span class="label label-info">all</span>
+## mx:Doc %ALL%
 
 %BEGINXML%
 <mx:doc injectPrettify="true">

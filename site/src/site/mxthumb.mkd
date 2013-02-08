@@ -1,4 +1,4 @@
-## mx:Thumb <span class="label label-success">pro</span> <span class="label label-info">all</span>
+## mx:Thumb %PRO% %ALL%
 
 %BEGINXML%
 <!-- Generate thumbnails of screenshots -->

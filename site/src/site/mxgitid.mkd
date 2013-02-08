@@ -1,4 +1,4 @@
-## mx:GitId <span class="label label-success">pro</span> <span class="label label-info">all</span>
+## mx:GitId %PRO% %ALL%
 
 %BEGINXML%
 <mx:gitid repositoryFolder="${basedir}" property="gb.version" />

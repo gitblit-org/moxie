@@ -1,4 +1,4 @@
-## mx:GenJar <span class="label label-success">pro</span> <span class="label label-info">all</span>
+## mx:GenJar %PRO% %ALL%
 
 %BEGINXML%
 <mx:genjar destfile="moxie-all.jar">

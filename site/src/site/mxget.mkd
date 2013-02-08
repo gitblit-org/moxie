@@ -1,4 +1,4 @@
-## mx:Get <span class="label">core</span> <span class="label label-success">pro</span> <span class="label label-info">all</span>
+## mx:Get %CORE% %PRO% %ALL%
 
 %BEGINXML%
 <mx:get dest="${basedir}/ext" scope="compile">
