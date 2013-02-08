@@ -413,7 +413,7 @@ public class Build {
 				}
 				if (moduleConfig.getSourceDirectories().isEmpty()) {
 					// skip modules without source folders
-					console.warn(2, "excluding module ''{0}'' from IntelliJ IDEA project because it has no source folders!", module.folder);
+					console.warn(2, "excluding module ''{0}'' from IntelliJ IDEA project because it has no source directories!", module.folder);
 					continue;
 				}
 				sb.append(format("<module fileurl=\"file://$PROJECT_DIR$/{0}/{1}.iml\" filepath=\"$PROJECT_DIR$/{0}/{1}.iml\" group=\"{2}\" />\n",

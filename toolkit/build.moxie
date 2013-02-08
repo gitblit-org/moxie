@@ -11,7 +11,7 @@ sourceDirectories:
 - compile 'src/pro/java'
 - compile 'src/all/java'
 - compile 'src/all/resources'
-- { scope: test, folder: 'src/test/java' }
+- { scope: test, dir: 'src/test/java' }
 dependencies:
 - provided 'org.apache.ant:ant:${ant.version}'
 - provided 'org.apache.ant:ant-junit:${ant.version}' @jar

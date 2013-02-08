@@ -679,7 +679,7 @@ public class ToolkitConfig implements Serializable {
 	}
 
 	void keyError(Key key) {
-		System.err.println(MessageFormat.format("{0} is improperly specified in {1}, using default", key.name(), file.getAbsolutePath()));
+		System.err.println(MessageFormat.format("ERROR: {0} is improperly specified in {1}, using default", key.name(), file.getAbsolutePath()));
 	}
 	
 	public List<SourceDirectory> getSourceDirectories() {
