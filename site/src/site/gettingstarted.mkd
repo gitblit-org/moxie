@@ -1,6 +1,6 @@
 ## Getting Started
 
-Moxie does not use Maven's pom.xml nor Ivy's ixy.xml to describe your project.  Moxie uses the <code>build.moxie</code> project descriptor.  This file employs a <i>key:value</i> format which is very similar to YAML.
+Moxie does not use [Maven's pom.xml][pomxml] nor [Ivy's ixy.xml][ivyxml] to describe your project.  Moxie uses the `build.moxie` project descriptor.  This file employs a *key:value* format which is very similar to YAML.
 
 ### Minimal build.moxie
 <div class="row">
@@ -61,7 +61,8 @@ dependencies:
 
 <div class="row">
 <div class="span8">
-Moxie super-charges Ant and allows you to build your artifacts with easier to read build scripts.
+Moxie turbo-charges Ant and allows you to build your artifacts with easier to read build scripts.  
+This example script uses Moxie Extension tasks with automatic property defaults based on the <code>build.moxie</code> descriptor.
 <p />
 %BEGINXML%
 <?xml version="1.0" encoding="UTF-8"?>
@@ -73,7 +74,7 @@ Moxie super-charges Ant and allows you to build your artifacts with easier to re
     </taskdef>
 
     <target name="main">
-        <!-- Setup ant build properties, resolve, and retrieve Maven dependencies -->
+        <!-- Setup Ant build properties and resolve & retrieve Maven dependencies -->
         <mx:init />
         <!-- Compile your project -->
         <mx:compile />

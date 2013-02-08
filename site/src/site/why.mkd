@@ -1,48 +1,48 @@
-## Why not Ant+Ivy?
-
-[Ivy](http://ant.apache.org/ivy) is definitely a more featureful dependency manager.  But I hated the idea of adding another xml file.  Ivy also does nothing to decrease the complexity or verbosity of Ant build scripts.  And it is a bit too large to embed within a repository.
-
-## Why not Gradle?
-
-I like the idea of Gradle.  I may use it in other projects, but I feel that Ant doesn't have to be put out to pasture quite yet.
-
-## Why not Maven?
-
-There is much to admire and respect about Maven.
-
-Maven has done some tremendous things and has moved the Java ecosystem forward.  But I want to exert control over my build, not have my build exert control over me.  Maven is a fantastic *automated build* system but I want a *build automation* tool, and for now that is Ant+Moxie.
-
-### Lessons learned from Maven
-
-1. a centralized repository of project artifacts accessible by http is brilliant
-2. transitive dependency management is *really* brilliant
-3. convention-over-configuration simplifies the build process, but convention-instead-of-configuration is too restrictive
-
 ## Why Moxie?
 
-During Moxie's development I have asked myself that question many times, and I still ask it.  
-When there is such pressure to move to Maven is there a need, or even room, for an alternative?
+Moxie is written for Ant die-hards or for those who are required to continue building with Ant, though they may yearn for [Maven][] or [Gradle][].
 
-I think so.
+### Don't Repeat Yourself
 
-### Size Matters
+As a Java developer you are faced with the need to develop code and then build deliverables from your code.  Often these two requirements have different solutions which require maintaining IDE settings and an Ant script full of paths and properties.  (i.e. Eclipse .classpath is not *directly* usable from Ant).  This is maintenance intensive, often leads to verbose Ant build scripts, and violates the [DRY Principal][DRY].
 
-Moxie is a small, lightweight dependency retriever with some convenience tasks for building and packaging Java sources, generating project documentation, and setting up an Eclipse project.
+At it's core, Moxie does two things for you:
 
-Moxie comes in three package variants: core, pro, and all.  Core, the smallest variant, gives you transitive dependency retrieval, similar to Ivy, at 1/10th the footprint. All, the full toolkit, is < 600KB.  Either of these can be embedded within a repository.
-
-Why would you want to embed Moxie in your project's repository?
-
-### Ubiquity Matters 
-
-Every Java IDE ships with Ant support built-in.  It is *the* ubiqtuitous Java build technology of the last 10 years.  Embedding Moxie in your project and registering the Moxie tasks and targets in your build script turbo-charges your Ant power without requiring special tooling on developer workstations or a continuous integration server.
+1. Allows you to define your project code structure and dependencies once.  
+   This information is used to generate IDE settings and to setup classpaths and properties for your Ant script.
+2. Resolves and retrieves your dependencies (and their dependencies) with checksum verification.
 
 ### Limitations
 
 Some will consider Moxie [rinky-dink](http://www.merriam-webster.com/dictionary/rinky-dink), and I have to agree that it is less capable than the alternatives.  
 If the following limitations are of concern, then Moxie may not suit your needs. 
 
-1. Moxie employs the Maven 2 transitive dependency resolution mechanism<div class="alert">Currently, Maven 2.0 only supports using the "nearest definition" which means that it will use the version of the closest dependency to your project in the tree of dependencies. You can always guarantee a version by declaring it explicitly in your project's POM. Note that if two dependency versions are at the same depth in the dependency tree ... the first declaration wins.</div>
-2. Moxie does not support version ranges.<br/><br/>I can see the attraction of version ranges, but in practice it seems that they are discouraged because they lead to build reproducibilty issues.  Not supporting version ranges simplifies Moxie while at the same time enforcing dependency clarity.<br/><br/>If Moxie encounters an inclusive minimum range definition (e.g. [1.2.3,]) it will resolve version 1.2.3.  If it encounters an exclusive minimum range definition (e.g. (1.2.3,]) it will fail with an exception.<br/>
-3. Moxie can not currently publish artifacts to a remote repository.
-4. Moxie does not retrieve *-javadoc.jar* artifacts.
+1. Moxie employs the Maven 2 transitive dependency resolution mechanism<div class="alert alert-info">Currently, Maven 2.0 only supports using the "nearest definition" which means that it will use the version of the closest dependency to your project in the tree of dependencies. You can always guarantee a version by declaring it explicitly in your project's POM. Note that if two dependency versions are at the same depth in the dependency tree ... the first declaration wins.</div>
+2. Moxie does not support version ranges.  
+I can see the attraction of version ranges, but in practice it seems that they are discouraged because they lead to build reproducibilty issues.  Not supporting version ranges simplifies Moxie while at the same time enforcing dependency clarity.  
+    - If Moxie encounters an *inclusive* minimum range definition *e.g. [1.2.3,]*, it will resolve version 1.2.3.
+	- If Moxie encounters an *exclusive* minimum range definition *e.g. (1.2.3,]*, it will fail with an exception.
+3. Moxie does not retrieve *-javadoc.jar* artifacts.
+4. Moxie can not deploy artifacts to a remote repository.
+
+## Why not Maven?
+
+There is much to admire and respect about [Maven][].
+
+[Maven][] has done some tremendous things and has moved the Java ecosystem forward.  But while I like [Maven][] repositories and the artifact metadata, I dislike the Maven build process.  I want to define my own build rules and flow, not be forced to use Maven's grand unified process.
+
+### Lessons learned from Maven
+
+1. A central repository of project artifacts accessible by http is brilliant.  
+*I don't think Maven is given enough credit for the amazing achievement of convincing hundreds of Java open-source projects to offer their artifacts through a central repository.*
+2. Defining and recursively retrieving dependencies of those artifacts is *really* brilliant.
+3. Fighting Maven causes pain.  
+<em>Convention-over-configuration simplifies the build process, but convention-instead-of-configuration is too restrictive.  Not every project can be easily represented by a Maven POM without massive reorganization.</em>
+
+## Why not Gradle?
+
+I like the idea of [Gradle][].  I have not used it.  I may use it in other projects, but I feel that [Ant][] doesn't have to be put out to pasture quite yet.
+
+## Why not Ant+Ivy?
+
+[Ivy](http://ant.apache.org/ivy) is probably a more robust dependency manager and definitely supports more transports.  But it is strictly an artifact retrieval/deployment tool.  It does nothing to decrease the complexity or verbosity of Ant build scripts.  It is a download manager with a complex XML configuration file.  And at 1 MB it is a bit too large to embed within a repository, IMO.

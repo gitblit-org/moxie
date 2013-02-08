@@ -1,3 +1,3 @@
 ## Moxie Proxy
 
-Moxie Proxy is a basic artifact proxy server based on Jetty, Restlet, Freemarker, Lucene, and [Dead Simple Maven Proxy](http://www.pdark.de/dsmp).
+Moxie Proxy is a basic artifact proxy server based on [Jetty][] , [Restlet][], [Freemarker][], [Lucene][], and [DSMP][].

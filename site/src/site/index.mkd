@@ -1,6 +1,7 @@
-## Java Project Build Toolkit
+## Java Build Toolkit for Ant
 
-Moxie is a collection of [Ant](http://ant.apache.org) tasks to facilitate building Java projects.  It's purpose is to bring some of the convenience of [Maven](http://maven.apache.org) and [Gradle](http://www.gradle.org) to Ant.  
+Moxie is a collection of [Ant][] tasks to turbo-charge your build scripts and facilitate building Java projects.  It's purpose is to bring some of the convenience of [Maven][] and [Gradle][] to Ant.
+
 The Moxie binaries and this site are built with Moxie.
 
 <div class="row">
@@ -45,19 +46,19 @@ The Moxie binaries and this site are built with Moxie.
 <div class="span5">
 <h3>Core Package (180KB)</h3>
 
-The %CORE% package includes the tasks necessary to retrieve & report on Maven-sourced dependencies and to generate Eclipse and IntelliJ IDEA project files.
+The %CORE% package includes the tasks necessary to retrieve & report on Maven-sourced dependencies, to generate Eclipse and IntelliJ IDEA project files, and to setup Ant build properties so you don't have to.
 
 <br/><br/>
 <h3>Pro Package (300KB)</h3>
 
-The %PRO% package builds on the <b>core</b> package by adding Moxie extension tasks to compile your sources, execute your unit tests, and package your compiled code.
+The %PRO% package builds on the <b>core</b> package by adding Moxie Extension (<code>mx:</code>) tasks of standard Ant tasks.  These tasks use defaults derived from your <code>build.moxie</code> descriptor to compile your sources, execute your unit tests, and package your compiled code.
 
 <br/><br/>
 <h3>All Package (550KB)</h3>
 
 The %ALL% package includes the <b>pro</b> package plus <code>mx:doc</code>, the Moxie site/document-generation tool.
 <br/><br/>
-<code>mx:doc</code> generates a project site or project documentation from markdown source files and styles your output with Twitter Bootstrap.
+<code>mx:doc</code> generates a project site or project documentation from Markdown source files and styles your output with Twitter Bootstrap.
 
 <br/><br/>
 <h3>Moxie+Ant (15MB)</h3>
@@ -67,7 +68,7 @@ Moxie+Ant is a bundled distribution of Moxie and Ant.
 <br/><br/>
 <h3>Moxie Proxy (7MB)</h3>
 
-Moxie Proxy is a simple Maven artifact proxy server based on Jetty, Restlet, Freemarker, Lucene, and Dead Simple Maven Proxy.
+Moxie Proxy is a simple, standalone Maven artifact proxy server with a clean web ui, RSS feeds, and Lucene indexed Maven data.
 
 <br/><br/>
 <h3>License</h3>

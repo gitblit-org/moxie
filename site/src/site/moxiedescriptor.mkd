@@ -1,6 +1,6 @@
 ## Moxie Project Descriptor
 
-The default Moxie project descriptor used by the `mx:init` task and all the *Moxie targets* is `build.moxie`.
+The Moxie project descriptor defines the structure, metadata, and dependencies of your project.  It is the heart of Moxie and is used by all Moxie Extension tasks.
 
 ### Metadata Keys
 <table class="table table-striped table-bordered table-condensed">

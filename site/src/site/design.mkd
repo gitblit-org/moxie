@@ -1,0 +1,3 @@
+## Design
+
+Be just enough.  Be useful.  Don't overreach.  Don't impose.  [Don't Repeat Yourself][DRY].

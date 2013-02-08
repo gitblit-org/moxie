@@ -19,6 +19,7 @@
 				<menu name="about">
 					<page name="overview" src="index.mkd" />
 					<page name="why?!" src="why.mkd" headerLinks="true" />
+					<page name="design" src="design.mkd" headerLinks="true" />
 				</menu>
 				<menu name="documentation" pager="true" pagerPlacement="bottom" pagerLayout="justified">
 					<page name="getting started" src="gettingstarted.mkd" headerLinks="true" />
@@ -53,7 +54,11 @@
 				<page name="moxie+ant" src="moxie+ant.mkd" headerLinks="true" />
 				<page name="proxy" src="proxy.mkd" headerLinks="true" />
 				<page name="maxml" src="maxml.mkd" toc="yes" headerLinks="true" />
-				<menu name="download">
+				<menu name="changelog">
+					<page name="current release" src="releasecurrent.mkd" />
+					<page name="older releases" src="releases.mkd" />
+				</menu>
+				<menu name="downloads">
 					<link name="moxie+ant (zip)" src="moxie+ant-${project.releaseVersion}.zip" />
 					<link name="moxie+ant (tar.gz)" src="moxie+ant-${project.releaseVersion}.tar.gz" />
 					<divider />
@@ -65,9 +70,6 @@
 					<divider />
 					<link name="maxml" src="maxml-${project.releaseVersion}.jar" />
 					<link name="maxml-sources" src="maxml-${project.releaseVersion}-sources.jar" />
-					<divider />
-					<page name="current release" src="releasecurrent.mkd" />
-					<page name="older releases" src="releases.mkd" />
 					<divider />
 					<link name="Github Project" src="http://github.com/gitblit/moxie" />
 				</menu>
