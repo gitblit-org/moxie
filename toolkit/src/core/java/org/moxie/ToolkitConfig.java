@@ -76,6 +76,7 @@ public class ToolkitConfig implements Serializable {
 	MavenCacheStrategy mavenCacheStrategy;
 	String releaseVersion;
 	String releaseDate;
+	boolean failFastOnArtifactResolution;
 
 	public ToolkitConfig() {
 		// default configuration
@@ -244,6 +245,7 @@ public class ToolkitConfig implements Serializable {
 
 		// build parameters
 		mavenCacheStrategy = MavenCacheStrategy.fromString(map.getString(Key.mavenCacheStrategy.name(), mavenCacheStrategy == null ? null : mavenCacheStrategy.name()));
+		failFastOnArtifactResolution = map.getBoolean(Key.failFastOnArtifactResolution.name(), failFastOnArtifactResolution);
 		apply = new TreeSet<String>(readStrings(map, Key.apply, new ArrayList<String>(apply), true));
 		outputDirectory = readFile(map, Key.outputDirectory, new File(baseDirectory, "build"));
 		targetDirectory = readFile(map, Key.targetDirectory, new File(baseDirectory, "build/target"));
@@ -768,5 +770,6 @@ public class ToolkitConfig implements Serializable {
 		revisionRetentionCount = parent.revisionRetentionCount;
 		revisionPurgeAfterDays = parent.revisionPurgeAfterDays;
 		mavenCacheStrategy = parent.mavenCacheStrategy;
+		failFastOnArtifactResolution = parent.failFastOnArtifactResolution;
 	}
 }

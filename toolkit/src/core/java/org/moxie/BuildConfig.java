@@ -124,6 +124,10 @@ public class BuildConfig {
 		this.verbose = verbose;
 	}
 	
+	public boolean isFailFastOnArtifactResolution() {
+		return projectConfig.failFastOnArtifactResolution;
+	}
+	
 	public MavenCacheStrategy getMavenCacheStrategy() {
 		if (projectConfig.mavenCacheStrategy != null) {
 			return projectConfig.mavenCacheStrategy;

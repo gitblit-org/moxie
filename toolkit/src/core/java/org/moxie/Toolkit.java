@@ -74,7 +74,7 @@ public class Toolkit {
 		contributors, id, email, roles, scm, connection, developerConnection, tag, requires, licenses,
 		parentPom, mainclass, modules, mavenCacheStrategy, coordinates, releaseVersion, releaseDate,
 		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl,
-		siteSourceDirectory, siteTargetDirectory;
+		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

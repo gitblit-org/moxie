@@ -379,6 +379,12 @@ public class Solver {
 							console.dependency(dependency);
 						}
 						File artifactFile = retrieveArtifact(dependency);
+						if (artifactFile == null && !Constants.POM.equals(dependency.type)) {
+							console.artifactResolutionFailed(dependency);
+							if (config.isFailFastOnArtifactResolution()) {
+								throw new MoxieException(MessageFormat.format("Failed to resolve {0}", dependency.getCoordinates()));
+							}
+						}
 						if (!Scope.build.equals(scope)) {
 							copyArtifact(dependency, artifactFile);
 						}
@@ -689,8 +695,7 @@ public class Solver {
 			if (!StringUtils.isEmpty(moxiedata.getOrigin()) 
 					&& !registeredUrls.contains(moxiedata.getOrigin())
 					&& !moxiedata.getOrigin().startsWith("file:/")) {
-				console.warn("WARNING: You must add {0} to your repositories for {1}!", 
-						moxiedata.getOrigin(), dependency.getManagementId());
+				console.missingOriginRepository(moxiedata.getOrigin(), dependency);
 			}
 
 			try {

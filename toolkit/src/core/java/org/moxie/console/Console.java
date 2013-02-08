@@ -28,6 +28,7 @@ import org.moxie.License;
 import org.moxie.Pom;
 import org.moxie.Scope;
 import org.moxie.SourceDirectory;
+import org.moxie.Toolkit.Key;
 import org.moxie.console.Ansi.Color;
 import org.moxie.utils.StringUtils;
 
@@ -233,6 +234,30 @@ public class Console {
 			out.print("  ");
 		}
 		out.println(ansi().fg(Color.YELLOW).a(value).reset());
+	}
+	
+	public void missingOriginRepository(String origin, Dependency dependency) {
+		out.print(ansi().bold().fg(Color.YELLOW).a("WARNING: ").boldOff().reset());
+		out.print("You should add ");
+		out.print(ansi().fg(Color.CYAN).a(origin).reset());
+		out.println(" to your");
+		out.print("         ");
+		out.print(ansi().bold().fg(Color.WHITE).a(Key.registeredRepositories).boldOff().reset());
+		out.print(" setting for ");
+		out.println(ansi().fg(Color.GREEN).a(dependency.getCoordinates()).reset());
+	}
+	
+	public void artifactResolutionFailed(Dependency dependency) {
+		out.print(ansi().bold().fg(Color.RED).a("ERROR: ").boldOff().reset());
+		out.print("Failed to resolve ");
+		out.print(ansi().fg(Color.GREEN).a(dependency.getCoordinates()).reset());
+		out.println(" from the registered repositories!");
+		out.print("       ");
+		out.print("Please check the dependency coordinates, the ");
+		out.print(ansi().bold().fg(Color.WHITE).a(Key.registeredRepositories).boldOff().reset());
+		out.println(" setting,");
+		out.print("       ");
+		out.println("and your proxy server settings.");
 	}
 	
 	public final void notice(String message) {

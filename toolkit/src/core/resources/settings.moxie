@@ -11,6 +11,10 @@ proxies:
 # only the identified repositories are proxied through this connection
 - { id: moxieProxy, active: false,	protocol: http, host: moxie.somewhere.com, port: 8081, username: proxyuser, password: somepassword, repositories: "central, mavencentral, restlet, codehaus" }
 
+# Should the build immediately fail if an artifact can not be immediately
+# resolved from the remote repositories or the local cache?
+failFastOnArtifactResolution: true
+
 # Default snapshot revision purge policy
 #
 # Default minimum count of snapshot revisions to keep
