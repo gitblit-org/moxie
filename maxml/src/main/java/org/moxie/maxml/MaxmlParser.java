@@ -59,6 +59,7 @@ public class MaxmlParser {
 		ArrayList<Object> array = null;
 		StringBuilder textBlock = new StringBuilder();
 		boolean appendTextBuffer = false;
+		int textBlockOffset = 0;
 		String line = null;
 		while ((line = reader.readLine()) != null) {
 			// text block processing
@@ -70,12 +71,14 @@ public class MaxmlParser {
 					appendTextBuffer = false;
 				} else if (line.endsWith("\"\"\"") || line.endsWith("'''")) {
 					// end block
+					line = parseTextBlock(textBlockOffset, line);
 					textBlock.append(line.substring(0, line.length() - 3));
 					map.put(lastKey, textBlock.toString());
 					textBlock.setLength(0);
 					appendTextBuffer = false;
 				} else {
 					// append line
+					line = parseTextBlock(textBlockOffset, line);
 					textBlock.append(line);
 					textBlock.append('\n');
 				}
@@ -83,6 +86,7 @@ public class MaxmlParser {
 			}
 
 			// trim the line
+			String untrimmed = line;
 			line = line.trim();
 			if (line.length() == 0) {
 				// ignore blanks
@@ -99,6 +103,7 @@ public class MaxmlParser {
 				continue;
 			} else if (line.equals("\"\"\"") || line.equals("'''")) {
 				// start text block
+				textBlockOffset = 0;
 				textBlock.setLength(0);
 				appendTextBuffer = true;
 			} else if (line.charAt(0) == '}') {
@@ -156,8 +161,15 @@ public class MaxmlParser {
 					// map
 					Map<String, Object> submap = parse(reader);
 					o = submap;
-				} else if (value.equals("\"\"\"") || value.equals("'''")) {
+				} else if (value.equals("\"\"\"")) {
 					// start text block
+					textBlockOffset = untrimmed.indexOf("\"\"\"");
+					textBlock.setLength(0);
+					appendTextBuffer = true;
+					o = "";
+				} else if (value.equals("'''")) {
+					// start text block
+					textBlockOffset = untrimmed.indexOf("'''");
 					textBlock.setLength(0);
 					appendTextBuffer = true;
 					o = "";
@@ -287,5 +299,22 @@ public class MaxmlParser {
 
 		// default to string
 		return value;
+	}
+	
+	protected String parseTextBlock(int textBlockOffset, String line) {
+		if (textBlockOffset > 0) {
+			// attempt to eliminate leading whitespace
+			if (line.length() > textBlockOffset) {
+				String leading = line.substring(0, textBlockOffset);
+				boolean whitespace = true;
+				for (char c : leading.toCharArray()) {
+					whitespace &= c == ' ';
+				}
+				if (whitespace) {
+					line = line.substring(textBlockOffset);
+				}
+			}
+		}
+		return line;
 	}
 }

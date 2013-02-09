@@ -23,12 +23,14 @@ import org.moxie.utils.FileUtils;
  * 
  */
 public class TestMaxmlParser extends Assert {
-	String config = "name: Moxie\ndescription: Project Build Toolkit\nversion: 0.1.0\nurl: http://github.com/gitblit/moxie\nartifactId: moxie\nvendor: James Moger\nconfigureEclipseClasspath: true\nsourceFolders: [core, maxjar, maxdoc]\nmap: { \na1: 12\na2: 3.14f\na3 : {\nb1:100l\nb2 : {\nc1:6.023d\nc2:c2value\n}\nb3:b3value\n}\na4: a4value\n}\noutputFolder: bin\nmavenUrls: [mavencentral]\ndependencyFolder: ext\ndependencies:\n - [ant, 1.7.0, org/apache/ant]\n - [markdownpapers-core, 1.2.5, org/tautua/markdownpapers]\nsimpledate:2003-07-04\ncanonical:2001-07-04T16:08:56.235Z\niso8601:2002-07-04T12:08:56.235-0400\ndevelopers :\n- {\n  id: james\n  name : James Moger\n  url : https://plus.google.com/u/0/116428776452027956920\n  roles : developer\n  }\n- {\n  id: james\n  name : James Moger\n  url : https://plus.google.com/u/0/116428776452027956920\n  roles : developer\n  }";
+	String config = "name: Moxie\ndescription: Project Build Toolkit\nversion: 0.1.0\nurl: http://github.com/gitblit/moxie\nartifactId: moxie\nvendor: James Moger\nconfigureEclipseClasspath: true\nsourceDirectories: [core, maxjar, maxdoc]\nmap: { \na1: 12\na2: 3.14f\na3 : {\nb1:100l\nb2 : {\nc1:6.023d\nc2:c2value\n}\nb3:b3value\n}\na4: a4value\n}\noutputFolder: bin\nmavenUrls: [mavencentral]\ndependencyFolder: ext\ndependencies:\n - [ant, 1.7.0, org/apache/ant]\n - [markdownpapers-core, 1.2.5, org/tautua/markdownpapers]\nsimpledate:2003-07-04\ncanonical:2001-07-04T16:08:56.235Z\niso8601:2002-07-04T12:08:56.235-0400\ndevelopers :\n- {\n  id: james\n  name : James Moger\n  url : https://plus.google.com/u/0/116428776452027956920\n  roles : developer\n  }\n- {\n  id: james\n  name : James Moger\n  url : https://plus.google.com/u/0/116428776452027956920\n  roles : developer\n  }";
 
 	String blockTest = "name: Moxie\ndescription: \"\"\"\nMoxie\nis a\nJava Project Build Toolkit\n\"\"\"\nversion: 0.1.0";
 
 	String blockTest2 = "name: Moxie\ndescription:\n\"\"\"\nMoxie\n is a\n  Java Project Build Toolkit\"\"\"\nversion: 0.1.0";
-	
+
+	String blockTest3 = "name: Moxie\ndescription: \"\"\"\n             Moxie\n              is a\n               Java Project Build Toolkit\n             \"\"\"\nversion: 0.1.0";
+
 	String inlineMap = "{ id: myproxy, active: true, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }";
 	
 	String inlineMap2 = "{ id: central, url: \"http://repo1.apache.org/maven\", url2: \"http://repo1.apache.org/maven\" }";
@@ -43,10 +45,9 @@ public class TestMaxmlParser extends Assert {
 		assertEquals("string", parser.parseValue("string"));
 		assertEquals("string", parser.parseValue("'string'"));
 		assertEquals("string", parser.parseValue("\"string\""));
-		// assertEquals("Moxie\n is a\n  Java Project Build Toolkit", Maxml
-		// .parse(blockTest).get("description"));
-		// assertEquals("Moxie\n is a\n  Java Project Build Toolkit", Maxml
-		// .parse(blockTest2).get("description"));
+		assertEquals("Moxie\nis a\nJava Project Build Toolkit\n", Maxml.parse(blockTest).get("description"));
+		assertEquals("Moxie\n is a\n  Java Project Build Toolkit", Maxml.parse(blockTest2).get("description"));
+		assertEquals("Moxie\n is a\n  Java Project Build Toolkit\n", Maxml.parse(blockTest3).get("description"));
 
 		// numerics
 		assertEquals(101, parser.parseValue("101"));
@@ -111,7 +112,7 @@ public class TestMaxmlParser extends Assert {
 		assertTrue(map.size() > 0);
 		assertTrue(map.containsKey("name"));
 		assertEquals("Moxie", map.get("name"));
-		assertEquals(3, ((List) map.get("sourcefolders")).size());
+		assertEquals(3, ((List) map.get("sourcedirectories")).size());
 		assertEquals(2, ((List) map.get("dependencies")).size());
 		assertEquals(4, ((Map) map.get("map")).size());
 	}
@@ -124,7 +125,7 @@ public class TestMaxmlParser extends Assert {
 		assertTrue(map.size() > 0);
 		assertTrue(map.containsKey("name"));
 		assertEquals("Moxie-Maxml", map.get("name"));
-		assertEquals(2, ((List) map.get("sourcefolders")).size());
+		assertEquals(2, ((List) map.get("sourcedirectories")).size());
 		assertEquals(2, ((List) map.get("dependencies")).size());
 	}
 
@@ -133,7 +134,7 @@ public class TestMaxmlParser extends Assert {
 		TestObject test = Maxml.parse(config, TestObject.class);
 		assertNotNull(test);
 		assertEquals("Moxie", test.name);
-		assertEquals(3, test.sourceFolders.size());
+		assertEquals(3, test.sourceDirectories.size());
 		assertEquals(2, test.dependencies.size());
 		assertEquals(4, test.map.size());
 		assertEquals(2, test.developers.size());
@@ -148,7 +149,7 @@ public class TestMaxmlParser extends Assert {
 		public String artifactId;
 		public String vendor;
 		public boolean configureEclipseClasspath;
-		public List<String> sourceFolders;
+		public List<String> sourceDirectories;
 		public String outputFolder;
 		public Map<String, Object> map;
 		public List<String> mavenUrls;
