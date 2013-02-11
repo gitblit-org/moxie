@@ -18,12 +18,14 @@ package org.moxie;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.StringWriter;
 import java.nio.charset.Charset;
 import java.text.MessageFormat;
 import java.text.ParseException;
@@ -40,9 +42,14 @@ import java.util.regex.Matcher;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.moxie.maxml.Maxml;
+import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.MarkdownUtils;
 import org.moxie.utils.StringUtils;
+
+import freemarker.template.Configuration;
+import freemarker.template.DefaultObjectWrapper;
 
 
 /**
@@ -329,6 +336,51 @@ public class Docs {
 					for (Map.Entry<String, String> nomarkdown : nomarkdownMap .entrySet()) {
 						content = content.replaceFirst(nomarkdown.getKey(), Matcher.quoteReplacement(nomarkdown.getValue()));
 					}
+					
+					// templates
+					if (link.templates != null && !link.templates.isEmpty()) {
+						// Freemarker engine
+						Configuration fm = new Configuration();
+						fm.setObjectWrapper(new DefaultObjectWrapper());
+						fm.setDirectoryForTemplateLoading(doc.sourceDirectory);
+						
+						for (Template template : link.templates) {
+							FileInputStream is = new FileInputStream(new File(doc.sourceDirectory, template.data));
+							MaxmlMap dataMap = Maxml.parse(is);
+							is.close();
+							
+							// populate map with build properties by splitting them into maps
+							for (Substitute sub : doc.substitutions) {
+								if (sub.isProperty()) {
+									String prop = sub.getPropertyName();
+									MaxmlMap keyMap = dataMap;
+									// recursively create/find the destination map
+									while (prop.indexOf('.') > -1) {
+										String m = prop.substring(0, prop.indexOf('.'));
+										if (!keyMap.containsKey(m)) {
+											keyMap.put(m, new MaxmlMap());
+										}
+										keyMap = keyMap.getMap(m);
+										prop = prop.substring(m.length() + 1);
+									}
+									
+									// inject property into map
+									keyMap.put(prop, sub.value);
+								}
+							}
+							
+							// load and process the Freemarker template
+							freemarker.template.Template ftl = fm.getTemplate(template.src);
+							StringWriter writer = new StringWriter();
+							ftl.process(dataMap, writer);
+							
+							// create a substitution token
+							Substitute sub = new Substitute();
+							sub.token = template.token;
+							sub.value = writer.toString();
+							doc.substitutions.add(sub);
+						}
+					}
 
 					for (Substitute sub : doc.substitutions) {
 						content = content.replace(sub.token, sub.value);
@@ -348,7 +400,7 @@ public class Docs {
 					}
 					// end markdown
 				}
-
+				
 				// Create the topbar links for this page
 				String links = createLinks(link, doc.structure.sublinks, false);
 

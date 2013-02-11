@@ -57,6 +57,9 @@
 				<menu name="changelog">
 					<page name="current release" src="releasecurrent.mkd" />
 					<page name="older releases" src="releases.mkd" />
+					<page name="changelog" src="changelog.mkd" >
+						<template token="%CHANGELOG%" src="changelog.ftl" data="changelog.moxie" />
+					</page>
 				</menu>
 				<menu name="downloads">
 					<link name="moxie+ant (zip)" src="moxie+ant-${project.releaseVersion}.zip" />

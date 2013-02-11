@@ -17,6 +17,7 @@ dependencies:
 - provided 'org.apache.ant:ant-junit:${ant.version}' @jar
 - provided 'mx:jgit'
 - provided 'mx:markdownpapers'
+- provided 'mx:freemarker'
 - provided 'mx:rhino'
 - provided 'cobertura'
 - provided 'emma:emma:2.1.5320'

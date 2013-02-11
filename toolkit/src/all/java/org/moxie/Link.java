@@ -44,6 +44,8 @@ public class Link implements Serializable {
 	
 	public String pagerPlacement;
 	public String pagerLayout;
+	
+	public List<Template> templates;
 
 	public void setName(String name) {
 		this.name = name;
@@ -117,6 +119,15 @@ public class Link implements Serializable {
 		Link link = newLink();
 		link.isLink = true;
 		return link;
+	}
+	
+	public Template createTemplate() {
+		Template template = new Template();
+		if (templates == null) {
+			templates = new ArrayList<Template>();
+		}
+		templates.add(template);
+		return template;
 	}
 
 	private Link newLink() {

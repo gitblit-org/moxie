@@ -57,11 +57,12 @@ dependencyAliases: {
 	junit: 'junit:junit'
 	testng: 'org.testng:testng'
 	cobertura: 'net.sourceforge.cobertura:cobertura'
-	emma: 'emma:emma'
+	emma:'emma:emma'
 	jacoco: 'org.jacoco:org.jacoco.ant'
-	'mx:jgit' : 'org.eclipse.jgit:org.eclipse.jgit'
-	'mx:markdownpapers' : 'org.tautua.markdownpapers:markdownpapers-core'
-	'mx:rhino' : 'org.mozilla:rhino'
+	'mx:jgit': 'org.eclipse.jgit:org.eclipse.jgit'
+	'mx:markdownpapers': 'org.tautua.markdownpapers:markdownpapers-core'
+	'mx:freemarker': 'org.freemarker:freemarker'
+	'mx:rhino': 'org.mozilla:rhino'
 }
 
 # Dependency overrides are used to redefine the dependencies of released/published

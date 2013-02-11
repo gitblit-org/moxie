@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 James Moger
+ * Copyright 2013 James Moger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,28 +15,21 @@
  */
 package org.moxie;
 
-public class Substitute {
+public class Template {
 	String token;
-	String value;
+	String src;
+	String data;
 
 	public void setToken(String token) {
 		this.token = token;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setSrc(String value) {
+		this.src = value;
 	}
-	
-	public void set(String token, String value) {
-		this.token = token;
-		this.value = value;
+
+	public void setData(String value) {
+		this.data = value;
 	}
-	
-	public boolean isProperty() {
-		return token.startsWith("${") && token.endsWith("}");
-	}
-	
-	public String getPropertyName() {
-		return token.substring(2, token.length() - 1);
-	}
+
 }

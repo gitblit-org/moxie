@@ -152,13 +152,13 @@
 		<!-- Moxie-Pro -->
 		<mx:genjar classifier="pro">
 			<classfilter>
-				<exclude name="emma" />
-				<exclude name="emmarun" />
 				<exclude name="bsh." />
 				<exclude name="com.beust." />
 				<exclude name="com.google." />
 				<exclude name="com.jcraft." />
 				<exclude name="com.vladium." />
+				<exclude name="emma" />
+				<exclude name="emmarun" />
 				<exclude name="net.sourceforge." />
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
@@ -207,13 +207,14 @@
 		<!-- Moxie-All -->
 		<mx:genjar classifier="all" packageSources="true">
 			<classfilter>
-				<exclude name="emma" />
-				<exclude name="emmarun" />
 				<exclude name="bsh." />
 				<exclude name="com.beust." />
 				<exclude name="com.google." />
 				<exclude name="com.jcraft." />
 				<exclude name="com.vladium." />
+				<exclude name="emma" />
+				<exclude name="emmarun" />
+				<exclude name="freemarker" />
 				<exclude name="net.sourceforge." />
 				<exclude name="org.apache." />
 				<exclude name="org.eclipse." />
@@ -225,6 +226,8 @@
 				<exclude name="org.testng." />
 				<exclude name="org.w3c." />
 				<exclude name="org.yaml." />
+				<exclude name="org.xml." />
+				<exclude name="org.zeroturnaround." />
 			</classfilter>
 			
 			<!-- core -->
