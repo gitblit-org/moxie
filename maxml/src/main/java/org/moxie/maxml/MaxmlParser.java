@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,140 +53,158 @@ public class MaxmlParser {
 	 * @param lines
 	 * @return an object map
 	 */
-	public MaxmlMap parse(BufferedReader reader) throws IOException,
-			MaxmlException {
+	public MaxmlMap parse(BufferedReader reader) throws IOException, MaxmlException {
 		String lastKey = null;
 		MaxmlMap map = new MaxmlMap();
 		ArrayList<Object> array = null;
-		StringBuilder textBlock = new StringBuilder();
-		boolean appendTextBuffer = false;
-		int textBlockOffset = 0;
+		int lineCount = 0;
 		String line = null;
-		while ((line = reader.readLine()) != null) {
-			// text block processing
-			if (appendTextBuffer) {
-				if (line.equals("\"\"\"") || line.equals("'''")) {
-					// end block
-					map.put(lastKey, textBlock.toString());
-					textBlock.setLength(0);
-					appendTextBuffer = false;
-				} else if (line.endsWith("\"\"\"") || line.endsWith("'''")) {
-					// end block
-					line = parseTextBlock(textBlockOffset, line);
-					textBlock.append(line.substring(0, line.length() - 3));
-					map.put(lastKey, textBlock.toString());
-					textBlock.setLength(0);
-					appendTextBuffer = false;
-				} else {
-					// append line
-					line = parseTextBlock(textBlockOffset, line);
-					textBlock.append(line);
-					textBlock.append('\n');
+		try {
+			while ((line = reader.readLine()) != null) {
+				lineCount++;
+				// trim the line
+				String untrimmed = line;
+				line = line.trim();
+				if (line.length() == 0) {
+					// ignore blanks
+					continue;
 				}
-				continue;
-			}
+				if (line.charAt(0) == '#') {
+					// ignore comment
+					continue;
+				} else if (line.equals("...")) {
+					// ignore end of document
+					continue;
+				} else if (line.equals("---")) {
+					// ignore new document
+					continue;
+				} else if (line.equals("\"\"\"") || line.equals("'''") || line.equals("\"\"") || line.equals("''")) {
+					// start text block, offset is 0
+					String value = parseTextBlock(reader, lineCount, 0);
+					lineCount += value.split("\n").length;
+					map.put(lastKey, value);
+				} else if (line.charAt(0) == '}') {
+					// end this map
+					return map;
+				} else if (line.charAt(0) == '-') {
+					// array element
+					if (array == null) {
+						array = new ArrayList<Object>();
+						map.put(lastKey, array);
+					}
+					String rem = line.substring(1).trim();
+					Object value;
+					if (rem.charAt(0) == '{' && rem.length() == 1) {
+						Map<String, Object> submap = parse(reader);
+						value = submap;
+						array.add(value);
+					} else if (rem.startsWith("\"\"\"")) {
+						// start text block
+						String block = parseTextBlock(reader, lineCount, 0);
+						value = block;
+						lineCount += block.split("\n").length;
+						array.add(block);
+					} else if (rem.startsWith("'''")) {
+						// start text block
+						String block = parseTextBlock(reader, lineCount, 0);
+						value = block;
+						lineCount += block.split("\n").length;
+						array.add(value);
+					} else if (rem.startsWith("\"\"")) {
+						// start offset text block
+						int offset = untrimmed.indexOf("\"\"");
+						String block = parseTextBlock(reader, lineCount, offset);
+						value = block;
+						lineCount += block.split("\n").length;
+						array.add(value);
+					} else if (rem.startsWith("''")) {
+						// start offset text block
+						int offset = untrimmed.indexOf("''");
+						String block = parseTextBlock(reader, lineCount, offset);
+						value = block;
+						lineCount += block.split("\n").length;
+						array.add(value);
+					} else {
+						value = parseValue(rem);
+						array.add(value);
+					}				
+				} else {
+					// field:value
+					String key;
+					String value;
+					if (line.charAt(0) == '\"') {
+						// "key" : value
+						// quoted key because of colons
+						int quote = line.indexOf('\"', 1);
+						key = line.substring(1, quote).trim();
 
-			// trim the line
-			String untrimmed = line;
-			line = line.trim();
-			if (line.length() == 0) {
-				// ignore blanks
-				continue;
-			}
-			if (line.charAt(0) == '#') {
-				// ignore comment
-				continue;
-			} else if (line.equals("...")) {
-				// ignore end of document
-				continue;
-			} else if (line.equals("---")) {
-				// ignore new document
-				continue;
-			} else if (line.equals("\"\"\"") || line.equals("'''")) {
-				// start text block
-				textBlockOffset = 0;
-				textBlock.setLength(0);
-				appendTextBuffer = true;
-			} else if (line.charAt(0) == '}') {
-				// end this map
-				return map;
-			} else if (line.charAt(0) == '-') {
-				// array element
-				if (array == null) {
-					array = new ArrayList<Object>();
-					map.put(lastKey, array);
-				}
-				String rem = line.substring(1).trim();
-				Object value;
-				if (rem.charAt(0) == '{' && rem.length() == 1) {
-					Map<String, Object> submap = parse(reader);
-					value = submap;
-				} else {
-					value = parseValue(rem);
-				}				
-				array.add(value);
-			} else {
-				// field:value
-				String key;
-				String value;
-				if (line.charAt(0) == '\"') {
-					// "key" : value
-					// quoted key because of colons
-					int quote = line.indexOf('\"', 1);
-					key = line.substring(1, quote).trim();
-					
-					value = line.substring(quote + 1).trim();
-					int colon = value.indexOf(':');
-					value = value.substring(colon + 1).trim();
-				} else if (line.charAt(0) == '\'') {
-					// 'key' : value
-					// quoted key because of colons
-					int quote = line.indexOf('\'', 1);
-					key = line.substring(1, quote).trim();
-					
-					value = line.substring(quote + 1).trim();
-					int colon = value.indexOf(':');
-					value = value.substring(colon + 1).trim();
+						value = line.substring(quote + 1).trim();
+						int colon = value.indexOf(':');
+						value = value.substring(colon + 1).trim();
+					} else if (line.charAt(0) == '\'') {
+						// 'key' : value
+						// quoted key because of colons
+						int quote = line.indexOf('\'', 1);
+						key = line.substring(1, quote).trim();
 
-				} else {
-					// key : value
-					int colon = line.indexOf(':');
-					key = line.substring(0, colon).trim();
-					value = line.substring(colon + 1).trim();
-				}
-				Object o;
-				if (value.length() == 0) {
-					// empty string
-					o = value;
-				} else if (value.charAt(0) == '{') {
-					// map
-					Map<String, Object> submap = parse(reader);
-					o = submap;
-				} else if (value.equals("\"\"\"")) {
-					// start text block
-					textBlockOffset = untrimmed.indexOf("\"\"\"");
-					textBlock.setLength(0);
-					appendTextBuffer = true;
-					o = "";
-				} else if (value.equals("'''")) {
-					// start text block
-					textBlockOffset = untrimmed.indexOf("'''");
-					textBlock.setLength(0);
-					appendTextBuffer = true;
-					o = "";
-				} else {
-					// value
-					o = parseValue(value);
-				}
-				// put the value into the map
-				map.put(key, o);
+						value = line.substring(quote + 1).trim();
+						int colon = value.indexOf(':');
+						value = value.substring(colon + 1).trim();
 
-				// reset
-				lastKey = key;
-				array = null;
+					} else {
+						// key : value
+						int colon = line.indexOf(':');
+						key = line.substring(0, colon).trim();
+						value = line.substring(colon + 1).trim();
+					}
+					Object o;
+					if (value.length() == 0) {
+						// empty string
+						o = value;
+					} else if (value.charAt(0) == '{') {
+						// map
+						Map<String, Object> submap = parse(reader);
+						o = submap;
+					} else if (value.equals("\"\"\"")) {
+						// start text block
+						String block = parseTextBlock(reader, lineCount, 0);
+						lineCount += block.split("\n").length;
+						o = block;
+					} else if (value.equals("'''")) {
+						// start text block
+						String block = parseTextBlock(reader, lineCount, 0);
+						lineCount += block.split("\n").length;
+						o = block;
+					} else if (value.equals("\"\"")) {
+						// start text block
+						int offset = untrimmed.indexOf("\"\"");
+						String block = parseTextBlock(reader, lineCount, offset);
+						lineCount += block.split("\n").length;
+						o = block;
+					} else if (value.equals("''")) {
+						// start text block
+						int offset = untrimmed.indexOf("''");
+						String block = parseTextBlock(reader, lineCount, offset);
+						lineCount += block.split("\n").length;
+						o = block;
+					} else {
+						// value
+						o = parseValue(value);
+					}
+					// put the value into the map
+					map.put(key, o);
+
+					// reset
+					lastKey = key;
+					array = null;
+				}
 			}
+			return map;
+		} catch (MaxmlException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new MaxmlException(MessageFormat.format("Parsing failed on line {0,number,0}: {1}", lineCount, line), e);
 		}
-		return map;
 	}
 
 	/**
@@ -301,17 +320,57 @@ public class MaxmlParser {
 		return value;
 	}
 	
-	protected String parseTextBlock(int textBlockOffset, String line) {
-		if (textBlockOffset > 0) {
+	protected String parseTextBlock(BufferedReader reader, int lineNumber, int offset) throws IOException, MaxmlException {
+		String line = null;
+		StringBuilder sb = new StringBuilder();
+		int lineCount = lineNumber;
+		while ((line = reader.readLine()) != null) {
+			lineCount++;
+			// text block processing
+			if (line.equals("\"\"\"") || line.equals("'''") || line.equals("\"\"") || line.equals("''")) {
+				// end block
+				line = stripWhitespace(lineCount, offset, line);
+				return sb.toString();
+			} else if (line.endsWith("\"\"\"") || line.endsWith("'''")) {
+				// end textblock
+				line = line.substring(0, line.length() - 3);
+				line = stripWhitespace(lineCount, offset, line);
+				sb.append(line);
+				return sb.toString();
+			} else if (line.endsWith("\"\"") || line.endsWith("''")) {
+				// end offset text`block
+				line = line.substring(0, line.length() - 2);
+				line = stripWhitespace(lineCount, offset, line);
+				sb.append(line);
+				return sb.toString();
+			} else {
+				// append line
+				line = stripWhitespace(lineCount, offset, line);
+				sb.append(line);
+				sb.append('\n');
+			}
+		}
+		throw new MaxmlException(MessageFormat.format("Failed to parse textblock at line {0,number,0}", lineCount));
+	}
+	
+	protected String stripWhitespace(int lineNumber, int offset, String line) throws MaxmlException {
+		if (offset > 0) {
 			// attempt to eliminate leading whitespace
-			if (line.length() > textBlockOffset) {
-				String leading = line.substring(0, textBlockOffset);
-				boolean whitespace = true;
+			if (line.length() >= offset) {
+				String leading = line.substring(0, offset);
+				int whiteCount = 0;
+				boolean stripWhitespace = true;
 				for (char c : leading.toCharArray()) {
-					whitespace &= c == ' ';
+					boolean ws = c== ' ';
+					if (ws) {
+						whiteCount++;
+					}
+					stripWhitespace &= ws;
 				}
-				if (whitespace) {
-					line = line.substring(textBlockOffset);
+				if (stripWhitespace) {
+					return line.substring(offset);
+				} else {
+					throw new MaxmlException(MessageFormat.format("Line {0,number,0} in a textblock is expected to have {1,number,0} indentation spaces, found {2,number,0}!", lineNumber, offset, whiteCount, line));
 				}
 			}
 		}

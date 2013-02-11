@@ -27,9 +27,9 @@ public class TestMaxmlParser extends Assert {
 
 	String blockTest = "name: Moxie\ndescription: \"\"\"\nMoxie\nis a\nJava Project Build Toolkit\n\"\"\"\nversion: 0.1.0";
 
-	String blockTest2 = "name: Moxie\ndescription:\n\"\"\"\nMoxie\n is a\n  Java Project Build Toolkit\"\"\"\nversion: 0.1.0";
+	String blockTest2 = "name: Moxie\ndescription:\n\"\"\nMoxie\n is a\n  Java Project Build Toolkit\"\"\nversion: 0.1.0";
 
-	String blockTest3 = "name: Moxie\ndescription: \"\"\"\n             Moxie\n              is a\n               Java Project Build Toolkit\n             \"\"\"\nversion: 0.1.0";
+	String blockTest3 = "name: Moxie\ndescription: \"\"\n             Moxie\n              is a\n               Java Project Build Toolkit\n             \"\"\nversion: 0.1.0";
 
 	String inlineMap = "{ id: myproxy, active: true, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }";
 	

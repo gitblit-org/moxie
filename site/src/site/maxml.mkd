@@ -22,14 +22,16 @@ Because Moxie needs to have a bundled parser for the `build.moxie` project descr
 2. Leading whitespace is completely irrelevant and ignored (except for text blocks) so indent all you want.
 3. All lines are expected to begin with a `key:` or `"my:key:name":` sequence unless
     1. the line equals **"""** *(start/end text block)*
-	2. the line is blank *(included in a text block, otherwise ignored)*
-    3. the line starts with **#** *(comment, ignored)*
-	4. the line equals **---** or **...** *(reserved, ignored)*
-    5. the line equals **}** *(end map)*
-    6. the line begins with a **-** dash *(list item)*
+    2. the line equals **""** *(start/end offset text block)*
+    3. the line is blank *(included in a text block, otherwise ignored)*
+    4. the line starts with **#** *(comment, ignored)*
+    5. the line equals **---** or **...** *(reserved, ignored)*
+    6. the line equals **}** *(end map)*
+    7. the line begins with a **-** dash *(list item)*
 4. Values that equal **{** define a map and all subsequent lines will fill the map until a **}** line is processed    
 5. Values that equals **"""** define a text block and all subsequent lines will be appended to that text block until a **"""** line is processed
-6. All remaining values are subject to fall-through interpretation
+6. Values that equals **""** define an offset text block and all subsequent lines will be appended to that text block until a **""** line is processed
+7. All remaining values are subject to fall-through interpretation
 
 ### Value Fall-Through Interpretation
 
@@ -84,6 +86,11 @@ myString4: """
 this is another string
 which contains
 several lines"""
+
+note: ''
+      this is
+      an offset text block
+      ''
 
 %ENDMAXML%
 

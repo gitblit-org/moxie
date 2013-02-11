@@ -17,4 +17,8 @@ public class MaxmlException extends Exception {
 	public MaxmlException(Throwable t) {
 		super(t);
 	}
+
+	public MaxmlException(String message, Throwable t) {
+		super(message, t);
+	}
 }
