@@ -15,9 +15,9 @@
  */
 package org.moxie.ant;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -335,14 +335,19 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	// write build.xml
     	try {
     		is = getClass().getResourceAsStream(MessageFormat.format("/archetypes/{0}.build.xml", project.type));
-    		FileOutputStream os = new FileOutputStream(new File(basedir, "build.xml"));
+    		
+    		ByteArrayOutputStream os = new ByteArrayOutputStream();
     		byte [] buffer = new byte[4096];
     		int len = 0;
     		while((len = is.read(buffer)) > -1) {
     			os.write(buffer, 0, len);
     		}
+    		String prototype = os.toString("UTF-8");
     		os.close();
     		is.close();
+    		
+    		String content = prototype.replace("%MOXIE_VERSION%", Toolkit.getVersion());
+    		FileUtils.writeContent(new File(basedir, "build.xml"), content);
     	} catch (Throwable t) {
     		t.printStackTrace();
     		System.exit(1);
