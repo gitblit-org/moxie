@@ -89,6 +89,13 @@ public abstract class MxTask extends Task {
 		}
 	}
 
+	protected void setProjectProperty(Key prop, String value) {
+		if (!StringUtils.isEmpty(value)) {
+			getProject().setProperty(prop.projectId(), value);
+			log(prop.projectId(), value, false);
+		}
+	}
+
 	protected void setProperty(String prop, String value) {
 		if (!StringUtils.isEmpty(value)) {
 			getProject().setProperty(prop, value);

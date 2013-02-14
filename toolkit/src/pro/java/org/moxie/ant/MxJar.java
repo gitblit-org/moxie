@@ -409,7 +409,7 @@ public class MxJar extends Jar {
 		setManifest(mft, "Bundle-Version", Key.version);
 		setManifest(mft, "Bundle-Vendor", Key.organization);
 		
-		setManifest(mft, "Git-Commit", Key.commit);
+		setManifest(mft, "Commit-Id", Key.commitId);
 		
 		try {
 			manifest.merge(mft, true);

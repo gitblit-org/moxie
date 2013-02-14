@@ -15,6 +15,10 @@
  */
 package org.moxie;
 
+import java.net.URL;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+
 public class Toolkit {
 	
 	public static final String APPLY_ECLIPSE = "eclipse";
@@ -65,7 +69,7 @@ public class Toolkit {
 		testSourcePath, outputDirectory, compileOutputDirectory, testOutputDirectory, linkedProjects,
 		dependencyDirectory, repositories, properties, dependencies, apply,
 		googleAnalyticsId, googlePlusId, runtimeClasspath, compileClasspath, testClasspath,
-		compileDependencypath, runtimeDependencypath, testDependencypath, commit, targetDirectory,
+		compileDependencypath, runtimeDependencypath, testDependencypath, commitId, targetDirectory,
 		proxies, parent, exclusions, mxjar, mxjavac, compilerArgs, excludes, includes,
 		dependencyManagement, mxreport, outputFile, verbose, buildClasspath, reportTargetDirectory,
 		dependencyOverrides, dependencyAliases, updatePolicy, lastChecked, lastUpdated, lastSolved,
@@ -93,8 +97,35 @@ public class Toolkit {
 	public static String getVersion() {
 		String v = Toolkit.class.getPackage().getImplementationVersion();
 		if (v == null) {
-			return "DEVELOPMENT";
+			return "0.0.0-SNAPSHOT";
 		}
 		return v;
+	}
+	
+	public static String getBuildDate() {
+		return getManifestValue("build-date", "PENDING");
+	}
+
+	public static String getCommitId() {
+		return getManifestValue("Commit-Id", "");
+	}
+
+	private static String getManifestValue(String attrib, String defaultValue) {
+		Class<?> clazz = Constants.class;
+		String className = clazz.getSimpleName() + ".class";
+		String classPath = clazz.getResource(className).toString();
+		if (!classPath.startsWith("jar")) {
+			// Class not from JAR
+			return defaultValue;
+		}
+		try {
+			String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) + "/META-INF/MANIFEST.MF";
+			Manifest manifest = new Manifest(new URL(manifestPath).openStream());
+			Attributes attr = manifest.getMainAttributes();
+			String value = attr.getValue(attrib);
+			return value;
+		} catch (Exception e) {
+		}
+		return defaultValue;
 	}
 }

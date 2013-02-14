@@ -51,8 +51,8 @@ public class MxGitId extends MxGitTask {
 
 		setVerbose(false);
 		if (StringUtils.isEmpty(property)) {
-			setProperty(Key.commit, hashid);
-			getConsole().key(Key.commit.propId(), hashid);
+			setProjectProperty(Key.commitId, hashid);
+			getConsole().key(Key.commitId.projectId(), hashid);
 		} else {
 			setProperty(property, hashid);
 			getConsole().key(property, hashid);
