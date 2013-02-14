@@ -25,6 +25,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -46,7 +47,8 @@ public class MaxmlParser {
 	Pattern wholePattern = Pattern.compile("^\\d{1,3}(,\\d{1,3})*$");
 	DecimalFormat wholeFormat = new DecimalFormat("#,###,###,###,###,###,###");
 	String csvPattern = ",(?=(?:[^\\\"]*\\\"[^\\\"]*[\\\"^,]*\\\")*(?![^\\\"]*\\\"))";
-
+	MaxmlMap rootMap;
+	
 	/**
 	 * Recursive method to parse an Maxml document.
 	 * 
@@ -56,6 +58,9 @@ public class MaxmlParser {
 	public MaxmlMap parse(BufferedReader reader) throws IOException, MaxmlException {
 		String lastKey = null;
 		MaxmlMap map = new MaxmlMap();
+		if (rootMap == null) {
+			rootMap = map;
+		}
 		ArrayList<Object> array = null;
 		int lineCount = 0;
 		String line = null;
@@ -86,12 +91,13 @@ public class MaxmlParser {
 				} else if (line.charAt(0) == '}') {
 					// end this map
 					return map;
-				} else if (line.charAt(0) == '-') {
+				} else if ((line.charAt(0) == '-') || (line.charAt(0) == '+')) {
 					// array element
 					if (array == null) {
 						array = new ArrayList<Object>();
 						map.put(lastKey, array);
 					}
+					boolean addAll = line.charAt(0) == '+';
 					String rem = line.substring(1).trim();
 					Object value;
 					if (rem.charAt(0) == '{' && rem.length() == 1) {
@@ -126,7 +132,12 @@ public class MaxmlParser {
 						array.add(value);
 					} else {
 						value = parseValue(rem);
-						array.add(value);
+						if (addAll && value instanceof Collection) {
+							Collection<?> c = (Collection<?>) value;
+							array.addAll(c);
+						} else {
+							array.add(value);
+						}
 					}				
 				} else {
 					// field:value
@@ -224,6 +235,22 @@ public class MaxmlParser {
 			return null;
 		}
 
+		// object reference
+		if (value.charAt(0) == '&') {
+			if (value.indexOf(' ') == -1) {
+				MaxmlMap container = rootMap;
+				Object o = null;
+				String [] fields = value.substring(1).split("\\.");
+				for (String field : fields) {
+					o = container.get(field);
+					if (o instanceof MaxmlMap) {
+						container = (MaxmlMap) o;
+					}
+				}
+				return o;
+			}
+		}
+		
 		if (value.charAt(0) == '\'' && value.charAt(value.length() - 1) == '\'') {
 			// quoted string, strip single quotes
 			return value.substring(1, value.length() - 1).trim();
