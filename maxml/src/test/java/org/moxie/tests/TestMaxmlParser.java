@@ -37,7 +37,7 @@ public class TestMaxmlParser extends Assert {
 	
 	String maplist = "developers :\n- {\n  id: james\n  name : James Moger\n  url : https://plus.google.com/u/0/116428776452027956920\n  roles : developer\n  }";
 	
-	String references = "colors1:\n- blue\n- purple\n- green\n\ncolors2:\n- red\n-yellow\n- orange\n\nall:\n+ &colors1\n+ &colors2\n- magenta";
+	String references = "colors1:\n- blue\n- purple\n- green\n\ncolors2:\n- red\n-yellow\n- orange\n\nall:\n+ &colors1\n+ &colors2\n- magenta\nmycolor: &colors2[1]";
 
 	@SuppressWarnings("rawtypes")
 	@Test
@@ -51,6 +51,7 @@ public class TestMaxmlParser extends Assert {
 		assertEquals("Moxie\n is a\n  Java Project Build Toolkit", Maxml.parse(blockTest2).get("description"));
 		assertEquals("Moxie\n is a\n  Java Project Build Toolkit\n", Maxml.parse(blockTest3).get("description"));
 		assertEquals("[blue, purple, green, red, yellow, orange, magenta]", Maxml.parse(references).get("all").toString());
+		assertEquals("yellow", Maxml.parse(references).get("mycolor").toString());
 
 		// numerics
 		assertEquals(101, parser.parseValue("101"));

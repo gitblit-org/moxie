@@ -27,7 +27,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -233,10 +235,23 @@ public class MaxmlParser {
 				MaxmlMap container = rootMap;
 				Object o = null;
 				String [] fields = value.substring(1).split("\\.");
+				Pattern p = Pattern.compile("(.*)\\[(\\d+)\\]");
 				for (String field : fields) {
+					int index = -1;
+					Matcher m = p.matcher(field);
+					if (m.find()) {
+						String i = m.group(2);
+						index = Integer.parseInt(i);
+						field = field.substring(0, field.indexOf('['));
+					}
 					o = container.get(field);
 					if (o instanceof MaxmlMap) {
 						container = (MaxmlMap) o;
+					} else if (o instanceof List) {
+						// grab indexed element from list
+						if (index >= 0) {
+							o = ((List<?>) o).get(index);
+						}
 					}
 				}
 				return o;
