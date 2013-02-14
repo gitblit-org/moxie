@@ -254,11 +254,10 @@ public class ToolkitConfig implements Serializable {
 			// container descriptors (e.g. POM) can define modules 
 			modules = readModules(map, Key.modules);
 		} else {
-			// standard project/modules can define linkedProjects or modules			
+			// standard project/modules can define linked modules which are
+			// treated as extensions of this projects sourceDirectories and
+			// dependencies
 			linkedModules = readModules(map, Key.modules);
-			if (linkedModules.isEmpty()) {
-				linkedModules = readModules(map, Key.linkedProjects);	
-			}
 		}
 		dependencyDirectory = readFile(map, Key.dependencyDirectory, null);
 		
