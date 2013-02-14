@@ -151,6 +151,10 @@ public class Resource extends DataType implements JarSpec {
 			this.pkg = pkg;
 		}
 	}
+	
+	public void setPrefix(String prefix) {
+		setPackage(prefix);
+	}
 
 	/**
 	 * creates a FileSet - in response to the ant parse phase

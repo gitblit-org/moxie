@@ -2,7 +2,7 @@
 <project name="common" default="main" xmlns:mx="antlib:org.moxie">
 
 	<!-- Moxie tasks -->
-	<taskdef resource="tasks.properties" uri="antlib:org.moxie">
+	<taskdef uri="antlib:org.moxie">
 		<classpath location="${basedir}/../toolkit/build/target/moxie.jar" />
 	</taskdef>
 	

@@ -146,7 +146,11 @@
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
 			</resource>
-			<resource file="${basedir}/src/core/config/tasks.properties" />
+			<resource prefix="org/moxie">
+				<fileset dir="${basedir}/src/pro/config">
+					<include name="antlib.xml" />
+				</fileset>
+			</resource>
 		</mx:genjar>
 
 		<!-- Moxie-Pro -->
@@ -200,7 +204,11 @@
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
 			</resource>
-			<resource file="${basedir}/src/pro/config/tasks.properties" />
+			<resource prefix="org/moxie">
+				<fileset dir="${basedir}/src/pro/config">
+					<include name="antlib.xml" />
+				</fileset>
+			</resource>
 		</mx:genjar>
 
 		
@@ -263,7 +271,11 @@
 				<fileset dir="${basedir}/src/core/resources" />
 				<fileset dir="${basedir}/src/all/resources" />
 			</resource>
-			<resource file="${basedir}/src/all/config/tasks.properties" />
+			<resource prefix="org/moxie">
+				<fileset dir="${basedir}/src/all/config">
+					<include name="antlib.xml" />
+				</fileset>
+			</resource>
 		</mx:genjar>
 		
 		<!--

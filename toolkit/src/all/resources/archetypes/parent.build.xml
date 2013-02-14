@@ -22,8 +22,8 @@
 	-->
 
 	<!--
-	<taskdef resource="tasks.properties" uri="antlib:org.moxie">
-		<classpath location="${basedir}/moxie.jar" />
+	<taskdef uri="antlib:org.moxie">
+		<classpath location="${basedir}/toolkit-${moxie.version}-all.jar" />
 	</taskdef>
 	-->
 

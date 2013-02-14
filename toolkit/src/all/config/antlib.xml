@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<antlib>
+	<!-- Core -->
+	<typedef name="init" classname="org.moxie.ant.MxInit" />
+	<typedef name="get" classname="org.moxie.ant.MxGet" />
+	<typedef name="report" classname="org.moxie.ant.MxReport" />
+
+	<!-- Pro -->
+	<typedef name="clean" classname="org.moxie.ant.MxClean" />
+	<typedef name="extract" classname="org.moxie.ant.MxExtract" />
+	<typedef name="genjar" classname="org.moxie.ant.MxGenJar" />
+	<typedef name="ghpages" classname="org.moxie.ant.MxGhPages" />
+	<typedef name="gitid" classname="org.moxie.ant.MxGitId" />
+	<typedef name="if" classname="org.moxie.ant.MxIf" />
+	<typedef name="install" classname="org.moxie.ant.MxInstall" />
+	<typedef name="jar" classname="org.moxie.ant.MxJar" />
+	<typedef name="javac" classname="org.moxie.ant.MxJavac" />
+	<typedef name="javadoc" classname="org.moxie.ant.MxJavadoc" />
+	<typedef name="keys" classname="org.moxie.ant.MxKeys" />
+	<typedef name="run" classname="org.moxie.ant.MxRun" />
+	<typedef name="tar" classname="org.moxie.ant.MxTar" />
+	<typedef name="test" classname="org.moxie.ant.MxTest" />
+	<typedef name="thumbs" classname="org.moxie.ant.MxThumbs" />
+	<typedef name="webxml" classname="org.moxie.ant.MxWebXml" />
+	<typedef name="zip" classname="org.moxie.ant.MxZip" />
+	
+	<!-- All -->
+	<typedef name="doc" classname="org.moxie.ant.MxDoc" />
+</antlib>

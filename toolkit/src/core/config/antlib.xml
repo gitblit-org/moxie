@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<antlib>
+	<!-- Core -->
+	<taskdef name="init" classname="org.moxie.ant.MxInit" />
+	<taskdef name="get" classname="org.moxie.ant.MxGet" />
+	<taskdef name="report" classname="org.moxie.ant.MxReport" />
+</antlib>
