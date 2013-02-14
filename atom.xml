@@ -6,7 +6,7 @@
 	<entry>
 		<content type="text/plain" />
    		<title type="text"><![CDATA[Moxie 0.4.0]]></title>
-   		<summary type="text"><![CDATA[Moxie 0.4.0]]></summary>
+   		<summary type="text"><![CDATA[Milestone 1: basic transitive dependency handling and most core tasks]]></summary>
    		<link href="http://gitblit.github.com/moxie/history.html#0.4.0" rel="via" />
    		<guid isPermaLink="true">http://gitblit.github.com/moxie/history.html#0.4.0</guid>
    		<content><![CDATA[Milestone 1: basic transitive dependency handling and most core tasks]]></content>
@@ -15,7 +15,7 @@
 	<entry>
 		<content type="text/plain" />
    		<title type="text"><![CDATA[Moxie 0.5.0]]></title>
-   		<summary type="text"><![CDATA[Moxie 0.5.0]]></summary>
+   		<summary type="text"><![CDATA[Milestone 2: Most tasks and features to build Gitblit]]></summary>
    		<link href="http://gitblit.github.com/moxie/history.html#0.5.0" rel="via" />
    		<guid isPermaLink="true">http://gitblit.github.com/moxie/history.html#0.5.0</guid>
    		<content><![CDATA[Milestone 2: Most tasks and features to build Gitblit]]></content>
