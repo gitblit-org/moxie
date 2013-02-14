@@ -33,6 +33,8 @@ public class MxInstall extends MxTask {
 	
 	private File baseDir;
 	
+	private boolean installSnapshots;
+	
 	public void setBaseDir(File dir) {
 		this.baseDir = dir;
 	}
@@ -41,9 +43,14 @@ public class MxInstall extends MxTask {
 		return baseDir;
 	}
 	
+	public void setSnapshots(boolean value) {
+		installSnapshots = value;
+	}
+	
 	public MxInstall() {
 		super();
 		setTaskName("mx:install");
+		installSnapshots = true;
 	}
 	
 	public void execute() {
@@ -52,6 +59,12 @@ public class MxInstall extends MxTask {
 		File sourceFolder = build.getConfig().getTargetDirectory();
 		
 		Pom pom = build.getPom();
+		String coordinates = pom.getCoordinates();
+		Dependency projectAsDep = new Dependency(coordinates);
+		if (!installSnapshots && projectAsDep.isSnapshot()) {
+			// do not install snapshots into the repository
+			return;
+		}
 		String artifact = pom.artifactId + "-" + pom.version;
 		String pattern = artifact + "*";
 		
