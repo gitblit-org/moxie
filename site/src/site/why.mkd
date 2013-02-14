@@ -1,6 +1,8 @@
 ## Why Moxie?
 
-Moxie is written for Ant die-hards or for those who are required to continue building with Ant, though they may yearn for [Maven][] or [Gradle][].
+Why not.  :)
+
+Moxie is written for those who prefer [Ant][] or for those who must continue building with Ant, though they may yearn for [Maven][] or [Gradle][].
 
 ### Don't Repeat Yourself
 
@@ -45,4 +47,8 @@ I like the idea of [Gradle][].  I have not used it.  I may use it in other proje
 
 ## Why not Ant+Ivy?
 
-[Ivy](http://ant.apache.org/ivy) is probably a more robust dependency manager and definitely supports more transports.  But it is strictly an artifact retrieval/deployment tool.  It does nothing to decrease the complexity or verbosity of Ant build scripts.  It is a download manager with a complex XML configuration file.  And at 1 MB it is a bit too large to embed within a repository, IMO.
+[Ivy][] is probably a more robust dependency manager and definitely supports more transports.  But it is strictly an artifact retrieval/deployment tool.  It does nothing to decrease the complexity or verbosity of Ant build scripts.  It is a artifact manager with a complex XML configuration file.  And at 1 MB it is a bit too large to embed within a repository, IMO.
+
+## Why not EasyAnt?
+
+[EasyAnt][], if you've never heard of it - because I had not - is an Apache incubator project which targets offering a Maven-like experience using an enhanced Ant.  Moxie is not as ambitious in it's design as EasyAnt; Moxie is  more of a subset of EasyAnt.  EasyAnt is based on [Ivy][].

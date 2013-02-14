@@ -14,6 +14,7 @@
 [Bootstrap]: http://twitter.github.com/bootstrap "Twitter Bootstrap"
 [Markdown]: http://daringfireball.net/projects/markdown "Markdown"
 [DRY]: https://en.wikipedia.org/wiki/Don%27t_repeat_yourself "Don't Repeat Yourself"
+[EasyAnt]: https://incubator.apache.org/easyant "Apache EasyAnt"
 
 [ivyxml]: https://ant.apache.org/ivy/history/latest-milestone/ivyfile.html "Apache Ivy File Reference"
 [pomxml]: https://maven.apache.org/pom.html "Apache Maven POM Reference"

@@ -15,14 +15,14 @@
 		<!-- Build the site documentation -->
 		<mx:doc googlePlusOne="true" injectPrettify="true" minify="true">
 			<structure>
-				<menu name="about">
+				<menu name="about" pager="true" pagerPlacement="bottom" pagerLayout="justified">
 					<page name="overview" src="index.mkd" />
 					<page name="why?!" src="why.mkd" headerLinks="true" />
 					<page name="design" src="design.mkd" headerLinks="true" />
 				</menu>
 				<menu name="documentation" pager="true" pagerPlacement="bottom" pagerLayout="justified">
 					<page name="getting started" src="gettingstarted.mkd" headerLinks="true" />
-					<page name="build.moxie" src="moxiedescriptor.mkd" headerLinks="true" />
+					<page name="build.moxie" src="moxiedescriptor.mkd" headerLinks="true" processSubstitutions="false" />
 					<page name="settings.moxie" src="settings.mkd" headerLinks="true" />
 					<page name="defaults.moxie" src="defaults.mkd" headerLinks="true" />
 				</menu>

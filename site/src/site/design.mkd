@@ -1,3 +1,17 @@
 ## Design
 
 Be just enough.  Be useful.  Don't overreach.  Don't impose.  [Don't Repeat Yourself][DRY].
+
+Moxie is not designed to be Maven.  It is designed to be an Ant enhancement.
+
+### Reference links
+
+- [Maven dependency resolution][mvnresolution]
+- [Maven SNAPSHOT resolution][mvnsnapshot]
+- [Maven's POM XML config file reference][pomxml]
+- [Maven properties reference][mvnproperties]
+- [Maven 3 Compatibility Notes][mvn3notes]
+- [Maven settings.xml reference][mvnsettings]
+- [Maven LifeCycle reference][mvnlifecycle]
+- [Ivy's XML config file reference][ivyxml]
+- [Gradle Cache Design][gradlecache]
