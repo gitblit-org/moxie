@@ -97,11 +97,6 @@
 			<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />
 			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />
 			
-			<!-- Copy the generated artifacts from the other projects -->
-			<resource prefix="maven">
-				<fileset dir="${basedir}/../maven" />
-			</resource>
-			
 			<!-- Set the logo from the mx:doc resources -->
 			<logo file="${basedir}/../toolkit/src/all/resources/moxie.png" />
 			<favicon file="${basedir}/../toolkit/src/all/resources/moxie-favicon.png" />
@@ -112,7 +107,7 @@
 	Build the Moxie gh-pages branch
 	-->
 	<target name="ghpages" depends="main">
-		<mx:ghpages obliterate="true" repositoryfolder="${basedir}/../" />
+		<mx:ghpages obliterate="false" repositorydir="${basedir}/../" />
 	</target>
 	
 </project>
