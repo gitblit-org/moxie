@@ -117,7 +117,9 @@
 	<entry>
 		<content type="text/plain" />
    		<title type="text"><![CDATA[${post.title}]]></title>
-   		<summary type="text"><![CDATA[${post.title}]]></summary>
+   		<#if (post.text!?length > 0)>
+   		<summary type="text"><![CDATA[${post.text}]]></summary>
+   		</#if>
    		<link href="${posturl}${post.id}" rel="via" />
    		<guid isPermaLink="true">${posturl}${post.id}</guid>
    		<#if (post.text!?length > 0)>
