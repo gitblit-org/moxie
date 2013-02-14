@@ -2,22 +2,25 @@
 <html>
 <head>
 <!-- Begin Header -->
-<title>Moxie-Toolkit</title>
+<title>Moxie</title>
 <meta charset="utf-8">
 <meta name="ROBOTS" content="INDEX">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
 <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
-<!-- Responsive CSS must be included after the above body css! -->
-<link rel="stylesheet" href="./bootstrap/css/bootstrap-responsive.min.css">
 <link rel='shortcut icon' type='image/png' href='./moxie-favicon.png' />
-<link rel="stylesheet" href="./prettify/prettify.css" />
+<link rel="stylesheet" href="./prettify/prettify.css" /><link rel="alternate" type="application/rss+xml" title="Moxie RSS 2.0" href="./rss.xml" />
+<link rel="alternate" type="application/atom+xml" title="Moxie Atom" href="./atom.xml" />
+
 <!-- Google Plus One -->
 <link rel="canonical" href="http://gitblit.github.com/moxie" />
 <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 <style type="text/css"> div.gplusone { margin-top:12px; } </style>
 
+<script src="./prettify/prettify.js"></script>
+<script src="./bootstrap/js/jquery.js"></script>
+<script src="./bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body onload='prettyPrint()'>		<!-- Navigation Bar -->
 		<div class="navbar navbar-fixed-top">
@@ -28,13 +31,24 @@
             			<span class="icon-bar"></span>
             			<span class="icon-bar"></span>
           			</a>
-          			<a class="brand" href="#"><img src="./moxie.png" alt="Moxie-Toolkit"></img></a>
+          			<a class="brand" href="./"><img src="./moxie.png" alt="Moxie"></img></a>
 					<div class="nav-collapse">
 						<ul class="nav">
-							<li><a href='index.html'>overview</a></li>
+							<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>about<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='index.html'>overview</a></li>
 <li><a href='why.html'>why?!</a></li>
+<li><a href='design.html'>design</a></li>
+</ul></li> <!-- End Menu -->
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>documentation<b class='caret'></b></a>
+<ul class='dropdown-menu'>
 <li><a href='gettingstarted.html'>getting started</a></li>
 <li><a href='moxiedescriptor.html'>build.moxie</a></li>
+<li><a href='settings.html'>settings.moxie</a></li>
+<li><a href='defaults.html'>defaults.moxie</a></li>
+</ul></li> <!-- End Menu -->
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
 <ul class='dropdown-menu'>
@@ -50,39 +64,39 @@
 <li><a href='mxinit.html'>mx:Init</a></li>
 <li><a href='mxjar.html'>mx:Jar</a></li>
 <li><a href='mxjavac.html'>mx:Javac</a></li>
+<li><a href='mxjavadoc.html'>mx:Javadoc</a></li>
 <li><a href='mxkeys.html'>mx:Keys</a></li>
 <li><a href='mxreport.html'>mx:Report</a></li>
 <li><a href='mxrun.html'>mx:Run</a></li>
+<li><a href='mxtar.html'>mx:Tar</a></li>
 <li><a href='mxtest.html'>mx:Test</a></li>
+<li><a href='mxthumb.html'>mx:Thumb</a></li>
 <li><a href='mxwar.html'>mx:War</a></li>
 <li><a href='mxwebxml.html'>mx:WebXml</a></li>
 <li><a href='mxzip.html'>mx:Zip</a></li>
 </ul></li> <!-- End Menu -->
+<li><a href='moxie+ant.html'>moxie+ant</a></li>
+<li><a href='proxy.html'>proxy</a></li>
 <li><a href='maxml.html'>maxml</a></li>
+<li><a href='release.html'>changelog</a></li>
 <li class='dropdown'> <!-- Menu -->
-<a class='dropdown-toggle' href='#' data-toggle='dropdown'>download<b class='caret'></b></a>
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='moxie+ant-0.5.0.zip'>moxie+ant (zip)</a></li>
-<li><a href='moxie+ant-0.5.0.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='maven/org/moxie/moxie+ant/0.5.0/moxie+ant-0.5.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='maven/org/moxie/moxie+ant/0.5.0/moxie+ant-0.5.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
-<li><a href='moxie-0.5.0-core.jar'>moxie-core</a></li>
-<li><a href='moxie-0.5.0-pro.jar'>moxie-pro</a></li>
-<li><a href='moxie-0.5.0-all.jar'>moxie-all</a></li>
+<li><a href='maven/org/moxie/toolkit/0.5.0/toolkit-0.5.0-core.jar'>moxie-core</a></li>
+<li><a href='maven/org/moxie/toolkit/0.5.0/toolkit-0.5.0-pro.jar'>moxie-pro</a></li>
+<li><a href='maven/org/moxie/toolkit/0.5.0/toolkit-0.5.0-all.jar'>moxie-all</a></li>
 <li class='divider'></li>
-<li><a href='moxie-proxy-0.5.0.zip'>moxie-proxy</a></li>
+<li><a href='maven/org/moxie/proxy/0.5.0/proxy-0.5.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='maxml-0.5.0.jar'>maxml</a></li>
-<li><a href='maxml-0.5.0-sources.jar'>maxml-sources</a></li>
-<li class='divider'></li>
-<li><a href='releases.html'>release log</a></li>
+<li><a href='maven/org/moxie/maxml/0.5.0/maxml-0.5.0.jar'>maxml</a></li>
+<li><a href='maven/org/moxie/maxml/0.5.0/maxml-0.5.0-sources.jar'>maxml-sources</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
-</ul></li> <!-- End Menu -->
-<li class='dropdown'> <!-- Menu -->
-<a class='dropdown-toggle' href='#' data-toggle='dropdown'>reports<b class='caret'></b></a>
-<ul class='dropdown-menu'>
-<li><a href='moxie-project.html'>project data</a></li>
-<li><a href='moxie-dependencies.html'>dependencies</a></li>
+<li class='divider'></li>
+<li><a href='maven'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://gitblit.github.com/moxie'></g:plusone></div></li>
@@ -93,18 +107,62 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2> Releases</h2>
 
-<p>Document releases here
+<!-- HISTORY -->
+	<p></p>
+	<h2>All Releases</h2>
+	<table class="table">
+		<tbody>
+		<!-- RELEASE HISTORY -->
+		<tr id="0.5.0">
+			<td style="width:100px" id="0.5.0">
+				<b><a href="#0.5.0">0.5.0</a></b><br/>
+				2013-01-23
+			</td>
+			<td>		<div class="alert alert-info">
+			<h4>Update Note</h4>
+			Please delete your .moxie/data folder before upgrading!
+		</div>
+	
+		Milestone 2: Most tasks and features to build Gitblit
+		<p></p>
+
+   	<h4>changes</h4>
+	<ul>
+		<li>Support MX_COLOR and MX_DEBUG environment variables</li>
+		<li>Re-use Maven proxy settings, if available</li>
+	</ul>
+   	<h4>additions</h4>
+	<ul>
+		<li>SNAPSHOT, RELEASE and LATEST resolution</li>
+		<li>Dependency tags</li>
+		<li>Added Moxie Proxy, a standalone Maven artifact proxy server</li>
+		<li>Added mx:Test, mx:Run, mx:WebXml, mx:Thumbs, and mx:Zip tasks</li>
+		<li>Added &lt;launcher /&gt; support for mx:GenJar and mx:Jar tasks</li>
+		<li>Added IntelliJ IDEA .iml file generation</li>
+		<li>Created Moxie+Ant distribution</li>
+		<li>Support linked source modules (projects)</li>
+	</ul>
+</td>
+		</tr>
+		<tr id="0.4.0">
+			<td style="width:100px" id="0.4.0">
+				<b><a href="#0.4.0">0.4.0</a></b><br/>
+				2012-07-05
+			</td>
+			<td>	
+		Milestone 1: basic transitive dependency handling and most core tasks
+		<p></p>
+
+</td>
+		</tr>
+		</tbody>
+	</table>
+
 <!-- End Markdown -->
-<footer class="footer"><p class="pull-right">generated 2013-01-24</p>
+<footer class="footer"><p class="pull-right">generated 2013-02-13</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>
-
-<!-- Include scripts at end for faster page loading -->
-<script src="./prettify/prettify.js"></script>
-<script src="./bootstrap/js/jquery.js"></script>
-<script src="./bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

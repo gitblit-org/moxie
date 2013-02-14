@@ -2,22 +2,25 @@
 <html>
 <head>
 <!-- Begin Header -->
-<title>Moxie-Toolkit</title>
+<title>Moxie</title>
 <meta charset="utf-8">
 <meta name="ROBOTS" content="INDEX">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 		
 <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
-<!-- Responsive CSS must be included after the above body css! -->
-<link rel="stylesheet" href="./bootstrap/css/bootstrap-responsive.min.css">
 <link rel='shortcut icon' type='image/png' href='./moxie-favicon.png' />
-<link rel="stylesheet" href="./prettify/prettify.css" />
+<link rel="stylesheet" href="./prettify/prettify.css" /><link rel="alternate" type="application/rss+xml" title="Moxie RSS 2.0" href="./rss.xml" />
+<link rel="alternate" type="application/atom+xml" title="Moxie Atom" href="./atom.xml" />
+
 <!-- Google Plus One -->
 <link rel="canonical" href="http://gitblit.github.com/moxie" />
 <script type="text/javascript" src="https://apis.google.com/js/plusone.js"></script>
 <style type="text/css"> div.gplusone { margin-top:12px; } </style>
 
+<script src="./prettify/prettify.js"></script>
+<script src="./bootstrap/js/jquery.js"></script>
+<script src="./bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body onload='prettyPrint()'>		<!-- Navigation Bar -->
 		<div class="navbar navbar-fixed-top">
@@ -28,13 +31,24 @@
             			<span class="icon-bar"></span>
             			<span class="icon-bar"></span>
           			</a>
-          			<a class="brand" href="#"><img src="./moxie.png" alt="Moxie-Toolkit"></img></a>
+          			<a class="brand" href="./"><img src="./moxie.png" alt="Moxie"></img></a>
 					<div class="nav-collapse">
 						<ul class="nav">
-							<li><a href='index.html'>overview</a></li>
+							<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>about<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li><a href='index.html'>overview</a></li>
 <li><a href='why.html'>why?!</a></li>
+<li><a href='design.html'>design</a></li>
+</ul></li> <!-- End Menu -->
+<li class='dropdown'> <!-- Menu -->
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>documentation<b class='caret'></b></a>
+<ul class='dropdown-menu'>
 <li><a href='gettingstarted.html'>getting started</a></li>
 <li><a href='moxiedescriptor.html'>build.moxie</a></li>
+<li><a href='settings.html'>settings.moxie</a></li>
+<li><a href='defaults.html'>defaults.moxie</a></li>
+</ul></li> <!-- End Menu -->
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
 <ul class='dropdown-menu'>
@@ -50,39 +64,39 @@
 <li><a href='mxinit.html'>mx:Init</a></li>
 <li><a href='mxjar.html'>mx:Jar</a></li>
 <li><a href='mxjavac.html'>mx:Javac</a></li>
+<li><a href='mxjavadoc.html'>mx:Javadoc</a></li>
 <li><a href='mxkeys.html'>mx:Keys</a></li>
 <li><a href='mxreport.html'>mx:Report</a></li>
 <li><a href='mxrun.html'>mx:Run</a></li>
+<li><a href='mxtar.html'>mx:Tar</a></li>
 <li><a href='mxtest.html'>mx:Test</a></li>
+<li><a href='mxthumb.html'>mx:Thumb</a></li>
 <li><a href='mxwar.html'>mx:War</a></li>
 <li><a href='mxwebxml.html'>mx:WebXml</a></li>
 <li><a href='mxzip.html'>mx:Zip</a></li>
 </ul></li> <!-- End Menu -->
+<li><a href='moxie+ant.html'>moxie+ant</a></li>
+<li><a href='proxy.html'>proxy</a></li>
 <li class='active'><a href='maxml.html'>maxml</a></li>
+<li><a href='release.html'>changelog</a></li>
 <li class='dropdown'> <!-- Menu -->
-<a class='dropdown-toggle' href='#' data-toggle='dropdown'>download<b class='caret'></b></a>
+<a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='moxie+ant-0.5.0.zip'>moxie+ant (zip)</a></li>
-<li><a href='moxie+ant-0.5.0.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='maven/org/moxie/moxie+ant/0.5.0/moxie+ant-0.5.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='maven/org/moxie/moxie+ant/0.5.0/moxie+ant-0.5.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
-<li><a href='moxie-0.5.0-core.jar'>moxie-core</a></li>
-<li><a href='moxie-0.5.0-pro.jar'>moxie-pro</a></li>
-<li><a href='moxie-0.5.0-all.jar'>moxie-all</a></li>
+<li><a href='maven/org/moxie/toolkit/0.5.0/toolkit-0.5.0-core.jar'>moxie-core</a></li>
+<li><a href='maven/org/moxie/toolkit/0.5.0/toolkit-0.5.0-pro.jar'>moxie-pro</a></li>
+<li><a href='maven/org/moxie/toolkit/0.5.0/toolkit-0.5.0-all.jar'>moxie-all</a></li>
 <li class='divider'></li>
-<li><a href='moxie-proxy-0.5.0.zip'>moxie-proxy</a></li>
+<li><a href='maven/org/moxie/proxy/0.5.0/proxy-0.5.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='maxml-0.5.0.jar'>maxml</a></li>
-<li><a href='maxml-0.5.0-sources.jar'>maxml-sources</a></li>
-<li class='divider'></li>
-<li><a href='releases.html'>release log</a></li>
+<li><a href='maven/org/moxie/maxml/0.5.0/maxml-0.5.0.jar'>maxml</a></li>
+<li><a href='maven/org/moxie/maxml/0.5.0/maxml-0.5.0-sources.jar'>maxml-sources</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
-</ul></li> <!-- End Menu -->
-<li class='dropdown'> <!-- Menu -->
-<a class='dropdown-toggle' href='#' data-toggle='dropdown'>reports<b class='caret'></b></a>
-<ul class='dropdown-menu'>
-<li><a href='moxie-project.html'>project data</a></li>
-<li><a href='moxie-dependencies.html'>dependencies</a></li>
+<li class='divider'></li>
+<li><a href='maven'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://gitblit.github.com/moxie'></g:plusone></div></li>
@@ -91,68 +105,69 @@
 				</div>
 			</div>
 		</div><!-- end Navigation Bar -->
-<div class='container-fluid'>
-<div class='row-fluid'>
+<div class='container'>
+<div class='row'>
 <!-- sidebar -->
 <div class='span3'>
 <div class='well sidebar-nav'>
 <ul class='nav nav-list'>
 <li class='nav-header'>Table of Contents</li>
-<li><a href='#2.1'>Maxml</a></li>
+<li><a href='#H1'>Maxml</a></li>
 
-<li><a href='#3.1'>Why Maxml?</a></li>
+<li><a href='#H2'>Why Maxml?</a></li>
 
-<li><a href='#3.2'>Processing Rules</a></li>
+<li><a href='#H3'>Processing Rules</a></li>
 
-<li><a href='#3.3'>Value Fall-Through Interpretation</a></li>
+<li><a href='#H4'>Value Fall-Through Interpretation</a></li>
 
-<li><a href='#3.4'>Key Definitions</a></li>
+<li><a href='#H5'>Key Definitions</a></li>
 
-<li><a href='#3.5'>Value Definitions</a></li>
+<li><a href='#H6'>Value Definitions</a></li>
 
-<li><a href='#4.1'>Strings</a></li>
+<li><a href='#H7'>Strings</a></li>
 
-<li><a href='#4.2'>Numerics</a></li>
+<li><a href='#H8'>Numerics</a></li>
 
-<li><a href='#4.3'>Booleans</a></li>
+<li><a href='#H9'>Booleans</a></li>
 
-<li><a href='#4.4'>Dates</a></li>
+<li><a href='#H10'>Dates</a></li>
 
-<li><a href='#4.5'>Miscellaneous</a></li>
+<li><a href='#H11'>Miscellaneous</a></li>
 
-<li><a href='#3.6'>Collections</a></li>
+<li><a href='#H12'>Collections</a></li>
 
-<li><a href='#4.6'>Lists/Sequences</a></li>
+<li><a href='#H13'>Lists/Sequences</a></li>
 
-<li><a href='#4.7'>Maps</a></li>
+<li><a href='#H14'>Maps</a></li>
 
 </ul>
 </div>
 </div>
 <div class='span9'>
 <!-- Begin Markdown -->
-<h2 id="2.1">Maxml</h2>
-<p>Maxml (pronounced <em>maximal</em>) looks and feels like very simple <a href="http://yaml.org">YAML</a>, but it is not YAML.  Maxml is meant to be a very small and simple subset of YAML with some significant structural changes.</p>
+<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Maxml</h2>
+<p>Maxml (pronounced <em>maximal</em>) looks and feels like very simple <a href="http://yaml.org" title="YAML">YAML</a>, but it is not YAML.  Maxml is meant to be a very small and simple subset of YAML with some significant structural changes.</p>
 
-<p>The Maxml binary package is &lt; 10KB.</p>
+<p>The Maxml binary package is &lt; 20KB with debug symbols.</p>
 
-<h3 id="3.1">Why Maxml?</h3>
+<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Why Maxml?</h3>
 <p>I like JSON.<br/>
 I would have been satisfied with a simple, really small JSON parser.  The closest I found was <a href="http://json-simple.googlecode.com">JSON-Simple</a>, but that relies on a JFlex-generated parser class.<br/>
-<strong>Verdict:</strong> Unmaintainable.</p>
+<strong>Verdict:</strong> Debugging JFlex-generated code is not for humans.</p>
 
 <p>I like YAML.<br/>
-I would have been satisfied with a simple, really small YAML parser.  The closest I found was <a href="http://snakeyaml.googlecode.com">SnakeYaml</a>, but that is ~250KB.<br/>
-<strong>Verdict:</strong> Too large to bundle.</p>
+I would have been satisfied with a simple, really small YAML parser.  The closest I found was <a href="http://snakeyaml.googlecode.com" title="SnakeYaml">SnakeYaml</a>, but that is ~250KB.<br/>
+<strong>Verdict:</strong> Almost as large as the pro toolkit; too large.</p>
 
 <p>Because Moxie needs to have a bundled parser for the <code>build.moxie</code> project descriptor and I could not find a parser that suited my needs, I wrote a custom YAML-ish parser.</p>
 
-<h3 id="3.2">Processing Rules</h3>
+<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Processing Rules</h3>
 <ol>
 <li>Maxml files must be UTF-8 encoded.</li>
 <li>Leading whitespace is completely irrelevant and ignored (except for text blocks) so indent all you want.</li>
 <li>All lines are expected to begin with a <code>key:</code> or <code>&quot;my:key:name&quot;:</code> sequence unless<ol>
-<li>the line equals <strong>"""</strong> <em>(start/end text block)</em></li>
+<li>the line equals <strong>&quot;&quot;&quot;</strong> <em>(start/end text block)</em></li>
+<li>the line equals <strong>&quot;&quot;</strong> <em>(start/end offset text block)</em></li>
 <li>the line is blank <em>(included in a text block, otherwise ignored)</em></li>
 <li>the line starts with <strong>#</strong> <em>(comment, ignored)</em></li>
 <li>the line equals <strong>---</strong> or <strong>...</strong> <em>(reserved, ignored)</em></li>
@@ -161,18 +176,19 @@ I would have been satisfied with a simple, really small YAML parser.  The closes
 </ol>
 </li>
 <li>Values that equal <strong>{</strong> define a map and all subsequent lines will fill the map until a <strong>}</strong> line is processed  </li>
-<li>Values that equals <strong>"""</strong> define a text block and all subsequent lines will be appended to that text block until a <strong>"""</strong> line is processed</li>
+<li>Values that equals <strong>&quot;&quot;&quot;</strong> define a text block and all subsequent lines will be appended to that text block until a <strong>&quot;&quot;&quot;</strong> line is processed</li>
+<li>Values that equals <strong>&quot;&quot;</strong> define an offset text block and all subsequent lines will be appended to that text block until a <strong>&quot;&quot;</strong> line is processed</li>
 <li>All remaining values are subject to fall-through interpretation</li>
 </ol>
 
-<h3 id="3.3">Value Fall-Through Interpretation</h3>
+<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Value Fall-Through Interpretation</h3>
 <p>Values are deserialized based on the following algorithm.  If a step is successful the interpreted value is returned, otherwise the next step is checked until it falls-through the bottom of the check and a string is returned.</p>
 
 <ol>
 <li>Empty value is an empty string</li>
 <li>Explicit Null value <em>~</em></li>
 <li>Single-quoted strings <em>'my string'</em></li>
-<li>Double-quoted strings <em>"my string"</em></li>
+<li>Double-quoted strings <em>&quot;my string&quot;</em></li>
 <li>Inline-list <em>[a, b, c, d]</em></li>
 <li>Inline-map <em>{a:1, b:2, c:3, d:4}</em></li>
 <li>Boolean interpretation <em>true, false, yes, no, on, off</em></li>
@@ -183,7 +199,7 @@ e.g. 1 is an integer but 4,000,000,000 is a long</li>
 <li>String</li>
 </ol>
 
-<h3 id="3.4">Key Definitions</h3>
+<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Key Definitions</h3>
 <p>Maxml is a key-value serialization format.</p>
 
 <ol>
@@ -192,8 +208,8 @@ e.g. 1 is an integer but 4,000,000,000 is a long</li>
 <li>Keys are case-insensitive</li>
 </ol>
 
-<h3 id="3.5">Value Definitions</h3>
-<h4 id="4.1">Strings</h4>
+<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Value Definitions</h3>
+<h4 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Strings</h4>
 <p><pre class='prettyprint lang-yaml'>
 # fall-through string
 myString1: this is a\nstring
@@ -202,19 +218,30 @@ myString2: 'this is another\nstring'
 # explicit double-quoted string, leading/trailing quotes are stripped
 myString2: &quot;this is another\nstring&quot;
 # explicit multi-line string, leading/trailing quotes are stripped
-myString3: &quot;&quot;&quot;
+myString3a: &quot;&quot;&quot;
 this is another string
 which contains
 several lines
 &quot;&quot;&quot;
+# explicit multi-line string, leading/trailing quotes are stripped
+myString3b: '''
+this is another string
+which contains
+several lines
+'''
 # explicit multi-line string, leading/trailing quotes are stripped
 myString4: &quot;&quot;&quot;
 this is another string
 which contains
 several lines&quot;&quot;&quot;
 
+note: ''
+      this is
+      an offset text block
+      ''
+
 </pre>
-<h4 id="4.2">Numerics</h4></p>
+<h4 class="section" id="H8"><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Numerics</h4></p>
 
 <p><pre class='prettyprint lang-yaml'>
 myInt: 12345
@@ -227,7 +254,7 @@ myOctal: 010
 # hexadecimals lead with 0x
 myHex: 0x12345
 </pre>
-<h4 id="4.3">Booleans</h4></p>
+<h4 class="section" id="H9"><a href="#H9" class="sectionlink"><i class="icon-share-alt"> </i></a>Booleans</h4></p>
 
 <p><pre class='prettyprint lang-yaml'>
 # true values
@@ -239,7 +266,7 @@ myBool4: false
 myBool5: no
 myBool6: off
 </pre>
-<h4 id="4.4">Dates</h4></p>
+<h4 class="section" id="H10"><a href="#H10" class="sectionlink"><i class="icon-share-alt"> </i></a>Dates</h4></p>
 
 <p>Dates support second resolution.  When Date objects are deserialized, the msecs value is manually set to 0.</p>
 
@@ -251,17 +278,17 @@ myDate2: 2012-02-01T15:30:45Z
 # ISO8601, timezone-specified
 myDate3: 2012-02-01T15:30:45-0400
 </pre>
-<h4 id="4.5">Miscellaneous</h4></p>
+<h4 class="section" id="H11"><a href="#H11" class="sectionlink"><i class="icon-share-alt"> </i></a>Miscellaneous</h4></p>
 
 <p><pre class='prettyprint lang-yaml'>
 # null
 myNull: ~
 </pre>
-<h3 id="3.6">Collections</h3></p>
+<h3 class="section" id="H12"><a href="#H12" class="sectionlink"><i class="icon-share-alt"> </i></a>Collections</h3></p>
 
 <p>Parsed collections preserve definition order.</p>
 
-<h4 id="4.6">Lists/Sequences</h4>
+<h4 class="section" id="H13"><a href="#H13" class="sectionlink"><i class="icon-share-alt"> </i></a>Lists/Sequences</h4>
 <p><em>java.util.ArrayList</em></p>
 
 <p>Lists may be defined using the following notation where each item in the list is defined on a separate line with a leading dash character.</p>
@@ -280,11 +307,17 @@ Inline lists may not have nested collections.</p>
 # inline list
 myList1: [src, tests, extra]
 # a list of inline lists
+# add myList1 as the 3rd inline list
 myList3:
 - [apple, banana, strawberry]
 - [celery, carrot, lettuce]
+- &amp;myList1
+# create myList4 by adding all elements from the first
+# inline list in myList3.  myList4 = [apple, banana, strawberry]
+myList4:
++ &amp;myList3[0]
 </pre>
-<h4 id="4.7">Maps</h4>
+<h4 class="section" id="H14"><a href="#H14" class="sectionlink"><i class="icon-share-alt"> </i></a>Maps</h4>
 <em>java.util.LinkedHashMap</em></p>
 
 <p>Maps may be defined using the familiar curly brace notation.<br/>
@@ -310,15 +343,10 @@ Inline maps may not have nested collections and they may not have strings with c
 myMap2: { field1: test, field2: 100, field3: true }
 </pre>
 <!-- End Markdown -->
-<footer class="footer"><p class="pull-right">generated 2013-01-24</p>
+<footer class="footer"><p class="pull-right">generated 2013-02-13</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>
 </div></div>
-
-<!-- Include scripts at end for faster page loading -->
-<script src="./prettify/prettify.js"></script>
-<script src="./bootstrap/js/jquery.js"></script>
-<script src="./bootstrap/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -107,94 +107,14 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Getting Started</h2>
-<p>Moxie does not use <a href="https://maven.apache.org/pom.html" title="Apache Maven POM Reference">Maven's pom.xml</a> nor <a href="https://ant.apache.org/ivy/history/latest-milestone/ivyfile.html" title="Apache Ivy File Reference">Ivy's ixy.xml</a> to describe your project.  Moxie uses the <code>build.moxie</code> project descriptor.  This file employs a <em>key:value</em> format which is very similar to YAML.</p>
-
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Minimal build.moxie</h3>
-<div class="row">
-<div class="span8">
-Like Maven, Moxie supports convention-over-configuration so that the minimal build.moxie project descriptor can be defined as shown.  This example assumes that your project uses the <a href="http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html">Apache Standard Directory Layout</a>.
-</div>
-
-<div class="span4">
-<pre class='prettyprint lang-yaml'>
-groupId: org.example
-artifactId: demo
-version: 1.2.3-SNAPSHOT
+<h2 id="H1">mx:Javadoc <span class='label label-success'>pro</span> <span class='label label-info'>all</span></h2>
+<p><pre class='prettyprint lang-xml'>
+&lt;mx:javadoc destdir=&quot;${project.build.dir}/javadoc&quot; &gt;
+	&lt;redirector output=&quot;${project.build.dir}/javadoc.log&quot; append=&quot;false&quot; /&gt;
+&lt;/mx:javadoc&gt;
 </pre>
-<i>minimal Moxie project descriptor</i>
-</div></div>
-<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>A realistic build.moxie</h3>
-<div class="row">
-<div class="span6">
-
-Minimal examples are cute, but they are not very realistic except for the simplest of projects.  Here is a more complete example.
-<br/><br/>
-Moxie borrows ideas from both Maven and Gradle so anyone familiar with those tools should feel fairly comfortable with the <code>build.moxie</code> descriptor.
-<br/><br/>
-For more information on the <code>build.moxie</code> descriptor please review the <a href="moxiedescriptor.html">build.moxie documentation</a>. 
-</div>
-
-<div class="span6">
-<pre class='prettyprint lang-yaml'>
-name: Example 1
-description: A better example
-groupId: org.example
-artifactId: demo
-version: 1.2.3-SNAPSHOT
-organization: Example Writers
-url: 'http://demo.example.org'
-apply: eclipse, intellij, pom
-sourceDirectories: 
-- compile 'src/main/java'
-- compile 'src/main/resources'
-- test 'src/test/java'
-- test 'src/test/resources'
-properties: {
-  clang.version : 3.1
-}
-dependencies:
-- compile 'org.apache.commons:commons-lang3:${clang.version}'
-- test 'junit'
-- build 'jacoco'
-</pre>
-<i>a more elaborate Moxie project descriptor</i>
-</div></div>
-<h2 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Ant build.xml</h2>
-<div class="row">
-<div class="span8">
-Moxie turbo-charges Ant and allows you to build your artifacts with easier to read build scripts.  
-This example script uses Moxie Extension tasks with automatic property defaults based on the <code>build.moxie</code> descriptor.
-<p/>
-<pre class='prettyprint lang-xml'>
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;project default=&quot;main&quot; xmlns:mx=&quot;antlib:org.moxie&quot;&gt;
-
-    &lt;!-- Moxie tasks --&gt;
-    &lt;taskdef resource=&quot;tasks.properties&quot; uri=&quot;antlib:org.moxie&quot;&gt;
-        &lt;classpath location=&quot;${basedir}/moxie.jar&quot; /&gt;
-    &lt;/taskdef&gt;
-
-    &lt;target name=&quot;main&quot;&gt;
-        &lt;!-- Setup Ant build properties and resolve &amp; retrieve Maven dependencies --&gt;
-        &lt;mx:init /&gt;
-        &lt;!-- Compile your project --&gt;
-        &lt;mx:compile /&gt;
-        &lt;!-- Compile your unit tests and execute them --&gt;
-        &lt;mx:test /&gt;
-        &lt;!-- Generate class and source jars of your project --&gt;
-        &lt;mx:jar includeResources=&quot;true&quot; packageSources=&quot;true&quot; /&gt;
-        &lt;!-- Install your generated artifacts to your local Moxie cache --&gt;
-        &lt;mx:install /&gt;
-    &lt;/target&gt;
-
-&lt;/project&gt;
-</pre>
-</div>
-<div class="span4">
-</div></div>
 <!-- End Markdown -->
-<div ><ul class="pager"> <li class="next"><a href="moxiedescriptor.html">build.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-02-13</p>
+<div ><ul class="pager"><li class="previous"><a href="mxjavac.html">&larr; mx:Javac</a></li> <li class="next"><a href="mxkeys.html">mx:Keys &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-02-13</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>
