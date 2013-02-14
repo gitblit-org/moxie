@@ -1,5 +1,0 @@
-## Current Release
-
-Document release here
-
-[older releases](releases.html)

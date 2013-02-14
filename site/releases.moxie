@@ -1,0 +1,76 @@
+history:
+#
+# 0.4.0 release
+#
+- {
+    title: Moxie 0.4.0
+    id: 0.4.0
+    date: 2012-07-05
+    note: ~
+    text: Milestone 1: basic transitive dependency handling and most core tasks
+}
+
+#
+# 0.5.0 release
+#
+current: {
+    title: Moxie 0.5.0
+    id: 0.5.0
+    date: 2013-01-23
+    note: Please delete your .moxie/data folder before upgrading!
+    text: Milestone 2: Most tasks and features to build Gitblit
+
+    changes:
+     - Support MX_COLOR and MX_DEBUG environment variables
+     - Re-use Maven proxy settings, if available
+
+    additions:
+     - SNAPSHOT, RELEASE and LATEST resolution
+     - Dependency tags
+     - Added Moxie Proxy, a standalone Maven artifact proxy server
+     - Added mx:Test, mx:Run, mx:WebXml, mx:Thumbs, and mx:Zip tasks
+     - Added <launcher /> support for mx:GenJar and mx:Jar tasks
+     - Added IntelliJ IDEA .iml file generation
+     - Created Moxie+Ant distribution
+     - Support linked source modules (projects)
+}
+
+#
+# Pending release
+#
+pending: {
+    title: Moxie ${project.version}
+    id: ${project.version}
+    date: ${project.buildDate}
+    note: ''
+          Please delete your .moxie/data folder before upgrading!
+          Please change all mxp property references to project propert references!
+          ''
+    text: Milestone 3: Enhanced documentation features and more intuitive syntax
+
+    fixes:
+     - Resolve all POM properties in dependencies and managedDependencies after parsing is completed and properties are inherited
+     - Fixed regression with artifact resolution when using multiple source repositories
+
+    changes:
+     - Improved mx:Doc task with header links, pagers, and Freemarker templates
+     - Improved artifact resolution failure reporting
+     - Change mxp.* properties to project.* to match Maven
+     - Changed "folder/folders" properties to be "directory/directories" to match Maven and Ant
+     - Make Maven ~/.m2 cache strategy configurable, default to COPY
+     - mx:Run now forks by default
+
+    additions:
+     - Added offset text block syntax to Maxml parser (double single-quotes)
+     - Added &object reference syntax to Maxml parser
+     - Added support for compilerArgs in descriptor
+     - Added mx:Tar task
+     - Added mx:Javadoc task to redirect verbose javadoc output to a log file
+}
+
+#
+# Create a collection of log entries for RSS/ATOM feeds
+#
+all:
++ &history
+- &current

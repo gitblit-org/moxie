@@ -165,9 +165,15 @@ Inline lists may not have nested collections.
 # inline list
 myList1: [src, tests, extra]
 # a list of inline lists
+# add myList1 as the 3rd inline list
 myList3:
 - [apple, banana, strawberry]
 - [celery, carrot, lettuce]
+- &myList1
+# create myList4 by adding all elements from the first
+# inline list in myList3.  myList4 = [apple, banana, strawberry]
+myList4:
++ &myList3[0]
 %ENDMAXML%
 
 #### Maps

@@ -14,7 +14,7 @@ The Moxie binaries and this site are built with Moxie.
   [mx:init]            name: ${project.name}
   [mx:init]     description: ${project.description}
   [mx:init]         groupId: ${project.groupId}
-  [mx:init]      artifactId: ${project.artifactId}
+  [mx:init]      artifactId: toolkit
   [mx:init]         version: ${project.releaseVersion}
   [mx:init]    organization: ${project.organization}
   [mx:init]             url: ${project.url}
@@ -23,22 +23,22 @@ The Moxie binaries and this site are built with Moxie.
   [mx:init]    rebuilt Eclipse configuration
   [mx:init]    rebuilt pom.xml
  [mx:javac] =========================================================
- [mx:javac] mx:Javac  (${project.coordinates}, compile)
+ [mx:javac] mx:Javac  (org.moxie:toolkit, compile)
  [mx:javac] ---------------------------------------------------------
  [mx:javac] Compiling 41 source files to C:\git\moxie\build\classes
  [mx:javac] Copying 20 files to C:\git\moxie\build\classes
    [mx:jar] =========================================================
-   [mx:jar] mx:Jar  (${project.artifactId}-${project.releaseVersion})
+   [mx:jar] mx:Jar  (toolkit-${project.releaseVersion})
    [mx:jar] ---------------------------------------------------------
-   [mx:jar] Building jar: C:\git\moxie\target\${project.artifactId}-${project.releaseVersion}.jar
+   [mx:jar] Building jar: C:\git\moxie\target\toolkit-${project.releaseVersion}.jar
    [mx:jar]    550 KB, generated in 460 ms
-   [mx:jar] Building jar: C:\git\moxie\target\${project.artifactId}-${project.releaseVersion}-sources.jar
+   [mx:jar] Building jar: C:\git\moxie\target\toolkit-${project.releaseVersion}-sources.jar
    [mx:jar]    148 KB, generated in 80 ms
 [mx:install] =========================================================
-[mx:install] mx:Install  (${project.artifactId}-${project.releaseVersion})
+[mx:install] mx:Install  (toolkit-${project.releaseVersion})
 [mx:install] ---------------------------------------------------------
-[mx:install] Copying 2 files to C:\Users\James Moger\.moxie\local\${project.groupId}\${project.artifactId}\${project.releaseVersion}
-[mx:install] generating pom for ${project.artifactId}-${project.releaseVersion}
+[mx:install] Copying 2 files to C:\Users\James Moger\.moxie\local\${project.groupId}\toolkit\${project.releaseVersion}
+[mx:install] generating pom for toolkit-${project.releaseVersion}
 [mx:install] calculating checksums for installed artifacts
 </pre>
 </div>
