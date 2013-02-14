@@ -117,6 +117,12 @@ public class MxDoc extends MxTask {
 		return logo;
 	}
 
+	public Link createPage() {
+		Link page = new Link();		
+		page.isPage = true;
+		doc.freeformPages.add(page);
+		return page;
+	}
 
 	public void setName(String name) {
 		doc.name = name;
@@ -284,6 +290,11 @@ public class MxDoc extends MxTask {
 					prepareTemplatePage(sublink);
 				}
 			}
+		}
+		
+		for (Link page : doc.freeformPages) {
+			// process out-of-structure template pages
+			prepareTemplatePage(page);
 		}
 		
 		Docs.execute(build, doc, isVerbose());

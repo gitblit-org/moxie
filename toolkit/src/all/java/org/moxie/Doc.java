@@ -67,6 +67,8 @@ public class Doc implements Serializable {
 
 	public List<Regex> regexes = new ArrayList<Regex>();
 	
+	public List<Link> freeformPages = new ArrayList<Link>();
+	
 	public Logo logo;
 	
 	public Logo favicon;

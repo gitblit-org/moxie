@@ -43,6 +43,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.moxie.maxml.Maxml;
+import org.moxie.maxml.MaxmlException;
 import org.moxie.maxml.MaxmlMap;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.MarkdownUtils;
@@ -50,6 +51,7 @@ import org.moxie.utils.StringUtils;
 
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.TemplateException;
 
 
 /**
@@ -153,7 +155,9 @@ public class Docs {
 		String header = generateHeader(projectName, build.getConfig().getProjectConfig(), doc);
 		String footer = generateFooter(doc);
 
-		build.getConsole().log("Generating HTML from Markdown files in {0} ", doc.sourceDirectory.getAbsolutePath());
+		if (!doc.structure.sublinks.isEmpty()) {
+			build.getConsole().log("Generating Structured HTML from source files... ");
+		}
 
 		// read references
 		if (doc.references == null) {
@@ -495,6 +499,34 @@ public class Docs {
 				writer.close();
 			} catch (Throwable t) {
 				build.getConsole().error(t, "Failed to transform " + link.src);
+			}
+		}
+		
+		// process pages which are not part of the normal structure
+		if (!doc.freeformPages.isEmpty()) {
+			build.getConsole().log("Generating Freeform HTML from template files...");
+			for (Link page : doc.freeformPages) {
+				try {
+					// template pages
+					String fileName = getHref(page);
+					build.getConsole().log(1, "{0} => {1}", page.templates.get(0).src, fileName);
+
+					String content = page.content;
+					processTemplates(doc, page);
+					for (Substitute sub : doc.substitutions) {
+						if (page.processSubstitutions || sub.isTemplate) {
+							content = content.replace(sub.token, sub.value);
+						}
+					}
+					for (Regex regex : doc.regexes) {
+						content = content.replaceAll(regex.searchPattern, regex.replacePattern);
+					}
+
+					File output = new File(doc.outputDirectory, page.as);
+					FileUtils.writeContent(output, content);
+				} catch (Throwable t) {
+					build.getConsole().error(t, "Failed to transform " + page.src);
+				}
 			}
 		}
 	}
