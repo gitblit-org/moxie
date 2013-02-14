@@ -170,7 +170,13 @@ public class Docs {
 			}
 			try {
 				String fileName = getHref(link);
-				build.getConsole().log(1, "{0} => {1}", link.src, fileName);
+				if (StringUtils.isEmpty(link.src)) {
+					// template page
+					build.getConsole().log(1, "{0} => {1}", link.templates.get(0).src, fileName);
+				} else {
+					// markdown page
+					build.getConsole().log(1, "{0} => {1}", link.src, fileName);
+				}
 				String content;
 				List<Section> sections = new ArrayList<Section>();
 				String pager = "";
@@ -178,6 +184,8 @@ public class Docs {
 				if (link.content != null) {
 					// generated content
 					content = link.content;
+					
+					processTemplates(doc, link);
 					
 					for (Substitute sub : doc.substitutions) {
 						if (link.processSubstitutions || sub.isTemplate) {
@@ -347,49 +355,7 @@ public class Docs {
 					}
 					
 					// templates
-					if (link.templates != null && !link.templates.isEmpty()) {
-						// Freemarker engine
-						Configuration fm = new Configuration();
-						fm.setObjectWrapper(new DefaultObjectWrapper());
-						fm.setDirectoryForTemplateLoading(doc.sourceDirectory);
-						
-						for (Template template : link.templates) {
-							FileInputStream is = new FileInputStream(new File(doc.sourceDirectory, template.data));
-							MaxmlMap dataMap = Maxml.parse(is);
-							is.close();
-							
-							// populate map with build properties by splitting them into maps
-							for (Substitute sub : doc.substitutions) {
-								if (sub.isProperty()) {
-									String prop = sub.getPropertyName();
-									MaxmlMap keyMap = dataMap;
-									// recursively create/find the destination map
-									while (prop.indexOf('.') > -1) {
-										String m = prop.substring(0, prop.indexOf('.'));
-										if (!keyMap.containsKey(m)) {
-											keyMap.put(m, new MaxmlMap());
-										}
-										keyMap = keyMap.getMap(m);
-										prop = prop.substring(m.length() + 1);
-									}
-									
-									// inject property into map
-									keyMap.put(prop, sub.value);
-								}
-							}
-							
-							// load and process the Freemarker template
-							freemarker.template.Template ftl = fm.getTemplate(template.src);
-							StringWriter writer = new StringWriter();
-							ftl.process(dataMap, writer);
-							
-							// create a substitution token
-							Substitute sub = new Substitute();
-							sub.token = template.token;
-							sub.value = writer.toString();
-							doc.substitutions.add(sub);
-						}
-					}
+					processTemplates(doc, link);
 
 					for (Substitute sub : doc.substitutions) {
 						if (link.processSubstitutions || sub.isTemplate) {
@@ -835,6 +801,58 @@ public class Docs {
 		}
 
 		return sb.toString();
+	}
+	
+	protected static void processTemplates(Doc doc, Link link) throws TemplateException, MaxmlException, IOException {
+		// templates
+		if (link.templates != null && !link.templates.isEmpty()) {
+			// Freemarker engine
+			Configuration fm = new Configuration();
+			fm.setObjectWrapper(new DefaultObjectWrapper());
+			fm.setDirectoryForTemplateLoading(doc.sourceDirectory);
+			
+			for (Template template : link.templates) {
+				File data = new File(template.data);
+				if (!data.exists()) {
+					data = new File(doc.sourceDirectory, template.data);
+				}
+				FileInputStream is = new FileInputStream(data);
+				MaxmlMap dataMap = Maxml.parse(is);
+				is.close();
+				
+				// populate map with build properties by splitting them into maps
+				for (Substitute sub : doc.substitutions) {
+					if (sub.isProperty()) {
+						String prop = sub.getPropertyName();
+						MaxmlMap keyMap = dataMap;
+						// recursively create/find the destination map
+						while (prop.indexOf('.') > -1) {
+							String m = prop.substring(0, prop.indexOf('.'));
+							if (!keyMap.containsKey(m)) {
+								keyMap.put(m, new MaxmlMap());
+							}
+							keyMap = keyMap.getMap(m);
+							prop = prop.substring(m.length() + 1);
+						}
+						
+						// inject property into map
+						keyMap.put(prop, sub.value);
+					}
+				}
+				
+				// load and process the Freemarker template
+				freemarker.template.Template ftl = fm.getTemplate(template.src);
+				StringWriter writer = new StringWriter();
+				ftl.process(dataMap, writer);
+				
+				// create a substitution token
+				Substitute sub = new Substitute();
+				sub.isTemplate = true;
+				sub.token = template.token;
+				sub.value = writer.toString();
+				doc.substitutions.add(sub);
+			}
+		}
 	}
 	
 	/**

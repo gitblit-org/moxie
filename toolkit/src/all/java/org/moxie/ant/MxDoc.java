@@ -273,6 +273,17 @@ public class MxDoc extends MxTask {
 					}
 				}
 			}
+
+			// pages which are generated from a Freemarker template
+			if (menuLink.isPage) { 
+				// process navbar items
+				prepareTemplatePage(menuLink);
+			} else if (menuLink.isMenu) {
+				// process menu items
+				for (Link sublink : menuLink.sublinks) {
+					prepareTemplatePage(sublink);
+				}
+			}
 		}
 		
 		Docs.execute(build, doc, isVerbose());
@@ -346,6 +357,16 @@ public class MxDoc extends MxTask {
 	
 	protected void deleteResource(File baseFolder, String file) {
 		new File(baseFolder, file).delete();
+	}
+	
+	protected void prepareTemplatePage(Link link) {
+		// pages which are generated from a Freemarker template
+		if (link.isPage && StringUtils.isEmpty(link.src) && 
+				link.templates != null && link.templates.size() == 1) {
+			String token = "%-" + link.as + "%";
+			link.templates.get(0).setToken(token);
+			link.content = token;
+		}
 	}
 	
 	void writeDependenciesAsJson() {

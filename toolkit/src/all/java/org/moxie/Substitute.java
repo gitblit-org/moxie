@@ -18,6 +18,7 @@ package org.moxie;
 public class Substitute {
 	String token;
 	String value;
+	boolean isTemplate;
 
 	public void setToken(String token) {
 		this.token = token;
