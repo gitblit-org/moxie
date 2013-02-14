@@ -713,6 +713,16 @@ public class Docs {
 		if (doc.injectPrettify) {
 			sb.append("\n<link rel=\"stylesheet\" href=\"./prettify/prettify.css\" />");
 		}
+		
+		if (!StringUtils.isEmpty(doc.rssFeed)) {
+			sb.append(MessageFormat.format(
+					"<link rel=\"alternate\" type=\"application/rss+xml\" title=\"{0} RSS 2.0\" href=\"./{1}\" />\n", doc.name, doc.rssFeed));
+		}
+
+		if (!StringUtils.isEmpty(doc.atomFeed)) {
+			sb.append(MessageFormat.format(
+					"<link rel=\"alternate\" type=\"application/atom+xml\" title=\"{0} Atom\" href=\"./{1}\" />\n", doc.name, doc.atomFeed));
+		}
 
 		if (!StringUtils.isEmpty(doc.googlePlusId)) {
 			String content = readResource(doc, "pluspage.html");

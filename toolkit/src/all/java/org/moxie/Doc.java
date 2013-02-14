@@ -72,6 +72,10 @@ public class Doc implements Serializable {
 	public Logo favicon;
 	
 	public boolean isResponsiveLayout;
+	
+	public String rssFeed;
+	
+	public String atomFeed;
 
 	public List<File> getSources() {
 		List<File> files = new ArrayList<File>();

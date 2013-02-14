@@ -158,6 +158,14 @@ public class MxDoc extends MxTask {
 		doc.isResponsiveLayout = value;
 	}
 	
+	public void setRssfeed(String feed) {
+		doc.rssFeed = feed;
+	}
+
+	public void setAtomfeed(String feed) {
+		doc.atomFeed = feed;
+	}
+
 	protected void setToken(String token, String value) {
 		if (value == null) {
 			value = "${" + token + "}";
