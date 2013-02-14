@@ -272,6 +272,8 @@
 		-->
 		<copy file="${project.targetDirectory}/toolkit-${project.version}-all.jar" tofile="${project.targetDirectory}/moxie.jar" />
 
+		<!-- Install the artifacts into the version-controlled repository -->
+		<mx:install basedir="${basedir}/../maven" snapshots="false" />
 	</target>
 	
 	<target name="test" depends="prepare">

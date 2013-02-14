@@ -25,5 +25,8 @@
 			<dependencies prefix="ext" />
 		</mx:zip>
 		
+		<!-- Install into the version-controlled Maven repository -->
+		<mx:install basedir="${basedir}/../maven" snapshots="false" />
+		
 	</target>
 </project>

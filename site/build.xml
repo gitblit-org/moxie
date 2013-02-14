@@ -62,19 +62,21 @@
 					</page>
 				</menu>
 				<menu name="downloads">
-					<link name="moxie+ant (zip)" src="moxie+ant-${project.releaseVersion}.zip" />
-					<link name="moxie+ant (tar.gz)" src="moxie+ant-${project.releaseVersion}.tar.gz" />
+					<link name="moxie+ant (zip)" src="maven/org/moxie/moxie+ant/${project.releaseVersion}/moxie+ant-${project.releaseVersion}.zip" />
+					<link name="moxie+ant (tar.gz)" src="maven/org/moxie/moxie+ant/${project.releaseVersion}/moxie+ant-${project.releaseVersion}.tar.gz" />
 					<divider />
-					<link name="moxie-core" src="moxie-${project.releaseVersion}-core.jar" />
-					<link name="moxie-pro" src="moxie-${project.releaseVersion}-pro.jar" />
-					<link name="moxie-all" src="moxie-${project.releaseVersion}-all.jar" />
+					<link name="moxie-core" src="maven/org/moxie/toolkit/${project.releaseVersion}/toolkit-${project.releaseVersion}-core.jar" />
+					<link name="moxie-pro" src="maven/org/moxie/toolkit/${project.releaseVersion}/toolkit-${project.releaseVersion}-pro.jar" />
+					<link name="moxie-all" src="maven/org/moxie/toolkit/${project.releaseVersion}/toolkit-${project.releaseVersion}-all.jar" />
 					<divider />
-					<link name="moxie-proxy" src="moxie-proxy-${project.releaseVersion}.zip" />
+					<link name="moxie-proxy" src="maven/org/moxie/proxy/${project.releaseVersion}/proxy-${project.releaseVersion}.zip" />
 					<divider />
-					<link name="maxml" src="maxml-${project.releaseVersion}.jar" />
-					<link name="maxml-sources" src="maxml-${project.releaseVersion}-sources.jar" />
+					<link name="maxml" src="maven/org/moxie/maxml/${project.releaseVersion}/maxml-${project.releaseVersion}.jar" />
+					<link name="maxml-sources" src="maven/org/moxie/maxml/${project.releaseVersion}/maxml-${project.releaseVersion}-sources.jar" />
 					<divider />
 					<link name="Github Project" src="http://github.com/gitblit/moxie" />
+					<divider />
+					<link name="Maven Repository" src="maven" />
 				</menu>
 				<report name="reports" />
 				<divider />
@@ -88,11 +90,8 @@
 			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />
 			
 			<!-- Copy the generated artifacts from the other projects -->
-			<resource>
-				<fileset dir="${basedir}/../toolkit/build/target/" includes="*${project.version}-*.jar" excludes="*${project.version}-sources.jar" />
-				<fileset dir="${basedir}/../proxy/build/target/" includes="*${project.version}.zip" />
-				<fileset dir="${basedir}/../moxie+ant/build/target/" includes="*${project.version}.zip,*${project.version}.tar.gz" />
-				<fileset dir="${basedir}/../maxml/build/target/" includes="*${project.version}.jar" />
+			<resource prefix="maven">
+				<fileset dir="${basedir}/../maven" />
 			</resource>
 			
 			<!-- Set the logo from the mx:doc resources -->
