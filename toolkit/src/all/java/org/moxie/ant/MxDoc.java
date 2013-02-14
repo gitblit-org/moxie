@@ -268,22 +268,25 @@ public class MxDoc extends MxTask {
 		writeDependenciesAsJson();
 
 		for (org.moxie.Resource resource : resources) {
+			File destdir = doc.outputDirectory;
+			if (!StringUtils.isEmpty(resource.prefix)) {
+				destdir = new File(doc.outputDirectory, resource.prefix);
+			}
 			try {
 				if (resource.file != null) {
-					FileUtils.copy(doc.outputDirectory, resource.file);
+					FileUtils.copy(destdir, resource.file);
 				} else {
 					for (FileSet fs : resource.filesets) {
 						DirectoryScanner ds = fs.getDirectoryScanner(getProject());
 						File fromDir = fs.getDir(getProject());
 
 						for (String srcFile : ds.getIncludedFiles()) {
+							File dir = destdir;
+							if (srcFile.indexOf(File.separatorChar) > -1) {
+								dir = new File(dir, srcFile.substring(0, srcFile.lastIndexOf(File.separatorChar)));
+							}
 							File file = new File(fromDir, srcFile);
-							FileUtils.copy(doc.outputDirectory, file);
-						}
-
-						for (String srcDir : ds.getIncludedDirectories()) {
-							File file = new File(fromDir, srcDir);
-							FileUtils.copy(doc.outputDirectory, file);
+							FileUtils.copy(dir, file);
 						}
 					}
 				}

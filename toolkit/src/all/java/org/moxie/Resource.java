@@ -24,6 +24,8 @@ import org.apache.tools.ant.types.FileSet;
 public class Resource {
 
 	public List<FileSet> filesets = new ArrayList<FileSet>();
+	
+	public String prefix;
 
 	public File file;
 
@@ -32,6 +34,10 @@ public class Resource {
 			throw new MoxieException("can't add 'file' - fileset already used");
 		}
 		file = f;
+	}
+	
+	public void setPrefix(String prefix) {
+		this.prefix= prefix;
 	}
 
 	/**
