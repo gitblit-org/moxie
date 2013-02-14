@@ -208,6 +208,10 @@ public class MxDoc extends MxTask {
 			setToken(entry.getKey(), entry.getValue());
 		}
 		
+		if (doc.name == null) {
+			doc.name = build.getPom().name;
+		}
+		
 		if (doc.sourceDirectory == null) {
 			doc.sourceDirectory = build.getConfig().getSiteSourceDirectory();
 		}
