@@ -11,10 +11,21 @@
 		project (e.g. standard Eclipse/Netbeans/etc) then uncomment this section
 		and set the appropriate path to your Moxie jar file.
 	-->
+
+	<!--
+	<property name="moxie.version" value="%MOXIE_VERSION%" />
+	<property name="moxie.url" value="http://gitblit.github.com/moxie/maven" />
+	<property name="moxie.jar" value="toolkit-${moxie.version}-all.jar" />
 	
-	<!--<taskdef resource="tasks.properties" uri="antlib:org.moxie">
+	<get src="${moxie.url}/org/moxie/toolkit/${moxie.version}/${moxie.jar}"
+		dest="${basedir}" skipexisting="true" verbose="true" />
+	-->
+
+	<!--
+	<taskdef resource="tasks.properties" uri="antlib:org.moxie">
 		<classpath location="${basedir}/moxie.jar" />
-	</taskdef>-->
+	</taskdef>
+	-->
 
 	<!-- Main Target -->
 	<target name="main" description="Prepares, compiles, tests, and packages your project">
