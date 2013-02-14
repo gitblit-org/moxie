@@ -178,6 +178,15 @@ public class Docs {
 				if (link.content != null) {
 					// generated content
 					content = link.content;
+					
+					for (Substitute sub : doc.substitutions) {
+						if (link.processSubstitutions || sub.isTemplate) {
+							content = content.replace(sub.token, sub.value);
+						}
+					}
+					for (Regex regex : doc.regexes) {
+						content = content.replaceAll(regex.searchPattern, regex.replacePattern);
+					}
 				} else if (link.src.endsWith(".html") || link.src.endsWith(".htm")) {
 					// static html content
 					content = FileUtils.readContent(new File(doc.sourceDirectory, link.src), "\n");
@@ -383,8 +392,11 @@ public class Docs {
 					}
 
 					for (Substitute sub : doc.substitutions) {
-						content = content.replace(sub.token, sub.value);
+						if (link.processSubstitutions || sub.isTemplate) {
+							content = content.replace(sub.token, sub.value);
+						}
 					}
+					
 					for (Regex regex : doc.regexes) {
 						content = content.replaceAll(regex.searchPattern, regex.replacePattern);
 					}
@@ -625,6 +637,9 @@ public class Docs {
 
 		StringBuilder sb = new StringBuilder();
 		for (Link link : links) {
+			if (!link.showNavbarLink) {
+				continue;
+			}
 			boolean active = currentLink.equals(link);
 			if (link.sublinks == null) {
 				String href = getHref(link);

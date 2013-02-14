@@ -40,11 +40,14 @@ public class Link implements Serializable {
 	public boolean showToc;
 	public boolean showHeaderLinks;
 	public boolean isFluidLayout;
-	public boolean showPager;
 	
+	public boolean showPager;
 	public String pagerPlacement;
 	public String pagerLayout;
-	
+
+	public boolean showNavbarLink = true;
+	public boolean processSubstitutions = true;
+
 	public List<Template> templates;
 
 	public void setName(String name) {
@@ -67,12 +70,20 @@ public class Link implements Serializable {
 		this.content = content;
 	}
 
+	public void setNavbarLink(boolean value) {
+		this.showNavbarLink = value;
+	}
+
 	public void setToc(boolean value) {
 		this.showToc = value;
 	}
 
 	public void setHeaderlinks(boolean value) {
 		this.showHeaderLinks = value;
+	}
+
+	public void setProcessSubstitutions(boolean value) {
+		this.processSubstitutions = value;
 	}
 
 	public void setPager(boolean value) {
