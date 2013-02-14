@@ -47,8 +47,10 @@ public class MaxmlParser {
 	Pattern wholePattern = Pattern.compile("^\\d{1,3}(,\\d{1,3})*$");
 	DecimalFormat wholeFormat = new DecimalFormat("#,###,###,###,###,###,###");
 	String csvPattern = ",(?=(?:[^\\\"]*\\\"[^\\\"]*[\\\"^,]*\\\")*(?![^\\\"]*\\\"))";
+	int tabWidth = 4;
+	int lineCount;
 	MaxmlMap rootMap;
-	
+
 	/**
 	 * Recursive method to parse an Maxml document.
 	 * 
@@ -62,7 +64,6 @@ public class MaxmlParser {
 			rootMap = map;
 		}
 		ArrayList<Object> array = null;
-		int lineCount = 0;
 		String line = null;
 		try {
 			while ((line = reader.readLine()) != null) {
@@ -85,8 +86,7 @@ public class MaxmlParser {
 					continue;
 				} else if (line.equals("\"\"\"") || line.equals("'''") || line.equals("\"\"") || line.equals("''")) {
 					// start text block, offset is 0
-					String value = parseTextBlock(reader, lineCount, 0);
-					lineCount += value.split("\n").length;
+					String value = parseTextBlock(reader, 0);
 					map.put(lastKey, value);
 				} else if (line.charAt(0) == '}') {
 					// end this map
@@ -106,29 +106,25 @@ public class MaxmlParser {
 						array.add(value);
 					} else if (rem.startsWith("\"\"\"")) {
 						// start text block
-						String block = parseTextBlock(reader, lineCount, 0);
+						String block = rem.substring(3) + parseTextBlock(reader, 0);
 						value = block;
-						lineCount += block.split("\n").length;
 						array.add(block);
 					} else if (rem.startsWith("'''")) {
 						// start text block
-						String block = parseTextBlock(reader, lineCount, 0);
+						String block = rem.substring(3) + parseTextBlock(reader, 0);
 						value = block;
-						lineCount += block.split("\n").length;
 						array.add(value);
 					} else if (rem.startsWith("\"\"")) {
 						// start offset text block
-						int offset = untrimmed.indexOf("\"\"");
-						String block = parseTextBlock(reader, lineCount, offset);
+						int offset = countWhitespace(untrimmed.substring(0, untrimmed.indexOf("\"\"")));
+						String block = rem.substring(2) + parseTextBlock(reader, offset);
 						value = block;
-						lineCount += block.split("\n").length;
 						array.add(value);
 					} else if (rem.startsWith("''")) {
 						// start offset text block
-						int offset = untrimmed.indexOf("''");
-						String block = parseTextBlock(reader, lineCount, offset);
+						int offset = countWhitespace(untrimmed.substring(0, untrimmed.indexOf("''")));
+						String block = rem.substring(2) + parseTextBlock(reader, offset);
 						value = block;
-						lineCount += block.split("\n").length;
 						array.add(value);
 					} else {
 						value = parseValue(rem);
@@ -178,25 +174,21 @@ public class MaxmlParser {
 						o = submap;
 					} else if (value.equals("\"\"\"")) {
 						// start text block
-						String block = parseTextBlock(reader, lineCount, 0);
-						lineCount += block.split("\n").length;
+						String block = parseTextBlock(reader, 0);
 						o = block;
 					} else if (value.equals("'''")) {
 						// start text block
-						String block = parseTextBlock(reader, lineCount, 0);
-						lineCount += block.split("\n").length;
+						String block = parseTextBlock(reader, 0);
 						o = block;
 					} else if (value.equals("\"\"")) {
 						// start text block
 						int offset = untrimmed.indexOf("\"\"");
-						String block = parseTextBlock(reader, lineCount, offset);
-						lineCount += block.split("\n").length;
+						String block = parseTextBlock(reader, offset);
 						o = block;
 					} else if (value.equals("''")) {
 						// start text block
 						int offset = untrimmed.indexOf("''");
-						String block = parseTextBlock(reader, lineCount, offset);
-						lineCount += block.split("\n").length;
+						String block = parseTextBlock(reader, offset);
 						o = block;
 					} else {
 						// value
@@ -347,32 +339,31 @@ public class MaxmlParser {
 		return value;
 	}
 	
-	protected String parseTextBlock(BufferedReader reader, int lineNumber, int offset) throws IOException, MaxmlException {
+	protected String parseTextBlock(BufferedReader reader, int offset) throws IOException, MaxmlException {
 		String line = null;
 		StringBuilder sb = new StringBuilder();
-		int lineCount = lineNumber;
 		while ((line = reader.readLine()) != null) {
 			lineCount++;
 			// text block processing
 			if (line.equals("\"\"\"") || line.equals("'''") || line.equals("\"\"") || line.equals("''")) {
 				// end block
-				line = stripWhitespace(lineCount, offset, line);
+				line = stripWhitespace(offset, line);
 				return sb.toString();
 			} else if (line.endsWith("\"\"\"") || line.endsWith("'''")) {
 				// end textblock
 				line = line.substring(0, line.length() - 3);
-				line = stripWhitespace(lineCount, offset, line);
+				line = stripWhitespace(offset, line);
 				sb.append(line);
 				return sb.toString();
 			} else if (line.endsWith("\"\"") || line.endsWith("''")) {
 				// end offset text`block
 				line = line.substring(0, line.length() - 2);
-				line = stripWhitespace(lineCount, offset, line);
+				line = stripWhitespace(offset, line);
 				sb.append(line);
 				return sb.toString();
 			} else {
 				// append line
-				line = stripWhitespace(lineCount, offset, line);
+				line = stripWhitespace(offset, line);
 				sb.append(line);
 				sb.append('\n');
 			}
@@ -380,7 +371,24 @@ public class MaxmlParser {
 		throw new MaxmlException(MessageFormat.format("Failed to parse textblock at line {0,number,0}", lineCount));
 	}
 	
-	protected String stripWhitespace(int lineNumber, int offset, String line) throws MaxmlException {
+	protected int countWhitespace(String chunk) {
+		int count = 0;
+		for (char c : chunk.toCharArray()) {
+			switch (c) {
+			case ' ':
+				count++;
+				break;
+			case '\t':
+				count += tabWidth;
+				break;
+			default:
+				break;
+			}
+		}
+		return count;
+	}
+	
+	protected String stripWhitespace(int offset, String line) throws MaxmlException {
 		if (offset > 0) {
 			// attempt to eliminate leading whitespace
 			if (line.length() >= offset) {
@@ -397,7 +405,7 @@ public class MaxmlParser {
 				if (stripWhitespace) {
 					return line.substring(offset);
 				} else {
-					throw new MaxmlException(MessageFormat.format("Line {0,number,0} in a textblock is expected to have {1,number,0} indentation spaces, found {2,number,0}!", lineNumber, offset, whiteCount, line));
+					throw new MaxmlException(MessageFormat.format("Line {0,number,0} in a textblock is expected to have {1,number,0} indentation spaces, found {2,number,0}!", lineCount, offset, whiteCount, line));
 				}
 			}
 		}
