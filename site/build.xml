@@ -10,8 +10,7 @@
 	Build the Moxie site
 	-->
 	<target name="main">
-		<!-- Use the Toolkit descriptor with the Site basedir -->
-		<mx:init config="${basedir}/../toolkit/build.moxie" basedir="${basedir}" />
+		<mx:init />
 		
 		<!-- Build the site documentation -->
 		<mx:doc googlePlusOne="true" injectPrettify="true" minify="true">
