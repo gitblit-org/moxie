@@ -128,8 +128,12 @@ public class MxDoc extends MxTask {
 		doc.name = name;
 	}
 
-	public void setSourceFolder(File folder) {
+	public void setSourceDir(File folder) {
 		doc.sourceDirectory = folder;
+	}
+	
+	public void setTemplateDir(File folder) {
+		doc.templateDirectory = folder;
 	}
 
 	public void setTodir(File dir) {

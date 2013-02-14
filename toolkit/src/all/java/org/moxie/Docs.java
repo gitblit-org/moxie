@@ -156,7 +156,7 @@ public class Docs {
 		String footer = generateFooter(doc);
 
 		if (!doc.structure.sublinks.isEmpty()) {
-			build.getConsole().log("Generating Structured HTML from source files... ");
+			build.getConsole().log("Generating Structured Documentation from source files... ");
 		}
 
 		// read references
@@ -504,7 +504,7 @@ public class Docs {
 		
 		// process pages which are not part of the normal structure
 		if (!doc.freeformPages.isEmpty()) {
-			build.getConsole().log("Generating Freeform HTML from template files...");
+			build.getConsole().log("Generating content from Freemarker templates...");
 			for (Link page : doc.freeformPages) {
 				try {
 					// template pages
@@ -841,7 +841,11 @@ public class Docs {
 			// Freemarker engine
 			Configuration fm = new Configuration();
 			fm.setObjectWrapper(new DefaultObjectWrapper());
-			fm.setDirectoryForTemplateLoading(doc.sourceDirectory);
+			if (doc.templateDirectory != null && doc.templateDirectory.exists()) {
+				fm.setDirectoryForTemplateLoading(doc.templateDirectory);
+			} else {
+				fm.setDirectoryForTemplateLoading(doc.sourceDirectory);
+			}
 			
 			for (Template template : link.templates) {
 				File data = new File(template.data);

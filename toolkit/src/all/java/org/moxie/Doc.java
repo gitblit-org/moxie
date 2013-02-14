@@ -32,6 +32,8 @@ public class Doc implements Serializable {
 	public String name;
 
 	public File sourceDirectory;
+	
+	public File templateDirectory;
 
 	public File outputDirectory;
 
