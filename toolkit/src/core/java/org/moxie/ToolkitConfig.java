@@ -74,8 +74,6 @@ public class ToolkitConfig implements Serializable {
 	int revisionRetentionCount;
 	int revisionPurgeAfterDays;
 	MavenCacheStrategy mavenCacheStrategy;
-	String releaseVersion;
-	String releaseDate;
 	boolean failFastOnArtifactResolution;
 
 	public ToolkitConfig() {
@@ -132,14 +130,6 @@ public class ToolkitConfig implements Serializable {
 		return mainclass;
 	}
 	
-	public String getReleaseVersion() {
-		return releaseVersion;
-	}
-
-	public String getReleaseDate() {
-		return releaseDate;
-	}
-
 	@Override
 	public String toString() {
 		return "ToolkitConfig (" + pom + ")";
@@ -215,6 +205,7 @@ public class ToolkitConfig implements Serializable {
 		pom.socialNetworkUrl = readString(map, Key.socialNetworkUrl, pom.socialNetworkUrl);
 		pom.blogUrl = readString(map, Key.blogUrl, pom.blogUrl);
 		pom.ciUrl = readString(map, Key.ciUrl, pom.ciUrl);
+		pom.mavenUrl = readString(map, Key.mavenUrl, pom.mavenUrl);
 		
 		String parentPom = map.getString(Key.parentPom.name(), null);
 		if (!StringUtils.isEmpty(parentPom)) {
@@ -240,8 +231,8 @@ public class ToolkitConfig implements Serializable {
 		}
 		
 		mainclass = readString(map, Key.mainclass, null);
-		releaseVersion = readString(map, Key.releaseVersion, releaseVersion);
-		releaseDate = readString(map, Key.releaseDate, releaseDate);
+		pom.releaseVersion = readString(map, Key.releaseVersion, pom.releaseVersion);
+		pom.releaseDate = readString(map, Key.releaseDate, pom.releaseDate);
 
 		// build parameters
 		mavenCacheStrategy = MavenCacheStrategy.fromString(map.getString(Key.mavenCacheStrategy.name(), mavenCacheStrategy == null ? null : mavenCacheStrategy.name()));
@@ -747,9 +738,6 @@ public class ToolkitConfig implements Serializable {
 	void setDefaultsFrom(ToolkitConfig parent) {
 		pom = parent.pom;
 		lastModified = Math.max(lastModified, parent.lastModified);
-
-		releaseVersion = parent.releaseVersion;
-		releaseDate = parent.releaseDate;
 
 		proxies = parent.proxies;
 		linkedModules = parent.linkedModules;

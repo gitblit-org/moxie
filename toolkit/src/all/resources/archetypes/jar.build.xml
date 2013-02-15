@@ -14,7 +14,7 @@
 
 	<!--
 	<property name="moxie.version" value="%MOXIE_VERSION%" />
-	<property name="moxie.url" value="http://gitblit.github.com/moxie/maven" />
+	<property name="moxie.url" value="%MOXIE_URL%" />
 	<property name="moxie.jar" value="toolkit-${moxie.version}-all.jar" />
 	
 	<get src="${moxie.url}/org/moxie/toolkit/${moxie.version}/${moxie.jar}"

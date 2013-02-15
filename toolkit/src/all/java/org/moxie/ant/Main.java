@@ -346,7 +346,9 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     		os.close();
     		is.close();
     		
-    		String content = prototype.replace("%MOXIE_VERSION%", Toolkit.getVersion());
+    		String content = prototype;
+    		content = prototype.replace("%MOXIE_VERSION%", Toolkit.getVersion());
+    		content = prototype.replace("%MOXIE_URL%", Toolkit.getMavenUrl());
     		FileUtils.writeContent(new File(basedir, "build.xml"), content);
     	} catch (Throwable t) {
     		t.printStackTrace();

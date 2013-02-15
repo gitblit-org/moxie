@@ -53,10 +53,14 @@ public class Pom {
 	public String parentArtifactId;
 	public String parentVersion;
 	
+	public String releaseVersion;
+	public String releaseDate;
+
 	public String forumUrl;
 	public String socialNetworkUrl;
 	public String blogUrl;
 	public String ciUrl;
+	public String mavenUrl;
 
 	public SCM scm;
 

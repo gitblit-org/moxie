@@ -1,3 +1,6 @@
+#
+# Moxie project descriptor
+#
 name: Moxie Build Toolkit
 groupId: org.moxie
 artifactId: moxie-parent
@@ -5,10 +8,42 @@ version: 0.5.1-SNAPSHOT
 organization: James Moger 
 organizationUrl: 'https://plus.google.com/u/0/116428776452027956920'
 inceptionYear: 2012
-url: 'http://gitblit.github.com/moxie'
 
+# Current stable release
 releaseVersion: 0.5.0
 releaseDate: '2013-01-23'
+
+# Project urls
+url: 'http://moxie.gitblit.com'
+issuesUrl: 'https://gitblit.github.com/moxie'
+mavenUrl: 'http://moxie.gitblit.com/maven'
+
+# Licenses section included for POM generation
+licenses:
+- {
+    name: Apache ASL v2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  }
+
+# Developers section included for POM generation
+developers:
+- {
+  id: james
+  name: James Moger
+  url: 'https://plus.google.com/u/0/116428776452027956920'
+  organization: VAS
+  organizationUrl: 'http://www.vas.com'
+  roles: developer
+  }
+
+# SCM section included for POM generation
+scm: {
+  connection: 'scm:git:git://github.com/gitblit/moxie.git'
+  developerConnection: 'scm:git:https://github.com/gitblit/moxie.git'
+  url: 'https://github.com/gitblit/moxie'
+  tag: HEAD
+  }
+
 
 apply: eclipse, intellij, pom
 tasks: {

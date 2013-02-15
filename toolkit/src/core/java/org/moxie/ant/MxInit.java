@@ -151,13 +151,14 @@ public class MxInit extends MxTask {
 			setProjectProperty(Key.socialNetworkUrl, pom.socialNetworkUrl);
 			setProjectProperty(Key.blogUrl, pom.blogUrl);
 			setProjectProperty(Key.ciUrl, pom.ciUrl);
+			setProjectProperty(Key.mavenUrl, pom.mavenUrl);
 			setProjectProperty(Key.url, pom.url);
 			if (pom.scm != null) {
 				setProjectProperty(Key.scmUrl, pom.scm.url);
 			}
 			setProjectProperty(Key.mainclass, buildConfig.getProjectConfig().getMainclass());
-			setProjectProperty(Key.releaseVersion, buildConfig.getProjectConfig().getReleaseVersion());
-			setProjectProperty(Key.releaseDate, buildConfig.getProjectConfig().getReleaseDate());
+			setProjectProperty(Key.releaseVersion, buildConfig.getPom().releaseVersion);
+			setProjectProperty(Key.releaseDate, buildConfig.getPom().releaseDate);
 			setProjectProperty(Key.buildDate, build.getBuildDate());
 			setProjectProperty(Key.buildTimestamp, build.getBuildTimestamp());
 

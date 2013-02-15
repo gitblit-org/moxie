@@ -78,7 +78,7 @@ public class Toolkit {
 		contributors, id, email, roles, scm, connection, developerConnection, tag, requires, licenses,
 		parentPom, mainclass, modules, mavenCacheStrategy, coordinates, releaseVersion, releaseDate,
 		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl,
-		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution;
+		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution, mavenUrl;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');
@@ -104,6 +104,10 @@ public class Toolkit {
 	
 	public static String getBuildDate() {
 		return getManifestValue("build-date", "PENDING");
+	}
+
+	public static String getMavenUrl() {
+		return getManifestValue("Maven-Url", "");
 	}
 
 	public static String getCommitId() {

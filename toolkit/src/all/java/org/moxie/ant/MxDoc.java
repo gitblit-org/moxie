@@ -199,6 +199,7 @@ public class MxDoc extends MxTask {
 		setToken(Toolkit.Key.socialNetworkUrl.projectId(), build.getPom().socialNetworkUrl);
 		setToken(Toolkit.Key.blogUrl.projectId(), build.getPom().blogUrl);
 		setToken(Toolkit.Key.ciUrl.projectId(), build.getPom().ciUrl);
+		setToken(Toolkit.Key.mavenUrl.projectId(), build.getPom().mavenUrl);
 		if (build.getPom().scm != null) {
 			setToken(Key.scmUrl.projectId(), build.getPom().scm.url);
 		}
@@ -211,8 +212,8 @@ public class MxDoc extends MxTask {
 		setToken(Toolkit.Key.buildDate.projectId(), build.getBuildDate());
 		setToken(Toolkit.Key.buildTimestamp.projectId(), build.getBuildTimestamp());
 		
-		setToken(Toolkit.Key.releaseVersion.projectId(), build.getConfig().getProjectConfig().getReleaseVersion());
-		setToken(Toolkit.Key.releaseDate.projectId(), build.getConfig().getProjectConfig().getReleaseDate());
+		setToken(Toolkit.Key.releaseVersion.projectId(), build.getPom().releaseVersion);
+		setToken(Toolkit.Key.releaseDate.projectId(), build.getPom().releaseDate);
 		
 		for (Map.Entry<String, String> entry : build.getPom().getProperties().entrySet()) {
 			setToken(entry.getKey(), entry.getValue());

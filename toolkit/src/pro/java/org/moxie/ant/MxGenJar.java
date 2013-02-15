@@ -481,6 +481,7 @@ public class MxGenJar extends GenJar {
 		setManifest(mft, "Bundle-Version", Key.version);
 		setManifest(mft, "Bundle-Vendor", Key.organization);
 		
+		setManifest(mft, "Maven-Url", Key.mavenUrl);
 		setManifest(mft, "Commit-Id", Key.commitId);
 		
 		try {
