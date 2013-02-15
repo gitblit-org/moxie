@@ -21,6 +21,7 @@
 	<taskdef name="tar" classname="org.moxie.ant.MxTar" />
 	<taskdef name="test" classname="org.moxie.ant.MxTest" />
 	<taskdef name="thumbs" classname="org.moxie.ant.MxThumbs" />
+	<taskdef name="war" classname="org.moxie.ant.MxWar" />
 	<taskdef name="webxml" classname="org.moxie.ant.MxWebXml" />
 	<taskdef name="zip" classname="org.moxie.ant.MxZip" />
 </antlib>

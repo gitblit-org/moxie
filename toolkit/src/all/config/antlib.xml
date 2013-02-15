@@ -21,6 +21,7 @@
 	<typedef name="tar" classname="org.moxie.ant.MxTar" />
 	<typedef name="test" classname="org.moxie.ant.MxTest" />
 	<typedef name="thumbs" classname="org.moxie.ant.MxThumbs" />
+	<typedef name="war" classname="org.moxie.ant.MxWar" />
 	<typedef name="webxml" classname="org.moxie.ant.MxWebXml" />
 	<typedef name="zip" classname="org.moxie.ant.MxZip" />
 	

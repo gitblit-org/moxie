@@ -173,6 +173,10 @@ public class MxJar extends Jar {
 		
 		AttributeReflector.setAttributes(getProject(), this, attributes);
 	}
+	
+	protected String getClassFilesetPrefix() {
+		return null;
+	}
 
 	@Override
 	public void execute() throws BuildException {
@@ -235,6 +239,9 @@ public class MxJar extends Jar {
 					if (path.toLowerCase().endsWith(".jar")) {
 						ZipFileSet zip = new ZipFileSet();
 						zip.setProject(getProject());
+						if (!StringUtils.isEmpty(getClassFilesetPrefix())) {
+							zip.setPrefix(getClassFilesetPrefix());
+						}
 						zip.setSrc(new File(path));
 						zip.setExcludes("about.html, META-INF/*.DSA, META-INF/*.SF, META-INF/*.RSA, META-INF/LICENSE*, META-INF/NOTICE*, META-INF/ASL2.0, META-INF/eclipse.inf");
 						addZipfileset(zip);
@@ -249,8 +256,11 @@ public class MxJar extends Jar {
 
 		// compiled output of this project
 		File outputFolder = build.getConfig().getOutputDirectory(Scope.compile);
-		FileSet outputSet = new FileSet();
+		ZipFileSet outputSet = new ZipFileSet();
 		outputSet.setProject(getProject());
+		if (!StringUtils.isEmpty(getClassFilesetPrefix())) {
+			outputSet.setPrefix(getClassFilesetPrefix());
+		}
 		outputSet.setDir(outputFolder);
 		if (includes != null) {
 			outputSet.setIncludes(includes);
@@ -260,8 +270,11 @@ public class MxJar extends Jar {
 		
 		// add the output folders of linked projects
 		for (Build linkedProject : build.getSolver().getLinkedModules()) {
-			FileSet projectOutputSet = new FileSet();
+			ZipFileSet projectOutputSet = new ZipFileSet();
 			projectOutputSet.setProject(getProject());
+			if (!StringUtils.isEmpty(getClassFilesetPrefix())) {
+				projectOutputSet.setPrefix(getClassFilesetPrefix());
+			}
 			File dir = linkedProject.getConfig().getOutputDirectory(Scope.compile);
 			projectOutputSet.setDir(dir);
 			if (includes != null) {

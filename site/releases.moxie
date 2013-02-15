@@ -3,7 +3,7 @@ history:
 # 0.4.0 release
 #
 - {
-    title: Moxie 0.4.0
+    title: Moxie 0.4.0 Released
     id: 0.4.0
     date: 2012-07-05
     note: ~
@@ -14,7 +14,7 @@ history:
 # 0.5.0 release
 #
 current: {
-    title: Moxie 0.5.0
+    title: Moxie 0.5.0 Released
     id: 0.5.0
     date: 2013-01-23
     note: Please delete your .moxie/data folder before upgrading!
@@ -39,7 +39,7 @@ current: {
 # Pending release
 #
 pending: {
-    title: Moxie ${project.version}
+    title: Moxie ${project.version} Released
     id: ${project.version}
     date: ${project.buildDate}
     note: ''
@@ -68,6 +68,7 @@ pending: {
      - Added support for compilerArgs in descriptor
      - Added mx:Tar task
      - Added mx:Javadoc task to redirect verbose javadoc output to a log file
+     - Added mx:War task
 
     dependencyChanges:
      - Twitter Bootstrap 2.3.0

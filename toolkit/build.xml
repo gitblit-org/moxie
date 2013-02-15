@@ -91,28 +91,13 @@
 			<pathelement path="${maxml.bin.classes}" />
 		</path>
 
-		<!-- Core -->
+		<!-- Tasks needed to build moxie-toolkit -->
 		<taskdef classname="org.moxie.ant.MxInit" name="init" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxReport" name="report" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.ant.MxGet" name="get" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-			
-		<!-- Pro -->
-		<taskdef classname="org.moxie.ant.MxIf" name="if" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.ant.MxJavac" name="javac" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.ant.MxClean" name="clean" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.ant.MxRun" name="jar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-
-		<taskdef classname="org.moxie.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxGenJar" name="genjar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxTest" name="test" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.ant.MxZip" name="zip" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />		
-		<taskdef classname="org.moxie.ant.MxExtract" name="extract" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxGitId" name="gitid" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.ant.MxGhPages" name="ghpages" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		
-		<!-- All -->
-		<taskdef classname="org.moxie.ant.MxDoc" name="doc" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 
 		<!-- Prepare the project -->
 		<mx:init />
@@ -197,6 +182,7 @@
 			<class name="org.moxie.ant.MxGitId" />
 			<class name="org.moxie.ant.MxGhPages" />
 			<class name="org.moxie.ant.MxThumbs" />
+			<class name="org.moxie.ant.MxWar" />
 			<class name="org.moxie.ant.MxWebXml" />
 			<class name="org.moxie.ant.MxJavadoc" />
 			<class name="org.moxie.ant.MxTar" />
@@ -259,6 +245,7 @@
 			<class name="org.moxie.ant.MxGitId" />
 			<class name="org.moxie.ant.MxGhPages" />
 			<class name="org.moxie.ant.MxThumbs" />
+			<class name="org.moxie.ant.MxWar" />
 			<class name="org.moxie.ant.MxWebXml" />
 			<class name="org.moxie.ant.MxJavadoc" />
 			<class name="org.moxie.ant.MxTar" />
