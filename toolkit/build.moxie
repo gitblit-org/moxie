@@ -1,7 +1,7 @@
 name: Moxie-Toolkit
 description: Java Project Build Toolkit for Ant
 groupId: org.moxie
-artifactId: toolkit
+artifactId: moxie-toolkit
 parent: ../build.moxie
 modules:
 - common

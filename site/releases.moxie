@@ -53,6 +53,8 @@ pending: {
      - Fixed regression with artifact resolution when using multiple source repositories
 
     changes:
+	 - Changed artifact ids: common -> moxie-common, proxy -> moxie-proxy, toolkit -> moxie-toolkit
+	 - Switch to antlib.xml definition so that taskdef can be less verbose
      - Improved mx:Doc task with header links, pagers, and Freemarker templates
      - Improved artifact resolution failure reporting
      - Change mxp.* properties to project.* to match Maven

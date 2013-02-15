@@ -213,7 +213,7 @@
 
 		
 		<!-- Moxie-All -->
-		<mx:genjar classifier="all" packageSources="true">
+		<mx:genjar packageSources="true">
 			<classfilter>
 				<exclude name="bsh." />
 				<exclude name="com.beust." />
@@ -282,7 +282,7 @@
 		Copy the all jar to moxie.jar for use in the other Moxie projects,
 		otherwise we'd have to hard-code versions in the other projects.
 		-->
-		<copy file="${project.targetDirectory}/toolkit-${project.version}-all.jar" tofile="${project.targetDirectory}/moxie.jar" />
+		<copy file="${project.targetDirectory}/moxie-toolkit-${project.version}.jar" tofile="${project.targetDirectory}/moxie.jar" />
 
 		<!-- Install the artifacts into the version-controlled repository -->
 		<mx:install basedir="${basedir}/../maven" snapshots="false" />

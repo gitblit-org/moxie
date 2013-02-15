@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" group="Moxie Build Toolkit" />
+      <module fileurl="file://$PROJECT_DIR$/common/moxie-common.iml" filepath="$PROJECT_DIR$/common/moxie-common.iml" group="Moxie Build Toolkit" />
       <module fileurl="file://$PROJECT_DIR$/maxml/maxml.iml" filepath="$PROJECT_DIR$/maxml/maxml.iml" group="Moxie Build Toolkit" />
-      <module fileurl="file://$PROJECT_DIR$/proxy/proxy.iml" filepath="$PROJECT_DIR$/proxy/proxy.iml" group="Moxie Build Toolkit" />
-      <module fileurl="file://$PROJECT_DIR$/toolkit/toolkit.iml" filepath="$PROJECT_DIR$/toolkit/toolkit.iml" group="Moxie Build Toolkit" />
+      <module fileurl="file://$PROJECT_DIR$/proxy/moxie-proxy.iml" filepath="$PROJECT_DIR$/proxy/moxie-proxy.iml" group="Moxie Build Toolkit" />
+      <module fileurl="file://$PROJECT_DIR$/toolkit/moxie-toolkit.iml" filepath="$PROJECT_DIR$/toolkit/moxie-toolkit.iml" group="Moxie Build Toolkit" />
     </modules>
   </component>
 </project>

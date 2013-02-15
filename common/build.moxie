@@ -1,7 +1,7 @@
 name: Moxie-Common
 description: Common classes for Moxie
 groupId: org.moxie
-artifactId: common
+artifactId: moxie-common
 parent: ../build.moxie
 modules:
 - maxml
