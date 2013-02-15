@@ -1,5 +1,5 @@
 /*!
- * Bootstrap v2.0.4
+ * Bootstrap v2.3.0
  *
  * Copyright 2012 Twitter, Inc
  * Licensed under the Apache License v2.0
@@ -8,148 +8,13 @@
  * Designed and built with all the love in the world @twitter by @mdo and @fat.
  */
 
-// CSS Reset
-// Reset.less
-// Adapted from Normalize.css http://github.com/necolas/normalize.css
-// ------------------------------------------------------------------------
-
-// Display in IE6-9 and FF3
-// -------------------------
-
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-nav,
-section {
-  display: block;
-}
-
-// Display block in IE6-9 and FF3
-// -------------------------
-
-audio,
-canvas,
-video {
-  display: inline-block;
-  *display: inline;
-  *zoom: 1;
-}
-
-// Prevents modern browsers from displaying 'audio' without controls
-// -------------------------
-
-audio:not([controls]) {
-    display: none;
-}
-
-// Base settings
-// -------------------------
-
-html {
-  font-size: 100%;
-  -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-}
-// Focus states
-a:focus {
-  .tab-focus();
-}
-// Hover & Active
-a:hover,
-a:active {
-  outline: 0;
-}
-
-// Prevents sub and sup affecting line-height in all browsers
-// -------------------------
-
-sub,
-sup {
-  position: relative;
-  font-size: 75%;
-  line-height: 0;
-  vertical-align: baseline;
-}
-sup {
-  top: -0.5em;
-}
-sub {
-  bottom: -0.25em;
-}
-
-// Img border in a's and image quality
-// -------------------------
-
-img {
-  max-width: 100%; // Make images inherently responsive
-  vertical-align: middle;
-  border: 0;
-  -ms-interpolation-mode: bicubic;
-}
-
-// Prevent max-width from affecting Google Maps
-#map_canvas img {
-  max-width: none;
-}
-
-// Forms
-// -------------------------
-
-// Font size in all browsers, margin changes, misc consistency
-button,
-input,
-select,
-textarea {
-  margin: 0;
-  font-size: 100%;
-  vertical-align: middle;
-}
-button,
-input {
-  *overflow: visible; // Inner spacing ie IE6/7
-  line-height: normal; // FF3/4 have !important on line-height in UA stylesheet
-}
-button::-moz-focus-inner,
-input::-moz-focus-inner { // Inner padding and border oddities in FF3/4
-  padding: 0;
-  border: 0;
-}
-button,
-input[type="button"],
-input[type="reset"],
-input[type="submit"] {
-  cursor: pointer; // Cursors on all buttons applied consistently
-  -webkit-appearance: button; // Style clickable inputs in iOS
-}
-input[type="search"] { // Appearance in Safari/Chrome
-  -webkit-box-sizing: content-box;
-     -moz-box-sizing: content-box;
-          box-sizing: content-box;
-  -webkit-appearance: textfield;
-}
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-cancel-button {
-  -webkit-appearance: none; // Inner-padding issues in Chrome OSX, Safari 5
-}
-textarea {
-  overflow: auto; // Remove vertical scrollbar in IE6-9
-  vertical-align: top; // Readability and alignment cross-browser
-}
-
-
 // Core variables and mixins
-// Variables.less
-// Variables to customize the look and feel of Bootstrap
-// -----------------------------------------------------
+//
+// Variables
+// --------------------------------------------------
 
 
-
-// GLOBAL VALUES
+// Global values
 // --------------------------------------------------
 
 
@@ -192,16 +57,33 @@ textarea {
 // -------------------------
 @sansFontFamily:        "Helvetica Neue", Helvetica, Arial, sans-serif;
 @serifFontFamily:       Georgia, "Times New Roman", Times, serif;
-@monoFontFamily:        Menlo, Monaco, Consolas, "Courier New", monospace;
+@monoFontFamily:        Monaco, Menlo, Consolas, "Courier New", monospace;
 
-@baseFontSize:          13px;
+@baseFontSize:          14px;
 @baseFontFamily:        @sansFontFamily;
-@baseLineHeight:        18px;
+@baseLineHeight:        20px;
 @altFontFamily:         @serifFontFamily;
 
 @headingsFontFamily:    inherit; // empty to use BS default, @baseFontFamily
 @headingsFontWeight:    bold;    // instead of browser default, bold
 @headingsColor:         inherit; // empty to use BS default, @textColor
+
+
+// Component sizing
+// -------------------------
+// Based on 14px font-size and 20px line-height
+
+@fontSizeLarge:         @baseFontSize * 1.25; // ~18px
+@fontSizeSmall:         @baseFontSize * 0.85; // ~12px
+@fontSizeMini:          @baseFontSize * 0.75; // ~11px
+
+@paddingLarge:          11px 19px; // 44px
+@paddingSmall:          2px 10px;  // 26px
+@paddingMini:           0 6px;   // 22px
+
+@baseBorderRadius:      4px;
+@borderRadiusLarge:     6px;
+@borderRadiusSmall:     3px;
 
 
 // Tables
@@ -211,7 +93,6 @@ textarea {
 @tableBackgroundHover:              #f5f5f5; // for hover
 @tableBorder:                       #ddd; // table and cell border
 
-
 // Buttons
 // -------------------------
 @btnBackground:                     @white;
@@ -219,7 +100,7 @@ textarea {
 @btnBorder:                         #ccc;
 
 @btnPrimaryBackground:              @linkColor;
-@btnPrimaryBackgroundHighlight:     spin(@btnPrimaryBackground, 15%);
+@btnPrimaryBackgroundHighlight:     spin(@btnPrimaryBackground, 20%);
 
 @btnInfoBackground:                 #5bc0de;
 @btnInfoBackgroundHighlight:        #2f96b4;
@@ -233,7 +114,7 @@ textarea {
 @btnDangerBackground:               #ee5f5b;
 @btnDangerBackgroundHighlight:      #bd362f;
 
-@btnInverseBackground:              @gray;
+@btnInverseBackground:              #444;
 @btnInverseBackgroundHighlight:     @grayDarker;
 
 
@@ -241,24 +122,31 @@ textarea {
 // -------------------------
 @inputBackground:               @white;
 @inputBorder:                   #ccc;
-@inputBorderRadius:             3px;
+@inputBorderRadius:             @baseBorderRadius;
 @inputDisabledBackground:       @grayLighter;
 @formActionsBackground:         #f5f5f5;
+@inputHeight:                   @baseLineHeight + 10px; // base line-height + 8px vertical padding + 2px top/bottom border
+
 
 // Dropdowns
 // -------------------------
 @dropdownBackground:            @white;
 @dropdownBorder:                rgba(0,0,0,.2);
-@dropdownLinkColor:             @grayDark;
-@dropdownLinkColorHover:        @white;
-@dropdownLinkBackgroundHover:   @linkColor;
 @dropdownDividerTop:            #e5e5e5;
 @dropdownDividerBottom:         @white;
+
+@dropdownLinkColor:             @grayDark;
+@dropdownLinkColorHover:        @white;
+@dropdownLinkColorActive:       @white;
+
+@dropdownLinkBackgroundActive:  @linkColor;
+@dropdownLinkBackgroundHover:   @dropdownLinkBackgroundActive;
 
 
 
 // COMPONENT VARIABLES
 // --------------------------------------------------
+
 
 // Z-index master list
 // -------------------------
@@ -266,7 +154,7 @@ textarea {
 // Try to avoid customizing these :)
 @zindexDropdown:          1000;
 @zindexPopover:           1010;
-@zindexTooltip:           1020;
+@zindexTooltip:           1030;
 @zindexFixedNavbar:       1030;
 @zindexModalBackdrop:     1040;
 @zindexModal:             1050;
@@ -288,24 +176,60 @@ textarea {
 @hrBorder:                @grayLighter;
 
 
+// Horizontal forms & lists
+// -------------------------
+@horizontalComponentOffset:       180px;
+
+
+// Wells
+// -------------------------
+@wellBackground:                  #f5f5f5;
+
+
 // Navbar
 // -------------------------
+@navbarCollapseWidth:             979px;
+@navbarCollapseDesktopWidth:      @navbarCollapseWidth + 1;
+
 @navbarHeight:                    40px;
-@navbarBackground:                @grayDarker;
-@navbarBackgroundHighlight:       @grayDark;
+@navbarBackgroundHighlight:       #ffffff;
+@navbarBackground:                darken(@navbarBackgroundHighlight, 5%);
+@navbarBorder:                    darken(@navbarBackground, 12%);
 
-@navbarText:                      @grayLight;
-@navbarLinkColor:                 @grayLight;
-@navbarLinkColorHover:            @white;
-@navbarLinkColorActive:           @navbarLinkColorHover;
+@navbarText:                      #777;
+@navbarLinkColor:                 #777;
+@navbarLinkColorHover:            @grayDark;
+@navbarLinkColorActive:           @gray;
 @navbarLinkBackgroundHover:       transparent;
-@navbarLinkBackgroundActive:      @navbarBackground;
+@navbarLinkBackgroundActive:      darken(@navbarBackground, 5%);
 
-@navbarSearchBackground:          lighten(@navbarBackground, 25%);
-@navbarSearchBackgroundFocus:     @white;
-@navbarSearchBorder:              darken(@navbarSearchBackground, 30%);
-@navbarSearchPlaceholderColor:    #ccc;
 @navbarBrandColor:                @navbarLinkColor;
+
+// Inverted navbar
+@navbarInverseBackground:                #111111;
+@navbarInverseBackgroundHighlight:       #222222;
+@navbarInverseBorder:                    #252525;
+
+@navbarInverseText:                      @grayLight;
+@navbarInverseLinkColor:                 @grayLight;
+@navbarInverseLinkColorHover:            @white;
+@navbarInverseLinkColorActive:           @navbarInverseLinkColorHover;
+@navbarInverseLinkBackgroundHover:       transparent;
+@navbarInverseLinkBackgroundActive:      @navbarInverseBackground;
+
+@navbarInverseSearchBackground:          lighten(@navbarInverseBackground, 25%);
+@navbarInverseSearchBackgroundFocus:     @white;
+@navbarInverseSearchBorder:              @navbarInverseBackground;
+@navbarInverseSearchPlaceholderColor:    #ccc;
+
+@navbarInverseBrandColor:                @navbarInverseLinkColor;
+
+
+// Pagination
+// -------------------------
+@paginationBackground:                #fff;
+@paginationBorder:                    #ddd;
+@paginationActiveBackground:          #f5f5f5;
 
 
 // Hero unit
@@ -334,9 +258,27 @@ textarea {
 @infoBorder:              darken(spin(@infoBackground, -10), 7%);
 
 
+// Tooltips and popovers
+// -------------------------
+@tooltipColor:            #fff;
+@tooltipBackground:       #000;
+@tooltipArrowWidth:       5px;
+@tooltipArrowColor:       @tooltipBackground;
+
+@popoverBackground:       #fff;
+@popoverArrowWidth:       10px;
+@popoverArrowColor:       #fff;
+@popoverTitleBackground:  darken(@popoverBackground, 3%);
+
+// Special enhancement for popovers
+@popoverArrowOuterWidth:  @popoverArrowWidth + 1;
+@popoverArrowOuterColor:  rgba(0,0,0,.25);
+
+
 
 // GRID
 // --------------------------------------------------
+
 
 // Default 940px grid
 // -------------------------
@@ -345,14 +287,33 @@ textarea {
 @gridGutterWidth:         20px;
 @gridRowWidth:            (@gridColumns * @gridColumnWidth) + (@gridGutterWidth * (@gridColumns - 1));
 
+// 1200px min
+@gridColumnWidth1200:     70px;
+@gridGutterWidth1200:     30px;
+@gridRowWidth1200:        (@gridColumns * @gridColumnWidth1200) + (@gridGutterWidth1200 * (@gridColumns - 1));
+
+// 768px-979px
+@gridColumnWidth768:      42px;
+@gridGutterWidth768:      20px;
+@gridRowWidth768:         (@gridColumns * @gridColumnWidth768) + (@gridGutterWidth768 * (@gridColumns - 1));
+
+
 // Fluid grid
 // -------------------------
-@fluidGridColumnWidth:    6.382978723%;
-@fluidGridGutterWidth:    2.127659574%;
+@fluidGridColumnWidth:    percentage(@gridColumnWidth/@gridRowWidth);
+@fluidGridGutterWidth:    percentage(@gridGutterWidth/@gridRowWidth);
 
-// Mixins.less
-// Snippets of reusable CSS to develop faster and keep code readable
-// -----------------------------------------------------------------
+// 1200px min
+@fluidGridColumnWidth1200:     percentage(@gridColumnWidth1200/@gridRowWidth1200);
+@fluidGridGutterWidth1200:     percentage(@gridGutterWidth1200/@gridRowWidth1200);
+
+// 768px-979px
+@fluidGridColumnWidth768:      percentage(@gridColumnWidth768/@gridRowWidth768);
+@fluidGridGutterWidth768:      percentage(@gridGutterWidth768/@gridRowWidth768);
+
+//
+// Mixins
+// --------------------------------------------------
 
 
 // UTILITY MIXINS
@@ -367,6 +328,9 @@ textarea {
   &:after {
     display: table;
     content: "";
+    // Fixes Opera/contenteditable bug:
+    // http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
+    line-height: 0;
   }
   &:after {
     clear: both;
@@ -414,10 +378,6 @@ textarea {
 
 .ie7-restore-right-whitespace() {
   *margin-right: .3em;
-
-  &:last-child {
-    *margin-left: 0;
-  }
 }
 
 // Sizing shortcuts
@@ -507,15 +467,16 @@ textarea {
 .input-block-level {
   display: block;
   width: 100%;
-  min-height: 28px;        // Make inputs at least the height of their button counterpart
+  min-height: @inputHeight; // Make inputs at least the height of their button counterpart (base line-height + padding + border)
   .box-sizing(border-box); // Makes inputs behave like true block-level elements
 }
+
 
 
 // Mixin for form field states
 .formFieldState(@textColor: #555, @borderColor: #ccc, @backgroundColor: #f5f5f5) {
   // Set the text color
-  > label,
+  .control-label,
   .help-block,
   .help-inline {
     color: @textColor;
@@ -527,10 +488,16 @@ textarea {
   select,
   textarea {
     color: @textColor;
+  }
+  input,
+  select,
+  textarea {
     border-color: @borderColor;
+    .box-shadow(inset 0 1px 1px rgba(0,0,0,.075)); // Redeclare so transitions work
     &:focus {
       border-color: darken(@borderColor, 10%);
-      .box-shadow(0 0 6px lighten(@borderColor, 20%));
+      @shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 6px lighten(@borderColor, 20%);
+      .box-shadow(@shadow);
     }
   }
   // Give a small background color for input-prepend/-append
@@ -554,6 +521,46 @@ textarea {
           border-radius: @radius;
 }
 
+// Single Corner Border Radius
+.border-top-left-radius(@radius) {
+  -webkit-border-top-left-radius: @radius;
+      -moz-border-radius-topleft: @radius;
+          border-top-left-radius: @radius;
+}
+.border-top-right-radius(@radius) {
+  -webkit-border-top-right-radius: @radius;
+      -moz-border-radius-topright: @radius;
+          border-top-right-radius: @radius;
+}
+.border-bottom-right-radius(@radius) {
+  -webkit-border-bottom-right-radius: @radius;
+      -moz-border-radius-bottomright: @radius;
+          border-bottom-right-radius: @radius;
+}
+.border-bottom-left-radius(@radius) {
+  -webkit-border-bottom-left-radius: @radius;
+      -moz-border-radius-bottomleft: @radius;
+          border-bottom-left-radius: @radius;
+}
+
+// Single Side Border Radius
+.border-top-radius(@radius) {
+  .border-top-right-radius(@radius);
+  .border-top-left-radius(@radius);
+}
+.border-right-radius(@radius) {
+  .border-top-right-radius(@radius);
+  .border-bottom-right-radius(@radius);
+}
+.border-bottom-radius(@radius) {
+  .border-bottom-right-radius(@radius);
+  .border-bottom-left-radius(@radius);
+}
+.border-left-radius(@radius) {
+  .border-top-left-radius(@radius);
+  .border-bottom-left-radius(@radius);
+}
+
 // Drop shadows
 .box-shadow(@shadow) {
   -webkit-box-shadow: @shadow;
@@ -565,9 +572,20 @@ textarea {
 .transition(@transition) {
   -webkit-transition: @transition;
      -moz-transition: @transition;
-      -ms-transition: @transition;
        -o-transition: @transition;
           transition: @transition;
+}
+.transition-delay(@transition-delay) {
+  -webkit-transition-delay: @transition-delay;
+     -moz-transition-delay: @transition-delay;
+       -o-transition-delay: @transition-delay;
+          transition-delay: @transition-delay;
+}
+.transition-duration(@transition-duration) {
+  -webkit-transition-duration: @transition-duration;
+     -moz-transition-duration: @transition-duration;
+       -o-transition-duration: @transition-duration;
+          transition-duration: @transition-duration;
 }
 
 // Transformations
@@ -595,16 +613,16 @@ textarea {
 .skew(@x, @y) {
   -webkit-transform: skew(@x, @y);
      -moz-transform: skew(@x, @y);
-      -ms-transform: skew(@x, @y);
+      -ms-transform: skewX(@x) skewY(@y); // See https://github.com/twitter/bootstrap/issues/4885
        -o-transform: skew(@x, @y);
           transform: skew(@x, @y);
+  -webkit-backface-visibility: hidden; // See https://github.com/twitter/bootstrap/issues/5319
 }
 .translate3d(@x, @y, @z) {
-  -webkit-transform: translate(@x, @y, @z);
-     -moz-transform: translate(@x, @y, @z);
-      -ms-transform: translate(@x, @y, @z);
-       -o-transform: translate(@x, @y, @z);
-          transform: translate(@x, @y, @z);
+  -webkit-transform: translate3d(@x, @y, @z);
+     -moz-transform: translate3d(@x, @y, @z);
+       -o-transform: translate3d(@x, @y, @z);
+          transform: translate3d(@x, @y, @z);
 }
 
 // Backface visibility
@@ -614,7 +632,6 @@ textarea {
 .backface-visibility(@visibility){
 	-webkit-backface-visibility: @visibility;
 	   -moz-backface-visibility: @visibility;
-	    -ms-backface-visibility: @visibility;
 	        backface-visibility: @visibility;
 }
 
@@ -627,7 +644,7 @@ textarea {
 }
 
 // Background sizing
-.background-size(@size){
+.background-size(@size) {
   -webkit-background-size: @size;
      -moz-background-size: @size;
        -o-background-size: @size;
@@ -639,7 +656,6 @@ textarea {
 .box-sizing(@boxmodel) {
   -webkit-box-sizing: @boxmodel;
      -moz-box-sizing: @boxmodel;
-      -ms-box-sizing: @boxmodel;
           box-sizing: @boxmodel;
 }
 
@@ -702,7 +718,9 @@ textarea {
 }
 
 // Gradient Bar Colors for buttons and alerts
-.gradientBar(@primaryColor, @secondaryColor) {
+.gradientBar(@primaryColor, @secondaryColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.25)) {
+  color: @textColor;
+  text-shadow: @textShadow;
   #gradient > .vertical(@primaryColor, @secondaryColor);
   border-color: @secondaryColor @secondaryColor darken(@secondaryColor, 15%);
   border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) fadein(rgba(0,0,0,.1), 15%);
@@ -713,60 +731,65 @@ textarea {
   .horizontal(@startColor: #555, @endColor: #333) {
     background-color: @endColor;
     background-image: -moz-linear-gradient(left, @startColor, @endColor); // FF 3.6+
-    background-image: -ms-linear-gradient(left, @startColor, @endColor); // IE10
     background-image: -webkit-gradient(linear, 0 0, 100% 0, from(@startColor), to(@endColor)); // Safari 4+, Chrome 2+
     background-image: -webkit-linear-gradient(left, @startColor, @endColor); // Safari 5.1+, Chrome 10+
     background-image: -o-linear-gradient(left, @startColor, @endColor); // Opera 11.10
-    background-image: linear-gradient(left, @startColor, @endColor); // Le standard
+    background-image: linear-gradient(to right, @startColor, @endColor); // Standard, IE10
     background-repeat: repeat-x;
-    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",@startColor,@endColor)); // IE9 and down
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=1)",argb(@startColor),argb(@endColor))); // IE9 and down
   }
   .vertical(@startColor: #555, @endColor: #333) {
     background-color: mix(@startColor, @endColor, 60%);
     background-image: -moz-linear-gradient(top, @startColor, @endColor); // FF 3.6+
-    background-image: -ms-linear-gradient(top, @startColor, @endColor); // IE10
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), to(@endColor)); // Safari 4+, Chrome 2+
     background-image: -webkit-linear-gradient(top, @startColor, @endColor); // Safari 5.1+, Chrome 10+
     background-image: -o-linear-gradient(top, @startColor, @endColor); // Opera 11.10
-    background-image: linear-gradient(top, @startColor, @endColor); // The standard
+    background-image: linear-gradient(to bottom, @startColor, @endColor); // Standard, IE10
     background-repeat: repeat-x;
-    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@startColor,@endColor)); // IE9 and down
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down
   }
   .directional(@startColor: #555, @endColor: #333, @deg: 45deg) {
     background-color: @endColor;
     background-repeat: repeat-x;
     background-image: -moz-linear-gradient(@deg, @startColor, @endColor); // FF 3.6+
-    background-image: -ms-linear-gradient(@deg, @startColor, @endColor); // IE10
     background-image: -webkit-linear-gradient(@deg, @startColor, @endColor); // Safari 5.1+, Chrome 10+
     background-image: -o-linear-gradient(@deg, @startColor, @endColor); // Opera 11.10
-    background-image: linear-gradient(@deg, @startColor, @endColor); // The standard
+    background-image: linear-gradient(@deg, @startColor, @endColor); // Standard, IE10
   }
+  .horizontal-three-colors(@startColor: #00b3ee, @midColor: #7a43b6, @colorStop: 50%, @endColor: #c3325f) {
+    background-color: mix(@midColor, @endColor, 80%);
+    background-image: -webkit-gradient(left, linear, 0 0, 0 100%, from(@startColor), color-stop(@colorStop, @midColor), to(@endColor));
+    background-image: -webkit-linear-gradient(left, @startColor, @midColor @colorStop, @endColor);
+    background-image: -moz-linear-gradient(left, @startColor, @midColor @colorStop, @endColor);
+    background-image: -o-linear-gradient(left, @startColor, @midColor @colorStop, @endColor);
+    background-image: linear-gradient(to right, @startColor, @midColor @colorStop, @endColor);
+    background-repeat: no-repeat;
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down, gets no color-stop at all for proper fallback
+  }
+
   .vertical-three-colors(@startColor: #00b3ee, @midColor: #7a43b6, @colorStop: 50%, @endColor: #c3325f) {
     background-color: mix(@midColor, @endColor, 80%);
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@startColor), color-stop(@colorStop, @midColor), to(@endColor));
     background-image: -webkit-linear-gradient(@startColor, @midColor @colorStop, @endColor);
     background-image: -moz-linear-gradient(top, @startColor, @midColor @colorStop, @endColor);
-    background-image: -ms-linear-gradient(@startColor, @midColor @colorStop, @endColor);
     background-image: -o-linear-gradient(@startColor, @midColor @colorStop, @endColor);
     background-image: linear-gradient(@startColor, @midColor @colorStop, @endColor);
     background-repeat: no-repeat;
-    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",@startColor,@endColor)); // IE9 and down, gets no color-stop at all for proper fallback
+    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@startColor),argb(@endColor))); // IE9 and down, gets no color-stop at all for proper fallback
   }
-  .radial(@innerColor: #555, @outerColor: #333)  {
+  .radial(@innerColor: #555, @outerColor: #333) {
     background-color: @outerColor;
     background-image: -webkit-gradient(radial, center center, 0, center center, 460, from(@innerColor), to(@outerColor));
     background-image: -webkit-radial-gradient(circle, @innerColor, @outerColor);
     background-image: -moz-radial-gradient(circle, @innerColor, @outerColor);
-    background-image: -ms-radial-gradient(circle, @innerColor, @outerColor);
     background-image: -o-radial-gradient(circle, @innerColor, @outerColor);
     background-repeat: no-repeat;
   }
-  .striped(@color, @angle: -45deg) {
+  .striped(@color: #555, @angle: 45deg) {
     background-color: @color;
     background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, rgba(255,255,255,.15)), color-stop(.25, transparent), color-stop(.5, transparent), color-stop(.5, rgba(255,255,255,.15)), color-stop(.75, rgba(255,255,255,.15)), color-stop(.75, transparent), to(transparent));
     background-image: -webkit-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
     background-image: -moz-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
-    background-image: -ms-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
     background-image: -o-linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
     background-image: linear-gradient(@angle, rgba(255,255,255,.15) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.15) 50%, rgba(255,255,255,.15) 75%, transparent 75%, transparent);
   }
@@ -800,14 +823,15 @@ textarea {
 
 // Button backgrounds
 // ------------------
-.buttonBackground(@startColor, @endColor) {
+.buttonBackground(@startColor, @endColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.25)) {
   // gradientBar will set the background to a pleasing blend of these, to support IE<=9
-  .gradientBar(@startColor, @endColor);
+  .gradientBar(@startColor, @endColor, @textColor, @textShadow);
   *background-color: @endColor; /* Darken IE7 buttons by default so they stand out more given they won't have borders */
   .reset-filter();
 
   // in these cases the gradient won't cover the background, so we override
-  &:hover, &:active, &.active, &.disabled, &[disabled] {
+  &:hover, &:focus, &:active, &.active, &.disabled, &[disabled] {
+    color: @textColor;
     background-color: @endColor;
     *background-color: darken(@endColor, 5%);
   }
@@ -827,43 +851,7 @@ textarea {
   margin-top: (@navbarHeight - @elementHeight) / 2;
 }
 
-// Popover arrows
-// -------------------------
-// For tipsies and popovers
-#popoverArrow {
-  .top(@arrowWidth: 5px, @color: @black) {
-    bottom: 0;
-    left: 50%;
-    margin-left: -@arrowWidth;
-    border-left: @arrowWidth solid transparent;
-    border-right: @arrowWidth solid transparent;
-    border-top: @arrowWidth solid @color;
-  }
-  .left(@arrowWidth: 5px, @color: @black) {
-    top: 50%;
-    right: 0;
-    margin-top: -@arrowWidth;
-    border-top: @arrowWidth solid transparent;
-    border-bottom: @arrowWidth solid transparent;
-    border-left: @arrowWidth solid @color;
-  }
-  .bottom(@arrowWidth: 5px, @color: @black) {
-    top: 0;
-    left: 50%;
-    margin-left: -@arrowWidth;
-    border-left: @arrowWidth solid transparent;
-    border-right: @arrowWidth solid transparent;
-    border-bottom: @arrowWidth solid @color;
-  }
-  .right(@arrowWidth: 5px, @color: @black) {
-    top: 50%;
-    left: 0;
-    margin-top: -@arrowWidth;
-    border-top: @arrowWidth solid transparent;
-    border-bottom: @arrowWidth solid transparent;
-    border-right: @arrowWidth solid @color;
-  }
-}
+
 
 // Grid System
 // -----------
@@ -900,13 +888,13 @@ textarea {
   .core (@gridColumnWidth, @gridGutterWidth) {
 
     .spanX (@index) when (@index > 0) {
-      (~".span@{index}") { .span(@index); }
+      .span@{index} { .span(@index); }
       .spanX(@index - 1);
     }
     .spanX (0) {}
 
     .offsetX (@index) when (@index > 0) {
-      (~".offset@{index}") { .offset(@index); }
+      .offset@{index} { .offset(@index); }
       .offsetX(@index - 1);
     }
     .offsetX (0) {}
@@ -926,11 +914,13 @@ textarea {
 
     [class*="span"] {
       float: left;
+      min-height: 1px; // prevent collapsing columns
       margin-left: @gridGutterWidth;
     }
 
     // Set the container width, and override it for fixed navbars in media queries
     .container,
+    .navbar-static-top .container,
     .navbar-fixed-top .container,
     .navbar-fixed-bottom .container { .span(@gridColumns); }
 
@@ -943,10 +933,27 @@ textarea {
   .fluid (@fluidGridColumnWidth, @fluidGridGutterWidth) {
 
     .spanX (@index) when (@index > 0) {
-      (~".span@{index}") { .span(@index); }
+      .span@{index} { .span(@index); }
       .spanX(@index - 1);
     }
     .spanX (0) {}
+
+    .offsetX (@index) when (@index > 0) {
+      .offset@{index} { .offset(@index); }
+      .offset@{index}:first-child { .offsetFirstChild(@index); }
+      .offsetX(@index - 1);
+    }
+    .offsetX (0) {}
+
+    .offset (@columns) {
+      margin-left: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) + (@fluidGridGutterWidth*2);
+  	  *margin-left: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) - (.5 / @gridRowWidth * 100 * 1%) + (@fluidGridGutterWidth*2) - (.5 / @gridRowWidth * 100 * 1%);
+    }
+
+    .offsetFirstChild (@columns) {
+      margin-left: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) + (@fluidGridGutterWidth);
+      *margin-left: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) - (.5 / @gridRowWidth * 100 * 1%) + @fluidGridGutterWidth - (.5 / @gridRowWidth * 100 * 1%);
+    }
 
     .span (@columns) {
       width: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1));
@@ -966,8 +973,14 @@ textarea {
         margin-left: 0;
       }
 
-      // generate .spanX
+      // Space grid-sized controls properly if multiple per line
+      .controls-row [class*="span"] + [class*="span"] {
+        margin-left: @fluidGridGutterWidth;
+      }
+
+      // generate .spanX and .offsetX
       .spanX (@gridColumns);
+      .offsetX (@gridColumns);
     }
 
   }
@@ -975,13 +988,13 @@ textarea {
   .input(@gridColumnWidth, @gridGutterWidth) {
 
     .spanX (@index) when (@index > 0) {
-      (~"input.span@{index}, textarea.span@{index}, .uneditable-input.span@{index}") { .span(@index); }
+      input.span@{index}, textarea.span@{index}, .uneditable-input.span@{index} { .span(@index); }
       .spanX(@index - 1);
     }
     .spanX (0) {}
 
     .span(@columns) {
-      width: ((@gridColumnWidth) * @columns) + (@gridGutterWidth * (@columns - 1)) - 10;
+      width: ((@gridColumnWidth) * @columns) + (@gridGutterWidth * (@columns - 1)) - 14;
     }
 
     input,
@@ -990,22 +1003,245 @@ textarea {
       margin-left: 0; // override margin-left from core grid system
     }
 
+    // Space grid-sized controls properly if multiple per line
+    .controls-row [class*="span"] + [class*="span"] {
+      margin-left: @gridGutterWidth;
+    }
+
     // generate .spanX
     .spanX (@gridColumns);
 
   }
+}
 
+
+// CSS Reset
+//
+// Reset CSS
+// Adapted from http://github.com/necolas/normalize.css
+// --------------------------------------------------
+
+
+// Display in IE6-9 and FF3
+// -------------------------
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+nav,
+section {
+  display: block;
+}
+
+// Display block in IE6-9 and FF3
+// -------------------------
+
+audio,
+canvas,
+video {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+}
+
+// Prevents modern browsers from displaying 'audio' without controls
+// -------------------------
+
+audio:not([controls]) {
+    display: none;
+}
+
+// Base settings
+// -------------------------
+
+html {
+  font-size: 100%;
+  -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+}
+// Focus states
+a:focus {
+  .tab-focus();
+}
+// Hover & Active
+a:hover,
+a:active {
+  outline: 0;
+}
+
+// Prevents sub and sup affecting line-height in all browsers
+// -------------------------
+
+sub,
+sup {
+  position: relative;
+  font-size: 75%;
+  line-height: 0;
+  vertical-align: baseline;
+}
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+
+// Img border in a's and image quality
+// -------------------------
+
+img {
+  /* Responsive images (ensure images don't scale beyond their parents) */
+  max-width: 100%; /* Part 1: Set a maxium relative to the parent */
+  width: auto\9; /* IE7-8 need help adjusting responsive images */
+  height: auto; /* Part 2: Scale the height according to the width, otherwise you get stretching */
+
+  vertical-align: middle;
+  border: 0;
+  -ms-interpolation-mode: bicubic;
+}
+
+// Prevent max-width from affecting Google Maps
+#map_canvas img,
+.google-maps img {
+  max-width: none;
+}
+
+// Forms
+// -------------------------
+
+// Font size in all browsers, margin changes, misc consistency
+button,
+input,
+select,
+textarea {
+  margin: 0;
+  font-size: 100%;
+  vertical-align: middle;
+}
+button,
+input {
+  *overflow: visible; // Inner spacing ie IE6/7
+  line-height: normal; // FF3/4 have !important on line-height in UA stylesheet
+}
+button::-moz-focus-inner,
+input::-moz-focus-inner { // Inner padding and border oddities in FF3/4
+  padding: 0;
+  border: 0;
+}
+button,
+html input[type="button"], // Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio` and `video` controls.
+input[type="reset"],
+input[type="submit"] {
+    -webkit-appearance: button; // Corrects inability to style clickable `input` types in iOS.
+    cursor: pointer; // Improves usability and consistency of cursor style between image-type `input` and others.
+}
+label,
+select,
+button,
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+input[type="radio"],
+input[type="checkbox"] {
+    cursor: pointer; // Improves usability and consistency of cursor style between image-type `input` and others.
+}
+input[type="search"] { // Appearance in Safari/Chrome
+  .box-sizing(content-box);
+  -webkit-appearance: textfield;
+}
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none; // Inner-padding issues in Chrome OSX, Safari 5
+}
+textarea {
+  overflow: auto; // Remove vertical scrollbar in IE6-9
+  vertical-align: top; // Readability and alignment cross-browser
+}
+
+
+// Printing
+// -------------------------
+// Source: https://github.com/h5bp/html5-boilerplate/blob/master/css/main.css
+
+@media print {
+
+  * {
+    text-shadow: none !important;
+    color: #000 !important; // Black prints faster: h5bp.com/s
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+
+  abbr[title]:after {
+    content: " (" attr(title) ")";
+  }
+
+  // Don't show links for images, or javascript/internal links
+  .ir a:after,
+  a[href^="javascript:"]:after,
+  a[href^="#"]:after {
+    content: "";
+  }
+
+  pre,
+  blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid;
+  }
+
+  thead {
+    display: table-header-group; // h5bp.com/t
+  }
+
+  tr,
+  img {
+    page-break-inside: avoid;
+  }
+
+  img {
+    max-width: 100% !important;
+  }
+
+  @page {
+    margin: 0.5cm;
+  }
+
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
 }
 
 
 // Grid system and page structure
+//
 // Scaffolding
-// Basic and global styles for generating a grid system, structural layout, and page templates
-// -------------------------------------------------------------------------------------------
+// --------------------------------------------------
 
 
 // Body reset
-// ----------
+// -------------------------
 
 body {
   margin: 0;
@@ -1018,16 +1254,45 @@ body {
 
 
 // Links
-// -----
+// -------------------------
 
 a {
   color: @linkColor;
   text-decoration: none;
 }
-a:hover {
+a:hover,
+a:focus {
   color: @linkColorHover;
   text-decoration: underline;
 }
+
+
+// Images
+// -------------------------
+
+// Rounded corners
+.img-rounded {
+  .border-radius(6px);
+}
+
+// Add polaroid-esque trim
+.img-polaroid {
+  padding: 4px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0,0,0,.2);
+  .box-shadow(0 1px 3px rgba(0,0,0,.1));
+}
+
+// Perfect circle
+.img-circle {
+  .border-radius(500px); // crank the border-radius so it works with most reasonably sized images
+}
+
+//
+// Grid system
+// --------------------------------------------------
+
 
 // Fixed (940px)
 #grid > .core(@gridColumnWidth, @gridGutterWidth);
@@ -1035,10 +1300,20 @@ a:hover {
 // Fluid (940px)
 #grid > .fluid(@fluidGridColumnWidth, @fluidGridGutterWidth);
 
+// Reset utility classes due to specificity
+[class*="span"].hide,
+.row-fluid [class*="span"].hide {
+  display: none;
+}
+
+[class*="span"].pull-right,
+.row-fluid [class*="span"].pull-right {
+  float: right;
+}
+
 //
 // Layouts
-// Fixed-width and fluid (with sidebar) layouts
-// --------------------------------------------
+// --------------------------------------------------
 
 
 // Container (centered, fixed-width layouts)
@@ -1055,95 +1330,108 @@ a:hover {
 
 
 // Base CSS
-// Typography.less
-// Headings, body text, lists, code, and more for a versatile and durable typography system
-// ----------------------------------------------------------------------------------------
+//
+// Typography
+// --------------------------------------------------
 
 
-// BODY TEXT
-// ---------
+// Body text
+// -------------------------
 
 p {
   margin: 0 0 @baseLineHeight / 2;
-  small {
-    font-size: @baseFontSize - 2;
-    color: @grayLight;
-  }
 }
 .lead {
   margin-bottom: @baseLineHeight;
-  font-size: 20px;
+  font-size: @baseFontSize * 1.5;
   font-weight: 200;
   line-height: @baseLineHeight * 1.5;
 }
 
-// HEADINGS
-// --------
+
+// Emphasis & misc
+// -------------------------
+
+// Ex: 14px base font * 85% = about 12px
+small   { font-size: 85%; }
+
+strong  { font-weight: bold; }
+em      { font-style: italic; }
+cite    { font-style: normal; }
+
+// Utility classes
+.muted               { color: @grayLight; }
+a.muted:hover,
+a.muted:focus        { color: darken(@grayLight, 10%); }
+
+.text-warning        { color: @warningText; }
+a.text-warning:hover,
+a.text-warning:focus { color: darken(@warningText, 10%); }
+
+.text-error          { color: @errorText; }
+a.text-error:hover,
+a.text-error:focus   { color: darken(@errorText, 10%); }
+
+.text-info           { color: @infoText; }
+a.text-info:hover,
+a.text-info:focus    { color: darken(@infoText, 10%); }
+
+.text-success        { color: @successText; }
+a.text-success:hover,
+a.text-success:focus { color: darken(@successText, 10%); }
+
+.text-left           { text-align: left; }
+.text-right          { text-align: right; }
+.text-center         { text-align: center; }
+
+
+// Headings
+// -------------------------
 
 h1, h2, h3, h4, h5, h6 {
-  margin: 0;
+  margin: (@baseLineHeight / 2) 0;
   font-family: @headingsFontFamily;
   font-weight: @headingsFontWeight;
+  line-height: @baseLineHeight;
   color: @headingsColor;
   text-rendering: optimizelegibility; // Fix the character spacing for headings
   small {
     font-weight: normal;
+    line-height: 1;
     color: @grayLight;
   }
 }
-h1 {
-  font-size: 30px;
-  line-height: @baseLineHeight * 2;
-  small {
-    font-size: 18px;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: @baseLineHeight * 2;
-  small {
-    font-size: 18px;
-  }
-}
-h3 {
-  font-size: 18px;
-  line-height: @baseLineHeight * 1.5;
-  small {
-    font-size: 14px;
-  }
-}
-h4, h5, h6 {
-  line-height: @baseLineHeight;
-}
-h4 {
-  font-size: 14px;
-  small {
-    font-size: 12px;
-  }
-}
-h5 {
-  font-size: 12px;
-}
-h6 {
-  font-size: 11px;
-  color: @grayLight;
-  text-transform: uppercase;
-}
+
+h1,
+h2,
+h3 { line-height: @baseLineHeight * 2; }
+
+h1 { font-size: @baseFontSize * 2.75; } // ~38px
+h2 { font-size: @baseFontSize * 2.25; } // ~32px
+h3 { font-size: @baseFontSize * 1.75; } // ~24px
+h4 { font-size: @baseFontSize * 1.25; } // ~18px
+h5 { font-size: @baseFontSize; }
+h6 { font-size: @baseFontSize * 0.85; } // ~12px
+
+h1 small { font-size: @baseFontSize * 1.75; } // ~24px
+h2 small { font-size: @baseFontSize * 1.25; } // ~18px
+h3 small { font-size: @baseFontSize; }
+h4 small { font-size: @baseFontSize; }
+
 
 // Page header
+// -------------------------
+
 .page-header {
-  padding-bottom: @baseLineHeight - 1;
-  margin: @baseLineHeight 0;
+  padding-bottom: (@baseLineHeight / 2) - 1;
+  margin: @baseLineHeight 0 (@baseLineHeight * 1.5);
   border-bottom: 1px solid @grayLighter;
 }
-.page-header h1 {
-  line-height: 1;
-}
 
 
 
-// LISTS
-// -----
+// Lists
+// --------------------------------------------------
 
 // Unordered and Ordered lists
 ul, ol {
@@ -1156,19 +1444,28 @@ ol ol,
 ol ul {
   margin-bottom: 0;
 }
-ul {
-  list-style: disc;
-}
-ol {
-  list-style: decimal;
-}
 li {
   line-height: @baseLineHeight;
 }
+
+// Remove default list styles
 ul.unstyled,
 ol.unstyled {
   margin-left: 0;
   list-style: none;
+}
+
+// Single-line list items
+ul.inline,
+ol.inline {
+  margin-left: 0;
+  list-style: none;
+  > li {
+    display: inline-block;
+    .ie7-inline-block();
+    padding-left: 5px;
+    padding-right: 5px;
+  }
 }
 
 // Description Lists
@@ -1181,22 +1478,22 @@ dd {
 }
 dt {
   font-weight: bold;
-  line-height: @baseLineHeight - 1; // fix jank Helvetica Neue font bug
 }
 dd {
   margin-left: @baseLineHeight / 2;
 }
 // Horizontal layout (like forms)
 .dl-horizontal {
+  .clearfix(); // Ensure dl clears floats if empty dd elements present
   dt {
     float: left;
-    width: 120px;
+    width: @horizontalComponentOffset - 20;
     clear: left;
     text-align: right;
     .text-overflow();
   }
   dd {
-    margin-left: 130px;
+    margin-left: @horizontalComponentOffset;
   }
 }
 
@@ -1211,19 +1508,10 @@ hr {
   border-bottom: 1px solid @white;
 }
 
-// Emphasis
-strong {
-  font-weight: bold;
-}
-em {
-  font-style: italic;
-}
-.muted {
-  color: @grayLight;
-}
-
 // Abbreviations and acronyms
-abbr[title] {
+abbr[title],
+// Added data-* attribute to help out our tooltip plugin, per https://github.com/twitter/bootstrap/issues/5257
+abbr[data-original-title] {
   cursor: help;
   border-bottom: 1px dotted @grayLight;
 }
@@ -1239,7 +1527,9 @@ blockquote {
   border-left: 5px solid @grayLighter;
   p {
     margin-bottom: 0;
-    #font > .shorthand(16px,300,@baseLineHeight * 1.25);
+    font-size: @baseFontSize * 1.25;
+    font-weight: 300;
+    line-height: 1.25;
   }
   small {
     display: block;
@@ -1261,6 +1551,14 @@ blockquote {
     small {
       text-align: right;
     }
+    small {
+      &:before {
+        content: '';
+      }
+      &:after {
+        content: '\00A0 \2014';
+      }
+    }
   }
 }
 
@@ -1280,24 +1578,17 @@ address {
   line-height: @baseLineHeight;
 }
 
-// Misc
-small {
-  font-size: 100%;
-}
-cite {
-  font-style: normal;
-}
+//
+// Code (inline and blocK)
+// --------------------------------------------------
 
-// Code.less
-// Code typography styles for the <code> and <pre> elements
-// --------------------------------------------------------
 
 // Inline and block code styles
 code,
 pre {
   padding: 0 3px 2px;
   #font > #family > .monospace;
-  font-size: @baseFontSize - 1;
+  font-size: @baseFontSize - 2;
   color: @grayDark;
   .border-radius(3px);
 }
@@ -1308,6 +1599,7 @@ code {
   color: #d14;
   background-color: #f7f7f9;
   border: 1px solid #e1e1e8;
+  white-space: nowrap;
 }
 
 // Blocks of code
@@ -1315,7 +1607,7 @@ pre {
   display: block;
   padding: (@baseLineHeight - 1) / 2;
   margin: 0 0 @baseLineHeight / 2;
-  font-size: @baseFontSize * .925; // 13px to 12px
+  font-size: @baseFontSize - 1; // 14px to 13px
   line-height: @baseLineHeight;
   word-break: break-all;
   word-wrap: break-word;
@@ -1324,7 +1616,7 @@ pre {
   background-color: #f5f5f5;
   border: 1px solid #ccc; // fallback for IE7-8
   border: 1px solid rgba(0,0,0,.15);
-  .border-radius(4px);
+  .border-radius(@baseBorderRadius);
 
   // Make prettyprint styles more spaced out for readability
   &.prettyprint {
@@ -1335,6 +1627,8 @@ pre {
   code {
     padding: 0;
     color: inherit;
+    white-space: pre;
+    white-space: pre-wrap;
     background-color: transparent;
     border: 0;
   }
@@ -1346,9 +1640,9 @@ pre {
   overflow-y: scroll;
 }
 
-// Forms.less
-// Base styles for various input types, form layouts, and states
-// -------------------------------------------------------------
+//
+// Forms
+// --------------------------------------------------
 
 
 // GENERAL STYLES
@@ -1370,7 +1664,7 @@ legend {
   display: block;
   width: 100%;
   padding: 0;
-  margin-bottom: @baseLineHeight * 1.5;
+  margin-bottom: @baseLineHeight;
   font-size: @baseFontSize * 1.5;
   line-height: @baseLineHeight * 2;
   color: @grayDark;
@@ -1428,18 +1722,21 @@ input[type="color"],
 .uneditable-input {
   display: inline-block;
   height: @baseLineHeight;
-  padding: 4px;
-  margin-bottom: 9px;
+  padding: 4px 6px;
+  margin-bottom: @baseLineHeight / 2;
   font-size: @baseFontSize;
   line-height: @baseLineHeight;
   color: @gray;
+  .border-radius(@inputBorderRadius);
+  vertical-align: middle;
 }
 
 // Reset appearance properties for textual inputs and textarea
 // Declare width for legacy (can't be on input[type=*] selectors or it's too specific)
 input,
-textarea {
-  width: 210px;
+textarea,
+.uneditable-input {
+  width: 206px; // plus 12px padding and 2px border
 }
 // Reset height since textareas have rows
 textarea {
@@ -1464,10 +1761,8 @@ input[type="color"],
 .uneditable-input {
   background-color: @inputBackground;
   border: 1px solid @inputBorder;
-  .border-radius(@inputBorderRadius);
   .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
-  @transition: border linear .2s, box-shadow linear .2s;
-  .transition(@transition);
+  .transition(~"border linear .2s, box-shadow linear .2s");
 
   // Focus state
   &:focus {
@@ -1481,13 +1776,15 @@ input[type="color"],
 // Position radios and checkboxes better
 input[type="radio"],
 input[type="checkbox"] {
-  margin: 3px 0;
+  margin: 4px 0 0;
   *margin-top: 0; /* IE7 */
+  margin-top: 1px \9; /* IE8-9 */
   line-height: normal;
-  cursor: pointer;
 }
 
-// Reset width of input buttons, radios, checkboxes
+// Reset width of input images, buttons, radios, checkboxes
+input[type="file"],
+input[type="image"],
 input[type="submit"],
 input[type="reset"],
 input[type="button"],
@@ -1496,24 +1793,19 @@ input[type="checkbox"] {
   width: auto; // Override of generic input selector
 }
 
-// Make uneditable textareas behave like a textarea
-.uneditable-textarea {
-  width: auto;
-  height: auto;
-}
-
 // Set the height of select and file controls to match text inputs
 select,
 input[type="file"] {
-  height: 28px; /* In IE7, the height of the select element cannot be changed by height, only font-size */
+  height: @inputHeight; /* In IE7, the height of the select element cannot be changed by height, only font-size */
   *margin-top: 4px; /* For IE7, add top margin to align select with labels */
-  line-height: 28px;
+  line-height: @inputHeight;
 }
 
 // Make select elements obey height by applying a border
 select {
   width: 220px; // default input width + 10px of padding that doesn't get applied
-  border: 1px solid #bbb;
+  border: 1px solid @inputBorder;
+  background-color: @inputBackground; // Chrome on Linux and Mobile Safari need background-color
 }
 
 // Make multiple select elements height not fixed
@@ -1531,6 +1823,41 @@ input[type="checkbox"]:focus {
 }
 
 
+// Uneditable inputs
+// -------------------------
+
+// Make uneditable inputs look inactive
+.uneditable-input,
+.uneditable-textarea {
+  color: @grayLight;
+  background-color: darken(@inputBackground, 1%);
+  border-color: @inputBorder;
+  .box-shadow(inset 0 1px 2px rgba(0,0,0,.025));
+  cursor: not-allowed;
+}
+
+// For text that needs to appear as an input but should not be an input
+.uneditable-input {
+  overflow: hidden; // prevent text from wrapping, but still cut it off like an input does
+  white-space: nowrap;
+}
+
+// Make uneditable textareas behave like a textarea
+.uneditable-textarea {
+  width: auto;
+  height: auto;
+}
+
+
+// Placeholder
+// -------------------------
+
+// Placeholder text gets special styles because when browsers invalidate entire lines if it doesn't understand a selector
+input,
+textarea {
+  .placeholder();
+}
+
 
 // CHECKBOXES & RADIOS
 // -------------------
@@ -1538,13 +1865,13 @@ input[type="checkbox"]:focus {
 // Indent the labels to position radios/checkboxes as hanging
 .radio,
 .checkbox {
-  min-height: 18px; // clear the floating input if there is no label text
-  padding-left: 18px;
+  min-height: @baseLineHeight; // clear the floating input if there is no label text
+  padding-left: 20px;
 }
 .radio input[type="radio"],
 .checkbox input[type="checkbox"] {
   float: left;
-  margin-left: -18px;
+  margin-left: -20px;
 }
 
 // Move the options list down to align with labels
@@ -1598,6 +1925,10 @@ textarea[class*="span"],
 .input-append .uneditable-input[class*="span"],
 .input-prepend input[class*="span"],
 .input-prepend .uneditable-input[class*="span"],
+.row-fluid input[class*="span"],
+.row-fluid select[class*="span"],
+.row-fluid textarea[class*="span"],
+.row-fluid .uneditable-input[class*="span"],
 .row-fluid .input-prepend [class*="span"],
 .row-fluid .input-append [class*="span"] {
   display: inline-block;
@@ -1608,7 +1939,26 @@ textarea[class*="span"],
 // GRID SIZING FOR INPUTS
 // ----------------------
 
+// Grid sizes
 #grid > .input(@gridColumnWidth, @gridGutterWidth);
+
+// Control row for multiple inputs per line
+.controls-row {
+  .clearfix(); // Clear the float from controls
+}
+
+// Float to collapse white-space for proper grid alignment
+.controls-row [class*="span"],
+// Redeclare the fluid grid collapse since we undo the float for inputs
+.row-fluid .controls-row [class*="span"] {
+  float: left;
+}
+// Explicity set top padding on all checkboxes/radios, not just first-child
+.controls-row .checkbox[class*="span"],
+.controls-row .radio[class*="span"] {
+  padding-top: 5px;
+}
+
 
 
 
@@ -1624,7 +1974,6 @@ select[readonly],
 textarea[readonly] {
   cursor: not-allowed;
   background-color: @inputDisabledBackground;
-  border-color: #ddd;
 }
 // Explicitly reset the colors here
 input[type="radio"][disabled],
@@ -1652,17 +2001,22 @@ input[type="checkbox"][readonly] {
 .control-group.success {
   .formFieldState(@successText, @successText, @successBackground);
 }
+// Success
+.control-group.info {
+  .formFieldState(@infoText, @infoText, @infoBackground);
+}
 
 // HTML5 invalid states
 // Shares styles with the .control-group.error above
-input:focus:required:invalid,
-textarea:focus:required:invalid,
-select:focus:required:invalid {
+input:focus:invalid,
+textarea:focus:invalid,
+select:focus:invalid {
   color: #b94a48;
   border-color: #ee5f5b;
   &:focus {
     border-color: darken(#ee5f5b, 10%);
-    .box-shadow(0 0 6px lighten(#ee5f5b, 20%));
+    @shadow: 0 0 6px lighten(#ee5f5b, 20%);
+    .box-shadow(@shadow);
   }
 }
 
@@ -1680,19 +2034,6 @@ select:focus:required:invalid {
   .clearfix(); // Adding clearfix to allow for .pull-right button containers
 }
 
-// For text that needs to appear as an input but should not be an input
-.uneditable-input {
-  overflow: hidden; // prevent text from wrapping, but still cut it off like an input does
-  white-space: nowrap;
-  cursor: not-allowed;
-  background-color: @inputBackground;
-  border-color: #eee;
-  .box-shadow(inset 0 1px 2px rgba(0,0,0,.025));
-}
-
-// Placeholder text gets special styles; can't be bundled together though for some reason
-.placeholder();
-
 
 
 // HELP TEXT
@@ -1700,7 +2041,7 @@ select:focus:required:invalid {
 
 .help-block,
 .help-inline {
-  color: @gray; // lighten the text some for contrast
+  color: lighten(@textColor, 15%); // lighten the text some for contrast
 }
 
 .help-block {
@@ -1721,24 +2062,35 @@ select:focus:required:invalid {
 // ------------
 
 // Allow us to put symbols and text within the input field for a cleaner look
-.input-prepend,
-.input-append {
-  margin-bottom: 5px;
+.input-append,
+.input-prepend {
+  display: inline-block;
+  margin-bottom: @baseLineHeight / 2;
+  vertical-align: middle;
+  font-size: 0; // white space collapse hack
+  white-space: nowrap; // Prevent span and input from separating
+
+  // Reset the white space collapse hack
+  input,
+  select,
+  .uneditable-input,
+  .dropdown-menu,
+  .popover {
+    font-size: @baseFontSize;
+  }
+
   input,
   select,
   .uneditable-input {
     position: relative; // placed here by default so that on :focus we can place the input above the .add-on for full border and box-shadow goodness
     margin-bottom: 0; // prevent bottom margin from screwing up alignment in stacked forms
     *margin-left: 0;
-    vertical-align: middle;
+    vertical-align: top;
     .border-radius(0 @inputBorderRadius @inputBorderRadius 0);
     // Make input on top when focused so blue border and shadow always show
     &:focus {
       z-index: 2;
     }
-  }
-  .uneditable-input {
-    border-left-color: #ccc;
   }
   .add-on {
     display: inline-block;
@@ -1746,17 +2098,18 @@ select:focus:required:invalid {
     height: @baseLineHeight;
     min-width: 16px;
     padding: 4px 5px;
+    font-size: @baseFontSize;
     font-weight: normal;
     line-height: @baseLineHeight;
     text-align: center;
     text-shadow: 0 1px 0 @white;
-    vertical-align: middle;
     background-color: @grayLighter;
     border: 1px solid #ccc;
   }
   .add-on,
-  .btn {
-    margin-left: -1px;
+  .btn,
+  .btn-group > .dropdown-toggle {
+    vertical-align: top;
     .border-radius(0);
   }
   .active {
@@ -1764,6 +2117,7 @@ select:focus:required:invalid {
     border-color: @green;
   }
 }
+
 .input-prepend {
   .add-on,
   .btn {
@@ -1771,30 +2125,41 @@ select:focus:required:invalid {
   }
   .add-on:first-child,
   .btn:first-child {
+    // FYI, `.btn:first-child` accounts for a button group that's prepended
     .border-radius(@inputBorderRadius 0 0 @inputBorderRadius);
   }
 }
+
 .input-append {
   input,
   select,
   .uneditable-input {
     .border-radius(@inputBorderRadius 0 0 @inputBorderRadius);
+    + .btn-group .btn:last-child {
+      .border-radius(0 @inputBorderRadius @inputBorderRadius 0);
+    }
   }
-  .uneditable-input {
-    border-right-color: #ccc;
-    border-left-color: #eee;
+  .add-on,
+  .btn,
+  .btn-group {
+    margin-left: -1px;
   }
   .add-on:last-child,
-  .btn:last-child {
+  .btn:last-child,
+  .btn-group:last-child > .dropdown-toggle {
     .border-radius(0 @inputBorderRadius @inputBorderRadius 0);
   }
 }
+
 // Remove all border-radius for inputs with both prepend and append
 .input-prepend.input-append {
   input,
   select,
   .uneditable-input {
     .border-radius(0);
+    + .btn-group .btn {
+      .border-radius(0 @inputBorderRadius @inputBorderRadius 0);
+    }
   }
   .add-on:first-child,
   .btn:first-child {
@@ -1806,21 +2171,44 @@ select:focus:required:invalid {
     margin-left: -1px;
     .border-radius(0 @inputBorderRadius @inputBorderRadius 0);
   }
+  .btn-group:first-child {
+    margin-left: 0;
+  }
 }
+
 
 
 
 // SEARCH FORM
 // -----------
 
-.search-query {
+input.search-query {
   padding-right: 14px;
   padding-right: 4px \9;
   padding-left: 14px;
   padding-left: 4px \9; /* IE7-8 doesn't have border-radius, so don't indent the padding */
-  margin-bottom: 0; // remove the default margin on all inputs
-  .border-radius(14px);
+  margin-bottom: 0; // Remove the default margin on all inputs
+  .border-radius(15px);
 }
+
+/* Allow for input prepend/append in search forms */
+.form-search .input-append .search-query,
+.form-search .input-prepend .search-query {
+  .border-radius(0); // Override due to specificity
+}
+.form-search .input-append .search-query {
+  .border-radius(14px 0 0 14px);
+}
+.form-search .input-append .btn {
+  .border-radius(0 14px 14px 0);
+}
+.form-search .input-prepend .search-query {
+  .border-radius(0 14px 14px 0);
+}
+.form-search .input-prepend .btn {
+  .border-radius(14px 0 0 14px);
+}
+
 
 
 
@@ -1843,6 +2231,7 @@ select:focus:required:invalid {
     display: inline-block;
     .ie7-inline-block();
     margin-bottom: 0;
+    vertical-align: middle;
   }
   // Re-hide hidden elements due to specifity
   .hide {
@@ -1850,7 +2239,9 @@ select:focus:required:invalid {
   }
 }
 .form-search label,
-.form-inline label {
+.form-inline label,
+.form-search .btn-group,
+.form-inline .btn-group {
   display: inline-block;
 }
 // Remove margin for input-prepend/-append
@@ -1903,7 +2294,7 @@ legend + .control-group {
   // Float the labels left
   .control-label {
     float: left;
-    width: 140px;
+    width: @horizontalComponentOffset - 20;
     padding-top: 5px;
     text-align: right;
   }
@@ -1913,27 +2304,36 @@ legend + .control-group {
     // don't inherit the margin of the parent, in this case .controls
     *display: inline-block;
     *padding-left: 20px;
-    margin-left: 160px;
+    margin-left: @horizontalComponentOffset;
     *margin-left: 0;
     &:first-child {
-      *padding-left: 160px;
+      *padding-left: @horizontalComponentOffset;
     }
   }
   // Remove bottom margin on block level help text since that's accounted for on .control-group
   .help-block {
-    margin-top: @baseLineHeight / 2;
     margin-bottom: 0;
+  }
+  // And apply it only to .help-block instances that follow a form control
+  input,
+  select,
+  textarea,
+  .uneditable-input,
+  .input-prepend,
+  .input-append {
+    + .help-block {
+      margin-top: @baseLineHeight / 2;
+    }
   }
   // Move over buttons in .form-actions to align with .controls
   .form-actions {
-    padding-left: 160px;
+    padding-left: @horizontalComponentOffset;
   }
 }
 
 //
-// Tables.less
-// Tables for, you guessed it, tabular data
-// ----------------------------------------
+// Tables
+// --------------------------------------------------
 
 
 // BASE TABLES
@@ -1981,6 +2381,11 @@ table {
   tbody + tbody {
     border-top: 2px solid @tableBorder;
   }
+
+  // Nesting
+  .table {
+    background-color: @bodyBackground;
+  }
 }
 
 
@@ -2002,9 +2407,9 @@ table {
 .table-bordered {
   border: 1px solid @tableBorder;
   border-collapse: separate; // Done so we can round those corners!
-  *border-collapse: collapsed; // IE7 can't round corners anyway
+  *border-collapse: collapse; // IE7 can't round corners anyway
   border-left: 0;
-  .border-radius(4px);
+  .border-radius(@baseBorderRadius);
   th,
   td {
     border-left: 1px solid @tableBorder;
@@ -2021,34 +2426,60 @@ table {
   tbody:first-child tr:first-child td {
     border-top: 0;
   }
-  // For first th or td in the first row in the first thead or tbody
-  thead:first-child tr:first-child th:first-child,
-  tbody:first-child tr:first-child td:first-child {
-    -webkit-border-top-left-radius: 4px;
-            border-top-left-radius: 4px;
-        -moz-border-radius-topleft: 4px;
+  // For first th/td in the first row in the first thead or tbody
+  thead:first-child tr:first-child > th:first-child,
+  tbody:first-child tr:first-child > td:first-child,
+  tbody:first-child tr:first-child > th:first-child {
+    .border-top-left-radius(@baseBorderRadius);
   }
-  thead:first-child tr:first-child th:last-child,
-  tbody:first-child tr:first-child td:last-child {
-    -webkit-border-top-right-radius: 4px;
-            border-top-right-radius: 4px;
-        -moz-border-radius-topright: 4px;
+  // For last th/td in the first row in the first thead or tbody
+  thead:first-child tr:first-child > th:last-child,
+  tbody:first-child tr:first-child > td:last-child,
+  tbody:first-child tr:first-child > th:last-child {
+    .border-top-right-radius(@baseBorderRadius);
   }
-  // For first th or td in the first row in the first thead or tbody
-  thead:last-child tr:last-child th:first-child,
-  tbody:last-child tr:last-child td:first-child {
-    .border-radius(0 0 0 4px);
-    -webkit-border-bottom-left-radius: 4px;
-            border-bottom-left-radius: 4px;
-        -moz-border-radius-bottomleft: 4px;
+  // For first th/td (can be either) in the last row in the last thead, tbody, and tfoot
+  thead:last-child tr:last-child > th:first-child,
+  tbody:last-child tr:last-child > td:first-child,
+  tbody:last-child tr:last-child > th:first-child,
+  tfoot:last-child tr:last-child > td:first-child,
+  tfoot:last-child tr:last-child > th:first-child {
+    .border-bottom-left-radius(@baseBorderRadius);
   }
-  thead:last-child tr:last-child th:last-child,
-  tbody:last-child tr:last-child td:last-child {
-    -webkit-border-bottom-right-radius: 4px;
-            border-bottom-right-radius: 4px;
-        -moz-border-radius-bottomright: 4px;
+  // For last th/td (can be either) in the last row in the last thead, tbody, and tfoot
+  thead:last-child tr:last-child > th:last-child,
+  tbody:last-child tr:last-child > td:last-child,
+  tbody:last-child tr:last-child > th:last-child,
+  tfoot:last-child tr:last-child > td:last-child,
+  tfoot:last-child tr:last-child > th:last-child {
+    .border-bottom-right-radius(@baseBorderRadius);
   }
+
+  // Clear border-radius for first and last td in the last row in the last tbody for table with tfoot
+  tfoot + tbody:last-child tr:last-child td:first-child {
+    .border-bottom-left-radius(0);
+  }
+  tfoot + tbody:last-child tr:last-child td:last-child {
+    .border-bottom-right-radius(0);
+  }
+
+  // Special fixes to round the left border on the first td/th
+  caption + thead tr:first-child th:first-child,
+  caption + tbody tr:first-child td:first-child,
+  colgroup + thead tr:first-child th:first-child,
+  colgroup + tbody tr:first-child td:first-child {
+    .border-top-left-radius(@baseBorderRadius);
+  }
+  caption + thead tr:first-child th:last-child,
+  caption + tbody tr:first-child td:last-child,
+  colgroup + thead tr:first-child th:last-child,
+  colgroup + tbody tr:first-child td:last-child {
+    .border-top-right-radius(@baseBorderRadius);
+  }
+
 }
+
+
 
 
 // ZEBRA-STRIPING
@@ -2057,8 +2488,8 @@ table {
 // Default zebra-stripe styles (alternating gray and transparent backgrounds)
 .table-striped {
   tbody {
-    tr:nth-child(odd) td,
-    tr:nth-child(odd) th {
+    > tr:nth-child(odd) > td,
+    > tr:nth-child(odd) > th {
       background-color: @tableBackgroundAccent;
     }
   }
@@ -2068,10 +2499,12 @@ table {
 // HOVER EFFECT
 // ------------
 // Placed here since it has to come after the potential zebra striping
-.table {
-  tbody tr:hover td,
-  tbody tr:hover th {
-    background-color: @tableBackgroundHover;
+.table-hover {
+  tbody {
+    tr:hover > td,
+    tr:hover > th {
+      background-color: @tableBackgroundHover;
+    }
   }
 }
 
@@ -2079,39 +2512,75 @@ table {
 // TABLE CELL SIZING
 // -----------------
 
-// Change the columns
-table {
-  .span1     { .tableColumns(1); }
-  .span2     { .tableColumns(2); }
-  .span3     { .tableColumns(3); }
-  .span4     { .tableColumns(4); }
-  .span5     { .tableColumns(5); }
-  .span6     { .tableColumns(6); }
-  .span7     { .tableColumns(7); }
-  .span8     { .tableColumns(8); }
-  .span9     { .tableColumns(9); }
-  .span10    { .tableColumns(10); }
-  .span11    { .tableColumns(11); }
-  .span12    { .tableColumns(12); }
-  .span13    { .tableColumns(13); }
-  .span14    { .tableColumns(14); }
-  .span15    { .tableColumns(15); }
-  .span16    { .tableColumns(16); }
-  .span17    { .tableColumns(17); }
-  .span18    { .tableColumns(18); }
-  .span19    { .tableColumns(19); }
-  .span20    { .tableColumns(20); }
-  .span21    { .tableColumns(21); }
-  .span22    { .tableColumns(22); }
-  .span23    { .tableColumns(23); }
-  .span24    { .tableColumns(24); }
+// Reset default grid behavior
+table td[class*="span"],
+table th[class*="span"],
+.row-fluid table td[class*="span"],
+.row-fluid table th[class*="span"] {
+  display: table-cell;
+  float: none; // undo default grid column styles
+  margin-left: 0; // undo default grid column styles
+}
+
+// Change the column widths to account for td/th padding
+.table td,
+.table th {
+  &.span1     { .tableColumns(1); }
+  &.span2     { .tableColumns(2); }
+  &.span3     { .tableColumns(3); }
+  &.span4     { .tableColumns(4); }
+  &.span5     { .tableColumns(5); }
+  &.span6     { .tableColumns(6); }
+  &.span7     { .tableColumns(7); }
+  &.span8     { .tableColumns(8); }
+  &.span9     { .tableColumns(9); }
+  &.span10    { .tableColumns(10); }
+  &.span11    { .tableColumns(11); }
+  &.span12    { .tableColumns(12); }
+}
+
+
+
+// TABLE BACKGROUNDS
+// -----------------
+// Exact selectors below required to override .table-striped
+
+.table tbody tr {
+  &.success > td {
+    background-color: @successBackground;
+  }
+  &.error > td {
+    background-color: @errorBackground;
+  }
+  &.warning > td {
+    background-color: @warningBackground;
+  }
+  &.info > td {
+    background-color: @infoBackground;
+  }
+}
+
+// Hover states for .table-hover
+.table-hover tbody tr {
+  &.success:hover > td {
+    background-color: darken(@successBackground, 5%);
+  }
+  &.error:hover > td {
+    background-color: darken(@errorBackground, 5%);
+  }
+  &.warning:hover > td {
+    background-color: darken(@warningBackground, 5%);
+  }
+  &.info:hover > td {
+    background-color: darken(@infoBackground, 5%);
+  }
 }
 
 
 // Components: common
-// SPRITES
-// Glyphs and icons for buttons, nav, and more
-// -------------------------------------------
+//
+// Sprites
+// --------------------------------------------------
 
 
 // ICONS
@@ -2136,9 +2605,27 @@ table {
   background-image: url("@{iconSpritePath}");
   background-position: 14px 14px;
   background-repeat: no-repeat;
-
+  margin-top: 1px;
 }
-.icon-white {
+
+/* White icons with optional class, or on hover/focus/active states of certain elements */
+.icon-white,
+.nav-pills > .active > a > [class^="icon-"],
+.nav-pills > .active > a > [class*=" icon-"],
+.nav-list > .active > a > [class^="icon-"],
+.nav-list > .active > a > [class*=" icon-"],
+.navbar-inverse .nav > .active > a > [class^="icon-"],
+.navbar-inverse .nav > .active > a > [class*=" icon-"],
+.dropdown-menu > li > a:hover > [class^="icon-"],
+.dropdown-menu > li > a:focus > [class^="icon-"],
+.dropdown-menu > li > a:hover > [class*=" icon-"],
+.dropdown-menu > li > a:focus > [class*=" icon-"],
+.dropdown-menu > .active > a > [class^="icon-"],
+.dropdown-menu > .active > a > [class*=" icon-"],
+.dropdown-submenu:hover > a > [class^="icon-"],
+.dropdown-submenu:focus > a > [class^="icon-"],
+.dropdown-submenu:hover > a > [class*=" icon-"],
+.dropdown-submenu:focus > a > [class*=" icon-"] {
   background-image: url("@{iconWhiteSpritePath}");
 }
 
@@ -2256,15 +2743,15 @@ table {
 .icon-warning-sign       { background-position: -144px -120px; }
 .icon-plane              { background-position: -168px -120px; }
 .icon-calendar           { background-position: -192px -120px; }
-.icon-random             { background-position: -216px -120px; }
+.icon-random             { background-position: -216px -120px; width: 16px; }
 .icon-comment            { background-position: -240px -120px; }
 .icon-magnet             { background-position: -264px -120px; }
 .icon-chevron-up         { background-position: -288px -120px; }
 .icon-chevron-down       { background-position: -313px -119px; } // 1px, 1px off
 .icon-retweet            { background-position: -336px -120px; }
 .icon-shopping-cart      { background-position: -360px -120px; }
-.icon-folder-close       { background-position: -384px -120px; }
-.icon-folder-open        { background-position: -408px -120px; }
+.icon-folder-close       { background-position: -384px -120px; width: 16px; }
+.icon-folder-open        { background-position: -408px -120px; width: 16px; }
 .icon-resize-vertical    { background-position: -432px -119px; } // 1px, 1px off
 .icon-resize-horizontal  { background-position: -456px -118px; } // 1px, 2px off
 
@@ -2289,20 +2776,10 @@ table {
 .icon-briefcase               { background-position: -432px -144px; }
 .icon-fullscreen              { background-position: -456px -144px; }
 
+//
+// Dropdown menus
+// --------------------------------------------------
 
-
-
-
-
-
-
-
-
-
-
-
-// DROPDOWN MENUS
-// --------------
 
 // Use the .menu class on any <li> element within the topbar or ul.tabs and you'll get some superfancy dropdowns
 .dropup,
@@ -2329,17 +2806,12 @@ table {
   border-right: 4px solid transparent;
   border-left:  4px solid transparent;
   content: "";
-  .opacity(30);
 }
 
 // Place the caret
 .dropdown .caret {
   margin-top: 8px;
   margin-left: 2px;
-}
-.dropdown:hover .caret,
-.open .caret {
-  .opacity(100);
 }
 
 // The dropdown menu (ul)
@@ -2352,15 +2824,15 @@ table {
   display: none; // none by default, but block on "open" of the menu
   float: left;
   min-width: 160px;
-  padding: 4px 0;
-  margin: 1px 0 0; // override default ul
+  padding: 5px 0;
+  margin: 2px 0 0; // override default ul
   list-style: none;
   background-color: @dropdownBackground;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0,0,0,.2);
+  border: 1px solid #ccc; // Fallback for IE7-8
+  border: 1px solid @dropdownBorder;
   *border-right-width: 2px;
   *border-bottom-width: 2px;
-  .border-radius(5px);
+  .border-radius(6px);
   .box-shadow(0 5px 10px rgba(0,0,0,.2));
   -webkit-background-clip: padding-box;
      -moz-background-clip: padding;
@@ -2378,9 +2850,9 @@ table {
   }
 
   // Links within the dropdown menu
-  a {
+  > li > a {
     display: block;
-    padding: 3px 15px;
+    padding: 3px 20px;
     clear: both;
     font-weight: normal;
     line-height: @baseLineHeight;
@@ -2389,14 +2861,44 @@ table {
   }
 }
 
-// Hover state
+// Hover/Focus state
 // -----------
-.dropdown-menu li > a:hover,
-.dropdown-menu .active > a,
-.dropdown-menu .active > a:hover {
-  color: @dropdownLinkColorHover;
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus,
+.dropdown-submenu:hover > a,
+.dropdown-submenu:focus > a {
   text-decoration: none;
-  background-color: @dropdownLinkBackgroundHover;
+  color: @dropdownLinkColorHover;
+  #gradient > .vertical(@dropdownLinkBackgroundHover, darken(@dropdownLinkBackgroundHover, 5%));
+}
+
+// Active state
+// ------------
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+  color: @dropdownLinkColorActive;
+  text-decoration: none;
+  outline: 0;
+  #gradient > .vertical(@dropdownLinkBackgroundActive, darken(@dropdownLinkBackgroundActive, 5%));
+}
+
+// Disabled state
+// --------------
+// Gray out text and ensure the hover/focus state remains gray
+.dropdown-menu > .disabled > a,
+.dropdown-menu > .disabled > a:hover,
+.dropdown-menu > .disabled > a:focus {
+  color: @grayLight;
+}
+// Nuke hover/focus effects
+.dropdown-menu > .disabled > a:hover,
+.dropdown-menu > .disabled > a:focus {
+  text-decoration: none;
+  background-color: transparent;
+  background-image: none; // Remove CSS gradient
+  .reset-filter();
+  cursor: default;
 }
 
 // Open state for the dropdown
@@ -2428,7 +2930,7 @@ table {
   .caret {
     border-top: 0;
     border-bottom: 4px solid @black;
-    content: "\2191";
+    content: "";
   }
   // Different positioning for bottom up menu
   .dropdown-menu {
@@ -2438,24 +2940,93 @@ table {
   }
 }
 
+// Sub menus
+// ---------------------------
+.dropdown-submenu {
+  position: relative;
+}
+// Default dropdowns
+.dropdown-submenu > .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  .border-radius(0 6px 6px 6px);
+}
+.dropdown-submenu:hover > .dropdown-menu {
+  display: block;
+}
+
+// Dropups
+.dropup .dropdown-submenu > .dropdown-menu {
+  top: auto;
+  bottom: 0;
+  margin-top: 0;
+  margin-bottom: -2px;
+  .border-radius(5px 5px 5px 0);
+}
+
+// Caret to indicate there is a submenu
+.dropdown-submenu > a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: darken(@dropdownBackground, 20%);
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover > a:after {
+  border-left-color: @dropdownLinkColorHover;
+}
+
+// Left aligned submenus
+.dropdown-submenu.pull-left {
+  // Undo the float
+  // Yes, this is awkward since .pull-left adds a float, but it sticks to our conventions elsewhere.
+  float: none;
+
+  // Positioning the submenu
+  > .dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    .border-radius(6px 0 6px 6px);
+  }
+}
+
+// Tweak nav headers
+// -----------------
+// Increase padding from 15px to 20px on sides
+.dropdown .dropdown-menu .nav-header {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
 // Typeahead
 // ---------
 .typeahead {
+  z-index: 1051;
   margin-top: 2px; // give it some space to breathe
-  .border-radius(4px);
+  .border-radius(@baseBorderRadius);
 }
 
-// WELLS
-// -----
+//
+// Wells
+// --------------------------------------------------
 
+
+// Base class
 .well {
   min-height: 20px;
   padding: 19px;
   margin-bottom: 20px;
-  background-color: #f5f5f5;
-  border: 1px solid #eee;
-  border: 1px solid rgba(0,0,0,.05);
-  .border-radius(4px);
+  background-color: @wellBackground;
+  border: 1px solid darken(@wellBackground, 7%);
+  .border-radius(@baseBorderRadius);
   .box-shadow(inset 0 1px 1px rgba(0,0,0,.05));
   blockquote {
     border-color: #ddd;
@@ -2466,15 +3037,17 @@ table {
 // Sizes
 .well-large {
   padding: 24px;
-  .border-radius(6px);
+  .border-radius(@borderRadiusLarge);
 }
 .well-small {
   padding: 9px;
-  .border-radius(3px);
+  .border-radius(@borderRadiusSmall);
 }
 
-// COMPONENT ANIMATIONS
-// --------------------
+//
+// Component animations
+// --------------------------------------------------
+
 
 .fade {
   opacity: 0;
@@ -2494,8 +3067,10 @@ table {
   }
 }
 
-// CLOSE ICONS
-// -----------
+//
+// Close icons
+// --------------------------------------------------
+
 
 .close {
   float: right;
@@ -2505,7 +3080,8 @@ table {
   color: @black;
   text-shadow: 0 1px 0 rgba(255,255,255,1);
   .opacity(20);
-  &:hover {
+  &:hover,
+  &:focus {
     color: @black;
     text-decoration: none;
     cursor: pointer;
@@ -2526,8 +3102,9 @@ button.close {
 
 
 // Components: Buttons & Alerts
-// BUTTON STYLES
-// -------------
+//
+// Buttons
+// --------------------------------------------------
 
 
 // Base styles
@@ -2537,62 +3114,57 @@ button.close {
 .btn {
   display: inline-block;
   .ie7-inline-block();
-  padding: 4px 10px 4px;
+  padding: 4px 12px;
   margin-bottom: 0; // For input.btn
   font-size: @baseFontSize;
   line-height: @baseLineHeight;
-  *line-height: 20px;
-  color: @grayDark;
   text-align: center;
-  text-shadow: 0 1px 1px rgba(255,255,255,.75);
   vertical-align: middle;
   cursor: pointer;
-  .buttonBackground(@btnBackground, @btnBackgroundHighlight);
+  .buttonBackground(@btnBackground, @btnBackgroundHighlight, @grayDark, 0 1px 1px rgba(255,255,255,.75));
   border: 1px solid @btnBorder;
   *border: 0; // Remove the border to prevent IE7's black border on input:focus
   border-bottom-color: darken(@btnBorder, 10%);
-  .border-radius(4px);
+  .border-radius(@baseBorderRadius);
   .ie7-restore-left-whitespace(); // Give IE7 some love
   .box-shadow(~"inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05)");
+
+  // Hover/focus state
+  &:hover,
+  &:focus {
+    color: @grayDark;
+    text-decoration: none;
+    background-position: 0 -15px;
+
+    // transition is only when going to hover/focus, otherwise the background
+    // behind the gradient (there for IE<=9 fallback) gets mismatched
+    .transition(background-position .1s linear);
+  }
+
+  // Focus state for keyboard and accessibility
+  &:focus {
+    .tab-focus();
+  }
+
+  // Active state
+  &.active,
+  &:active {
+    background-image: none;
+    outline: 0;
+    .box-shadow(~"inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05)");
+  }
+
+  // Disabled state
+  &.disabled,
+  &[disabled] {
+    cursor: default;
+    background-image: none;
+    .opacity(65);
+    .box-shadow(none);
+  }
+
 }
 
-// Hover state
-.btn:hover {
-  color: @grayDark;
-  text-decoration: none;
-  background-color: darken(@white, 10%);
-  *background-color: darken(@white, 15%); /* Buttons in IE7 don't get borders, so darken on hover */
-  background-position: 0 -15px;
-
-  // transition is only when going to hover, otherwise the background
-  // behind the gradient (there for IE<=9 fallback) gets mismatched
-  .transition(background-position .1s linear);
-}
-
-// Focus state for keyboard and accessibility
-.btn:focus {
-  .tab-focus();
-}
-
-// Active state
-.btn.active,
-.btn:active {
-  background-color: darken(@white, 10%);
-  background-color: darken(@white, 15%) e("\9");
-  background-image: none;
-  outline: 0;
-  .box-shadow(~"inset 0 2px 4px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.05)");
-}
-
-// Disabled state
-.btn.disabled,
-.btn[disabled] {
-  cursor: default;
-  background-color: darken(@white, 10%);
-  background-image: none;
-  .opacity(65);
-  .box-shadow(none);
-}
 
 
 // Button Sizes
@@ -2600,53 +3172,68 @@ button.close {
 
 // Large
 .btn-large {
-  padding: 9px 14px;
-  font-size: @baseFontSize + 2px;
-  line-height: normal;
-  .border-radius(5px);
+  padding: @paddingLarge;
+  font-size: @fontSizeLarge;
+  .border-radius(@borderRadiusLarge);
 }
-.btn-large [class^="icon-"] {
-  margin-top: 1px;
+.btn-large [class^="icon-"],
+.btn-large [class*=" icon-"] {
+  margin-top: 4px;
 }
 
 // Small
 .btn-small {
-  padding: 5px 9px;
-  font-size: @baseFontSize - 2px;
-  line-height: @baseLineHeight - 2px;
+  padding: @paddingSmall;
+  font-size: @fontSizeSmall;
+  .border-radius(@borderRadiusSmall);
 }
-.btn-small [class^="icon-"] {
+.btn-small [class^="icon-"],
+.btn-small [class*=" icon-"] {
+  margin-top: 0;
+}
+.btn-mini [class^="icon-"],
+.btn-mini [class*=" icon-"] {
   margin-top: -1px;
 }
 
 // Mini
 .btn-mini {
-  padding: 2px 6px;
-  font-size: @baseFontSize - 2px;
-  line-height: @baseLineHeight - 4px;
+  padding: @paddingMini;
+  font-size: @fontSizeMini;
+  .border-radius(@borderRadiusSmall);
 }
+
+
+// Block button
+// -------------------------
+
+.btn-block {
+  display: block;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  .box-sizing(border-box);
+}
+
+// Vertically space out multiple block buttons
+.btn-block + .btn-block {
+  margin-top: 5px;
+}
+
+// Specificity overrides
+input[type="submit"],
+input[type="reset"],
+input[type="button"] {
+  &.btn-block {
+    width: 100%;
+  }
+}
+
 
 
 // Alternate buttons
 // --------------------------------------------------
 
-// Set text color
-// -------------------------
-.btn-primary,
-.btn-primary:hover,
-.btn-warning,
-.btn-warning:hover,
-.btn-danger,
-.btn-danger:hover,
-.btn-success,
-.btn-success:hover,
-.btn-info,
-.btn-info:hover,
-.btn-inverse,
-.btn-inverse:hover {
-  color: @white;
-  text-shadow: 0 -1px 0 rgba(0,0,0,.25);
-}
 // Provide *some* extra contrast for those who can get it
 .btn-primary.active,
 .btn-warning.active,
@@ -2659,11 +3246,6 @@ button.close {
 
 // Set the backgrounds
 // -------------------------
-.btn {
-  // reset here as of 2.0.3 due to Recess property order
-  border-color: #ccc;
-  border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) rgba(0,0,0,.25);
-}
 .btn-primary {
   .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight);
 }
@@ -2702,8 +3284,9 @@ input[type="submit"].btn {
   }
 
   // IE7 has some default padding on button controls
-  *padding-top: 2px;
-  *padding-bottom: 2px;
+  *padding-top: 3px;
+  *padding-bottom: 3px;
+
   &.btn-large {
     *padding-top: 7px;
     *padding-bottom: 7px;
@@ -2718,14 +3301,49 @@ input[type="submit"].btn {
   }
 }
 
-// BUTTON GROUPS
-// -------------
+
+// Link buttons
+// --------------------------------------------------
+
+// Make a button look and behave like a link
+.btn-link,
+.btn-link:active,
+.btn-link[disabled] {
+  background-color: transparent;
+  background-image: none;
+  .box-shadow(none);
+}
+.btn-link {
+  border-color: transparent;
+  cursor: pointer;
+  color: @linkColor;
+  .border-radius(0);
+}
+.btn-link:hover,
+.btn-link:focus {
+  color: @linkColorHover;
+  text-decoration: underline;
+  background-color: transparent;
+}
+.btn-link[disabled]:hover,
+.btn-link[disabled]:focus {
+  color: @grayDark;
+  text-decoration: none;
+}
+
+//
+// Button groups
+// --------------------------------------------------
 
 
 // Make the div behave like a button
 .btn-group {
   position: relative;
-  .clearfix(); // clears the floated buttons
+  display: inline-block;
+  .ie7-inline-block();
+  font-size: 0; // remove as part 1 of font-size inline-block hack
+  vertical-align: middle; // match .btn alignment given font-size hack above
+  white-space: nowrap; // prevent buttons from wrapping when in tight spaces (e.g., the table on the tests page)
   .ie7-restore-left-whitespace();
 }
 
@@ -2736,59 +3354,63 @@ input[type="submit"].btn {
 
 // Optional: Group multiple button groups together for a toolbar
 .btn-toolbar {
+  font-size: 0; // Hack to remove whitespace that results from using inline-block
   margin-top: @baseLineHeight / 2;
   margin-bottom: @baseLineHeight / 2;
-  .btn-group {
-    display: inline-block;
-    .ie7-inline-block();
+  > .btn + .btn,
+  > .btn-group + .btn,
+  > .btn + .btn-group {
+    margin-left: 5px;
   }
 }
 
 // Float them, remove border radius, then re-add to first and last elements
 .btn-group > .btn {
   position: relative;
-  float: left;
-  margin-left: -1px;
   .border-radius(0);
 }
+.btn-group > .btn + .btn {
+  margin-left: -1px;
+}
+.btn-group > .btn,
+.btn-group > .dropdown-menu,
+.btn-group > .popover {
+  font-size: @baseFontSize; // redeclare as part 2 of font-size inline-block hack
+}
+
+// Reset fonts for other sizes
+.btn-group > .btn-mini {
+  font-size: @fontSizeMini;
+}
+.btn-group > .btn-small {
+  font-size: @fontSizeSmall;
+}
+.btn-group > .btn-large {
+  font-size: @fontSizeLarge;
+}
+
 // Set corners individual because sometimes a single button can be in a .btn-group and we need :first-child and :last-child to both match
 .btn-group > .btn:first-child {
   margin-left: 0;
-     -webkit-border-top-left-radius: 4px;
-         -moz-border-radius-topleft: 4px;
-             border-top-left-radius: 4px;
-  -webkit-border-bottom-left-radius: 4px;
-      -moz-border-radius-bottomleft: 4px;
-          border-bottom-left-radius: 4px;
+  .border-top-left-radius(@baseBorderRadius);
+  .border-bottom-left-radius(@baseBorderRadius);
 }
 // Need .dropdown-toggle since :last-child doesn't apply given a .dropdown-menu immediately after it
 .btn-group > .btn:last-child,
 .btn-group > .dropdown-toggle {
-     -webkit-border-top-right-radius: 4px;
-         -moz-border-radius-topright: 4px;
-             border-top-right-radius: 4px;
-  -webkit-border-bottom-right-radius: 4px;
-      -moz-border-radius-bottomright: 4px;
-          border-bottom-right-radius: 4px;
+  .border-top-right-radius(@baseBorderRadius);
+  .border-bottom-right-radius(@baseBorderRadius);
 }
 // Reset corners for large buttons
 .btn-group > .btn.large:first-child {
   margin-left: 0;
-     -webkit-border-top-left-radius: 6px;
-         -moz-border-radius-topleft: 6px;
-             border-top-left-radius: 6px;
-  -webkit-border-bottom-left-radius: 6px;
-      -moz-border-radius-bottomleft: 6px;
-          border-bottom-left-radius: 6px;
+  .border-top-left-radius(@borderRadiusLarge);
+  .border-bottom-left-radius(@borderRadiusLarge);
 }
 .btn-group > .btn.large:last-child,
 .btn-group > .large.dropdown-toggle {
-     -webkit-border-top-right-radius: 6px;
-         -moz-border-radius-topright: 6px;
-             border-top-right-radius: 6px;
-  -webkit-border-bottom-right-radius: 6px;
-      -moz-border-radius-bottomright: 6px;
-          border-bottom-right-radius: 6px;
+  .border-top-right-radius(@borderRadiusLarge);
+  .border-bottom-right-radius(@borderRadiusLarge);
 }
 
 // On hover/focus/active, bring the proper btn to front
@@ -2811,24 +3433,28 @@ input[type="submit"].btn {
 // ----------------------
 
 // Give the line between buttons some depth
-.btn-group > .dropdown-toggle {
+.btn-group > .btn + .dropdown-toggle {
   padding-left: 8px;
   padding-right: 8px;
   .box-shadow(~"inset 1px 0 0 rgba(255,255,255,.125), inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05)");
-  *padding-top: 4px;
-  *padding-bottom: 4px;
+  *padding-top: 5px;
+  *padding-bottom: 5px;
 }
-.btn-group > .btn-mini.dropdown-toggle {
+.btn-group > .btn-mini + .dropdown-toggle {
   padding-left: 5px;
   padding-right: 5px;
+  *padding-top: 2px;
+  *padding-bottom: 2px;
 }
-.btn-group > .btn-small.dropdown-toggle {
-  *padding-top: 4px;
+.btn-group > .btn-small + .dropdown-toggle {
+  *padding-top: 5px;
   *padding-bottom: 4px;
 }
-.btn-group > .btn-large.dropdown-toggle {
+.btn-group > .btn-large + .dropdown-toggle {
   padding-left: 12px;
   padding-right: 12px;
+  *padding-top: 7px;
+  *padding-bottom: 7px;
 }
 
 .btn-group.open {
@@ -2867,30 +3493,25 @@ input[type="submit"].btn {
 
 // Reposition the caret
 .btn .caret {
-  margin-top: 7px;
+  margin-top: 8px;
   margin-left: 0;
 }
-.btn:hover .caret,
-.open.btn-group .caret {
-  .opacity(100);
-}
 // Carets in other button sizes
-.btn-mini .caret {
-  margin-top: 5px;
-}
-.btn-small .caret {
+.btn-large .caret {
   margin-top: 6px;
 }
 .btn-large .caret {
-  margin-top: 6px;
   border-left-width:  5px;
   border-right-width: 5px;
   border-top-width:   5px;
 }
+.btn-mini .caret,
+.btn-small .caret {
+  margin-top: 8px;
+}
 // Upside down carets for .dropup
 .dropup .btn-large .caret {
-  border-bottom: 5px solid @black;
-  border-top: 0;
+  border-bottom-width: 5px;
 }
 
 
@@ -2905,26 +3526,64 @@ input[type="submit"].btn {
   .caret {
     border-top-color: @white;
     border-bottom-color: @white;
-    .opacity(75);
   }
 }
 
 
-// ALERT STYLES
-// ------------
 
-// Base alert styles
+// Vertical button groups
+// ----------------------
+
+.btn-group-vertical {
+  display: inline-block; // makes buttons only take up the width they need
+  .ie7-inline-block();
+}
+.btn-group-vertical > .btn {
+  display: block;
+  float: none;
+  max-width: 100%;
+  .border-radius(0);
+}
+.btn-group-vertical > .btn + .btn {
+  margin-left: 0;
+  margin-top: -1px;
+}
+.btn-group-vertical > .btn:first-child {
+  .border-radius(@baseBorderRadius @baseBorderRadius 0 0);
+}
+.btn-group-vertical > .btn:last-child {
+  .border-radius(0 0 @baseBorderRadius @baseBorderRadius);
+}
+.btn-group-vertical > .btn-large:first-child {
+  .border-radius(@borderRadiusLarge @borderRadiusLarge 0 0);
+}
+.btn-group-vertical > .btn-large:last-child {
+  .border-radius(0 0 @borderRadiusLarge @borderRadiusLarge);
+}
+
+//
+// Alerts
+// --------------------------------------------------
+
+
+// Base styles
+// -------------------------
+
 .alert {
   padding: 8px 35px 8px 14px;
   margin-bottom: @baseLineHeight;
   text-shadow: 0 1px 0 rgba(255,255,255,.5);
   background-color: @warningBackground;
   border: 1px solid @warningBorder;
-  .border-radius(4px);
+  .border-radius(@baseBorderRadius);
+}
+.alert,
+.alert h4 {
+  // Specified for the h4 to prevent conflicts of changing @headingsColor
   color: @warningText;
 }
-.alert-heading {
-  color: inherit;
+.alert h4 {
+  margin: 0;
 }
 
 // Adjust close link position
@@ -2932,15 +3591,19 @@ input[type="submit"].btn {
   position: relative;
   top: -2px;
   right: -21px;
-  line-height: 18px;
+  line-height: @baseLineHeight;
 }
 
+
 // Alternate styles
-// ----------------
+// -------------------------
 
 .alert-success {
   background-color: @successBackground;
-  border-color: @successBorder;  
+  border-color: @successBorder;
+  color: @successText;
+}
+.alert-success h4 {
   color: @successText;
 }
 .alert-danger,
@@ -2949,14 +3612,23 @@ input[type="submit"].btn {
   border-color: @errorBorder;
   color: @errorText;
 }
+.alert-danger h4,
+.alert-error h4 {
+  color: @errorText;
+}
 .alert-info {
   background-color: @infoBackground;
   border-color: @infoBorder;
   color: @infoText;
 }
+.alert-info h4 {
+  color: @infoText;
+}
+
 
 // Block alerts
-// ------------------------
+// -------------------------
+
 .alert-block {
   padding-top: 14px;
   padding-bottom: 14px;
@@ -2971,9 +3643,9 @@ input[type="submit"].btn {
 
 
 // Components: Nav
-// NAVIGATIONS
-// -----------
-
+//
+// Navs
+// --------------------------------------------------
 
 
 // BASE CLASS
@@ -2989,9 +3661,16 @@ input[type="submit"].btn {
 .nav > li > a {
   display: block;
 }
-.nav > li > a:hover {
+.nav > li > a:hover,
+.nav > li > a:focus {
   text-decoration: none;
   background-color: @grayLighter;
+}
+
+// Prevent IE8 from misplacing imgs
+// See https://github.com/h5bp/html5-boilerplate/issues/984#issuecomment-3985989
+.nav > li > a > img {
+  max-width: none;
 }
 
 // Redeclare pull classes because of specifity
@@ -3000,7 +3679,7 @@ input[type="submit"].btn {
 }
 
 // Nav headers (for dropdowns and lists)
-.nav .nav-header {
+.nav-header {
   display: block;
   padding: 3px 15px;
   font-size: 11px;
@@ -3014,6 +3693,7 @@ input[type="submit"].btn {
 .nav li + .nav-header {
   margin-top: 9px;
 }
+
 
 
 // NAV LIST
@@ -3034,12 +3714,14 @@ input[type="submit"].btn {
   padding: 3px 15px;
 }
 .nav-list > .active > a,
-.nav-list > .active > a:hover {
+.nav-list > .active > a:hover,
+.nav-list > .active > a:focus {
   color: @white;
   text-shadow: 0 -1px 0 rgba(0,0,0,.2);
   background-color: @linkColor;
 }
-.nav-list [class^="icon-"] {
+.nav-list [class^="icon-"],
+.nav-list [class*=" icon-"] {
   margin-right: 2px;
 }
 // Dividers (basically an hr) within the dropdown
@@ -3087,15 +3769,17 @@ input[type="submit"].btn {
   line-height: @baseLineHeight;
   border: 1px solid transparent;
   .border-radius(4px 4px 0 0);
-  &:hover {
+  &:hover,
+  &:focus {
     border-color: @grayLighter @grayLighter #ddd;
   }
 }
-// Active state, and it's :hover to override normal :hover
+// Active state, and it's :hover/:focus to override normal :hover/:focus
 .nav-tabs > .active > a,
-.nav-tabs > .active > a:hover {
+.nav-tabs > .active > a:hover,
+.nav-tabs > .active > a:focus {
   color: @gray;
-  background-color: @white;
+  background-color: @bodyBackground;
   border: 1px solid #ddd;
   border-bottom-color: transparent;
   cursor: default;
@@ -3116,7 +3800,8 @@ input[type="submit"].btn {
 
 // Active state
 .nav-pills > .active > a,
-.nav-pills > .active > a:hover {
+.nav-pills > .active > a:hover,
+.nav-pills > .active > a:focus {
   color: @white;
   background-color: @linkColor;
 }
@@ -3143,12 +3828,13 @@ input[type="submit"].btn {
   .border-radius(0);
 }
 .nav-tabs.nav-stacked > li:first-child > a {
-  .border-radius(4px 4px 0 0);
+  .border-top-radius(4px);
 }
 .nav-tabs.nav-stacked > li:last-child > a {
-  .border-radius(0 0 4px 4px);
+  .border-bottom-radius(4px);
 }
-.nav-tabs.nav-stacked > li > a:hover {
+.nav-tabs.nav-stacked > li > a:hover,
+.nav-tabs.nav-stacked > li > a:focus {
   border-color: #ddd;
   z-index: 2;
 }
@@ -3167,39 +3853,45 @@ input[type="submit"].btn {
 // ---------
 
 .nav-tabs .dropdown-menu {
-  .border-radius(0 0 5px 5px); // remove the top rounded corners here since there is a hard edge above the menu
+  .border-radius(0 0 6px 6px); // remove the top rounded corners here since there is a hard edge above the menu
 }
 .nav-pills .dropdown-menu {
-  .border-radius(4px); // make rounded corners match the pills
+  .border-radius(6px); // make rounded corners match the pills
 }
 
 // Default dropdown links
 // -------------------------
 // Make carets use linkColor to start
-.nav-tabs .dropdown-toggle .caret,
-.nav-pills .dropdown-toggle .caret {
+.nav .dropdown-toggle .caret {
   border-top-color: @linkColor;
   border-bottom-color: @linkColor;
   margin-top: 6px;
 }
-.nav-tabs .dropdown-toggle:hover .caret,
-.nav-pills .dropdown-toggle:hover .caret {
+.nav .dropdown-toggle:hover .caret,
+.nav .dropdown-toggle:focus .caret {
   border-top-color: @linkColorHover;
   border-bottom-color: @linkColorHover;
+}
+/* move down carets for tabs */
+.nav-tabs .dropdown-toggle .caret {
+  margin-top: 8px;
 }
 
 // Active dropdown links
 // -------------------------
-.nav-tabs .active .dropdown-toggle .caret,
-.nav-pills .active .dropdown-toggle .caret {
-  border-top-color: @grayDark;
-  border-bottom-color: @grayDark;
+.nav .active .dropdown-toggle .caret {
+  border-top-color: #fff;
+  border-bottom-color: #fff;
+}
+.nav-tabs .active .dropdown-toggle .caret {
+  border-top-color: @gray;
+  border-bottom-color: @gray;
 }
 
-// Active:hover dropdown links
+// Active:hover/:focus dropdown links
 // -------------------------
-.nav > .dropdown.active > a:hover {
-  color: @black;
+.nav > .dropdown.active > a:hover,
+.nav > .dropdown.active > a:focus {
   cursor: pointer;
 }
 
@@ -3207,21 +3899,24 @@ input[type="submit"].btn {
 // -------------------------
 .nav-tabs .open .dropdown-toggle,
 .nav-pills .open .dropdown-toggle,
-.nav > li.dropdown.open.active > a:hover {
+.nav > li.dropdown.open.active > a:hover,
+.nav > li.dropdown.open.active > a:focus {
   color: @white;
   background-color: @grayLight;
   border-color: @grayLight;
 }
 .nav li.dropdown.open .caret,
 .nav li.dropdown.open.active .caret,
-.nav li.dropdown.open a:hover .caret {
+.nav li.dropdown.open a:hover .caret,
+.nav li.dropdown.open a:focus .caret {
   border-top-color: @white;
   border-bottom-color: @white;
   .opacity(100);
 }
 
 // Dropdowns in stacked tabs
-.tabs-stacked .open > a:hover {
+.tabs-stacked .open > a:hover,
+.tabs-stacked .open > a:focus {
   border-color: @grayLight;
 }
 
@@ -3272,13 +3967,15 @@ input[type="submit"].btn {
 }
 .tabs-below > .nav-tabs > li > a {
   .border-radius(0 0 4px 4px);
-  &:hover {
+  &:hover,
+  &:focus {
     border-bottom-color: transparent;
     border-top-color: #ddd;
   }
 }
 .tabs-below > .nav-tabs > .active > a,
-.tabs-below > .nav-tabs > .active > a:hover {
+.tabs-below > .nav-tabs > .active > a:hover,
+.tabs-below > .nav-tabs > .active > a:focus {
   border-color: transparent #ddd #ddd #ddd;
 }
 
@@ -3307,11 +4004,13 @@ input[type="submit"].btn {
   margin-right: -1px;
   .border-radius(4px 0 0 4px);
 }
-.tabs-left > .nav-tabs > li > a:hover {
+.tabs-left > .nav-tabs > li > a:hover,
+.tabs-left > .nav-tabs > li > a:focus {
   border-color: @grayLighter #ddd @grayLighter @grayLighter;
 }
 .tabs-left > .nav-tabs .active > a,
-.tabs-left > .nav-tabs .active > a:hover {
+.tabs-left > .nav-tabs .active > a:hover,
+.tabs-left > .nav-tabs .active > a:focus {
   border-color: #ddd transparent #ddd #ddd;
   *border-right-color: @white;
 }
@@ -3326,39 +4025,65 @@ input[type="submit"].btn {
   margin-left: -1px;
   .border-radius(0 4px 4px 0);
 }
-.tabs-right > .nav-tabs > li > a:hover {
+.tabs-right > .nav-tabs > li > a:hover,
+.tabs-right > .nav-tabs > li > a:focus {
   border-color: @grayLighter @grayLighter @grayLighter #ddd;
 }
 .tabs-right > .nav-tabs .active > a,
-.tabs-right > .nav-tabs .active > a:hover {
+.tabs-right > .nav-tabs .active > a:hover,
+.tabs-right > .nav-tabs .active > a:focus {
   border-color: #ddd #ddd #ddd transparent;
   *border-left-color: @white;
 }
 
-// NAVBAR (FIXED AND STATIC)
-// -------------------------
+
+
+// DISABLED STATES
+// ---------------
+
+// Gray out text
+.nav > .disabled > a {
+  color: @grayLight;
+}
+// Nuke hover/focus effects
+.nav > .disabled > a:hover,
+.nav > .disabled > a:focus {
+  text-decoration: none;
+  background-color: transparent;
+  cursor: default;
+}
+
+//
+// Navbars (Redux)
+// --------------------------------------------------
 
 
 // COMMON STYLES
 // -------------
 
+// Base class and wrapper
 .navbar {
+  overflow: visible;
+  margin-bottom: @baseLineHeight;
+
   // Fix for IE7's bad z-indexing so dropdowns don't appear below content that follows the navbar
   *position: relative;
   *z-index: 2;
-
-  overflow: visible;
-  margin-bottom: @baseLineHeight;
 }
 
-// Gradient is applied to it's own element because overflow visible is not honored by IE when filter is present
+// Inner for background effects
+// Gradient is applied to its own element because overflow visible is not honored by IE when filter is present
 .navbar-inner {
   min-height: @navbarHeight;
   padding-left:  20px;
   padding-right: 20px;
   #gradient > .vertical(@navbarBackgroundHighlight, @navbarBackground);
-  .border-radius(4px);
-  .box-shadow(~"0 1px 3px rgba(0,0,0,.25), inset 0 -1px 0 rgba(0,0,0,.1)");
+  border: 1px solid @navbarBorder;
+  .border-radius(@baseBorderRadius);
+  .box-shadow(0 1px 4px rgba(0,0,0,.065));
+
+  // Prevent floats from breaking the navbar
+  .clearfix();
 }
 
 // Set width to auto for default container
@@ -3370,52 +4095,71 @@ input[type="submit"].btn {
 // Override the default collapsed state
 .nav-collapse.collapse {
   height: auto;
+  overflow: visible;
 }
 
 
-// Brand, links, text, and buttons
-.navbar {
-  color: @navbarText;
-  // Hover and active states
-  .brand:hover {
+// Brand: website or project name
+// -------------------------
+.navbar .brand {
+  float: left;
+  display: block;
+  // Vertically center the text given @navbarHeight
+  padding: ((@navbarHeight - @baseLineHeight) / 2) 20px ((@navbarHeight - @baseLineHeight) / 2);
+  margin-left: -20px; // negative indent to left-align the text down the page
+  font-size: 20px;
+  font-weight: 200;
+  color: @navbarBrandColor;
+  text-shadow: 0 1px 0 @navbarBackgroundHighlight;
+  &:hover,
+  &:focus {
     text-decoration: none;
   }
-  // Website or project name
-  .brand {
-    float: left;
-    display: block;
-    // Vertically center the text given @navbarHeight
-    @elementHeight: 20px;
-    padding: ((@navbarHeight - @elementHeight) / 2 - 2) 20px ((@navbarHeight - @elementHeight) / 2 + 2);
-    margin-left: -20px; // negative indent to left-align the text down the page
-    font-size: 20px;
-    font-weight: 200;
-    line-height: 1;
-    color: @navbarBrandColor;
+}
+
+// Plain text in topbar
+// -------------------------
+.navbar-text {
+  margin-bottom: 0;
+  line-height: @navbarHeight;
+  color: @navbarText;
+}
+
+// Janky solution for now to account for links outside the .nav
+// -------------------------
+.navbar-link {
+  color: @navbarLinkColor;
+  &:hover,
+  &:focus {
+    color: @navbarLinkColorHover;
   }
-  // Plain text in topbar
-  .navbar-text {
-    margin-bottom: 0;
-    line-height: @navbarHeight;
-  }
-  // Janky solution for now to account for links outside the .nav
-  .navbar-link {
-    color: @navbarLinkColor;
-    &:hover {
-      color: @navbarLinkColorHover;
-    }
-  }
-  // Buttons in navbar
-  .btn,
-  .btn-group {
-    .navbarVerticalAlign(30px); // Vertically center in navbar
-  }
-  .btn-group .btn {
-    margin: 0; // then undo the margin here so we don't accidentally double it
-  }
+}
+
+// Dividers in navbar
+// -------------------------
+.navbar .divider-vertical {
+  height: @navbarHeight;
+  margin: 0 9px;
+  border-left: 1px solid @navbarBackground;
+  border-right: 1px solid @navbarBackgroundHighlight;
+}
+
+// Buttons in navbar
+// -------------------------
+.navbar .btn,
+.navbar .btn-group {
+  .navbarVerticalAlign(30px); // Vertically center in navbar
+}
+.navbar .btn-group .btn,
+.navbar .input-prepend .btn,
+.navbar .input-append .btn,
+.navbar .input-prepend .btn-group,
+.navbar .input-append .btn-group {
+  margin-top: 0; // then undo the margin here so we don't accidentally double it
 }
 
 // Navbar forms
+// -------------------------
 .navbar-form {
   margin-bottom: 0; // remove default bottom margin
   .clearfix();
@@ -3426,7 +4170,8 @@ input[type="submit"].btn {
     .navbarVerticalAlign(30px); // Vertically center in navbar
   }
   input,
-  select {
+  select,
+  .btn {
     display: inline-block;
     margin-bottom: 0;
   }
@@ -3437,7 +4182,7 @@ input[type="submit"].btn {
   }
   .input-append,
   .input-prepend {
-    margin-top: 6px;
+    margin-top: 5px;
     white-space: nowrap; // preven two  items from separating within a .navbar-form that has .pull-left
     input {
       margin-top: 0; // remove the margin on top since it's on the parent
@@ -3446,40 +4191,37 @@ input[type="submit"].btn {
 }
 
 // Navbar search
+// -------------------------
 .navbar-search {
   position: relative;
   float: left;
-  .navbarVerticalAlign(28px); // Vertically center in navbar
+  .navbarVerticalAlign(30px); // Vertically center in navbar
   margin-bottom: 0;
   .search-query {
-    padding: 4px 9px;
+    margin-bottom: 0;
+    padding: 4px 14px;
     #font > .sans-serif(13px, normal, 1);
-    color: @white;
-    background-color: @navbarSearchBackground;
-    border: 1px solid @navbarSearchBorder;
-    .box-shadow(~"inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15)");
-    .transition(none);
-
-    .placeholder(@navbarSearchPlaceholderColor);
-
-    // Focus states (we use .focused since IE7-8 and down doesn't support :focus)
-    &:focus,
-    &.focused {
-      padding: 5px 10px;
-      color: @grayDark;
-      text-shadow: 0 1px 0 @white;
-      background-color: @navbarSearchBackgroundFocus;
-      border: 0;
-      .box-shadow(0 0 3px rgba(0,0,0,.15));
-      outline: 0;
-    }
+    .border-radius(15px); // redeclare because of specificity of the type attribute
   }
 }
 
 
 
-// FIXED NAVBAR
-// ------------
+// Static navbar
+// -------------------------
+
+.navbar-static-top {
+  position: static;
+  margin-bottom: 0; // remove 18px margin for default navbar
+  .navbar-inner {
+    .border-radius(0);
+  }
+}
+
+
+
+// Fixed navbar
+// -------------------------
 
 // Shared (top/bottom) styles
 .navbar-fixed-top,
@@ -3488,7 +4230,14 @@ input[type="submit"].btn {
   right: 0;
   left: 0;
   z-index: @zindexFixedNavbar;
-  margin-bottom: 0; // remove 18px margin for static navbar
+  margin-bottom: 0; // remove 18px margin for default navbar
+}
+.navbar-fixed-top .navbar-inner,
+.navbar-static-top .navbar-inner {
+  border-width: 0 0 1px;
+}
+.navbar-fixed-bottom .navbar-inner {
+  border-width: 1px 0 0;
 }
 .navbar-fixed-top .navbar-inner,
 .navbar-fixed-bottom .navbar-inner {
@@ -3497,6 +4246,9 @@ input[type="submit"].btn {
   .border-radius(0);
 }
 
+// Reset container width
+// Required here as we reset the width earlier on and the grid mixins don't override early enough
+.navbar-static-top .container,
 .navbar-fixed-top .container,
 .navbar-fixed-bottom .container {
   #grid > .core > .span(@gridColumns);
@@ -3506,10 +4258,19 @@ input[type="submit"].btn {
 .navbar-fixed-top {
   top: 0;
 }
+.navbar-fixed-top,
+.navbar-static-top {
+  .navbar-inner {
+    .box-shadow(~"0 1px 10px rgba(0,0,0,.1)");
+  }
+}
 
 // Fixed to bottom
 .navbar-fixed-bottom {
   bottom: 0;
+  .navbar-inner {
+    .box-shadow(~"0 -1px 10px rgba(0,0,0,.1)");
+  }
 }
 
 
@@ -3526,9 +4287,9 @@ input[type="submit"].btn {
 }
 .navbar .nav.pull-right {
   float: right; // redeclare due to specificity
+  margin-right: 0; // remove margin on float right nav
 }
 .navbar .nav > li {
-  display: block;
   float: left;
 }
 
@@ -3536,57 +4297,31 @@ input[type="submit"].btn {
 .navbar .nav > li > a {
   float: none;
   // Vertically center the text given @navbarHeight
-  @elementHeight: 20px;
-  padding: ((@navbarHeight - @elementHeight) / 2 - 1) 10px ((@navbarHeight - @elementHeight) / 2 + 1);
-  line-height: 19px;
+  padding: ((@navbarHeight - @baseLineHeight) / 2) 15px ((@navbarHeight - @baseLineHeight) / 2);
   color: @navbarLinkColor;
   text-decoration: none;
-  text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+  text-shadow: 0 1px 0 @navbarBackgroundHighlight;
 }
-// Buttons
-.navbar .btn {
-  display: inline-block;
-  padding: 4px 10px 4px;
-  // Vertically center the button given @navbarHeight
-  @elementHeight: 28px;
-  margin: ((@navbarHeight - @elementHeight) / 2 - 1) 5px ((@navbarHeight - @elementHeight) / 2);
-  line-height: @baseLineHeight;
+.navbar .nav .dropdown-toggle .caret {
+  margin-top: 8px;
 }
-.navbar .btn-group {
-  margin: 0;
-  // Vertically center the button given @navbarHeight
-  @elementHeight: 28px;
-  padding: ((@navbarHeight - @elementHeight) / 2 - 1) 5px ((@navbarHeight - @elementHeight) / 2);
-}
-// Hover
+
+// Hover/focus
+.navbar .nav > li > a:focus,
 .navbar .nav > li > a:hover {
-  background-color: @navbarLinkBackgroundHover; // "transparent" is default to differentiate :hover from .active
+  background-color: @navbarLinkBackgroundHover; // "transparent" is default to differentiate :hover/:focus from .active
   color: @navbarLinkColorHover;
   text-decoration: none;
 }
 
 // Active nav items
-.navbar .nav .active > a,
-.navbar .nav .active > a:hover {
+.navbar .nav > .active > a,
+.navbar .nav > .active > a:hover,
+.navbar .nav > .active > a:focus {
   color: @navbarLinkColorActive;
   text-decoration: none;
   background-color: @navbarLinkBackgroundActive;
-}
-
-// Dividers (basically a vertical hr)
-.navbar .divider-vertical {
-  height: @navbarHeight;
-  width: 1px;
-  margin: 0 9px;
-  overflow: hidden;
-  background-color: @navbarBackground;
-  border-right: 1px solid @navbarBackgroundHighlight;
-}
-
-// Secondary (floated right) nav in topbar
-.navbar .nav.pull-right {
-  margin-left: 10px;
-  margin-right: 0;
+  .box-shadow(inset 0 3px 8px rgba(0,0,0,.125));
 }
 
 // Navbar button for toggling navbar items in responsive layouts
@@ -3597,7 +4332,7 @@ input[type="submit"].btn {
   padding: 7px 10px;
   margin-left: 5px;
   margin-right: 5px;
-  .buttonBackground(@navbarBackgroundHighlight, @navbarBackground);
+  .buttonBackground(darken(@navbarBackgroundHighlight, 5%), darken(@navbarBackground, 5%));
   .box-shadow(~"inset 0 1px 0 rgba(255,255,255,.1), 0 1px 0 rgba(255,255,255,.075)");
 }
 .navbar .btn-navbar .icon-bar {
@@ -3613,11 +4348,12 @@ input[type="submit"].btn {
 }
 
 
+
 // Dropdown menus
 // --------------
 
 // Menu position and menu carets
-.navbar .dropdown-menu {
+.navbar .nav > li > .dropdown-menu {
   &:before {
     content: '';
     display: inline-block;
@@ -3641,7 +4377,7 @@ input[type="submit"].btn {
   }
 }
 // Menu position and menu caret support for dropups via extra dropup class
-.navbar-fixed-bottom .dropdown-menu {
+.navbar-fixed-bottom .nav > li > .dropdown-menu {
   &:before {
     border-top: 7px solid #ccc;
     border-top-color: @dropdownBorder;
@@ -3656,32 +4392,35 @@ input[type="submit"].btn {
     top: auto;
   }
 }
-// Dropdown toggle caret
-.navbar .nav li.dropdown .dropdown-toggle .caret,
-.navbar .nav li.dropdown.open .caret {
-  border-top-color: @white;
-  border-bottom-color: @white;
-}
-.navbar .nav li.dropdown.active .caret {
-  .opacity(100);
+
+// Caret should match text color on hover/focus
+.navbar .nav li.dropdown > a:hover .caret,
+.navbar .nav li.dropdown > a:focus .caret {
+  border-top-color: @navbarLinkColorHover;
+  border-bottom-color: @navbarLinkColorHover;
 }
 
 // Remove background color from open dropdown
 .navbar .nav li.dropdown.open > .dropdown-toggle,
 .navbar .nav li.dropdown.active > .dropdown-toggle,
 .navbar .nav li.dropdown.open.active > .dropdown-toggle {
-  background-color: transparent;
+  background-color: @navbarLinkBackgroundActive;
+  color: @navbarLinkColorActive;
 }
-
-// Dropdown link on hover
-.navbar .nav li.dropdown.active > .dropdown-toggle:hover {
-  color: @white;
+.navbar .nav li.dropdown > .dropdown-toggle .caret {
+  border-top-color: @navbarLinkColor;
+  border-bottom-color: @navbarLinkColor;
+}
+.navbar .nav li.dropdown.open > .dropdown-toggle .caret,
+.navbar .nav li.dropdown.active > .dropdown-toggle .caret,
+.navbar .nav li.dropdown.open.active > .dropdown-toggle .caret {
+  border-top-color: @navbarLinkColorActive;
+  border-bottom-color: @navbarLinkColorActive;
 }
 
 // Right aligned menus need alt position
-// TODO: rejigger this at some point to simplify the selectors
-.navbar .pull-right .dropdown-menu,
-.navbar .dropdown-menu.pull-right {
+.navbar .pull-right > li > .dropdown-menu,
+.navbar .nav > li > .dropdown-menu.pull-right {
   left: auto;
   right: 0;
   &:before {
@@ -3692,83 +4431,217 @@ input[type="submit"].btn {
     left: auto;
     right: 13px;
   }
+  .dropdown-menu {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: -1px;
+    .border-radius(6px 0 6px 6px);
+  }
 }
 
-// BREADCRUMBS
-// -----------
+
+// Inverted navbar
+// -------------------------
+
+.navbar-inverse {
+
+  .navbar-inner {
+    #gradient > .vertical(@navbarInverseBackgroundHighlight, @navbarInverseBackground);
+    border-color: @navbarInverseBorder;
+  }
+
+  .brand,
+  .nav > li > a {
+    color: @navbarInverseLinkColor;
+    text-shadow: 0 -1px 0 rgba(0,0,0,.25);
+    &:hover,
+    &:focus {
+      color: @navbarInverseLinkColorHover;
+    }
+  }
+
+  .brand {
+    color: @navbarInverseBrandColor;
+  }
+
+  .navbar-text {
+    color: @navbarInverseText;
+  }
+
+  .nav > li > a:focus,
+  .nav > li > a:hover {
+    background-color: @navbarInverseLinkBackgroundHover;
+    color: @navbarInverseLinkColorHover;
+  }
+
+  .nav .active > a,
+  .nav .active > a:hover,
+  .nav .active > a:focus {
+    color: @navbarInverseLinkColorActive;
+    background-color: @navbarInverseLinkBackgroundActive;
+  }
+
+  // Inline text links
+  .navbar-link {
+    color: @navbarInverseLinkColor;
+    &:hover,
+    &:focus {
+      color: @navbarInverseLinkColorHover;
+    }
+  }
+
+  // Dividers in navbar
+  .divider-vertical {
+    border-left-color: @navbarInverseBackground;
+    border-right-color: @navbarInverseBackgroundHighlight;
+  }
+
+  // Dropdowns
+  .nav li.dropdown.open > .dropdown-toggle,
+  .nav li.dropdown.active > .dropdown-toggle,
+  .nav li.dropdown.open.active > .dropdown-toggle {
+    background-color: @navbarInverseLinkBackgroundActive;
+    color: @navbarInverseLinkColorActive;
+  }
+  .nav li.dropdown > a:hover .caret,
+  .nav li.dropdown > a:focus .caret {
+    border-top-color: @navbarInverseLinkColorActive;
+    border-bottom-color: @navbarInverseLinkColorActive;
+  }
+  .nav li.dropdown > .dropdown-toggle .caret {
+    border-top-color: @navbarInverseLinkColor;
+    border-bottom-color: @navbarInverseLinkColor;
+  }
+  .nav li.dropdown.open > .dropdown-toggle .caret,
+  .nav li.dropdown.active > .dropdown-toggle .caret,
+  .nav li.dropdown.open.active > .dropdown-toggle .caret {
+    border-top-color: @navbarInverseLinkColorActive;
+    border-bottom-color: @navbarInverseLinkColorActive;
+  }
+
+  // Navbar search
+  .navbar-search {
+    .search-query {
+      color: @white;
+      background-color: @navbarInverseSearchBackground;
+      border-color: @navbarInverseSearchBorder;
+      .box-shadow(~"inset 0 1px 2px rgba(0,0,0,.1), 0 1px 0 rgba(255,255,255,.15)");
+      .transition(none);
+      .placeholder(@navbarInverseSearchPlaceholderColor);
+
+      // Focus states (we use .focused since IE7-8 and down doesn't support :focus)
+      &:focus,
+      &.focused {
+        padding: 5px 15px;
+        color: @grayDark;
+        text-shadow: 0 1px 0 @white;
+        background-color: @navbarInverseSearchBackgroundFocus;
+        border: 0;
+        .box-shadow(0 0 3px rgba(0,0,0,.15));
+        outline: 0;
+      }
+    }
+  }
+
+  // Navbar collapse button
+  .btn-navbar {
+    .buttonBackground(darken(@navbarInverseBackgroundHighlight, 5%), darken(@navbarInverseBackground, 5%));
+  }
+
+}
+
+//
+// Breadcrumbs
+// --------------------------------------------------
+
 
 .breadcrumb {
-  padding: 7px 14px;
+  padding: 8px 15px;
   margin: 0 0 @baseLineHeight;
   list-style: none;
-  #gradient > .vertical(@white, #f5f5f5);
-  border: 1px solid #ddd;
-  .border-radius(3px);
-  .box-shadow(inset 0 1px 0 @white);
-  li {
+  background-color: #f5f5f5;
+  .border-radius(@baseBorderRadius);
+  > li {
     display: inline-block;
     .ie7-inline-block();
     text-shadow: 0 1px 0 @white;
+    > .divider {
+      padding: 0 5px;
+      color: #ccc;
+    }
   }
-  .divider {
-    padding: 0 5px;
+  > .active {
     color: @grayLight;
   }
-  .active a {
-    color: @grayDark;
-  }
 }
 
-// PAGINATION
-// ----------
+//
+// Pagination (multiple pages)
+// --------------------------------------------------
 
+// Space out pagination from surrounding content
 .pagination {
-  height: @baseLineHeight * 2;
   margin: @baseLineHeight 0;
- }
+}
+
 .pagination ul {
+  // Allow for text-based alignment
   display: inline-block;
   .ie7-inline-block();
+  // Reset default ul styles
   margin-left: 0;
   margin-bottom: 0;
-  .border-radius(3px);
+  // Visuals
+  .border-radius(@baseBorderRadius);
   .box-shadow(0 1px 2px rgba(0,0,0,.05));
 }
-.pagination li {
-    display: inline;
-  }
-.pagination a {
-  float: left;
-  padding: 0 14px;
-  line-height: (@baseLineHeight * 2) - 2;
+.pagination ul > li {
+  display: inline; // Remove list-style and block-level defaults
+}
+.pagination ul > li > a,
+.pagination ul > li > span {
+  float: left; // Collapse white-space
+  padding: 4px 12px;
+  line-height: @baseLineHeight;
   text-decoration: none;
-  border: 1px solid #ddd;
+  background-color: @paginationBackground;
+  border: 1px solid @paginationBorder;
   border-left-width: 0;
 }
-.pagination a:hover,
-.pagination .active a {
-  background-color: #f5f5f5;
+.pagination ul > li > a:hover,
+.pagination ul > li > a:focus,
+.pagination ul > .active > a,
+.pagination ul > .active > span {
+  background-color: @paginationActiveBackground;
 }
-.pagination .active a {
+.pagination ul > .active > a,
+.pagination ul > .active > span {
   color: @grayLight;
   cursor: default;
 }
-.pagination .disabled span,
-.pagination .disabled a,
-.pagination .disabled a:hover {
+.pagination ul > .disabled > span,
+.pagination ul > .disabled > a,
+.pagination ul > .disabled > a:hover,
+.pagination ul > .disabled > a:focus {
   color: @grayLight;
   background-color: transparent;
   cursor: default;
 }
-.pagination li:first-child a {
+.pagination ul > li:first-child > a,
+.pagination ul > li:first-child > span {
   border-left-width: 1px;
-  .border-radius(3px 0 0 3px);
+  .border-left-radius(@baseBorderRadius);
 }
-.pagination li:last-child a {
-  .border-radius(0 3px 3px 0);
+.pagination ul > li:last-child > a,
+.pagination ul > li:last-child > span {
+  .border-right-radius(@baseBorderRadius);
 }
 
-// Centered
+
+// Alignment
+// --------------------------------------------------
+
 .pagination-centered {
   text-align: center;
 }
@@ -3776,12 +4649,64 @@ input[type="submit"].btn {
   text-align: right;
 }
 
-// PAGER
-// -----
+
+// Sizing
+// --------------------------------------------------
+
+// Large
+.pagination-large {
+  ul > li > a,
+  ul > li > span {
+    padding: @paddingLarge;
+    font-size: @fontSizeLarge;
+  }
+  ul > li:first-child > a,
+  ul > li:first-child > span {
+    .border-left-radius(@borderRadiusLarge);
+  }
+  ul > li:last-child > a,
+  ul > li:last-child > span {
+    .border-right-radius(@borderRadiusLarge);
+  }
+}
+
+// Small and mini
+.pagination-mini,
+.pagination-small {
+  ul > li:first-child > a,
+  ul > li:first-child > span {
+    .border-left-radius(@borderRadiusSmall);
+  }
+  ul > li:last-child > a,
+  ul > li:last-child > span {
+    .border-right-radius(@borderRadiusSmall);
+  }
+}
+
+// Small
+.pagination-small {
+  ul > li > a,
+  ul > li > span {
+    padding: @paddingSmall;
+    font-size: @fontSizeSmall;
+  }
+}
+// Mini
+.pagination-mini {
+  ul > li > a,
+  ul > li > span {
+    padding: @paddingMini;
+    font-size: @fontSizeMini;
+  }
+}
+
+//
+// Pager pagination
+// --------------------------------------------------
+
 
 .pager {
-  margin-left: 0;
-  margin-bottom: @baseLineHeight;
+  margin: @baseLineHeight 0;
   list-style: none;
   text-align: center;
   .clearfix();
@@ -3789,25 +4714,31 @@ input[type="submit"].btn {
 .pager li {
   display: inline;
 }
-.pager a {
+.pager li > a,
+.pager li > span {
   display: inline-block;
   padding: 5px 14px;
   background-color: #fff;
   border: 1px solid #ddd;
   .border-radius(15px);
 }
-.pager a:hover {
+.pager li > a:hover,
+.pager li > a:focus {
   text-decoration: none;
   background-color: #f5f5f5;
 }
-.pager .next a {
+.pager .next > a,
+.pager .next > span {
   float: right;
 }
-.pager .previous a {
+.pager .previous > a,
+.pager .previous > span {
   float: left;
 }
-.pager .disabled a,
-.pager .disabled a:hover {
+.pager .disabled > a,
+.pager .disabled > a:hover,
+.pager .disabled > a:focus,
+.pager .disabled > span {
   color: @grayLight;
   background-color: #fff;
   cursor: default;
@@ -3815,16 +4746,9 @@ input[type="submit"].btn {
 
 
 // Components: Popovers
-// MODALS
-// ------
-
-// Recalculate z-index where appropriate
-.modal-open {
-  .dropdown-menu {  z-index: @zindexDropdown + @zindexModal; }
-  .dropdown.open { *z-index: @zindexDropdown + @zindexModal; }
-  .popover       {  z-index: @zindexPopover  + @zindexModal; }
-  .tooltip       {  z-index: @zindexTooltip  + @zindexModal; }
-}
+//
+// Modals
+// --------------------------------------------------
 
 // Background
 .modal-backdrop {
@@ -3847,12 +4771,11 @@ input[type="submit"].btn {
 // Base modal
 .modal {
   position: fixed;
-  top: 50%;
+  top: 10%;
   left: 50%;
   z-index: @zindexModal;
-  overflow: auto;
   width: 560px;
-  margin: -250px 0 0 -280px;
+  margin-left: -280px;
   background-color: @white;
   border: 1px solid #999;
   border: 1px solid rgba(0,0,0,.3);
@@ -3860,21 +4783,30 @@ input[type="submit"].btn {
   .border-radius(6px);
   .box-shadow(0 3px 7px rgba(0,0,0,0.3));
   .background-clip(padding-box);
+  // Remove focus outline from opened modal
+  outline: none;
+
   &.fade {
     .transition(e('opacity .3s linear, top .3s ease-out'));
     top: -25%;
   }
-  &.fade.in { top: 50%; }
+  &.fade.in { top: 10%; }
 }
 .modal-header {
   padding: 9px 15px;
   border-bottom: 1px solid #eee;
   // Close icon
   .close { margin-top: 2px; }
+  // Heading
+  h3 {
+    margin: 0;
+    line-height: 30px;
+  }
 }
 
 // Body (where all modal content resides)
 .modal-body {
+  position: relative;
   overflow-y: auto;
   max-height: 400px;
   padding: 15px;
@@ -3904,46 +4836,87 @@ input[type="submit"].btn {
   .btn-group .btn + .btn {
     margin-left: -1px;
   }
+  // and override it for block buttons as well
+  .btn-block + .btn-block {
+    margin-left: 0;
+  }
 }
 
-// TOOLTIP
-// ------=
+//
+// Tooltips
+// --------------------------------------------------
 
+
+// Base class
 .tooltip {
   position: absolute;
   z-index: @zindexTooltip;
   display: block;
   visibility: visible;
-  padding: 5px;
   font-size: 11px;
+  line-height: 1.4;
   .opacity(0);
   &.in     { .opacity(80); }
-  &.top    { margin-top:  -2px; }
-  &.right  { margin-left:  2px; }
-  &.bottom { margin-top:   2px; }
-  &.left   { margin-left: -2px; }
-  &.top .tooltip-arrow    { #popoverArrow > .top(); }
-  &.left .tooltip-arrow   { #popoverArrow > .left(); }
-  &.bottom .tooltip-arrow { #popoverArrow > .bottom(); }
-  &.right .tooltip-arrow  { #popoverArrow > .right(); }
+  &.top    { margin-top:  -3px; padding: 5px 0; }
+  &.right  { margin-left:  3px; padding: 0 5px; }
+  &.bottom { margin-top:   3px; padding: 5px 0; }
+  &.left   { margin-left: -3px; padding: 0 5px; }
 }
+
+// Wrapper for the tooltip content
 .tooltip-inner {
   max-width: 200px;
-  padding: 3px 8px;
-  color: @white;
+  padding: 8px;
+  color: @tooltipColor;
   text-align: center;
   text-decoration: none;
-  background-color: @black;
-  .border-radius(4px);
+  background-color: @tooltipBackground;
+  .border-radius(@baseBorderRadius);
 }
+
+// Arrows
 .tooltip-arrow {
   position: absolute;
   width: 0;
   height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+.tooltip {
+  &.top .tooltip-arrow {
+    bottom: 0;
+    left: 50%;
+    margin-left: -@tooltipArrowWidth;
+    border-width: @tooltipArrowWidth @tooltipArrowWidth 0;
+    border-top-color: @tooltipArrowColor;
+  }
+  &.right .tooltip-arrow {
+    top: 50%;
+    left: 0;
+    margin-top: -@tooltipArrowWidth;
+    border-width: @tooltipArrowWidth @tooltipArrowWidth @tooltipArrowWidth 0;
+    border-right-color: @tooltipArrowColor;
+  }
+  &.left .tooltip-arrow {
+    top: 50%;
+    right: 0;
+    margin-top: -@tooltipArrowWidth;
+    border-width: @tooltipArrowWidth 0 @tooltipArrowWidth @tooltipArrowWidth;
+    border-left-color: @tooltipArrowColor;
+  }
+  &.bottom .tooltip-arrow {
+    top: 0;
+    left: 50%;
+    margin-left: -@tooltipArrowWidth;
+    border-width: 0 @tooltipArrowWidth @tooltipArrowWidth;
+    border-bottom-color: @tooltipArrowColor;
+  }
 }
 
-// POPOVERS
-// --------
+//
+// Popovers
+// --------------------------------------------------
+
 
 .popover {
   position: absolute;
@@ -3951,51 +4924,136 @@ input[type="submit"].btn {
   left: 0;
   z-index: @zindexPopover;
   display: none;
-  padding: 5px;
-  &.top    { margin-top:  -5px; }
-  &.right  { margin-left:  5px; }
-  &.bottom { margin-top:   5px; }
-  &.left   { margin-left: -5px; }
-  &.top .arrow    { #popoverArrow > .top(); }
-  &.right .arrow  { #popoverArrow > .right(); }
-  &.bottom .arrow { #popoverArrow > .bottom(); }
-  &.left .arrow   { #popoverArrow > .left();  }
-  .arrow {
-    position: absolute;
-    width: 0;
-    height: 0;
-  }
-}
-.popover-inner {
-  padding: 3px;
-  width: 280px;
-  overflow: hidden;
-  background: @black; // has to be full background declaration for IE fallback
-  background: rgba(0,0,0,.8);
+  max-width: 276px;
+  padding: 1px;
+  text-align: left; // Reset given new insertion method
+  background-color: @popoverBackground;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding;
+          background-clip: padding-box;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0,0,0,.2);
   .border-radius(6px);
-  .box-shadow(0 3px 7px rgba(0,0,0,0.3));
+  .box-shadow(0 5px 10px rgba(0,0,0,.2));
+
+  // Overrides for proper insertion
+  white-space: normal;
+
+  // Offset the popover to account for the popover arrow
+  &.top     { margin-top: -10px; }
+  &.right   { margin-left: 10px; }
+  &.bottom  { margin-top: 10px; }
+  &.left    { margin-left: -10px; }
 }
+
 .popover-title {
-  padding: 9px 15px;
-  line-height: 1;
-  background-color: #f5f5f5;
-  border-bottom:1px solid #eee;
-  .border-radius(3px 3px 0 0);
-}
-.popover-content {
-  padding: 14px;
-  background-color: @white;
-  .border-radius(0 0 3px 3px);
-  .background-clip(padding-box);
-  p, ul, ol {
-    margin-bottom: 0;
+  margin: 0; // reset heading margin
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 18px;
+  background-color: @popoverTitleBackground;
+  border-bottom: 1px solid darken(@popoverTitleBackground, 5%);
+  .border-radius(5px 5px 0 0);
+
+  &:empty {
+    display: none;
   }
+}
+
+.popover-content {
+  padding: 9px 14px;
+}
+
+// Arrows
+//
+// .arrow is outer, .arrow:after is inner
+
+.popover .arrow,
+.popover .arrow:after {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+.popover .arrow {
+  border-width: @popoverArrowOuterWidth;
+}
+.popover .arrow:after {
+  border-width: @popoverArrowWidth;
+  content: "";
+}
+
+.popover {
+  &.top .arrow {
+    left: 50%;
+    margin-left: -@popoverArrowOuterWidth;
+    border-bottom-width: 0;
+    border-top-color: #999; // IE8 fallback
+    border-top-color: @popoverArrowOuterColor;
+    bottom: -@popoverArrowOuterWidth;
+    &:after {
+      bottom: 1px;
+      margin-left: -@popoverArrowWidth;
+      border-bottom-width: 0;
+      border-top-color: @popoverArrowColor;
+    }
+  }
+  &.right .arrow {
+    top: 50%;
+    left: -@popoverArrowOuterWidth;
+    margin-top: -@popoverArrowOuterWidth;
+    border-left-width: 0;
+    border-right-color: #999; // IE8 fallback
+    border-right-color: @popoverArrowOuterColor;
+    &:after {
+      left: 1px;
+      bottom: -@popoverArrowWidth;
+      border-left-width: 0;
+      border-right-color: @popoverArrowColor;
+    }
+  }
+  &.bottom .arrow {
+    left: 50%;
+    margin-left: -@popoverArrowOuterWidth;
+    border-top-width: 0;
+    border-bottom-color: #999; // IE8 fallback
+    border-bottom-color: @popoverArrowOuterColor;
+    top: -@popoverArrowOuterWidth;
+    &:after {
+      top: 1px;
+      margin-left: -@popoverArrowWidth;
+      border-top-width: 0;
+      border-bottom-color: @popoverArrowColor;
+    }
+  }
+
+  &.left .arrow {
+    top: 50%;
+    right: -@popoverArrowOuterWidth;
+    margin-top: -@popoverArrowOuterWidth;
+    border-right-width: 0;
+    border-left-color: #999; // IE8 fallback
+    border-left-color: @popoverArrowOuterColor;
+    &:after {
+      right: 1px;
+      border-right-width: 0;
+      border-left-color: @popoverArrowColor;
+      bottom: -@popoverArrowWidth;
+    }
+  }
+
 }
 
 
 // Components: Misc
-// THUMBNAILS
-// ----------
+//
+// Thumbnails
+// --------------------------------------------------
+
+
 // Note: `.thumbnails` and `.thumbnails > li` are overriden in responsive files
 
 // Make wrapper ul behave like the grid
@@ -4020,13 +5078,15 @@ input[type="submit"].btn {
 .thumbnail {
   display: block;
   padding: 4px;
-  line-height: 1;
+  line-height: @baseLineHeight;
   border: 1px solid #ddd;
-  .border-radius(4px);
-  .box-shadow(0 1px 1px rgba(0,0,0,.075));
+  .border-radius(@baseBorderRadius);
+  .box-shadow(0 1px 3px rgba(0,0,0,.055));
+  .transition(all .2s ease-in-out);
 }
-// Add a hover state for linked versions only
-a.thumbnail:hover {
+// Add a hover/focus state for linked versions only
+a.thumbnail:hover,
+a.thumbnail:focus {
   border-color: @linkColor;
   .box-shadow(0 1px 4px rgba(0,105,214,.25));
 }
@@ -4040,14 +5100,75 @@ a.thumbnail:hover {
 }
 .thumbnail .caption {
   padding: 9px;
+  color: @gray;
 }
 
-// LABELS & BADGES
-// ---------------
+// Media objects
+// Source: http://stubbornella.org/content/?p=497
+// --------------------------------------------------
+
+
+// Common styles
+// -------------------------
+
+// Clear the floats
+.media,
+.media-body {
+  overflow: hidden;
+  *overflow: visible;
+  zoom: 1;
+}
+
+// Proper spacing between instances of .media
+.media,
+.media .media {
+  margin-top: 15px;
+}
+.media:first-child {
+  margin-top: 0;
+}
+
+// For images and videos, set to block
+.media-object {
+  display: block;
+}
+
+// Reset margins on headings for tighter default spacing
+.media-heading {
+  margin: 0 0 5px;
+}
+
+
+// Media image alignment
+// -------------------------
+
+.media > .pull-left {
+  margin-right: 10px;
+}
+.media > .pull-right {
+  margin-left: 10px;
+}
+
+
+// Media list variation
+// -------------------------
+
+// Undo default ul/ol styles
+.media-list {
+  margin-left: 0;
+  list-style: none;
+}
+
+//
+// Labels and badges
+// --------------------------------------------------
+
 
 // Base classes
 .label,
 .badge {
+  display: inline-block;
+  padding: 2px 4px;
   font-size: @baseFontSize * .846;
   font-weight: bold;
   line-height: 14px; // ensure proper line-height if floated
@@ -4059,18 +5180,28 @@ a.thumbnail:hover {
 }
 // Set unique padding and border-radii
 .label {
-  padding: 1px 4px 2px;
   .border-radius(3px);
 }
 .badge {
-  padding: 1px 9px 2px;
+  padding-left: 9px;
+  padding-right: 9px;
   .border-radius(9px);
 }
 
-// Hover state, but only for links
+// Empty labels/badges collapse
+.label,
+.badge {
+  &:empty {
+    display: none;
+  }
+}
+
+// Hover/focus state, but only for links
 a {
   &.label:hover,
-  &.badge:hover {
+  &.label:focus,
+  &.badge:hover,
+  &.badge:focus {
     color: @white;
     text-decoration: none;
     cursor: pointer;
@@ -4098,8 +5229,24 @@ a {
   &-inverse[href]     { background-color: darken(@grayDark, 10%); }
 }
 
-// PROGRESS BARS
-// -------------
+// Quick fix for labels/badges in buttons
+.btn {
+  .label,
+  .badge {
+    position: relative;
+    top: -1px;
+  }
+}
+.btn-mini {
+  .label,
+  .badge {
+    top: 0;
+  }
+}
+
+//
+// Progress bars
+// --------------------------------------------------
 
 
 // ANIMATIONS
@@ -4143,18 +5290,19 @@ a {
 // Outer container
 .progress {
   overflow: hidden;
-  height: 18px;
-  margin-bottom: 18px;
+  height: @baseLineHeight;
+  margin-bottom: @baseLineHeight;
   #gradient > .vertical(#f5f5f5, #f9f9f9);
   .box-shadow(inset 0 1px 2px rgba(0,0,0,.1));
-  .border-radius(4px);
+  .border-radius(@baseBorderRadius);
 }
 
 // Bar of progress
 .progress .bar {
   width: 0%;
-  height: 18px;
+  height: 100%;
   color: @white;
+  float: left;
   font-size: 12px;
   text-align: center;
   text-shadow: 0 -1px 0 rgba(0,0,0,.25);
@@ -4162,6 +5310,9 @@ a {
   .box-shadow(inset 0 -1px 0 rgba(0,0,0,.15));
   .box-sizing(border-box);
   .transition(width .6s ease);
+}
+.progress .bar + .bar {
+  .box-shadow(~"inset 1px 0 0 rgba(0,0,0,.15), inset 0 -1px 0 rgba(0,0,0,.15)");
 }
 
 // Striped bars
@@ -4185,39 +5336,40 @@ a {
 // ------
 
 // Danger (red)
-.progress-danger .bar {
+.progress-danger .bar, .progress .bar-danger {
   #gradient > .vertical(#ee5f5b, #c43c35);
 }
-.progress-danger.progress-striped .bar {
+.progress-danger.progress-striped .bar, .progress-striped .bar-danger {
   #gradient > .striped(#ee5f5b);
 }
 
 // Success (green)
-.progress-success .bar {
+.progress-success .bar, .progress .bar-success {
   #gradient > .vertical(#62c462, #57a957);
 }
-.progress-success.progress-striped .bar {
+.progress-success.progress-striped .bar, .progress-striped .bar-success {
   #gradient > .striped(#62c462);
 }
 
 // Info (teal)
-.progress-info .bar {
+.progress-info .bar, .progress .bar-info {
   #gradient > .vertical(#5bc0de, #339bb9);
 }
-.progress-info.progress-striped .bar {
+.progress-info.progress-striped .bar, .progress-striped .bar-info {
   #gradient > .striped(#5bc0de);
 }
 
 // Warning (orange)
-.progress-warning .bar {
+.progress-warning .bar, .progress .bar-warning {
   #gradient > .vertical(lighten(@orange, 15%), @orange);
 }
-.progress-warning.progress-striped .bar {
+.progress-warning.progress-striped .bar, .progress-striped .bar-warning {
   #gradient > .striped(lighten(@orange, 15%));
 }
 
-// ACCORDION
-// ---------
+//
+// Accordion
+// --------------------------------------------------
 
 
 // Parent container
@@ -4229,7 +5381,7 @@ a {
 .accordion-group {
   margin-bottom: 2px;
   border: 1px solid #e5e5e5;
-  .border-radius(4px);
+  .border-radius(@baseBorderRadius);
 }
 .accordion-heading {
   border-bottom: 0;
@@ -4250,8 +5402,10 @@ a {
   border-top: 1px solid #e5e5e5;
 }
 
-// CAROUSEL
-// --------
+//
+// Carousel
+// --------------------------------------------------
+
 
 .carousel {
   position: relative;
@@ -4265,50 +5419,51 @@ a {
   position: relative;
 }
 
-.carousel {
+.carousel-inner {
 
-  .item {
+  > .item {
     display: none;
     position: relative;
     .transition(.6s ease-in-out left);
+
+    // Account for jankitude on images
+    > img,
+    > a > img {
+      display: block;
+      line-height: 1;
+    }
   }
 
-  // Account for jankitude on images
-  .item > img {
-    display: block;
-    line-height: 1;
-  }
+  > .active,
+  > .next,
+  > .prev { display: block; }
 
-  .active,
-  .next,
-  .prev { display: block; }
-
-  .active {
+  > .active {
     left: 0;
   }
 
-  .next,
-  .prev {
+  > .next,
+  > .prev {
     position: absolute;
     top: 0;
     width: 100%;
   }
 
-  .next {
+  > .next {
     left: 100%;
   }
-  .prev {
+  > .prev {
     left: -100%;
   }
-  .next.left,
-  .prev.right {
+  > .next.left,
+  > .prev.right {
     left: 0;
   }
 
-  .active.left {
+  > .active.left {
     left: -100%;
   }
-  .active.right {
+  > .active.right {
     left: 100%;
   }
 
@@ -4347,11 +5502,38 @@ a {
     right: 15px;
   }
 
-  // Hover state
-  &:hover {
+  // Hover/focus state
+  &:hover,
+  &:focus {
     color: @white;
     text-decoration: none;
     .opacity(90);
+  }
+}
+
+// Carousel indicator pips
+// -----------------------------
+.carousel-indicators {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 5;
+  margin: 0;
+  list-style: none;
+
+  li {
+    display: block;
+    float: left;
+    width: 10px;
+    height: 10px;
+    margin-left: 5px;
+    text-indent: -999px;
+    background-color: #ccc;
+    background-color: rgba(255,255,255,.25);
+    border-radius: 5px;
+  }
+  .active {
+    background-color: #fff;
   }
 }
 
@@ -4363,21 +5545,34 @@ a {
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 10px 15px 5px;
+  padding: 15px;
   background: @grayDark;
   background: rgba(0,0,0,.75);
 }
 .carousel-caption h4,
 .carousel-caption p {
   color: @white;
+  line-height: @baseLineHeight;
+}
+.carousel-caption h4 {
+  margin: 0 0 5px;
+}
+.carousel-caption p {
+  margin-bottom: 0;
 }
 
-// HERO UNIT
-// ---------
+//
+// Hero unit
+// --------------------------------------------------
+
 
 .hero-unit {
   padding: 60px;
   margin-bottom: 30px;
+  font-size: 18px;
+  font-weight: 200;
+  line-height: @baseLineHeight * 1.5;
+  color: @heroUnitLeadColor;
   background-color: @heroUnitBackground;
   .border-radius(6px);
   h1 {
@@ -4387,18 +5582,17 @@ a {
     color: @heroUnitHeadingColor;
     letter-spacing: -1px;
   }
-  p {
-    font-size: 18px;
-    font-weight: 200;
-    line-height: @baseLineHeight * 1.5;
-    color: @heroUnitLeadColor;
+  li {
+    line-height: @baseLineHeight * 1.5; // Reset since we specify in type.less
   }
 }
 
 
 // Utility classes
-// UTILITY CLASSES
-// ---------------
+//
+// Utility classes
+// --------------------------------------------------
+
 
 // Quick floats
 .pull-right {
@@ -4419,6 +5613,11 @@ a {
 // Visibility
 .invisible {
   visibility: hidden;
+}
+
+// For Affix plugin
+.affix {
+  position: fixed;
 }
 
 @import "moxie.less";

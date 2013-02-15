@@ -14,7 +14,7 @@ The Moxie binaries and this site are built with Moxie.
   [mx:init]            name: ${project.name}
   [mx:init]     description: ${project.description}
   [mx:init]         groupId: ${project.groupId}
-  [mx:init]      artifactId: toolkit
+  [mx:init]      artifactId: moxie
   [mx:init]         version: ${project.releaseVersion}
   [mx:init]    organization: ${project.organization}
   [mx:init]             url: ${project.url}
@@ -23,55 +23,55 @@ The Moxie binaries and this site are built with Moxie.
   [mx:init]    rebuilt Eclipse configuration
   [mx:init]    rebuilt pom.xml
  [mx:javac] =========================================================
- [mx:javac] mx:Javac  (org.moxie:toolkit, compile)
+ [mx:javac] mx:Javac  (org.moxie:moxie, compile)
  [mx:javac] ---------------------------------------------------------
  [mx:javac] Compiling 41 source files to C:\git\moxie\build\classes
  [mx:javac] Copying 20 files to C:\git\moxie\build\classes
    [mx:jar] =========================================================
-   [mx:jar] mx:Jar  (toolkit-${project.releaseVersion})
+   [mx:jar] mx:Jar  (moxie-${project.releaseVersion})
    [mx:jar] ---------------------------------------------------------
-   [mx:jar] Building jar: C:\git\moxie\target\toolkit-${project.releaseVersion}.jar
+   [mx:jar] Building jar: C:\git\moxie\target\moxie-${project.releaseVersion}.jar
    [mx:jar]    550 KB, generated in 460 ms
-   [mx:jar] Building jar: C:\git\moxie\target\toolkit-${project.releaseVersion}-sources.jar
+   [mx:jar] Building jar: C:\git\moxie\target\moxie-${project.releaseVersion}-sources.jar
    [mx:jar]    148 KB, generated in 80 ms
 [mx:install] =========================================================
-[mx:install] mx:Install  (toolkit-${project.releaseVersion})
+[mx:install] mx:Install  (moxie-${project.releaseVersion})
 [mx:install] ---------------------------------------------------------
-[mx:install] Copying 2 files to C:\Users\James Moger\.moxie\local\${project.groupId}\toolkit\${project.releaseVersion}
-[mx:install] generating pom for toolkit-${project.releaseVersion}
+[mx:install] Copying 2 files to C:\Users\James Moger\.moxie\local\${project.groupId}\moxie\${project.releaseVersion}
+[mx:install] generating pom for moxie-${project.releaseVersion}
 [mx:install] calculating checksums for installed artifacts
 </pre>
 </div>
 
-<div class="span5">
-<h3>Core Package (180KB)</h3>
+<div class="span5" style="margin-top:-10px;">
+<h4>Core Package (180KB)</h4>
 
 The %CORE% package includes the tasks necessary to retrieve & report on Maven-sourced dependencies, to generate Eclipse and IntelliJ IDEA project files, and to setup Ant build properties so you don't have to.
 
 <br/><br/>
-<h3>Pro Package (300KB)</h3>
+<h4>Pro Package (300KB)</h4>
 
 The %PRO% package builds on the <b>core</b> package by adding Moxie Extension (<code>mx:</code>) tasks of standard Ant tasks.  These tasks use defaults derived from your <code>build.moxie</code> descriptor to compile your sources, execute your unit tests, and package your compiled code.
 
 <br/><br/>
-<h3>All Package (550KB)</h3>
+<h4>All Package (550KB)</h4>
 
 The %ALL% package includes the <b>pro</b> package plus <code>mx:doc</code>, the Moxie site/document-generation tool.
 <br/><br/>
 <code>mx:doc</code> generates a project site or project documentation from Markdown source files and styles your output with Twitter Bootstrap.
 
 <br/><br/>
-<h3>Moxie+Ant (15MB)</h3>
+<h4>Moxie+Ant (15MB)</h4>
 
 Moxie+Ant is a bundled distribution of Moxie and Ant.
 
 <br/><br/>
-<h3>Moxie Proxy (7MB)</h3>
+<h4>Moxie Proxy (7MB)</h4>
 
 Moxie Proxy is a simple, standalone Maven artifact proxy server with a clean web ui, RSS feeds, and Lucene indexed Maven data.
 
 <br/><br/>
-<h3>License</h3>
+<h4>License</h4>
 
 Moxie is distributed under the Apache Software License, version 2.0.
 

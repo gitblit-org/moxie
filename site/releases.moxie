@@ -68,6 +68,9 @@ pending: {
      - Added support for compilerArgs in descriptor
      - Added mx:Tar task
      - Added mx:Javadoc task to redirect verbose javadoc output to a log file
+
+    dependencyChanges:
+     - Twitter Bootstrap 2.3.0
 }
 
 #

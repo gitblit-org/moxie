@@ -14,7 +14,8 @@
 @standardGray:				#ccc;
 @yellow:					#ffc40d;
 @white:						#fff;
-
+@baseFontSize:              13px;
+@baseLineHeight:            18px;
 
 // Dropdown
 // -------------------------
@@ -28,6 +29,7 @@
 @navbarText:                      @standardGray;
 @navbarLinkColor:                 @standardGray;
 @navbarLinkColorHover:            @yellow;
+@navbarLinkColorActive:           @yellow;
 @navbarLinkBackgroundHover:       transparent;
 @navbarLinkBackgroundActive:      transparent;
 
@@ -38,6 +40,8 @@
 	
 	.nav > li > a {
 		padding-top: 13px;
+		padding-left: 10px;
+		padding-right: 10px;
 		@elementHeight: 20px;
 	}
 
@@ -47,5 +51,6 @@
 	}
 }
 
+h3 small { font-size: @baseFontSize + 1; }
 body { padding-top: @navbarHeight + 15 } /* 60px to make the container go all the way to the bottom of the topbar */
 footer { margin-top: 25px; padding: 15px 0 16px; border-top: 1px solid #E5E5E5; }

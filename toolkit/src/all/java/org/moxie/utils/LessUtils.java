@@ -33,7 +33,7 @@ public class LessUtils {
 
 	public static void main(String... args) {
 		
-		consolidate(new File("src/mxdoc/config/bootstrap.less"), new File("src/mxdoc/resources/bootstrap/css/bootstrap.less"));
+		consolidate(new File("src/all/config/bootstrap.less"), new File("src/all/resources/bootstrap/css/bootstrap.less"));
 	}
 	
 	public static void consolidate(File source, File target) {
