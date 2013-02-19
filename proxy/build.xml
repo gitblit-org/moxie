@@ -15,7 +15,7 @@
 		<mx:javac />
 		
 		<!-- Build the jar with and use the Moxie Launcher helper -->
-		<mx:jar>
+		<mx:jar packageSources="true">
 			<launcher />
 		</mx:jar>
 		

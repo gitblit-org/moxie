@@ -64,14 +64,16 @@
 					<template src="releasehistory.ftl" data="${basedir}/releases.moxie" />
 				</page>
 				<menu name="downloads">
+					<link name="moxie toolkit (core)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}-core.jar" />
+					<link name="moxie toolkit (pro)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}-pro.jar" />
+					<link name="moxie toolkit (all)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}.jar" />
+					<link name="moxie toolkit (sources)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}-sources.jar" />
+					<divider />
+					<link name="moxie-proxy" src="maven/org/moxie/moxie-proxy/${project.releaseVersion}/moxie-proxy-${project.releaseVersion}.zip" />
+					<link name="moxie-proxy (sources)" src="maven/org/moxie/moxie-proxy/${project.releaseVersion}/moxie-proxy-${project.releaseVersion}-sources.jar" />
+					<divider />
 					<link name="moxie+ant (zip)" src="maven/org/moxie/moxie+ant/${project.releaseVersion}/moxie+ant-${project.releaseVersion}.zip" />
 					<link name="moxie+ant (tar.gz)" src="maven/org/moxie/moxie+ant/${project.releaseVersion}/moxie+ant-${project.releaseVersion}.tar.gz" />
-					<divider />
-					<link name="moxie-core" src="maven/org/moxie/toolkit/${project.releaseVersion}/toolkit-${project.releaseVersion}-core.jar" />
-					<link name="moxie-pro" src="maven/org/moxie/toolkit/${project.releaseVersion}/toolkit-${project.releaseVersion}-pro.jar" />
-					<link name="moxie-all" src="maven/org/moxie/toolkit/${project.releaseVersion}/toolkit-${project.releaseVersion}-all.jar" />
-					<divider />
-					<link name="moxie-proxy" src="maven/org/moxie/proxy/${project.releaseVersion}/proxy-${project.releaseVersion}.zip" />
 					<divider />
 					<link name="maxml" src="maven/org/moxie/maxml/${project.releaseVersion}/maxml-${project.releaseVersion}.jar" />
 					<link name="maxml-sources" src="maven/org/moxie/maxml/${project.releaseVersion}/maxml-${project.releaseVersion}-sources.jar" />
