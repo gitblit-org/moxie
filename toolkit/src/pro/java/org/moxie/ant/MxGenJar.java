@@ -426,7 +426,7 @@ public class MxGenJar extends GenJar {
 				console.warn(getTaskName() + " has not resolved any class files local to {0}", build.getPom().getManagementId());
 			}
 			
-			List<File> folders = build.getConfig().getSourceDirectories(Scope.compile);
+			List<File> folders = build.getConfig().getSourceDirectories(Scope.compile, tag);
 			for (String className : resolvedLocal) {
 				String sourceName = className.substring(0, className.length() - ".class".length()).replace('.', '/') + ".java";
 				console.debug(sourceName);
@@ -468,10 +468,11 @@ public class MxGenJar extends GenJar {
 			}
 
 			if (includeResources) {
-				for (File dir : build.getConfig().getResourceDirectories(Scope.compile)) {
+				for (File dir : build.getConfig().getResourceDirectories(Scope.compile, tag)) {
 					FileSet res = resources.createFileset();
 					res.setDir(dir);
 					res.setExcludes(Toolkit.DEFAULT_EXCLUDES);
+					jar.add(res);
 				}
 			}
 

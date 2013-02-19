@@ -62,6 +62,7 @@ public class MxJar extends Jar {
 	String excludes;
 	boolean packageSources;
 
+	String tag;
 	String classifier;
 	private boolean configured;
 	
@@ -138,6 +139,14 @@ public class MxJar extends Jar {
 		this.excludes = excludes;
 	}
 	
+	public String getTag() {
+		return tag;
+	}
+
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+
 	public String getClassifier() {
 		return classifier;
 	}
@@ -295,7 +304,7 @@ public class MxJar extends Jar {
 			}
 		}
 
-		for (File dir : build.getConfig().getSourceDirectories(Scope.compile)) {
+		for (File dir : build.getConfig().getSourceDirectories(Scope.compile, tag)) {
 			FileSet set = new FileSet();
 			set.setProject(getProject());
 			set.setDir(dir);
@@ -304,7 +313,7 @@ public class MxJar extends Jar {
 		}
 
 		if (includeResources) {
-			for (File dir : build.getConfig().getResourceDirectories(Scope.compile)) {
+			for (File dir : build.getConfig().getResourceDirectories(Scope.compile, tag)) {
 				FileSet set = new FileSet();
 				set.setProject(getProject());
 				set.setDir(dir);
@@ -401,7 +410,7 @@ public class MxJar extends Jar {
 			// set the destination file
 			jar.setDestFile(sourcesFile);
 			
-			List<File> folders = build.getConfig().getSourceDirectories(Scope.compile);
+			List<File> folders = build.getConfig().getSourceDirectories(Scope.compile, tag);
 			for (File folder : folders) {
 				FileSet srcSet = new FileSet();
 				srcSet.setProject(getProject());
@@ -418,7 +427,7 @@ public class MxJar extends Jar {
 			}
 			
 			if (includeResources) {
-				for (File dir : build.getConfig().getResourceDirectories(Scope.compile)) {
+				for (File dir : build.getConfig().getResourceDirectories(Scope.compile, tag)) {
 					FileSet set = new FileSet();
 					set.setDir(dir);
 					set.setExcludes(Toolkit.DEFAULT_EXCLUDES);

@@ -224,15 +224,7 @@ public class BuildConfig {
 	}
 	
 	public List<File> getSourceDirectories(Scope scope, String tag) {
-		List<File> folders = new ArrayList<File>();
-		for (SourceDirectory sourceFolder : projectConfig.sourceDirectories) {
-			if (scope == null || sourceFolder.scope.equals(scope)) {				
-				if (StringUtils.isEmpty(tag) || sourceFolder.tags.contains(tag.toLowerCase())) {
-					folders.add(sourceFolder.getSources());
-				}
-			}
-		}
-		return folders;
+		return getDirectories(scope, tag, projectConfig.sourceDirectories);
 	}
 
 	public List<SourceDirectory> getResourceDirectories() {
@@ -244,15 +236,19 @@ public class BuildConfig {
 	}
 	
 	public List<File> getResourceDirectories(Scope scope, String tag) {
-		List<File> folders = new ArrayList<File>();
-		for (SourceDirectory sourceFolder : projectConfig.resourceDirectories) {
-			if (scope == null || sourceFolder.scope.equals(scope)) {
+		return getDirectories(scope, tag, projectConfig.resourceDirectories);
+	}
+	
+	private List<File> getDirectories(Scope scope, String tag, List<SourceDirectory> directories) {
+		List<File> dirs = new ArrayList<File>();
+		for (SourceDirectory sourceFolder : directories) {
+			if (scope == null || sourceFolder.scope.equals(scope)) {				
 				if (StringUtils.isEmpty(tag) || sourceFolder.tags.contains(tag.toLowerCase())) {
-					folders.add(sourceFolder.getSources());
+					dirs.add(sourceFolder.getSources());
 				}
 			}
 		}
-		return folders;
+		return dirs;
 	}
 
 	public List<Module> getModules() {
