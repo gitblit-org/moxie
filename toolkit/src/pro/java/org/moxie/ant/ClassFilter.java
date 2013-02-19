@@ -153,6 +153,7 @@ public class ClassFilter {
 		addExclude("sunw.");
 		addExclude("com.sun.");
 		addExclude("org.omg.");
+		addExclude("org.w3c.");
 		addExclude("com.ibm.jvm.");
 
 		//
