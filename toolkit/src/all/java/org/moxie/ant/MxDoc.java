@@ -49,6 +49,8 @@ import org.moxie.utils.StringUtils;
 public class MxDoc extends MxTask {
 
 	Doc doc = new Doc();
+	
+	String customLessFile;
 
 	List<org.moxie.Resource> resources = new ArrayList<org.moxie.Resource>();
 	
@@ -144,6 +146,10 @@ public class MxDoc extends MxTask {
 		doc.outputDirectory = dir;
 	}
 
+	public void setCustomLess(String name) {
+		customLessFile = name;
+	}
+
 	public void setInjectprettify(boolean value) {
 		doc.injectPrettify = value;
 	}
@@ -230,6 +236,15 @@ public class MxDoc extends MxTask {
 		if (doc.outputDirectory == null) {
 			doc.outputDirectory = build.getConfig().getSiteTargetDirectory();
 		}
+		
+		if (!StringUtils.isEmpty(customLessFile)) {
+			File lessfile = new File(customLessFile);
+			if (!lessfile.exists()) {
+				lessfile = new File(doc.sourceDirectory, customLessFile);
+			}
+			doc.customLessFile = lessfile;
+		}
+
 		
 		getConsole().title(getClass(), build.getPom().name);
 		
@@ -350,11 +365,14 @@ public class MxDoc extends MxTask {
 		extractResource(outputFolder, "d3/rings.js");
 
 		// write build's LESS as custom.less
-		Build build = getBuild();
-		String less = build.getCustomLess();
+		String lessContent = "";
+		if (doc.customLessFile != null && doc.customLessFile.exists()) {
+			lessContent = FileUtils.readContent(doc.customLessFile, "\n");
+		}
 		File file = new File(outputFolder, "bootstrap/css/custom.less");
-		FileUtils.writeContent(file, less);
+		FileUtils.writeContent(file, lessContent);
 
+		Build build = getBuild();
 		build.getSolver().loadDependency(new Dependency("mx:rhino"));
 
 		// compile Bootstrap and custom.less overrides into css

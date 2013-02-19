@@ -80,6 +80,8 @@ public class Doc implements Serializable {
 	public String rssFeed;
 	
 	public String atomFeed;
+	
+	public File customLessFile;
 
 	public List<File> getSources() {
 		List<File> files = new ArrayList<File>();

@@ -15,7 +15,7 @@
 		<!-- Build the site documentation -->
 		<mx:doc googlePlusOne="true" injectPrettify="true" minify="true" 
 			templateDir="${project.siteSourceDirectory}/templates"
-			rssFeed="rss.xml" atomFeed="atom.xml">
+			customLess="custom.less" rssFeed="rss.xml" atomFeed="atom.xml">
 			<structure>
 				<menu name="about" pager="true" pagerPlacement="bottom" pagerLayout="justified">
 					<page name="overview" src="index.mkd" />

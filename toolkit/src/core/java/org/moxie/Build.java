@@ -643,25 +643,6 @@ public class Build {
 		FileUtils.writeContent(new File(config.getProjectDirectory(), "pom.xml"), sb.toString());
 	}
 	
-	public String getCustomLess() {
-		File configFile = config.getProjectConfig().file;
-		String lessName = configFile.getName().substring(0, configFile.getName().lastIndexOf('.')) + ".less";
-		// prefer config-relative LESS
-		File less = new File(configFile.getParentFile(), lessName);
-		
-		// try projectFolder-relative LESS
-		if (!less.exists()) {
-			less = new File(config.getProjectDirectory(), lessName);
-		}
-		
-		if (less.exists()) {
-			return FileUtils.readContent(less, "\n");
-		}
-		
-		// default CSS
-		return "";
-	}
-	
 	public void describe() {
 		console.title(getPom().name, getPom().version);
 
