@@ -8,8 +8,9 @@ modules:
 mainclass: org.moxie.proxy.Launcher
 sourceDirectories:
 - compile 'src/main/java'
-- compile 'src/main/resources'
 - test 'src/test/java'
+resourceDirectories:
+- compile 'src/main/resources'
 - test 'src/test/resources'
 repositories: central, restlet
 properties: {

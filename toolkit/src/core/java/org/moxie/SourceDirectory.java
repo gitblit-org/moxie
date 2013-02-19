@@ -18,6 +18,8 @@ package org.moxie;
 import java.io.File;
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.moxie.utils.StringUtils;
 
@@ -33,10 +35,12 @@ public class SourceDirectory implements Serializable {
 	public final Scope scope;
 	private File sources;
 	private File classes;
+	public Set<String> tags;
 
 	SourceDirectory(String name, Scope scope) {
 		this.name = StringUtils.stripQuotes(name);
 		this.scope = scope;
+		tags = new TreeSet<String>();
 	}
 	
 	boolean resolve(File projectDirectory, File outputDirectory) {

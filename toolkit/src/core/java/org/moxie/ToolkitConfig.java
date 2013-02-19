@@ -63,6 +63,7 @@ public class ToolkitConfig implements Serializable {
 	
 	File dependencyDirectory;
 	List<SourceDirectory> sourceDirectories;
+	List<SourceDirectory> resourceDirectories;
 	File outputDirectory;
 	File targetDirectory;
 	Set<String> apply;
@@ -81,10 +82,11 @@ public class ToolkitConfig implements Serializable {
 		sourceDirectories = Arrays.asList(
 				new SourceDirectory("src/main/java", Scope.compile),
 				new SourceDirectory("src/main/webapp", Scope.compile),
-				new SourceDirectory("src/main/resources", Scope.compile),
 				new SourceDirectory("src/test/java", Scope.test),
-				new SourceDirectory("src/test/resources", Scope.test),
 				new SourceDirectory("src/site", Scope.site));
+		resourceDirectories = Arrays.asList(
+				new SourceDirectory("src/main/resources", Scope.compile),
+				new SourceDirectory("src/test/resources", Scope.test));
 		outputDirectory = new File("build");
 		targetDirectory = new File("build/target");
 		linkedModules = new ArrayList<Module>();
@@ -250,6 +252,7 @@ public class ToolkitConfig implements Serializable {
 			// dependencies
 			linkedModules = readModules(map, Key.modules);
 		}
+		resourceDirectories = readSourceDirectories(map, Key.resourceDirectories, resourceDirectories);
 		dependencyDirectory = readFile(map, Key.dependencyDirectory, null);
 		
 		String policy = readString(map, Key.updatePolicy, null);
@@ -568,15 +571,25 @@ public class ToolkitConfig implements Serializable {
 							}
 						}
 						def = def.substring(scopeString.length()).trim();
-						for (String dir : StringUtils.breakCSV(def)) {
-							if (!StringUtils.isEmpty(dir)) {
-								values.add(new SourceDirectory(dir, scope));
+						int x = def.indexOf(' ') == -1 ? def.length() - 1 : def.indexOf(' ');
+						String dir = StringUtils.stripQuotes(def.substring(0, x));
+						SourceDirectory sd = new SourceDirectory(dir, scope);
+						values.add(sd);
+						
+						def = def.substring(x + 1);
+						if (StringUtils.isEmpty(def)) {
+							def = def.substring(def.indexOf(' ') + 1);
+							for (String tag : def.split(" ")) {
+								if (!StringUtils.isEmpty(tag)) {
+									sd.tags.add(tag.substring(1).toLowerCase());
+								}
 							}
 						}
 					} else if (value instanceof MaxmlMap) {
 						MaxmlMap dirMap = (MaxmlMap) value;
 						String dir = readRequiredString(dirMap, Key.dir);
 						Scope scope = Scope.fromString(readRequiredString(dirMap, Key.scope));
+						List<String> tags = dirMap.getStrings("tags", new ArrayList<String>());
 						if (scope == null) {
 							scope = Scope.defaultScope;
 						} else {
@@ -585,7 +598,11 @@ public class ToolkitConfig implements Serializable {
 							}
 						}
 						if (!StringUtils.isEmpty(dir)) {
-							values.add(new SourceDirectory(dir, scope));
+							SourceDirectory sd = new SourceDirectory(dir, scope);
+							for (String tag : tags) {
+								sd.tags.add(tag.toLowerCase());
+							}
+							values.add(sd);
 						}
 					}
 				}				
@@ -675,7 +692,11 @@ public class ToolkitConfig implements Serializable {
 	public List<SourceDirectory> getSourceDirectories() {
 		return sourceDirectories;
 	}
-	
+
+	public List<SourceDirectory> getResourceDirectories() {
+		return resourceDirectories;
+	}
+
 	public File getDependencyDirectory() {
 		return dependencyDirectory;
 	}

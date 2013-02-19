@@ -6,22 +6,23 @@ parent: ../build.moxie
 modules:
 - common
 sourceDirectories:
-- compile 'src/core/java'
-- compile 'src/core/resources'
-- compile 'src/pro/java'
+- compile 'src/core/java' :core :pro
+- compile 'src/pro/java' :pro
 - compile 'src/all/java'
-- compile 'src/all/resources'
 - { scope: test, dir: 'src/test/java' }
+resourceDirectories:
+- compile 'src/core/resources' :core :pro
+- compile 'src/all/resources'
 dependencies:
-- provided 'org.apache.ant:ant:${ant.version}'
-- provided 'org.apache.ant:ant-junit:${ant.version}' @jar
-- provided 'mx:jgit'
+- provided 'org.apache.ant:ant:${ant.version}' :core :pro
+- provided 'org.apache.ant:ant-junit:${ant.version}' @jar :core :pro
+- provided 'mx:jgit' :pro
+- provided 'cobertura' :pro
+- provided 'emma:emma:2.1.5320' :pro
+- provided 'emma:emma_ant:2.1.5320' :pro
+- provided 'testng' :pro
+- provided 'junit' :pro
+- provided 'jacoco' :pro
 - provided 'mx:markdownpapers'
 - provided 'mx:freemarker'
 - provided 'mx:rhino'
-- provided 'cobertura'
-- provided 'emma:emma:2.1.5320'
-- provided 'emma:emma_ant:2.1.5320'
-- provided 'testng'
-- provided 'junit'
-- provided 'jacoco'

@@ -78,18 +78,19 @@ public class Toolkit {
 		contributors, id, email, roles, scm, connection, developerConnection, tag, requires, licenses,
 		parentPom, mainclass, modules, mavenCacheStrategy, coordinates, releaseVersion, releaseDate,
 		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl,
-		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution, mavenUrl;
+		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution, mavenUrl, 
+		resourceDirectories;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');
 		}
 
 		public String propId() {
-			return "mxp." + name().replace('_', '.');
+			return "project." + name().replace('_', '.');
 		}
 		
 		public String refId() {
-			return "mxr." + name().replace('_', '.');
+			return "project." + name().replace('_', '.');
 		}
 
 	}

@@ -42,9 +42,9 @@ import org.moxie.utils.StringUtils;
 public class MxJavac extends Javac {
 	
 	Scope scope;
+	String tag;
 	boolean clean;
 	boolean compileLinkedProjects;
-	boolean copyResources;
 	String includes;
 	String excludes;
 	Set<Build> builds;
@@ -84,15 +84,15 @@ public class MxJavac extends Javac {
 	public void setScope(String scope) {
 		this.scope = Scope.fromString(scope);
 	}
-	
-	public boolean getCopyresources() {
-		return copyResources;
+
+	public String getTag() {
+		return tag;
 	}
 
-	public void setCopyresources(boolean copy) {
-		this.copyResources = copy;
+	public void setTag(String tag) {
+		this.tag = tag;
 	}
-	
+
 	public String getIncludes() {
 		return includes;
 	}
@@ -210,7 +210,7 @@ public class MxJavac extends Javac {
 
 		// create sourcepath
 		Path sources = createSrc();
-		for (File file : build.getConfig().getSourceDirectories(scope)) {
+		for (File file : build.getConfig().getSourceDirectories(scope, tag)) {
 			PathElement element = sources.createPathElement();
 			element.setLocation(file);
 		}
@@ -252,43 +252,45 @@ public class MxJavac extends Javac {
 		if (getProject().getProperty(prop) == null) {
 			console.log(1, "compiled classes are up-to-date");
 		}
-		
-		// optionally copy resources from source folders
-		if (copyResources) {
-			Copy copy = new Copy();
-			copy.setTaskName(getTaskName());
-			copy.setProject(getProject());
-			copy.setTodir(getDestdir());
-			copy.setVerbose(getVerbose());
 
-			if (getVerbose()) {
-				console.log("copying resources => {0}", getDestdir());
-			}
+		Copy copy = new Copy();
+		copy.setTaskName(getTaskName());
+		copy.setProject(getProject());
+		copy.setTodir(getDestdir());
+		copy.setVerbose(getVerbose());
 
-			if (excludes == null) {
-				// default exclusions
-				excludes = Toolkit.DEFAULT_EXCLUDES;
-			}
-			
-			for (String path : getSrcdir().list()) {
-				File file = new File(path);
-				if (file.isDirectory()) {
-					FileSet set = new FileSet();
-					set.setDir(file);
-					if (includes != null) {
-						set.setIncludes(includes);
-					}
-					if (excludes != null) {
-						set.setExcludes(excludes);
-					}
-					copy.add(set);
-					if (getVerbose()) {
-						console.log("adding resource path {0}", path);
-					}
+		if (getVerbose()) {
+			console.log("copying resources => {0}", getDestdir());
+		}
+
+		if (excludes == null) {
+			// default exclusions
+			excludes = Toolkit.DEFAULT_EXCLUDES;
+		}
+
+		for (String path : getSrcdir().list()) {
+			File file = new File(path);
+			if (file.isDirectory()) {
+				FileSet set = prepareResourceSet(file);
+				copy.addFileset(set);
+				if (getVerbose()) {
+					console.log("adding resource path {0}", path);
 				}
 			}
-			
-			copy.execute();
 		}
+
+		copy.execute();
+	}
+	
+	protected FileSet prepareResourceSet(File dir) {
+		FileSet set = new FileSet();
+		set.setDir(dir);
+		if (includes != null) {
+			set.setIncludes(includes);
+		}
+		if (excludes != null) {
+			set.setExcludes(excludes);
+		}
+		return set;
 	}
 }

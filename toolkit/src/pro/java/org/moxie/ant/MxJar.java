@@ -268,20 +268,49 @@ public class MxJar extends Jar {
 		outputSet.setExcludes(excludes);		
 		addFileset(outputSet);
 		
-		// add the output folders of linked projects
-		for (Build linkedProject : build.getSolver().getLinkedModules()) {
+		// add the output and resource folders of modules
+		for (Build module : build.getSolver().getLinkedModules()) {
 			ZipFileSet projectOutputSet = new ZipFileSet();
 			projectOutputSet.setProject(getProject());
 			if (!StringUtils.isEmpty(getClassFilesetPrefix())) {
 				projectOutputSet.setPrefix(getClassFilesetPrefix());
 			}
-			File dir = linkedProject.getConfig().getOutputDirectory(Scope.compile);
+			File dir = module.getConfig().getOutputDirectory(Scope.compile);
 			projectOutputSet.setDir(dir);
 			if (includes != null) {
 				projectOutputSet.setIncludes(includes);
 			}
 			projectOutputSet.setExcludes(excludes);		
 			addFileset(projectOutputSet);
+			
+			if (includeResources) {
+				// add linked module resources
+				for (File resDir : module.getConfig().getResourceDirectories(Scope.compile)) {
+					FileSet resSet = new FileSet();
+					resSet.setProject(getProject());
+					resSet.setDir(resDir);
+					resSet.setExcludes(Toolkit.DEFAULT_EXCLUDES);
+					addFileset(resSet);
+				}
+			}
+		}
+
+		for (File dir : build.getConfig().getSourceDirectories(Scope.compile)) {
+			FileSet set = new FileSet();
+			set.setProject(getProject());
+			set.setDir(dir);
+			set.setExcludes(excludes);
+			addFileset(set);
+		}
+
+		if (includeResources) {
+			for (File dir : build.getConfig().getResourceDirectories(Scope.compile)) {
+				FileSet set = new FileSet();
+				set.setProject(getProject());
+				set.setDir(dir);
+				set.setExcludes(Toolkit.DEFAULT_EXCLUDES);
+				addFileset(set);
+			}
 		}
 		
 		if (getDestFile() == null) {
@@ -380,12 +409,20 @@ public class MxJar extends Jar {
 				srcSet.setIncludes("**/*.java");				
 				jar.addFileset(srcSet);
 
-				if (includeResources) {
-					FileSet resSet = new FileSet();
-					resSet.setProject(getProject());
-					resSet.setDir(folder);				
-					resSet.setExcludes(excludes);
-					jar.addFileset(resSet);
+				// include source folder resources
+				FileSet resSet = new FileSet();
+				resSet.setProject(getProject());
+				resSet.setDir(folder);				
+				resSet.setExcludes(excludes);
+				jar.addFileset(resSet);
+			}
+			
+			if (includeResources) {
+				for (File dir : build.getConfig().getResourceDirectories(Scope.compile)) {
+					FileSet set = new FileSet();
+					set.setDir(dir);
+					set.setExcludes(Toolkit.DEFAULT_EXCLUDES);
+					jar.addFileset(set);
 				}
 			}
 			

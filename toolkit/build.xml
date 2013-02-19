@@ -50,13 +50,10 @@
 			</classpath>
 		</javac>
 		
-		<!-- Copy Moxie resources -->
-		<copy todir="${toolkit.bin.classes}" overwrite="false">
-			<fileset dir="${basedir}/src/core/resources" />
-		</copy>
-		
+		<!-- Setup Moxie classpath -->
 		<path id="moxie.classpath">
 			<pathelement path="${toolkit.bin.classes}" />
+			<pathelement path="${basedir}/src/core/resources" />
 			<pathelement path="${common.bin.classes}" />
 			<pathelement path="${maxml.bin.classes}" />
 		</path>
@@ -88,6 +85,7 @@
 		<path id="bootstrap.path">
 			<pathelement path="${common.bin.classes}" />
 			<pathelement path="${toolkit.bin.classes}" />
+			<pathelement path="${basedir}/src/core/resources" />
 			<pathelement path="${maxml.bin.classes}" />
 		</path>
 
@@ -115,14 +113,7 @@
 		<mx:report scope="compile" destFile = "${project.targetDirectory}/compile_dependencies.txt"/>
 
 		<!-- Moxie-Core -->
-		<mx:genjar classifier="core">
-			<classfilter>
-				<exclude name="org.apache." />
-				<exclude name="org.eclipse." />
-				<exclude name="org.mozilla." />
-				<exclude name="org.tautua." />
-				<exclude name="org.w3c." />
-			</classfilter>
+		<mx:genjar tag="core" classifier="core" excludeClasspathJars="true">
 				
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
@@ -132,34 +123,12 @@
 				<fileset dir="${basedir}/src/core/resources" />
 			</resource>
 			<resource prefix="org/moxie">
-				<fileset dir="${basedir}/src/pro/config">
-					<include name="antlib.xml" />
-				</fileset>
+				<fileset file="${basedir}/src/core/config/antlib.xml" />
 			</resource>
 		</mx:genjar>
 
 		<!-- Moxie-Pro -->
-		<mx:genjar classifier="pro">
-			<classfilter>
-				<exclude name="bsh." />
-				<exclude name="com.beust." />
-				<exclude name="com.google." />
-				<exclude name="com.jcraft." />
-				<exclude name="com.vladium." />
-				<exclude name="emma" />
-				<exclude name="emmarun" />
-				<exclude name="net.sourceforge." />
-				<exclude name="org.apache." />
-				<exclude name="org.eclipse." />
-				<exclude name="org.hamcrest." />
-				<exclude name="org.jacoco." />
-				<exclude name="org.mozilla." />
-				<exclude name="org.objectweb." />
-				<exclude name="org.tautua." />
-				<exclude name="org.testng." />
-				<exclude name="org.w3c." />
-				<exclude name="org.yaml." />
-			</classfilter>
+		<mx:genjar tag="pro" classifier="pro" excludeClasspathJars="true">
 			
 			<!-- core -->
 			<class name="org.moxie.ant.MxInit" />
@@ -191,38 +160,13 @@
 				<fileset dir="${basedir}/src/core/resources" />
 			</resource>
 			<resource prefix="org/moxie">
-				<fileset dir="${basedir}/src/pro/config">
-					<include name="antlib.xml" />
-				</fileset>
+				<fileset file="${basedir}/src/pro/config/antlib.xml" />
 			</resource>
 		</mx:genjar>
 
 		
 		<!-- Moxie-All -->
-		<mx:genjar packageSources="true">
-			<classfilter>
-				<exclude name="bsh." />
-				<exclude name="com.beust." />
-				<exclude name="com.google." />
-				<exclude name="com.jcraft." />
-				<exclude name="com.vladium." />
-				<exclude name="emma" />
-				<exclude name="emmarun" />
-				<exclude name="freemarker" />
-				<exclude name="net.sourceforge." />
-				<exclude name="org.apache." />
-				<exclude name="org.eclipse." />
-				<exclude name="org.hamcrest." />
-				<exclude name="org.jacoco." />
-				<exclude name="org.mozilla." />
-				<exclude name="org.objectweb." />
-				<exclude name="org.tautua." />
-				<exclude name="org.testng." />
-				<exclude name="org.w3c." />
-				<exclude name="org.yaml." />
-				<exclude name="org.xml." />
-				<exclude name="org.zeroturnaround." />
-			</classfilter>
+		<mx:genjar packageSources="true" excludeClasspathJars="true">
 			
 			<!-- core -->
 			<class name="org.moxie.ant.MxInit" />
@@ -259,9 +203,7 @@
 				<fileset dir="${basedir}/src/all/resources" />
 			</resource>
 			<resource prefix="org/moxie">
-				<fileset dir="${basedir}/src/all/config">
-					<include name="antlib.xml" />
-				</fileset>
+				<fileset file="${basedir}/src/all/config/antlib.xml" />
 			</resource>
 		</mx:genjar>
 		

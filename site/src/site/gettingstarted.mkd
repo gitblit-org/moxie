@@ -27,7 +27,7 @@ Minimal examples are cute, but they are not very realistic except for the simple
 <br/><br/>
 Moxie borrows ideas from both Maven and Gradle so anyone familiar with those tools should feel fairly comfortable with the <code>build.moxie</code> descriptor.
 <br/><br/>
-For more information on the <code>build.moxie</code> descriptor please review the <a href="moxiedescriptor.html">build.moxie documentation</a>. 
+For more information on the <code>build.moxie</code> descriptor please review the <a href="moxiedescriptor.html">build.moxie documentation</a>.
 </div>
 
 <div class="span6">
@@ -40,10 +40,11 @@ version: 1.2.3-SNAPSHOT
 organization: Example Writers
 url: 'http://demo.example.org'
 apply: eclipse, intellij, pom
-sourceDirectories: 
+sourceDirectories:
 - compile 'src/main/java'
-- compile 'src/main/resources'
 - test 'src/test/java'
+resourceDirectories:
+- compile 'src/main/resources'
 - test 'src/test/resources'
 properties: {
   clang.version : 3.1
@@ -61,7 +62,7 @@ dependencies:
 
 <div class="row">
 <div class="span8">
-Moxie turbo-charges Ant and allows you to build your artifacts with easier to read build scripts.  
+Moxie turbo-charges Ant and allows you to build your artifacts with easier to read build scripts.
 This example script uses Moxie Extension tasks with automatic property defaults based on the <code>build.moxie</code> descriptor.
 <p />
 %BEGINXML%
@@ -81,7 +82,7 @@ This example script uses Moxie Extension tasks with automatic property defaults 
         <!-- Compile your unit tests and execute them -->
         <mx:test />
         <!-- Generate class and source jars of your project -->
-        <mx:jar includeResources="true" packageSources="true" />
+        <mx:jar packageSources="true" />
         <!-- Install your generated artifacts to your local Moxie cache -->
         <mx:install />
     </target>
@@ -92,4 +93,3 @@ This example script uses Moxie Extension tasks with automatic property defaults 
 </div>
 <div class="span4">
 </div></div>
-

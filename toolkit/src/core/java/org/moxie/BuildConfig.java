@@ -220,15 +220,41 @@ public class BuildConfig {
 	}
 
 	public List<File> getSourceDirectories(Scope scope) {
+		return getSourceDirectories(scope, null);
+	}
+	
+	public List<File> getSourceDirectories(Scope scope, String tag) {
 		List<File> folders = new ArrayList<File>();
 		for (SourceDirectory sourceFolder : projectConfig.sourceDirectories) {
 			if (scope == null || sourceFolder.scope.equals(scope)) {				
-				folders.add(sourceFolder.getSources());
+				if (StringUtils.isEmpty(tag) || sourceFolder.tags.contains(tag.toLowerCase())) {
+					folders.add(sourceFolder.getSources());
+				}
 			}
 		}
 		return folders;
 	}
+
+	public List<SourceDirectory> getResourceDirectories() {
+		return projectConfig.resourceDirectories;
+	}
+
+	public List<File> getResourceDirectories(Scope scope) {
+		return getResourceDirectories(scope, null);
+	}
 	
+	public List<File> getResourceDirectories(Scope scope, String tag) {
+		List<File> folders = new ArrayList<File>();
+		for (SourceDirectory sourceFolder : projectConfig.resourceDirectories) {
+			if (scope == null || sourceFolder.scope.equals(scope)) {
+				if (StringUtils.isEmpty(tag) || sourceFolder.tags.contains(tag.toLowerCase())) {
+					folders.add(sourceFolder.getSources());
+				}
+			}
+		}
+		return folders;
+	}
+
 	public List<Module> getModules() {
 		return projectConfig.modules;
 	}

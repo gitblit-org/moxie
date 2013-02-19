@@ -182,8 +182,11 @@ public class Build {
 
 		File projectFolder = config.getProjectDirectory();
 		
+		List<SourceDirectory> sourceDirs = new ArrayList<SourceDirectory>();
+		sourceDirs.addAll(config.getProjectConfig().getSourceDirectories());
+		sourceDirs.addAll(config.getProjectConfig().getResourceDirectories());
 		StringBuilder sb = new StringBuilder();
-		for (SourceDirectory sourceFolder : config.getProjectConfig().getSourceDirectories()) {
+		for (SourceDirectory sourceFolder : sourceDirs) {
 			if (Scope.site.equals(sourceFolder.scope)) {
 				continue;
 			}
@@ -501,8 +504,11 @@ public class Build {
         sb.append(format("<output-test url=\"file://$MODULE_DIR$/{0}\" />\n", FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(Scope.test))));
         sb.append("<exclude-output />\n");
         sb.append("<content url=\"file://$MODULE_DIR$\">\n");
+		List<SourceDirectory> sourceDirs = new ArrayList<SourceDirectory>();
+		sourceDirs.addAll(config.getProjectConfig().getSourceDirectories());
+		sourceDirs.addAll(config.getProjectConfig().getResourceDirectories());
         StringBuilder sf = new StringBuilder();
-        for (SourceDirectory sourceFolder : config.getProjectConfig().getSourceDirectories()) {
+        for (SourceDirectory sourceFolder : sourceDirs) {
             if (Scope.site.equals(sourceFolder.scope)) {
                 continue;
             }
@@ -683,6 +689,11 @@ public class Build {
 			console.separator();
 			console.log("source folders");
 			for (SourceDirectory folder : config.getSourceDirectories()) {
+				console.sourceFolder(folder);
+			}
+			console.separator();
+			console.log("resource folders");
+			for (SourceDirectory folder : config.getResourceDirectories()) {
 				console.sourceFolder(folder);
 			}
 			console.separator();

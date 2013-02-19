@@ -15,10 +15,15 @@ mavenCacheStrategy: COPY
 sourceDirectories:
 - compile 'src/main/java'
 - compile 'src/main/webapp'
-- compile 'src/main/resources'
 - test 'src/test/java'
-- test 'src/test/resources'
 - site 'src/site'
+
+# Resource directories are verified during initialization.
+# Defined directories that do not exist are excluded.
+# Defined order is preserved.
+resourceDirectories:
+- compile 'src/main/resources'
+- test 'src/test/resources'
 
 # Default base directory within the project for compiled classes.
 # Consider NOT sharing the output folder with your IDE.
@@ -43,7 +48,6 @@ tasks: {
 	'mx:javac' : {
 		clean: true
 		compileLinkedProjects: true
-		copyResources: true
 		compiler: modern
 		debug: true
 		debugLevel: vars,lines,source
@@ -57,6 +61,7 @@ tasks: {
 	# mx:Jar attributes
 	# These defaults may be overriden in your build.moxie file.
 	'mx:jar' : {
+		includeResources: true
 		excludePomFiles: false
 		excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
 	}
@@ -64,10 +69,19 @@ tasks: {
 	# mx:GenJar attributes
 	# These defaults may be overriden in your build.moxie file.
 	'mx:genjar' : {
+		includeResources: true
 		excludePomFiles: false
 		excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
 	}
-	
+
+	# mx:War attributes
+	# These defaults may be overriden in your build.moxie file.
+	'mx:war' : {
+		includeResources: true
+		excludePomFiles: false
+		excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
+	}
+
 	# mx:Test attributes
 	# These defaults may be overriden in your build.moxie file.
 	'mx:test' : {
@@ -76,7 +90,7 @@ tasks: {
 		failureProperty: unit.test.failed
 		failOnError: false
 	}
-	
+
 	# testng attributes
 	# These defaults may be overriden in your build.moxie file.
 	'testng' : {
@@ -84,7 +98,7 @@ tasks: {
 		useDefaultListeners: true
 		suiteName: Moxie+Ant Suite
 	}
-	
+
 	# junit test attributes
 	# These defaults may be overriden in your build.moxie file.
 	'junit' : {
@@ -93,7 +107,7 @@ tasks: {
 		printSummary: yes
 		showOutput: no
 	}
-	
+
 	# junit report attributes
 	# These defaults may be overriden in your build.moxie file.
 	'junitreport' : {
@@ -103,14 +117,14 @@ tasks: {
 	# emma instrumentation attributes
 	# These defaults may be overriden in your build.moxie file.
 	'emma' : {
-		merge: true		
+		merge: true
 	}
 
 	# emma report attributes
 	# These defaults may be overriden in your build.moxie file.
 	'emmareport' : {
 	}
-	
+
 	# cobertura report attributes
 	# These defaults may be overriden in your build.moxie file.
 	'cobertura' : {

@@ -33,6 +33,7 @@ import org.moxie.BuildConfig;
 import org.moxie.MoxieException;
 import org.moxie.Pom;
 import org.moxie.Scope;
+import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
 import org.moxie.utils.StringUtils;
 
@@ -123,7 +124,7 @@ public class MxInit extends MxTask {
 			if (isVerbose()) {
 				getConsole().separator();
 				getConsole().log(getProject().getProperty("ant.version"));
-				getConsole().log("Moxie ant properties", getProject().getProperty("ant.version"));
+				getConsole().log("Moxie Build Toolkit version " + Toolkit.getVersion() + " compiled on " + Toolkit.getBuildDate());
 			}
 
 			Pom pom = build.getPom();
@@ -136,7 +137,7 @@ public class MxInit extends MxTask {
 
 			if (isVerbose()) {
 				getConsole().separator();
-				getConsole().log("string properties");
+				getConsole().log("project properties");
 			}
 			
 			setProjectProperty(Key.name, pom.name);
@@ -174,16 +175,16 @@ public class MxInit extends MxTask {
 
 			if (isVerbose()) {
 				getConsole().separator();
-				getConsole().log("path references");
+				getConsole().log("project path references");
 			}
 			
 			setSourcepath(Key.compileSourcePath, buildConfig, Scope.compile);
 			setSourcepath(Key.testSourcePath, buildConfig, Scope.test);
 
-			setClasspath(Key.compileClasspath, build, Scope.compile);
-			setClasspath(Key.runtimeClasspath, build, Scope.runtime);
-			setClasspath(Key.testClasspath, build, Scope.test);
-			setClasspath(Key.buildClasspath, build, Scope.build);
+			setClasspath(Key.compileClasspath, build, Scope.compile, false);
+			setClasspath(Key.runtimeClasspath, build, Scope.runtime, true);
+			setClasspath(Key.testClasspath, build, Scope.test, true);
+			setClasspath(Key.buildClasspath, build, Scope.build, false);
 
 			setDependencypath(Key.compileDependencypath, build, Scope.compile);
 			setDependencypath(Key.runtimeDependencypath, build, Scope.runtime);
@@ -216,7 +217,7 @@ public class MxInit extends MxTask {
 		addReference(key, sources, true);
 	}
 	
-	private void setClasspath(Key key, Build build, Scope scope) {
+	private void setClasspath(Key key, Build build, Scope scope, boolean includeResources) {
 		List<File> jars = build.getSolver().getClasspath(scope);
 		Path cp = new Path(getProject());
 		// output folder
@@ -226,6 +227,22 @@ public class MxInit extends MxTask {
 			of.setLocation(build.getConfig().getOutputDirectory(Scope.compile));
 		}
 		
+		// add resource directories to the runtime/test classpath
+		if (includeResources) {
+			for (File dir : build.getConfig().getResourceDirectories(scope)) {
+				PathElement pe = cp.createPathElement();
+				pe.setLocation(dir);
+			}
+
+			// add resource directories to the runtime/test classpath
+			if (!scope.isDefault()) {
+				for (File dir : build.getConfig().getResourceDirectories(Scope.compile)) {
+					PathElement pe = cp.createPathElement();
+					pe.setLocation(dir);
+				}
+			}
+		}
+
 		// add project dependencies 
 		for (File folder : buildDependentProjectsClasspath(build)) {
 			PathElement element = cp.createPathElement();
@@ -257,6 +274,9 @@ public class MxInit extends MxTask {
 		for (Build project : libraryProjects) {
 			File outputFolder = project.getConfig().getOutputDirectory(Scope.compile);
 			folders.add(outputFolder);
+			for (File resourceDir : project.getConfig().getResourceDirectories(Scope.compile)) {
+				folders.add(resourceDir);
+			}
 		}		
 		return folders;
 	}

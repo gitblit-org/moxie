@@ -159,11 +159,11 @@ public class MxGenJar extends GenJar {
 		this.excludes = excludes;
 	}
 
-	public String getDependencies() {
+	public String getTag() {
 		return tag;
 	}
 
-	public void setDependencies(String tag) {
+	public void setTag(String tag) {
 		this.tag = tag;
 	}
 
@@ -287,18 +287,41 @@ public class MxGenJar extends GenJar {
 		
 		File outputFolder = build.getConfig().getOutputDirectory(Scope.compile);
 
-		// optionally include resources from the outputfolder
+		if (excludes == null) {
+			excludes = Toolkit.DEFAULT_EXCLUDES;
+		}
+
+		// include resources from the project source folders
+		Resource resources = createResource();
+		for (File dir : build.getConfig().getSourceDirectories(Scope.compile, tag)) {
+			FileSet res = resources.createFileset();
+			res.setDir(dir);
+			res.setExcludes(excludes);
+		}
+		
 		if (includeResources) {
-			Resource resources = createResource();			
-			FileSet set = resources.createFileset();
-			set.setDir(outputFolder);
-			if (includes != null) {
-				set.setIncludes(includes);
+			// include resources from the project resource folders
+			for (File dir : build.getConfig().getResourceDirectories(Scope.compile, tag)) {
+				FileSet res = resources.createFileset();
+				res.setDir(dir);
 			}
-			if (excludes == null) {
-				excludes = Toolkit.DEFAULT_EXCLUDES;
+		}
+		
+		for (Build module : build.getSolver().getLinkedModules()) {
+			// include resources from module source folders
+			File dir = module.getConfig().getOutputDirectory(Scope.compile);
+			FileSet res = resources.createFileset();
+			res.setDir(dir);
+			res.setExcludes(excludes);
+			
+			if (includeResources) {
+				// include resources from the module resource folders
+				for (File resDir : module.getConfig().getResourceDirectories(Scope.compile)) {
+					FileSet resSet = resources.createFileset();
+					res.setExcludes(Toolkit.DEFAULT_EXCLUDES);
+					resSet.setDir(resDir);
+				}
 			}
-			set.setExcludes(excludes);
 		}
 		
 		console.title(getClass(), destFile.getName());
@@ -429,23 +452,29 @@ public class MxGenJar extends GenJar {
 			jar.add(new FileResourceSet(sourceFiles));
 			
 			// add the resolved package folders for resource files
+			for (Map.Entry<File, Set<String>> entry : packageResources.entrySet()) {
+				FileSet res = new FileSet();				
+				res.setDir(entry.getKey());
+				res.setExcludes(excludes);
+				StringBuilder includes = new StringBuilder();
+				for (String packageName : entry.getValue()) {
+					includes.append(packageName + ",");
+				}
+				includes.setLength(includes.length() - 1);
+				res.setIncludes(includes.toString());
+				console.debug("adding resource fileset {0}", entry.getKey());
+				console.debug(1, "includes={0}", includes.toString());
+				jar.add(res);
+			}
+
 			if (includeResources) {
-				for (Map.Entry<File, Set<String>> entry : packageResources.entrySet()) {
-					FileSet set = new FileSet();				
-					set.setDir(entry.getKey());
-					set.setExcludes(excludes);
-					StringBuilder includes = new StringBuilder();
-					for (String packageName : entry.getValue()) {
-						includes.append(packageName + ",");
-					}
-					includes.setLength(includes.length() - 1);
-					set.setIncludes(includes.toString());
-					console.debug("adding resource fileset {0}", entry.getKey());
-					console.debug(1, "includes={0}", includes.toString());
-					jar.add(set);
+				for (File dir : build.getConfig().getResourceDirectories(Scope.compile)) {
+					FileSet res = resources.createFileset();
+					res.setDir(dir);
+					res.setExcludes(Toolkit.DEFAULT_EXCLUDES);
 				}
 			}
-			
+
 			// set the source jar manifest
 			try {
 				Manifest mft = new Manifest();

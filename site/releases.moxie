@@ -44,7 +44,7 @@ pending: {
     date: ${project.buildDate}
     note: ''
           Please delete your .moxie/data folder before upgrading!
-          Please change all mxp property references to project propert references!
+          Please change all mxp and mxr property references to project property references!
           ''
     text: Milestone 3: Enhanced documentation features and more intuitive syntax
 
@@ -53,6 +53,9 @@ pending: {
      - Fixed regression with artifact resolution when using multiple source repositories
 
     changes:
+     - Separated resource directories from source directories
+     - Support tags on (re)source directories
+     - Removed mx:Javac.copyResources attribute
 	 - Changed artifact ids: common -> moxie-common, proxy -> moxie-proxy, toolkit -> moxie-toolkit
 	 - Switch to antlib.xml definition so that taskdef can be less verbose
      - Improved mx:Doc task with header links, pagers, and Freemarker templates
