@@ -27,4 +27,5 @@
 	
 	<!-- All -->
 	<typedef name="doc" classname="org.moxie.ant.MxDoc" />
+	<typedef name="package" classname="org.moxie.ant.MxPackage" />
 </antlib>

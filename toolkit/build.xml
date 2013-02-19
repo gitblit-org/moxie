@@ -196,6 +196,7 @@
 			
 			<!-- all -->
 			<class name="org.moxie.ant.MxDoc" />
+			<class name="org.moxie.ant.MxPackage" />
 			<class name="org.moxie.ant.Main" />
 
 			<resource>

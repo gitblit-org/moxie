@@ -107,11 +107,8 @@ public class ProjectHelper extends ProjectHelper2 {
 		target.setDepends("moxie.test");
 		target.setDescription("take the compiled code and package it in its distributable format, such as a JAR");
 		
-		// TODO WAR packaging
-		MxJar task = new MxJar();
+		MxPackage task = new MxPackage();
 		task.setProject(project);
-		task.setIncluderesources(true);
-		task.setPackagesources(true);
 		target.addTask(task);
 		return target;
 	}
@@ -141,7 +138,7 @@ public class ProjectHelper extends ProjectHelper2 {
 		target.setDepends("moxie.init");
 		target.setDescription("clean build and target directories");
 
-		MxClean task = new MxClean();
+		MxPackage task = new MxPackage();
 		task.setProject(project);
 		target.addTask(task);
 		return target;
