@@ -42,7 +42,7 @@ public class ProjectHelper extends ProjectHelper2 {
 			Taskdef def = new Taskdef();
 			def.setProject(project);
 			def.setURI("antlib:org.moxie");
-			def.setResource("tasks.properties");
+			def.setResource("org/moxie/antlib.xml");
 			def.execute();
 			
 			// add Moxie targets
