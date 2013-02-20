@@ -855,8 +855,33 @@ public class Solver {
 						suffix += "." + dependency.type;
 						suffix = suffix.toLowerCase();
 						if (n.endsWith(suffix)) {
-							console.debug("deleting obsolete artifact {0}", n);
-							return true;
+							// isolate middle section - which may be just
+							// a version OR may be part of the artifact id
+							String v = n.substring(dependency.artifactId.length());
+							v = v.substring(0, v.length() - suffix.length());
+							if (v.charAt(0) == '-') {
+								// strip leading - for artifacts like:
+								// wicket-auth-roles when we are trying to delete
+								// the 'wicket' artifact but not the 'wicket-auth-roles'
+								// artifact
+								v = v.substring(1);
+							}
+							// grab first element of middle section
+							// 1.2.3-SNAPSHOT = 1.2.3
+							// 1.2.3 = 1.2.3
+							// core-1.2.3-SNAPSHOT = core
+							String v0 = v.split("-")[0];
+							ArtifactVersion version = new ArtifactVersion(v0);
+							if (version.getQualifier().equals(v0)) {
+								// this file is a different artifact, not a different
+								// version of the same artifact
+								console.debug("keeping related artifact {0} in {1} when resolving {2}", n, folder, dependency.getCoordinates());
+							} else {
+								// the middle section is a version number and not
+								// an artifact id fragment AND a version number
+								console.debug("deleting obsolete artifact {0} from {1} when resolving {2}", n, folder, dependency.getCoordinates());
+								return true;
+							}
 						}
 					}
 				}
