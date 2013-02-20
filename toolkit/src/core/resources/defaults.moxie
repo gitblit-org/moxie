@@ -7,7 +7,7 @@
 #   IGNORE   (ignore Maven cache entirely)
 #   LINK     (use Maven cache artifacts directly, not recommended)
 #   COPY     (copy Maven cache artifacts into Moxie's local repository)
-mavenCacheStrategy: COPY
+mavenCacheStrategy: IGNORE
 
 # Source directories are verified during initialization.
 # Defined directories that do not exist are excluded.
