@@ -79,7 +79,7 @@ public class Toolkit {
 		parentPom, mainclass, modules, mavenCacheStrategy, coordinates, releaseVersion, releaseDate,
 		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl,
 		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution, mavenUrl, 
-		resourceDirectories;
+		resourceDirectories, parallelDownloads;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

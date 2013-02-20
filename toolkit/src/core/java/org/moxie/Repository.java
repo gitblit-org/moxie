@@ -81,7 +81,7 @@ public class Repository {
 		return true;
 	}
 	
-	protected void verifySHA1(Solver solver, String expectedSHA1, DownloadData data) {
+	protected synchronized void verifySHA1(Solver solver, String expectedSHA1, DownloadData data) {
 		if (calculateSHA1()) {
 			String calculatedSHA1 = StringUtils.getSHA1(data.content);
 			if (!StringUtils.isEmpty(expectedSHA1) && !calculatedSHA1.equals(expectedSHA1)) {

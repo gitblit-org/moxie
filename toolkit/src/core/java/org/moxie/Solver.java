@@ -24,6 +24,7 @@ import java.net.URLClassLoader;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ import java.util.Set;
 import org.moxie.console.Console;
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
+import org.moxie.utils.Parallel;
 import org.moxie.utils.StringUtils;
 
 
@@ -216,8 +218,21 @@ public class Solver {
 			Set<Dependency> retrieved = new HashSet<Dependency>();
 			for (Dependency dep : all) {
 				if (!retrieved.contains(dep)) {
-					retrievePOM(dep, retrieved);
-					retrieveArtifact(dep);					
+					retrievePOM(dep, retrieved);					
+				}
+			}
+			
+			if (config.getProjectConfig().parallelDownloads) {
+				// download artifacts in parallel
+				Parallel.WaitFor(retrieved, new Parallel.Operation<Dependency>() {
+					public void perform(Dependency dep) {
+						retrieveArtifact(dep);					
+					}
+				});
+			} else {
+				// download artifacts in serial
+				for (Dependency dep : retrieved) {
+					retrieveArtifact(dep);
 				}
 			}
 		}
@@ -308,7 +323,9 @@ public class Solver {
 			registeredUrls.add(repository.repositoryUrl);
 		}
 		
-		// retrieve POMs for all dependencies in all scopes
+		// retrieve POMs serially for all dependencies in all scopes
+		// parallelizing this is tricky because of recursive pom retrieval with
+		// potential dependency overlap
 		Set<Dependency> downloaded = new HashSet<Dependency>(); 
 		for (Scope scope : config.getPom().getScopes()) {
 			for (Dependency dependency : config.getPom().getDependencies(scope, Constants.RING1)) {
@@ -360,8 +377,8 @@ public class Solver {
 	private void retrieveDependencies() {
 		console.debug("retrieving artifacts");
 		// solve dependencies for compile, runtime, test, and build scopes
-		Set<Dependency> retrieved = new HashSet<Dependency>();
-		for (Scope scope : new Scope [] { Scope.compile, Scope.runtime, Scope.test, Scope.build }) {
+		final Set<Dependency> retrieved = Collections.synchronizedSet(new HashSet<Dependency>());
+		for (final Scope scope : new Scope [] { Scope.compile, Scope.runtime, Scope.test, Scope.build }) {
 			if (!silent && verbose) {
 				console.separator();
 				console.scope(scope, 0);
@@ -373,21 +390,33 @@ public class Solver {
 					console.log(1, "none");
 				}
 			} else {
-				for (Dependency dependency : solution) {
-					if (retrieved.add(dependency)) {
-						if (!silent && verbose) {
-							console.dependency(dependency);
-						}
-						File artifactFile = retrieveArtifact(dependency);
-						if (artifactFile == null && !Constants.POM.equals(dependency.type)) {
-							console.artifactResolutionFailed(dependency);
-							if (config.isFailFastOnArtifactResolution()) {
-								throw new MoxieException(MessageFormat.format("Failed to resolve {0}", dependency.getCoordinates()));
+				Parallel.Operation<Dependency> worker = new Parallel.Operation<Dependency>() {
+					public void perform(Dependency dependency) {
+						if (retrieved.add(dependency)) {
+							if (!silent && verbose) {
+								console.dependency(dependency);
+							}
+							File artifactFile = retrieveArtifact(dependency);
+							if (artifactFile == null && !Constants.POM.equals(dependency.type)) {
+								console.artifactResolutionFailed(dependency);
+								if (config.isFailFastOnArtifactResolution()) {
+									throw new MoxieException(MessageFormat.format("Failed to resolve {0}", dependency.getCoordinates()));
+								}
+							}
+							if (!Scope.build.equals(scope)) {
+								copyArtifact(dependency, artifactFile);
 							}
 						}
-						if (!Scope.build.equals(scope)) {
-							copyArtifact(dependency, artifactFile);
-						}
+					}
+				};
+				
+				if (config.getProjectConfig().parallelDownloads) {
+					// Download artifacts in parallel
+					Parallel.WaitFor(solution, worker);
+				} else {
+					// Download artifacts in serial
+					for (Dependency dep : solution) {
+						worker.perform(dep);
 					}
 				}
 			}
@@ -837,7 +866,7 @@ public class Solver {
 	 * @param dependency
 	 * @param folder
 	 */
-	private void removeObsoleteArtifacts(final Dependency dependency, File folder) {
+	private void removeObsoleteArtifacts(final Dependency dependency, final File folder) {
 		File [] removals = folder.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
