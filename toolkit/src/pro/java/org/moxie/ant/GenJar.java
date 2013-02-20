@@ -114,6 +114,8 @@ public class GenJar extends Task {
 	
 	boolean excludeClasspathJars;
 	
+	String excludes;
+
 	/**
 	 * main execute for genjar
 	 * <ol>

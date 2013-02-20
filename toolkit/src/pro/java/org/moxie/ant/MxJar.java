@@ -304,14 +304,7 @@ public class MxJar extends Jar {
 			}
 		}
 
-		for (File dir : build.getConfig().getSourceDirectories(Scope.compile, tag)) {
-			FileSet set = new FileSet();
-			set.setProject(getProject());
-			set.setDir(dir);
-			set.setExcludes(excludes);
-			addFileset(set);
-		}
-
+		// resource directories
 		if (includeResources) {
 			for (File dir : build.getConfig().getResourceDirectories(Scope.compile, tag)) {
 				FileSet set = new FileSet();

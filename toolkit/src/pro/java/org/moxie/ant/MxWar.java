@@ -48,6 +48,7 @@ public class MxWar extends MxJar {
     /** Constructor for the War Task. */
     public MxWar() {
         super();
+        setTaskName("mx:war");
         archiveType = "war";
         emptyBehavior = "create";
     }

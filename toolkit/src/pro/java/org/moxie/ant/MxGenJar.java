@@ -69,7 +69,6 @@ public class MxGenJar extends GenJar {
 	boolean includeResources;
 	boolean excludePomFiles;
 	String includes;
-	String excludes;
 	boolean packageSources;
 	String tag;
 
@@ -303,6 +302,7 @@ public class MxGenJar extends GenJar {
 			// include resources from the project resource folders
 			for (File dir : build.getConfig().getResourceDirectories(Scope.compile, tag)) {
 				FileSet res = resources.createFileset();
+				res.setExcludes(excludes);
 				res.setDir(dir);
 			}
 		}
