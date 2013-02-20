@@ -91,7 +91,7 @@ public class Repository {
 				}
 				if (solver.isFailOnChecksumError()) {
 					solver.getConsole().warn(MessageFormat.format("specify \"-D{0}=false\" when running Ant to disable checksum verification.", Toolkit.MX_ENFORCECHECKSUMS));
-					throw new RuntimeException(message);
+					throw new MoxieException(message);
 				}
 			}
 		}
@@ -308,7 +308,14 @@ public class Repository {
 		try {
 			URL url = getURL(dep, ext);
 			DownloadData data = download(solver, url);
-			verifySHA1(solver, expectedSHA1, data);
+			try {
+				verifySHA1(solver, expectedSHA1, data);
+			} catch (MoxieException e) {
+				// checksum verification failed
+				// delete all artifacts for this dependency
+				solver.getMoxieCache().purgeArtifacts(dep.getPomArtifact(), false);
+				throw e;
+			}
 			
 			// log successes
 			solver.getConsole().download(url.toString());

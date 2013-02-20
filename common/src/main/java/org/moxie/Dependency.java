@@ -141,6 +141,13 @@ public class Dependency implements Serializable {
 		return isSnapshot() || version.equalsIgnoreCase(Constants.RELEASE) || version.equalsIgnoreCase(Constants.LATEST);
 	}
 
+	public Dependency getPomArtifact() {
+		Dependency pom = new Dependency(getDetailedCoordinates());
+		pom.revision = revision;
+		pom.type = Constants.POM;
+		return pom;
+	}
+
 	public Dependency getSourcesArtifact() {
 		Dependency sources = new Dependency(getDetailedCoordinates());
 		sources.revision = revision;
