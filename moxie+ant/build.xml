@@ -18,6 +18,7 @@
 			<dependency coordinates="javax.activation:activation:1.1" />
 			<dependency coordinates="mx:markdownpapers" />
 			<dependency coordinates="mx:jgit" />
+			<dependency coordinates="mx:jgit-ant @jar" />
 			<dependency coordinates="mx:rhino" />
 		</mx:get>
 			

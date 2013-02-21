@@ -30,6 +30,7 @@ public class MxGitTask extends MxTask {
 	}
 
 	protected void loadDependency(Build build) {
-		build.getSolver().loadDependency(new Dependency("mx:jgit"));
+		build.getSolver().loadDependency(new Dependency("mx:jgit"),
+				new Dependency("mx:jgit-ant @jar"));
 	}
 }
