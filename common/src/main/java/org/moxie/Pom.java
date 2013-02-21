@@ -317,8 +317,28 @@ public class Pom {
 			dependencies.put(scope, new ArrayList<Dependency>());
 		}
 		
+		enforceVersionRangeLimits(dep);
+		
 		dependencies.get(scope).add(dep);
 		return scope;
+	}
+	
+	protected void enforceVersionRangeLimits(Dependency dependency) {
+		if (StringUtils.isEmpty(dependency.version)) {
+			return;
+		}
+		// check for version ranges
+		switch (dependency.version.charAt(0)) {
+		case '[':
+			String minVersion = dependency.version.substring(1).split(",")[0];			
+			System.out.println(MessageFormat.format("{0}: {1} is resolving to {2} because version ranges are not supported!", getCoordinates(), dependency.getCoordinates(), minVersion));
+			dependency.version = minVersion;
+			break;
+		case '(':
+			throw new MoxieException(MessageFormat.format("{0}: Failed to resolve {1} because exclusive minimum version ranges (x,y) are prohibited!", getCoordinates(), dependency.getCoordinates()));
+		default:
+			break;
+		}
 	}
 	
 	void resolveProperties() {
