@@ -16,6 +16,7 @@
 		<mx:get todir="${basedir}/ext" scope="compile">
 			<dependency coordinates="javax.mail:mail:1.4" />
 			<dependency coordinates="javax.activation:activation:1.1" />
+			<dependency coordinates="org.apache.ant:ant-compress:1.2 !org.apache.ant:ant" />
 			<dependency coordinates="mx:markdownpapers" />
 			<dependency coordinates="mx:jgit" />
 			<dependency coordinates="mx:jgit-ant @jar" />
