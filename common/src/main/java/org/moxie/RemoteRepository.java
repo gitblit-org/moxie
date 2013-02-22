@@ -16,6 +16,8 @@
 package org.moxie;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.moxie.utils.StringUtils;
 
@@ -26,11 +28,13 @@ public class RemoteRepository implements Serializable {
 	public final String id;
 	public final String url;
 	public final PurgePolicy purgePolicy;
+	public final Set<String> affinity;
 
 	public RemoteRepository(String id, String url) {
 		this.id = id;
 		this.url = url;
 		this.purgePolicy = new PurgePolicy();
+		affinity = new LinkedHashSet<String>();
 	}
 
 	public String getHost() {

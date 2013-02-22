@@ -40,8 +40,15 @@ revisionPurgeAfterDays: 0
 registeredRepositories:
 - { id: central, url: 'http://repo1.maven.org/maven2' }
 - { id: mavencentral, url: 'http://repo1.maven.org/maven2' }
-- { id: restlet, url: 'http://maven.restlet.org', revisionRetentionCount: 1, revisionPurgeAfterDays: 0 }
 - { id: codehaus, url: 'http://repository.codehaus.org' }
+- {
+    id: restlet
+    url: 'http://maven.restlet.org'
+    revisionRetentionCount: 1
+    revisionPurgeAfterDays: 0
+    # define a groupid affinity for all org.restlet artifacts
+    affinity: [ 'org.restlet.' ]
+  }
 
 # Default repositories for dependency retrieval
 repositories: central

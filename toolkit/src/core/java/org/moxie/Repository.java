@@ -26,6 +26,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
@@ -40,10 +42,12 @@ public class Repository {
 	final String metadataPattern;
 	final String snapshotPattern;
 	PurgePolicy purgePolicy;
+	final Set<String> affinity;
 	
 	public Repository(RemoteRepository definition) {
 		this(definition.id, definition.url);
 		this.purgePolicy = definition.purgePolicy;
+		this.affinity.addAll(definition.affinity);
 	}
 
 	public Repository(String name, String mavenUrl) {
@@ -57,6 +61,7 @@ public class Repository {
 		this.metadataPattern = metadataPattern;
 		this.snapshotPattern = snapshotPattern;
 		this.purgePolicy = new PurgePolicy();
+		this.affinity = new LinkedHashSet<String>();
 	}
 
 	@Override
@@ -108,6 +113,24 @@ public class Repository {
 		} else if (!dependency.isMavenObject() && !isMavenSource()) {
 			// dependency is NOT a Maven object AND the repository is NOT a Maven source
 			return true;
+		}
+		return false;
+	}
+	
+	public boolean hasAffinity(Dependency dependency) {
+		if (affinity.isEmpty()) {
+			return false;
+		}
+		if (affinity.contains(dependency.getManagementId())) {
+			return true;
+		} else if (affinity.contains(dependency.groupId)) {
+			return true;
+		} else {
+			for (String value : affinity) {
+				if (dependency.groupId.startsWith(value)) {
+					return true;
+				}
+			}
 		}
 		return false;
 	}

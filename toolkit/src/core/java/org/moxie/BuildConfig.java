@@ -267,8 +267,7 @@ public class BuildConfig {
 	 * @return a list of repositories
 	 */
 	public Collection<Repository> getRepositories(Dependency dep) {
-		if (repositories.size() == 1 || 
-				(StringUtils.isEmpty(dep.origin) && StringUtils.isEmpty(dep.preferredRepositoryId))) {
+		if (repositories.size() == 1) {
 			return repositories;
 		}
 		
@@ -282,11 +281,9 @@ public class BuildConfig {
 					if (dep.origin.equalsIgnoreCase(repository.name)) {
 						boostedRepository = repository;
 					}
-				} else if (!StringUtils.isEmpty(dep.preferredRepositoryId)) {
-					// repository preference
-					if (dep.preferredRepositoryId.equalsIgnoreCase(repository.name)) {
-						boostedRepository = repository;
-					}
+				} else if (repository.hasAffinity(dep)) {
+					// repository affinity based on package and maybe artifact
+					boostedRepository = repository;
 				}
 			}
 		}

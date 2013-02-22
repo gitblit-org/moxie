@@ -429,7 +429,9 @@ public class ToolkitConfig implements Serializable {
 							Math.max(1, repoMap.getInt(Key.revisionRetentionCount.name(), revisionRetentionCount)));
 					repo.purgePolicy.purgeAfterDays = Math.min(Toolkit.MAX_PURGE_AFTER_DAYS, 
 							Math.max(0, repoMap.getInt(Key.revisionPurgeAfterDays.name(), revisionPurgeAfterDays)));
-
+					for (String value : repoMap.getStrings("affinity", new ArrayList<String>())) {
+						repo.affinity.add(value.toLowerCase());
+					}
 					remotes.add(repo);
 				}
 			}

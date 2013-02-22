@@ -53,6 +53,7 @@ pending: {
      - Fixed regression with artifact resolution when using multiple source repositories
 
     changes:
+     - Replaced dependency repository boost with repository affinities
      - Separated resource directories from source directories
      - Support tags on (re)source directories
      - Removed mx:Javac.copyResources attribute
