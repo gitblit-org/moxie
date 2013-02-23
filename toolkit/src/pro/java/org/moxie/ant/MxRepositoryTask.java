@@ -81,8 +81,9 @@ public abstract class MxRepositoryTask extends MxTask {
 		repositoryId = value;
 	}
 	
-	public void setPathId(String id) {				
-		installedArtifacts = (Path) getProject().getReference(id);
+	public void setPathId(String id) {
+		installedArtifacts = new Path(getProject());
+		getProject().addReference(id, installedArtifacts);
 	}
 	
 	protected IMavenCache getArtifactCache(boolean isSnapshot) {

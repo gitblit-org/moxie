@@ -1,5 +1,10 @@
 <?xml version="1.0"?>
 <antlib>
+	<!-- Define reference types that we passback to Ant -->
+	<typedef classname="org.apache.tools.ant.types.Path" />
+	<typedef classname="org.apache.tools.ant.types.PathElement" />
+	<typedef classname="org.apache.tools.ant.types.FileSet" />
+
 	<!-- Core -->
 	<taskdef name="init" classname="org.moxie.ant.MxInit" />
 	<taskdef name="get" classname="org.moxie.ant.MxGet" />
