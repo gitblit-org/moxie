@@ -486,6 +486,10 @@ public class Pom {
 	public boolean isWAR() {
 		return !StringUtils.isEmpty(packaging) && packaging.equalsIgnoreCase("war");
 	}
+	
+	public boolean isSnapshot() {
+		return version.contains("-SNAPSHOT");
+	}
 
 	public void inherit(Pom pom) {
 		nonDestructiveCopy(pom.managedVersions, managedVersions);

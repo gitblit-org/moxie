@@ -258,6 +258,15 @@ public class BuildConfig {
 	public Collection<Repository> getRepositories() {
 		return new ArrayList<Repository>(repositories);
 	}
+	
+	public Repository getRepository(String name) {
+		for (Repository repository : repositories) {
+			if (repository.name.equalsIgnoreCase(name)) {
+				return repository;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Return a list of repositories to check for the dependency.  Origin and
