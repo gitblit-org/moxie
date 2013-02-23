@@ -23,7 +23,7 @@ import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 
 
-public class MavenCache implements IMavenCache {
+public class MavenCache extends IMavenCache {
 
 	final File root;
 	

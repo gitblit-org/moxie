@@ -29,7 +29,7 @@ import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 
 
-public class MoxieCache implements IMavenCache {
+public class MoxieCache extends IMavenCache {
 	
 	final File moxieRoot;
 	final File moxiedataRoot;
@@ -338,54 +338,5 @@ public class MoxieCache implements IMavenCache {
 		return file;
 	}
 	
-	public void purgeSnapshots(Dependency dep, PurgePolicy policy) {
-		if (!dep.isSnapshot()) {
-			return;
-		}
-		File metadataFile = getMetadata(dep, Constants.XML);
-		if (metadataFile == null || !metadataFile.exists()) {
-			return;
-		}
-		Metadata metadata = MetadataReader.readMetadata(metadataFile);
-		List<String> purgedRevisions = metadata.purgeSnapshots(policy);
-		if (purgedRevisions.size() > 0) {
-			System.out.println("purging old snapshots " + dep.getCoordinates());
-			for (String revision : purgedRevisions) {
-				Dependency old = DeepCopier.copy(dep);
-				old.revision = revision;
-				purgeArtifacts(old, false);
-			}
-			// write purged metadata
-			FileUtils.writeContent(metadataFile, metadata.toXML());
 
-			// if this dependency has a parent, purge that too
-			File pomFile = getArtifact(dep, Constants.POM);
-			Pom pom = PomReader.readPom(this, pomFile);
-			if (pom.hasParentDependency()) {
-				Dependency parent = pom.getParentDependency();
-				parent.setOrigin(dep.getOrigin());
-				purgeSnapshots(parent, policy);
-			}
-		}
-	}
-	
-	public void purgeArtifacts(Dependency dep, boolean includeDependencies) {
-		String identifier = dep.version;
-		if (dep.isSnapshot()) {
-			identifier = dep.revision;
-		}
-		File artifact = getArtifact(dep, dep.type);
-		File folder = artifact.getParentFile();
-		if (folder == null || !folder.exists()) {
-			System.out.println("   ! skipping non existent folder " + folder);
-			return;
-		}
-		
-		for (File file : folder.listFiles()) {
-			if (file.isFile() && file.getName().contains(identifier)) {
-				System.out.println("   - " + file.getName());
-				file.delete();
-			}
-		}
-	}
 }
