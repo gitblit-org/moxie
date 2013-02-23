@@ -423,7 +423,7 @@ public class ToolkitConfig implements Serializable {
 				} else if (o instanceof MaxmlMap) {
 					MaxmlMap repoMap = (MaxmlMap) o;
 					String id = repoMap.getString("id", null);
-					String url = repoMap.getString("url", null);
+					String url = repoMap.getString("url", null).replace('\\', '/');
 					RemoteRepository repo = new RemoteRepository(id, url);
 					repo.purgePolicy.retentionCount = Math.min(Toolkit.MAX_REVISIONS, 
 							Math.max(1, repoMap.getInt(Key.revisionRetentionCount.name(), revisionRetentionCount)));
