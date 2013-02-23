@@ -29,8 +29,8 @@ import org.moxie.utils.StringUtils;
 
 public class Metadata {
 
-	private static final String snapshotTimestamp = "yyyyMMdd.HHmmss";
-	private static final String versionTimestamp = "yyyyMMddHHmmss";
+	public static final String snapshotTimestamp = "yyyyMMdd.HHmmss";
+	public static final String versionTimestamp = "yyyyMMddHHmmss";
 
 	public String groupId;
 	public String artifactId;
@@ -46,6 +46,39 @@ public class Metadata {
 		lastUpdated = new Date(0);
 		versions = new ArrayList<String>();
 		snapshots = new ArrayList<Snapshot>();
+	}
+	
+	public Metadata(Dependency dep, boolean isSnapshotMetadata) {
+		this();
+		
+		// create metadata from dependency
+		groupId = dep.groupId;
+		artifactId = dep.artifactId;
+		
+		if (isSnapshotMetadata && dep.isSnapshot()) {
+			// SNAPSHOT metadata
+			version = dep.version;
+			
+			// revision is x.y.z-DATE.TIME-BUILDNUMBER
+			String [] values = dep.revision.split("-");
+			String timestamp = values[1];
+			String buildNumber = values[2];
+			addSnapshot(timestamp, buildNumber);
+			try {
+				lastUpdated = new SimpleDateFormat(snapshotTimestamp).parse(timestamp);
+			} catch (ParseException e) {
+				lastUpdated = new Date();
+			}
+		} else {
+			// ARTIFACT metadata
+			latest = dep.version;
+			versions.add(dep.version);
+			if (!dep.isSnapshot()) {
+				// RELEASE
+				release = dep.version;
+			}
+			lastUpdated = new Date();
+		}
 	}
 
 	public void addVersion(String version) {
@@ -178,6 +211,25 @@ public class Metadata {
 	public String getSnapshotRevision() {
 		return snapshots.get(snapshots.size() - 1).getRevision();
 	}
+	
+	public int getLastBuildNumber() {
+		if (snapshots.isEmpty()) {
+			return 0;
+		}
+		int lastBuildNumber = 0;
+		for (Snapshot snapshot : snapshots) {
+			if (!StringUtils.isEmpty(snapshot.buildNumber)) {
+				try {
+					int bn = Integer.parseInt(snapshot.buildNumber);
+					if (bn > lastBuildNumber) {
+						lastBuildNumber = bn;
+					}
+				} catch (Throwable t) {
+				}
+			}
+		}
+		return lastBuildNumber;
+	}
 
 	@Override
 	public String toString() {
@@ -190,34 +242,37 @@ public class Metadata {
 		sb.append("<metadata>\n");
 
 		// project metadata
-		sb.append("\t<!-- project metadata -->\n");
+		sb.append(StringUtils.insertHalfTab("<!-- project metadata -->\n"));
 		sb.append(StringUtils.toXML("groupId", groupId));
 		sb.append(StringUtils.toXML("artifactId", artifactId));
 		sb.append(StringUtils.toXML("version", version));
 
 		// project versioning
-		sb.append("\t<!-- project versioning -->\n");
-		sb.append("\t<versioning>\n");
-		StringBuilder node = new StringBuilder();
-		node.append(StringUtils.toXML("latest", latest));
-		node.append(StringUtils.toXML("release", release));
-		sb.append(StringUtils.insertHalfTab(node.toString()));
+		sb.append(StringUtils.insertHalfTab("<!-- project versioning -->\n"));
+		sb.append(StringUtils.insertHalfTab("<versioning>\n"));
+		
+		if (!StringUtils.isEmpty(latest) ||  !StringUtils.isEmpty(release)) {
+			StringBuilder node = new StringBuilder();
+			node.append(StringUtils.toXML("latest", latest));
+			node.append(StringUtils.toXML("release", release));
+			sb.append(StringUtils.insertHalfTab(node.toString()));
+		}
 		
 		// snapshots
 		if (snapshots.size() > 0) {
-			sb.append("\t\t<!-- snapshots -->\n");
+			sb.append(StringUtils.insertSoftTab("<!-- snapshots -->\n"));
 			for (Snapshot snapshot : snapshots) {
-				sb.append("\t\t<snapshot>\n");
-				sb.append("\t\t").append(StringUtils.toXML("timestamp", snapshot.timestamp));
-				sb.append("\t\t").append(StringUtils.toXML("buildNumber", snapshot.buildNumber));
-				sb.append("\t\t</snapshot>\n");
+				sb.append(StringUtils.insertSoftTab("<snapshot>\n"));
+				sb.append(StringUtils.insertSoftTab(StringUtils.toXML("timestamp", snapshot.timestamp)));
+				sb.append(StringUtils.insertSoftTab(StringUtils.toXML("buildNumber", snapshot.buildNumber)));
+				sb.append(StringUtils.insertSoftTab("</snapshot>\n"));
 			}
 		}
 
 		// versions
 		if (versions.size() > 0) {
-			sb.append("\t\t<!-- versions-->\n");
-			sb.append("\t\t<versions>\n");
+			sb.append(StringUtils.insertSoftTab("<!-- versions-->\n"));
+			sb.append(StringUtils.insertSoftTab("<versions>\n"));
 			StringBuilder sbv = new StringBuilder();
 			for (String version : versions) {
 				sbv.append(StringUtils.insertHalfTab(StringUtils.toXML("version", version)));
@@ -225,7 +280,7 @@ public class Metadata {
 			if (sbv.length() > 0) {
 				sb.append(StringUtils.insertHalfTab(sbv.toString()));
 			}
-			sb.append("\t\t</versions>\n");
+			sb.append(StringUtils.insertSoftTab("</versions>\n"));
 		}
 		
 		// set lastUpdated to now, if it is unset
@@ -247,20 +302,20 @@ public class Metadata {
 		// set lastUpdated
 		SimpleDateFormat df = new SimpleDateFormat(versionTimestamp);
 		df.setTimeZone(TimeZone.getTimeZone("UTC"));
-		sb.append("\t").append(StringUtils.toXML("lastUpdated", df.format(lastUpdated)));
+		sb.append(StringUtils.insertHalfTab(StringUtils.toXML("lastUpdated", df.format(lastUpdated))));
 		
-		sb.append("\t</versioning>\n");
+		sb.append(StringUtils.insertHalfTab("</versioning>\n"));
 
 		// close metadata
 		sb.append("</metadata>");
 		return sb.toString();
 	}
 	
-	class Snapshot implements Comparable<Snapshot> {
+	private class Snapshot implements Comparable<Snapshot> {
 		final String timestamp;
 		final String buildNumber;
 		
-		public Snapshot(String timestamp, String buildNumber) {
+		Snapshot(String timestamp, String buildNumber) {
 			this.timestamp = timestamp;
 			this.buildNumber = buildNumber;
 		}

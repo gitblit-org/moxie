@@ -30,6 +30,7 @@
 				</menu>
 				<menu name="tasks" pager="true" pagerPlacement="bottom" pagerLayout="justified">
 					<page name="mx:Clean" src="mxclean.mkd" />
+					<page name="mx:Deploy" src="mxdeploy.mkd" />
 					<page name="mx:Doc" src="mxdoc.mkd" />
 					<page name="mx:Extract" src="mxextract.mkd" />
 					<page name="mx:GenJar" src="mxgenjar.mkd" />

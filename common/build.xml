@@ -12,8 +12,8 @@
 		<mx:test />
 		<mx:jar packageSources="true" />
 		
-		<!-- Install into the version-controlled Maven repository -->
-		<mx:install basedir="${basedir}/../maven" snapshots="false" />
+		<!-- Deploy into the version-controlled Maven repository -->
+		<mx:deploy basedir="${basedir}/../maven" allowSnapshots="false" />
 
 	</target>
 	

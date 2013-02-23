@@ -93,6 +93,7 @@
 		<taskdef classname="org.moxie.ant.MxInit" name="init" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxReport" name="report" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxDeploy" name="deploy" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxGenJar" name="genjar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxTest" name="test" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxGitId" name="gitid" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
@@ -155,6 +156,7 @@
 			<class name="org.moxie.ant.MxWebXml" />
 			<class name="org.moxie.ant.MxJavadoc" />
 			<class name="org.moxie.ant.MxTar" />
+			<class name="org.moxie.ant.MxDeploy" />
 
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
@@ -193,6 +195,7 @@
 			<class name="org.moxie.ant.MxWebXml" />
 			<class name="org.moxie.ant.MxJavadoc" />
 			<class name="org.moxie.ant.MxTar" />
+			<class name="org.moxie.ant.MxDeploy" />
 			
 			<!-- all -->
 			<class name="org.moxie.ant.MxDoc" />
@@ -214,11 +217,12 @@
 		-->
 		<copy file="${project.targetDirectory}/moxie-toolkit-${project.version}.jar" tofile="${project.targetDirectory}/moxie.jar" />
 
-		<!-- Install the artifacts into the version-controlled repository -->
-		<mx:install basedir="${basedir}/../maven" snapshots="false" />
+		<!-- Deploy the artifacts into the version-controlled repository -->		
+		<mx:deploy basedir="${basedir}/../maven" allowSnapshots="false" />
 	</target>
 	
 	<target name="test" depends="prepare">
 		<mx:test />
 	</target>
+
 </project>

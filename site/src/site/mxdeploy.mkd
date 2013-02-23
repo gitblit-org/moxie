@@ -1,0 +1,5 @@
+## mx:Deploy %PRO% %ALL%
+
+%BEGINXML%
+<mx:deploy basedir="${basedir}/../maven" allowSnapshots="true" />
+%ENDXML%

@@ -1,7 +1,5 @@
 ## mx:Install %PRO% %ALL%
 
-This task is incomplete.
-
 %BEGINXML%
-<mx:install />
+<mx:install basedir="${basedir}/../maven" allowSnapshots="true" />
 %ENDXML%

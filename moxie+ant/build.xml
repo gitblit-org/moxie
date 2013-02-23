@@ -89,8 +89,8 @@
 		<gzip destfile="${project.targetDirectory}/moxie+ant-${project.version}.tar.gz" 
 			src="${project.outputDirectory}/dist/moxie+ant-${project.version}.tar" />
 		
-		<!-- Install into the version-controlled Maven repository -->
-		<mx:install basedir="${basedir}/../maven" snapshots="false" />
+		<!-- Deploy into the version-controlled Maven repository -->
+		<mx:deploy basedir="${basedir}/../maven" allowSnapshots="false" />
 
 	</target>
 	

@@ -7,6 +7,7 @@
 
 	<!-- Pro -->
 	<typedef name="clean" classname="org.moxie.ant.MxClean" />
+	<taskdef name="deploy" classname="org.moxie.ant.MxDeploy" />
 	<typedef name="extract" classname="org.moxie.ant.MxExtract" />
 	<typedef name="genjar" classname="org.moxie.ant.MxGenJar" />
 	<typedef name="ghpages" classname="org.moxie.ant.MxGhPages" />

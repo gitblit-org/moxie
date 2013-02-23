@@ -73,6 +73,7 @@ pending: {
      - Added mx:Tar task
      - Added mx:Javadoc task to redirect verbose javadoc output to a log file
      - Added mx:War task
+     - Added mx:Deploy task
 
     dependencyChanges:
      - Twitter Bootstrap 2.3.0

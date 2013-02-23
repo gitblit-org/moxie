@@ -44,7 +44,6 @@ scm: {
   tag: HEAD
   }
 
-
 apply: eclipse, intellij, pom
 tasks: {
     "mx:javac": {
