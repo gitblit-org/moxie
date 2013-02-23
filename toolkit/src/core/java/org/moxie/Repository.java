@@ -41,11 +41,13 @@ public class Repository {
 	final String artifactPattern;
 	final String metadataPattern;
 	final String snapshotPattern;
+	boolean allowSnapshots;
 	PurgePolicy purgePolicy;
 	final Set<String> affinity;
 	
 	public Repository(RemoteRepository definition) {
 		this(definition.id, definition.url);
+		this.allowSnapshots = definition.allowSnapshots;
 		this.purgePolicy = definition.purgePolicy;
 		this.affinity.addAll(definition.affinity);
 	}
@@ -133,6 +135,14 @@ public class Repository {
 			}
 		}
 		return false;
+	}
+	
+	public boolean allowSnapshots() {
+		return allowSnapshots;
+	}
+	
+	public String getRepositoryUrl() {
+		return repositoryUrl;
 	}
 	
 	public String getArtifactUrl() {

@@ -92,7 +92,7 @@ public class ToolkitConfig implements Serializable {
 		targetDirectory = new File("build/target");
 		linkedModules = new ArrayList<Module>();
 		repositories = Arrays.asList("central");
-		registeredRepositories = Arrays.asList(new RemoteRepository("central", "http://repo1.maven.org/maven2"));		
+		registeredRepositories = Arrays.asList(new RemoteRepository("central", "http://repo1.maven.org/maven2", false));		
 		pom = new Pom();
 		dependencyDirectory = null;
 		apply = new TreeSet<String>();
@@ -131,6 +131,13 @@ public class ToolkitConfig implements Serializable {
 	
 	public String getMainclass() {
 		return mainclass;
+	}
+	
+	public PurgePolicy getPurgePolicy() {
+		PurgePolicy  policy = new PurgePolicy();
+		policy.retentionCount = revisionRetentionCount;
+		policy.purgeAfterDays = revisionPurgeAfterDays;
+		return policy;
 	}
 	
 	@Override
@@ -419,12 +426,13 @@ public class ToolkitConfig implements Serializable {
 		if (map.containsKey(key.name())) {
 			for (Object o : map.getList(key.name(), Collections.emptyList())) {
 				if (o instanceof String) {
-					remotes.add(new RemoteRepository("", o.toString()));
+					remotes.add(new RemoteRepository("", o.toString(), false));
 				} else if (o instanceof MaxmlMap) {
 					MaxmlMap repoMap = (MaxmlMap) o;
 					String id = repoMap.getString("id", null);
 					String url = repoMap.getString("url", null).replace('\\', '/');
-					RemoteRepository repo = new RemoteRepository(id, url);
+					boolean allowSnapshots = repoMap.getBoolean("allowSnapshots", false);
+					RemoteRepository repo = new RemoteRepository(id, url, allowSnapshots);
 					repo.purgePolicy.retentionCount = Math.min(Toolkit.MAX_REVISIONS, 
 							Math.max(1, repoMap.getInt(Key.revisionRetentionCount.name(), revisionRetentionCount)));
 					repo.purgePolicy.purgeAfterDays = Math.min(Toolkit.MAX_PURGE_AFTER_DAYS, 

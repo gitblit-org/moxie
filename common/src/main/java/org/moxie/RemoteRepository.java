@@ -28,11 +28,13 @@ public class RemoteRepository implements Serializable {
 	public final String id;
 	public final String url;
 	public final PurgePolicy purgePolicy;
+	public final boolean allowSnapshots;
 	public final Set<String> affinity;
 
-	public RemoteRepository(String id, String url) {
+	public RemoteRepository(String id, String url, boolean allowSnapshots) {
 		this.id = id;
 		this.url = url;
+		this.allowSnapshots = allowSnapshots;
 		this.purgePolicy = new PurgePolicy();
 		affinity = new LinkedHashSet<String>();
 	}

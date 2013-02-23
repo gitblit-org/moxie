@@ -104,7 +104,7 @@ public class ProxyConfig {
 		
 		// default proxy of central
 		remoteRepositories = new ArrayList<RemoteRepository>();
-		remoteRepositories.add(new RemoteRepository("central", "http://repo1.maven.org/maven2"));
+		remoteRepositories.add(new RemoteRepository("central", "http://repo1.maven.org/maven2", false));
 		
 		remoteRepositoryLookup = new HashMap<String, RemoteRepository>();
 		for (RemoteRepository repository : remoteRepositories) {
@@ -171,7 +171,8 @@ public class ProxyConfig {
 				MaxmlMap repoMap = (MaxmlMap) o;
 				String id = repoMap.getString("id", null);
 				String url = repoMap.getString("url", null);
-				RemoteRepository repo = new RemoteRepository(id, url);
+				boolean allowSnapshots = repoMap.getBoolean("allowSnapshots", false);
+				RemoteRepository repo = new RemoteRepository(id, url, allowSnapshots);
 				remotes.add(repo);
 			}
 		}
