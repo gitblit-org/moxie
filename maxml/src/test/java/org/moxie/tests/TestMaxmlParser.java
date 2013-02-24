@@ -39,6 +39,10 @@ public class TestMaxmlParser extends Assert {
 	
 	String references = "colors1:\n- blue\n- purple\n- green\n\ncolors2:\n- red\n-yellow\n- orange\n\nall:\n+ &colors1\n+ &colors2\n- magenta\nmycolor: &colors2[1]";
 
+	String references2 = "1.2.3:\n- blue\n- purple\n- green\n\n4.5.6:\n- red\n-yellow\n- orange\n\nall:\n+ &'1.2.3'\n+ &'4.5.6'\n- magenta\nmycolor: &'4.5.6'[1]";
+
+	String references3 = "project.version.r1: {\n version: 1\n  }\nproject.version.r2: {\n  version: 2\n  }\nversions: &'project.version.r'[1..2]";
+
 	@SuppressWarnings("rawtypes")
 	@Test
 	public void testValueParsing() throws Exception {
@@ -52,6 +56,9 @@ public class TestMaxmlParser extends Assert {
 		assertEquals("Moxie\n is a\n  Java Project Build Toolkit\n", Maxml.parse(blockTest3).get("description"));
 		assertEquals("[blue, purple, green, red, yellow, orange, magenta]", Maxml.parse(references).get("all").toString());
 		assertEquals("yellow", Maxml.parse(references).get("mycolor").toString());
+		assertEquals("[blue, purple, green, red, yellow, orange, magenta]", Maxml.parse(references2).get("all").toString());
+		assertEquals("yellow", Maxml.parse(references2).get("mycolor").toString());
+		assertEquals("[{version=1}, {version=2}]", Maxml.parse(references3).get("versions").toString());
 
 		// numerics
 		assertEquals(101, parser.parseValue("101"));

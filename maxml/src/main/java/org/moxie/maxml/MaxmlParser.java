@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.moxie.utils.StringUtils;
+
 /**
  * MaxmlParser is a simple recursive parser that can deserialize an Maxml
  * document. Maxml is based mostly on YAML but borrows ideas from XML and JSON
@@ -232,29 +234,25 @@ public class MaxmlParser {
 		// object reference
 		if (value.charAt(0) == '&') {
 			if (value.indexOf(' ') == -1) {
-				MaxmlMap container = rootMap;
-				Object o = null;
-				String [] fields = value.substring(1).split("\\.");
-				Pattern p = Pattern.compile("(.*)\\[(\\d+)\\]");
-				for (String field : fields) {
-					int index = -1;
-					Matcher m = p.matcher(field);
-					if (m.find()) {
-						String i = m.group(2);
-						index = Integer.parseInt(i);
-						field = field.substring(0, field.indexOf('['));
-					}
-					o = container.get(field);
-					if (o instanceof MaxmlMap) {
-						container = (MaxmlMap) o;
-					} else if (o instanceof List) {
-						// grab indexed element from list
-						if (index >= 0) {
-							o = ((List<?>) o).get(index);
+				String v = value.substring(1).trim();
+				if (v.indexOf('[') > -1 && v.indexOf("..") > -1 && v.indexOf(']') > -1) {
+					
+					String name = v.substring(0,  v.indexOf('['));
+					int a = Integer.parseInt(v.substring(v.indexOf('[') + 1, v.indexOf("..")));
+					int b = Integer.parseInt(v.substring(v.indexOf("..") + 2, v.indexOf(']')));
+					
+					List<Object> list = new ArrayList<Object>();
+					for (int i = a; i <= b; i++) {
+						String valName = name + i;
+						if (name.endsWith("'") || name.endsWith("\"")) {
+							valName = name.substring(0, name.length() - 1) + i + name.charAt(name.length() - 1);
 						}
+						Object o = getObject(valName, rootMap);
+						list.add(o);
 					}
+					return list;
 				}
-				return o;
+				return getObject(v, rootMap);
 			}
 		}
 		
@@ -425,5 +423,73 @@ public class MaxmlParser {
 			}
 		}
 		return line;
+	}
+	
+	protected Object getObject(String value, MaxmlMap container) {
+		Object o = null;
+		if (value.charAt(0) == '.') {
+			value = value.substring(1);
+		}
+		if (value.charAt(0) == '\'') {
+			int i = value.indexOf('\'', 1);
+			String id = value.substring(1,  i);
+			o = container.get(id);
+			String remainder = value.substring(i + 1);
+			if (StringUtils.isEmpty(remainder)) {
+				return o;
+			}
+			if (o instanceof List) {
+				return getObject(remainder, (List<?>) o);
+			}
+			return getObject(remainder, container);
+		} else if (value.charAt(0) == '\"') {
+			int i = value.indexOf('\"', 1);
+			String id = value.substring(1,  i);
+			o = container.get(id);
+			String remainder = value.substring(i + 1);
+			if (StringUtils.isEmpty(remainder)) {
+				return o;
+			}
+			if (o instanceof List) {
+				return getObject(remainder, (List<?>) o);
+			}
+			return getObject(remainder, container);
+		}
+
+		String [] fields = value.split("\\.");
+		Pattern p = Pattern.compile("(.*)\\[(\\d+)\\]");
+		for (String field : fields) {
+			int index = -1;
+			Matcher m = p.matcher(field);
+			if (m.find()) {
+				String i = m.group(2);
+				index = Integer.parseInt(i);
+				field = field.substring(0, field.indexOf('['));
+			}
+			o = container.get(field);
+			if (o instanceof MaxmlMap) {
+				container = (MaxmlMap) o;
+			} else if (o instanceof List) {
+				// grab indexed element from list
+				if (index >= 0) {
+					o = ((List<?>) o).get(index);
+				}
+			}
+		}
+		return o;
+	}
+	
+	protected Object getObject(String value, List<?> list) {
+		Pattern p = Pattern.compile("(.*)\\[(\\d+)\\]");
+		int index = -1;
+		Matcher m = p.matcher(value);
+		if (m.find()) {
+			String i = m.group(2);
+			index = Integer.parseInt(i);
+		}
+		if (index > -1) {
+			return list.get(index);
+		}
+		return null;
 	}
 }

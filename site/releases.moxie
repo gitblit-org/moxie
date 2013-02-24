@@ -2,7 +2,7 @@ history:
 #
 # 0.4.0 release
 #
-- {
+r1: {
     title: Moxie 0.4.0 Released
     id: 0.4.0
     date: 2012-07-05
@@ -13,7 +13,7 @@ history:
 #
 # 0.5.0 release
 #
-current: {
+r2: {
     title: Moxie 0.5.0 Released
     id: 0.5.0
     date: 2013-01-23
@@ -38,7 +38,7 @@ current: {
 #
 # Pending release
 #
-pending: {
+r3: {
     title: Moxie ${project.version} Released
     id: ${project.version}
     date: ${project.buildDate}
@@ -81,9 +81,10 @@ pending: {
      - Twitter Bootstrap 2.3.0
 }
 
+current: &r2
+pending: &r3
+
 #
 # Create a collection of log entries for RSS/ATOM feeds
 #
-all:
-+ &history
-- &current
+all: &r[1..2]
