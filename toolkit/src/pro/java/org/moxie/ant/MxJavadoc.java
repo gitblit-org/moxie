@@ -79,7 +79,7 @@ public class MxJavadoc extends Javadoc {
 
 	@Override
 	public void execute() {
-		Build build = (Build) getProject().getReference(Key.build.refId());
+		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		Console console = build.getConsole();
 		
 		if (destDir == null) {

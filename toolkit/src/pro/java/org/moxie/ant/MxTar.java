@@ -80,7 +80,7 @@ public class MxTar extends Tar {
 	}
 
 	public void execute() {
-		Build build = (Build) getProject().getReference(Key.build.refId());
+		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		if (destFile == null) {
 			// default output jar if file unspecified
 			String name = build.getPom().artifactId;

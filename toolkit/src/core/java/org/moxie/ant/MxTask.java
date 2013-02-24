@@ -66,7 +66,7 @@ public abstract class MxTask extends Task {
 	}
 	
 	public Build getBuild() {
-		Build build = (Build) getProject().getReference(Key.build.refId());
+		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		return build;
 	}
 
@@ -80,13 +80,6 @@ public abstract class MxTask extends Task {
 			}
 		}
 		return console;
-	}
-
-	protected void setProperty(Key prop, String value) {
-		if (!StringUtils.isEmpty(value)) {
-			getProject().setProperty(prop.propId(), value);
-			log(prop.propId(), value, false);
-		}
 	}
 
 	protected void setProjectProperty(Key prop, String value) {
@@ -104,13 +97,13 @@ public abstract class MxTask extends Task {
 	}
 
 	protected void addReference(Key prop, Object obj, boolean split) {
+		// add path as both a property and a reference
+		// the property is accessible from all Ants
+		// the reference is accessible internally from mx tasks
+		// and when using Moxie on the Ant classpath (-lib and Moxie+Ant)
 		getProject().setProperty(prop.projectId(), obj.toString());
 		log(prop.projectId(), obj.toString(), split);
-		
-		// Do not set references because Ant's classloader is a PITA
-		// Paths and Filesets can always be built from the property
-		// getProject().addReference(prop.refId(), obj);
-		// log(prop.refId(), obj.toString(), split);
+		getProject().addReference(prop.referenceId(), obj);
 	}
 	
 	protected void log(String key, String value, boolean split) {

@@ -112,7 +112,7 @@ public class MxJavac extends Javac {
 	@Override
 	public void setProject(Project project) {
 		super.setProject(project);
-		Build build = (Build) getProject().getReference(Key.build.refId());
+		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		if (build != null) {
 			configure(build);
 		}
@@ -154,7 +154,7 @@ public class MxJavac extends Javac {
 	}
 
 	public void execute() {
-		Build build = (Build) getProject().getReference(Key.build.refId());
+		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		Console console = build.getConsole();
 		
 		if (!configured) {
@@ -185,7 +185,7 @@ public class MxJavac extends Javac {
 					// compile the linked project
 					Project project = new Project();
 					project.setBaseDir(linkedProject.getConfig().getProjectDirectory());
-					project.addReference(Key.build.refId(), linkedProject);
+					project.addReference(Key.build.referenceId(), linkedProject);
 
 					MxJavac subCompile = new MxJavac(builds);
 					subCompile.setProject(project);

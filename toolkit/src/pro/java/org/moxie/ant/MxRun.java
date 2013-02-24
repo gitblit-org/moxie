@@ -37,7 +37,7 @@ public class MxRun extends Java {
 	
 	@Override
 	public void execute() {
-		Build build = (Build) getProject().getReference(Key.build.refId());
+		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		Console console = build.getConsole();
 		
 		console.title(getClass(), build.getPom().getCoordinates());

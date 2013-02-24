@@ -61,7 +61,8 @@ pending: {
 	 - Switch to antlib.xml definition so that taskdef can be less verbose
      - Improved mx:Doc task with header links, pagers, and Freemarker templates
      - Improved artifact resolution failure reporting
-     - Chane mxr.* references to project.* properties to workaround Ant classloader issues
+     - Set path references as project.* properties to workaround Ant classloader issues
+     - Change mxr.* references to reference.* references
      - Change mxp.* properties to project.* to match Maven
      - Changed "folder/folders" properties to be "directory/directories" to match Maven and Ant
      - Make Maven ~/.m2 cache strategy configurable, default to COPY

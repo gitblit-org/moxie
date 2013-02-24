@@ -186,7 +186,7 @@ public class MxGenJar extends GenJar {
 	@Override
 	public void setProject(Project project) {
 		super.setProject(project);
-		Build build = (Build) getProject().getReference(Key.build.refId());
+		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		if (build != null) {
 			configure(build);
 		}
@@ -205,7 +205,7 @@ public class MxGenJar extends GenJar {
 
 	@Override
 	public void execute() throws BuildException {
-		build = (Build) getProject().getReference(Key.build.refId());
+		build = (Build) getProject().getReference(Key.build.referenceId());
 		console = build.getConsole();
 		
 		if (!configured) {
@@ -526,13 +526,6 @@ public class MxGenJar extends GenJar {
 		String value = getProject().getProperty(prop.projectId());
 		if (value == null) {
 			return;
-		}
-		if (value.equals(prop.projectId())) {
-			// try mxp property
-			value = getProject().getProperty(prop.propId());
-			if (value.equals(prop.propId())) {
-				value = null;
-			}
 		}
 		if (!StringUtils.isEmpty(value)) {
 			setManifest(man, key, value);

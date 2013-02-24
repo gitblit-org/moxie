@@ -85,12 +85,8 @@ public class Toolkit {
 			return "project." + name().replace('_', '.');
 		}
 
-		public String propId() {
-			return "project." + name().replace('_', '.');
-		}
-		
-		public String refId() {
-			return "project." + name().replace('_', '.');
+		public String referenceId() {
+			return "reference." + name().replace('_', '.');
 		}
 
 	}

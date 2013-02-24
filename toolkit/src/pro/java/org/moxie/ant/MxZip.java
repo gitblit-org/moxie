@@ -49,7 +49,7 @@ public class MxZip extends Zip {
 	}
 
 	public void execute() {
-		Build build = (Build) getProject().getReference(Key.build.refId());
+		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		if (zipFile == null) {
 			// default output jar if file unspecified
 			String name = build.getPom().artifactId;

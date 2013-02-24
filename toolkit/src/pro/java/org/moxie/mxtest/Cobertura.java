@@ -62,7 +62,7 @@ public class Cobertura {
 		}
 
 		Path path = new Path(mxtest.getProject());
-		path.setRefid(new Reference(mxtest.getProject(), Key.compileSourcePath.refId()));
+		path.setRefid(new Reference(mxtest.getProject(), Key.compileSourcePath.referenceId()));
 		task.addPath(path);
 		
 		task.execute();

@@ -213,7 +213,7 @@ public class MxWar extends MxJar {
     }
 
 	public void execute() {
-		Build build = (Build) getProject().getReference(Key.build.refId());
+		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		if (zipFile == null) {
 			// default output war if file unspecified
 			String name = build.getPom().artifactId;

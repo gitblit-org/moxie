@@ -92,7 +92,7 @@ public class Jacoco {
 		SourceFilesElement sourcefiles = structure.createSourcefiles();
 		sourcefiles.setEncoding(attributes.getString("encoding", null));
 		Path sourcepath = new Path(mxtest.getProject());
-		sourcepath.setRefid(new Reference(mxtest.getProject(), Key.compileSourcePath.refId()));
+		sourcepath.setRefid(new Reference(mxtest.getProject(), Key.compileSourcePath.referenceId()));
 		sourcefiles.add(sourcepath);
 		
 		// report output folder
