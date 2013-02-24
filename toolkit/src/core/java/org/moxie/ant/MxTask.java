@@ -104,8 +104,13 @@ public abstract class MxTask extends Task {
 	}
 
 	protected void addReference(Key prop, Object obj, boolean split) {
-		getProject().addReference(prop.refId(), obj);
-		log(prop.refId(), obj.toString(), split);
+		getProject().setProperty(prop.projectId(), obj.toString());
+		log(prop.projectId(), obj.toString(), split);
+		
+		// Do not set references because Ant's classloader is a PITA
+		// Paths and Filesets can always be built from the property
+		// getProject().addReference(prop.refId(), obj);
+		// log(prop.refId(), obj.toString(), split);
 	}
 	
 	protected void log(String key, String value, boolean split) {
@@ -193,7 +198,7 @@ public abstract class MxTask extends Task {
 			for (Dependency dependency : executionDependencies) {
 				File file = build.getSolver().getArtifact(dependency);
 				if (!file.exists()) {
-					build.getConsole().warn("excluding {0} from build classpath because it was not found!", file.getAbsolutePath());
+					build.getConsole().warn("excluding {0} from Moxie build classpath because it was not found!", file.getAbsolutePath());
 					continue;
 				}
 				try {

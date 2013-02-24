@@ -175,7 +175,7 @@ public class MxInit extends MxTask {
 
 			if (isVerbose()) {
 				getConsole().separator();
-				getConsole().log("project path references");
+				getConsole().log("project path properties");
 			}
 			
 			setSourcepath(Key.compileSourcePath, buildConfig, Scope.compile);
