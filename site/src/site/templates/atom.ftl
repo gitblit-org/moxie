@@ -1,2 +1,2 @@
 <#include "macros.ftl">
-<@AtomMacro posts=all posturl="${project.url}/history.html#" />
+<@AtomMacro posts=releases posturl="${project.url}/history.html#" />

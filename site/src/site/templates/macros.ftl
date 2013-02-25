@@ -43,6 +43,9 @@
 	<#if (log.dependencyChanges!?size > 0)>
 		<@UnorderedListMacro title="dependency changes" list=log.dependencyChanges />
 	</#if>
+	<#if (log.contributors!?size > 0)>
+		<@UnorderedListMacro title="contributors" list=log.contributors?sort />
+	</#if>	
 </#macro>
 
 <#macro SecurityListMacro list title>
