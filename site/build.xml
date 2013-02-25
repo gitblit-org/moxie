@@ -93,9 +93,9 @@
 				<template src="rss.ftl" data="${basedir}/releases.moxie" />
 			</page>
 			<references src="references.mkd" />
-			<substitute token="%CORE%" value="&lt;span class='label'&gt;core&lt;/span&gt;" />
-			<substitute token="%PRO%" value="&lt;span class='label label-success'&gt;pro&lt;/span&gt;" />
-			<substitute token="%ALL%" value="&lt;span class='label label-info'&gt;all&lt;/span&gt;" />
+			<replace token="%CORE%" value="&lt;span class='label'&gt;core&lt;/span&gt;" />
+			<replace token="%PRO%" value="&lt;span class='label label-success'&gt;pro&lt;/span&gt;" />
+			<replace token="%ALL%" value="&lt;span class='label label-info'&gt;all&lt;/span&gt;" />
 			<nomarkdown startToken="%BEGINMAXML%" endToken="%ENDMAXML%" prettify="true" lang="lang-yaml" />
 			<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />
 			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />

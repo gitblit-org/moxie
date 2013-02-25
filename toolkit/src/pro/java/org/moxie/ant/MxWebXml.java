@@ -27,6 +27,7 @@ import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.moxie.Build;
+import org.moxie.Substitute;
 import org.moxie.utils.StringUtils;
 
 /**
@@ -49,6 +50,14 @@ public class MxWebXml extends MxTask {
 	
 	List<String> skips;
 	
+	List<Substitute> substitutions;
+	
+	public Substitute createReplace() {
+		Substitute sub = new Substitute();
+		substitutions.add(sub);
+		return sub;
+	}
+	
 	public void setSourcefile(File source) {
 		this.prototypeFile = source;
 	}
@@ -70,6 +79,7 @@ public class MxWebXml extends MxTask {
 		super();
 		setTaskName("mx:webxml");
 		skips = new ArrayList<String>();
+		substitutions = new ArrayList<Substitute>();
 	}
 	
 	public void execute() {
@@ -151,10 +161,15 @@ public class MxWebXml extends MxTask {
 			sb.append(webXmlContent.substring(0, idx));
 			sb.append(parameters.toString());
 			sb.append(webXmlContent.substring(idx + PARAMS.length()));
+			
+			String content = sb.toString();
+			for (Substitute sub : substitutions) {
+				content = content.replace(sub.token, sub.value);
+			}
 
 			// Save the merged web.xml to the destination file
 			FileOutputStream os = new FileOutputStream(destinationFile, false);
-			os.write(sb.toString().getBytes());
+			os.write(content.getBytes("UTF-8"));
 			os.close();
 		} catch (Throwable t) {
 			build.getConsole().error(t);

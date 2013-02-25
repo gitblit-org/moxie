@@ -71,7 +71,7 @@ public class MxDoc extends MxTask {
 		return references;
 	}
 
-	public Substitute createSubstitute() {
+	public Substitute createReplace() {
 		Substitute sub = new Substitute();
 		doc.substitutions.add(sub);
 		return sub;
@@ -186,7 +186,7 @@ public class MxDoc extends MxTask {
 		if (value == null) {
 			value = "${" + token + "}";
 		}
-		createSubstitute().set("${" + token + "}", value);
+		createReplace().set("${" + token + "}", value);
 	}
 
 	@Override
