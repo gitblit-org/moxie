@@ -876,6 +876,9 @@ public class Solver {
 							// a version OR may be part of the artifact id
 							String v = n.substring(dependency.artifactId.length());
 							v = v.substring(0, v.length() - suffix.length());
+							if (v.length() == 0) {
+								return false;
+							}
 							if (v.charAt(0) == '-') {
 								// strip leading - for artifacts like:
 								// wicket-auth-roles when we are trying to delete
@@ -887,9 +890,9 @@ public class Solver {
 							// 1.2.3-SNAPSHOT = 1.2.3
 							// 1.2.3 = 1.2.3
 							// core-1.2.3-SNAPSHOT = core
-							String v0 = v.split("-")[0];
+							String v0 = v.split("-")[0];							
 							ArtifactVersion version = new ArtifactVersion(v0);
-							if (version.getQualifier().equals(v0)) {
+							if (version.getQualifier() != null && version.getQualifier().equals(v0)) {
 								// this file is a different artifact, not a different
 								// version of the same artifact
 								console.debug("keeping related artifact {0} in {1} when resolving {2}", n, folder, dependency.getCoordinates());
