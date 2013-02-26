@@ -4,24 +4,26 @@ Moxie+Ant is a distribution of [Ant][] with Moxie-All and it's dependencies pre-
 
 This bundle provides a command-line executable (`moxie`) for all platforms supported by [Ant][].  Using the `moxie` command instead of the `ant` command gives you some additional features.
 
-### Moxie Targets
+### Moxie Phases
 
-Moxie+Ant automatically injects several targets at runtime which you may use to build your projects.  These are similar to Maven's basic goals.
+Moxie+Ant automatically injects several phase targets at runtime which you may use to build your projects.  These are similar to Maven's phases.
 
 <dl class="dl-horizontal">
- <dt>moxie.init</dt>
+ <dt>phase:init</dt>
  <dd>validates project configuration, retrieves dependencies, and configures Ant properties</dd>
- <dt>moxie.compile</dt>
+ <dt>phase:compile</dt>
  <dd>compile the source code of the project</dd>
- <dt>moxie.test</dt>
+ <dt>phase:test</dt>
  <dd>test the compiled source code using a unit testing framework. optionally generates code coverage reports.</dd>
- <dt>moxie.package</dt>
+ <dt>phase:package</dt>
  <dd>take the compiled code and package it in its distributable format, such as a JAR</dd>
- <dt>moxie.install</dt>
+ <dt>phase:install</dt>
  <dd>install the package into the local repository, for use as a dependency in other projects locally</dd>
- <dt>moxie.report</dt>
+ <dt>phase:deploy</dt>
+ <dd>deploys the artifact into the local repository, for use as a dependency in other projects locally</dd>
+ <dt>phase:report</dt>
  <dd>generates a dependency report to the console or to a text file</dd>
- <dt>moxie.clean</dt>
+ <dt>phase:clean</dt>
  <dd>clean build and target folders</dd>
 </dl>
 

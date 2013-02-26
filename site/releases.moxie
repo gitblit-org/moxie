@@ -52,6 +52,7 @@ r3: {
      - Fixed regression with artifact resolution when using multiple source repositories
 
     changes:
+     - Change moxie.* targets to phase:* targets to better match Maven
      - Replaced dependency repository boost with repository affinities
      - Separated resource directories from source directories
      - Support tags on (re)source directories

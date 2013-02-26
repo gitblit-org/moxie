@@ -15,12 +15,16 @@
  */
 package org.moxie.ant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.helper.ProjectHelper2;
 import org.apache.tools.ant.taskdefs.Taskdef;
+import org.moxie.utils.StringUtils;
 
 /**
  * Entry point for Ant-classpath-included Moxie (i.e. Moxie + Ant or 
@@ -46,123 +50,125 @@ public class ProjectHelper extends ProjectHelper2 {
 			def.execute();
 			
 			// add Moxie targets
-			project.log("adding moxie.xxx targets", Project.MSG_DEBUG);
-			newInitTarget(project);
-			newCompileTarget(project);
-			newTestTarget(project);
-			newPackageTarget(project);
-			newInstallTarget(project);
-			newDeployTarget(project);
-			newCleanTarget(project);
-			newReportTarget(project);
-			newRunTarget(project);
+			project.log("adding Moxie phases", Project.MSG_DEBUG);
+			newInitPhase(project);
+			newCompilePhase(project);
+			newTestPhase(project);
+			newPackagePhase(project);
+			newInstallPhase(project);
+			newDeployPhase(project);
+			newCleanPhase(project);
+			newReportPhase(project);
+			newRunPhase(project);
 		}		
 		
 		// continue normal parsing
 		super.parse(project, source);
 	}
 	
-	private Target newTarget(Project project, String name) {
-		Target target = new Target();
-		target.setName(name);
-		target.setLocation(new Location(name));
-		project.addTarget(target);
-		return target;
+	private Target newPhase(Project project, String name, String... depends) {
+		String prefix = "phase:";
+		Target phase = new Target();
+		phase.setName(prefix + name);
+		phase.setLocation(new Location(prefix + name));
+		project.addTarget(phase);
+		if (depends != null && depends.length > 0) {
+			List<String> list = new ArrayList<String>();
+			for (String depend : depends) {
+				list.add(prefix + depend);
+			}
+			phase.setDepends(StringUtils.flattenStrings(list, ","));
+		}
+		return phase;
 	}
 	
-	private Target newInitTarget(Project project) {
-		Target target = newTarget(project, "moxie.init");
-		target.setDescription("validates project configuration, retrieves dependencies, and configures ANT properties");
+	private Target newInitPhase(Project project) {
+		Target phase = newPhase(project, "init");
+		phase.setDescription("validates project configuration, retrieves dependencies, and configures ANT properties");
 		
 		MxInit task = new MxInit();
 		task.setProject(project);
-		target.addTask(task);
-		return target;
+		phase.addTask(task);
+		return phase;
 	}
 	
-	private Target newCompileTarget(Project project) {
-		Target target = newTarget(project, "moxie.compile");
-		target.setDepends("moxie.init");
-		target.setDescription("compile the source code of the project");
+	private Target newCompilePhase(Project project) {
+		Target phase = newPhase(project, "compile", "init");		
+		phase.setDescription("compile the source code of the project");
 				
 		MxJavac task = new MxJavac();
 		task.setProject(project);		
-		target.addTask(task);
-		return target;
+		phase.addTask(task);
+		return phase;
 	}
 
-	private Target newTestTarget(Project project) {
-		Target target = newTarget(project, "moxie.test");
-		target.setDepends("moxie.compile");
-		target.setDescription("compile the source code of the project");
+	private Target newTestPhase(Project project) {
+		Target phase = newPhase(project, "test", "compile");
+		phase.setDescription("compile the source code of the project");
 		
 		MxTest task = new MxTest();
 		task.setProject(project);
-		target.addTask(task);
-		return target;
+		phase.addTask(task);
+		return phase;
 	}
 
-	private Target newPackageTarget(Project project) {
-		Target target = newTarget(project, "moxie.package");
-		target.setDepends("moxie.test");
-		target.setDescription("take the compiled code and package it in its distributable format, such as a JAR");
+	private Target newPackagePhase(Project project) {
+		Target phase = newPhase(project, "package", "compile");
+		phase.setDescription("take the compiled code and package it in its distributable format, such as a JAR");
 		
 		MxPackage task = new MxPackage();
 		task.setProject(project);
-		target.addTask(task);
-		return target;
+		phase.addTask(task);
+		return phase;
 	}
 	
-	private Target newInstallTarget(Project project) {
-		Target target = newTarget(project, "moxie.install");
-		
-		target.setDepends("moxie.package");
-		target.setDescription("install the package into the local repository, for use as a dependency in other projects locally");
+	private Target newInstallPhase(Project project) {
+		Target phase = newPhase(project, "install", "package");
+		phase.setDescription("install the package into the local repository, for use as a dependency in other projects locally");
 
 		MxInstall task = new MxInstall();
 		task.setProject(project);
-		target.addTask(task);
-		return target;
+		phase.addTask(task);
+		return phase;
 	}
 	
-	private Target newDeployTarget(Project project) {
-		Target target = newTarget(project, "moxie.deploy");
-		target.setDepends("moxie.install");
-		target.setDescription("deploys the generated binaries to an external repository");
-		// TODO implement deploy
-		return target;
+	private Target newDeployPhase(Project project) {
+		Target phase = newPhase(project, "deploy", "package");
+		phase.setDescription("deploys the generated binaries to an external repository");
+		
+		MxDeploy task = new MxDeploy();
+		task.setProject(project);
+		phase.addTask(task);
+		return phase;
 	}
 	
-	private Target newCleanTarget(Project project) {		
-		Target target = newTarget(project, "moxie.clean");
-		target.setDepends("moxie.init");
-		target.setDescription("clean build and target directories");
+	private Target newCleanPhase(Project project) {		
+		Target phase = newPhase(project, "clean", "init");
+		phase.setDescription("clean build and target directories");
 
 		MxPackage task = new MxPackage();
 		task.setProject(project);
-		target.addTask(task);
-		return target;
+		phase.addTask(task);
+		return phase;
 	}
 	
-	private Target newReportTarget(Project project) {
-		Target target = newTarget(project, "moxie.report");
-		target.setDepends("moxie.init");
-		target.setDescription("generates a dependency report");
+	private Target newReportPhase(Project project) {
+		Target phase = newPhase(project, "report", "init");
+		phase.setDescription("generates a dependency report");
 
 		MxReport task = new MxReport();
 		task.setProject(project);
-		target.addTask(task);
-		return target;
+		phase.addTask(task);
+		return phase;
 	}
 	
-	private Target newRunTarget(Project project) {
-		Target target = newTarget(project, "moxie.run");
-		target.setDepends("moxie.compile");
-		target.setDescription("executes a specified main class");
+	private Target newRunPhase(Project project) {
+		Target phase = newPhase(project, "run", "compile");
+		phase.setDescription("executes a specified main class");
 
 		MxRun task = new MxRun();
 		task.setProject(project);
-		target.addTask(task);
-		return target;
+		phase.addTask(task);
+		return phase;
 	}
 }
