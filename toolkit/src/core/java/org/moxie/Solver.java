@@ -861,7 +861,7 @@ public class Solver {
 				String n = name.toLowerCase();
 				String dep = dependency.artifactId.toLowerCase();
 				if (n.startsWith(dep)) {
-					dep += "-" + dependency.version;
+					dep += "-" + dependency.version.toLowerCase();
 					if (!n.startsWith(dep)) {
 						String suffix;
 						if (!StringUtils.isEmpty(dependency.classifier)) {
@@ -890,9 +890,9 @@ public class Solver {
 							// 1.2.3-SNAPSHOT = 1.2.3
 							// 1.2.3 = 1.2.3
 							// core-1.2.3-SNAPSHOT = core
-							String v0 = v.split("-")[0];							
+							String v0 = v.split("-")[0];
 							ArtifactVersion version = new ArtifactVersion(v0);
-							if (version.getQualifier() != null && version.getQualifier().equals(v0)) {
+							if (version.getQualifier() != null && version.getQualifier().equalsIgnoreCase(v0)) {
 								// this file is a different artifact, not a different
 								// version of the same artifact
 								console.debug("keeping related artifact {0} in {1} when resolving {2}", n, folder, dependency.getCoordinates());
@@ -900,6 +900,7 @@ public class Solver {
 								// the middle section is a version number and not
 								// an artifact id fragment AND a version number
 								console.debug("deleting obsolete artifact {0} from {1} when resolving {2}", n, folder, dependency.getCoordinates());
+								console.debug("qualifier={0}, dep={1}", version.getQualifier(), dep);
 								return true;
 							}
 						}
