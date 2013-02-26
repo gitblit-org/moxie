@@ -93,6 +93,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 	@Override
 	public void startAnt(String[] args, Properties additionalUserProperties, ClassLoader coreLoader) {
 		boolean startAnt = true;
+		boolean specifiedBuildFile = false;
 		 for (int i = 0; i < args.length; i++) {
 	            String arg = args[i];
 
@@ -109,17 +110,51 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 	                newProject = newProject(dest);
 	                args = new String[] { "moxie.init" };
 	                break;
+	            } else if (arg.equals("-f") || arg.equals("-buildfile") || arg.equals("-file")) {
+	            	specifiedBuildFile = true;
 	            }
 		 }
 		 
 		if (startAnt) {
-			// specify the Moxie MainLogger instead of the Ant DefaultLogger
-	        String [] moxieArgs = new String[args.length + 2];
-	        moxieArgs[0] = "-logger";
-	        moxieArgs[1] = MainLogger.class.getName();
-	        System.arraycopy(args, 0, moxieArgs, 2, args.length);
-
-			super.startAnt(moxieArgs, additionalUserProperties, coreLoader);
+			List<String> moxieArgs = new ArrayList<String>();			
+	        moxieArgs.add("-logger");
+	        moxieArgs.add(MainLogger.class.getName());
+	        if (!specifiedBuildFile) {
+	        	File file = new File(System.getProperty("user.dir"), "build.xml");
+	        	if (file.exists()) {
+	        		// standard local build.xml
+		        	moxieArgs.add("-f");
+	        		moxieArgs.add("build.xml");
+	        	} else {
+	        		// missing build file, use minimal file
+	        		try {
+	            		InputStream is = getClass().getResourceAsStream("/archetypes/build.xml");
+	            		
+	            		ByteArrayOutputStream os = new ByteArrayOutputStream();
+	            		byte [] buffer = new byte[4096];
+	            		int len = 0;
+	            		while((len = is.read(buffer)) > -1) {
+	            			os.write(buffer, 0, len);
+	            		}
+	            		String content = os.toString("UTF-8");
+	            		os.close();
+	            		is.close();
+	            		
+	            		file = File.createTempFile("build-", ".xml", new File(System.getProperty("user.dir")));
+	            		file.deleteOnExit();
+	            		FileUtils.writeContent(file, content);
+	            		
+			        	moxieArgs.add("-f");
+		        		moxieArgs.add(file.getAbsolutePath());		        		
+	            	} catch (Throwable t) {
+	            		t.printStackTrace();
+	            		System.exit(1);
+	            	}
+	        	}
+	        }
+	        moxieArgs.addAll(Arrays.asList(args));
+	        String [] newArgs = moxieArgs.toArray(new String[moxieArgs.size()]);
+			super.startAnt(newArgs, additionalUserProperties, coreLoader);
 		}
 	}
 	
