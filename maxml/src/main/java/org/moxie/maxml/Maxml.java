@@ -108,13 +108,14 @@ public class Maxml {
 			is = new FileInputStream(file);
 			return parse(is);
 		} catch (Exception e) {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (Exception x) {
-				}
-			}
 			throw new MaxmlException(e);
+		} finally {
+			try {
+				if (is != null) {
+					is.close();
+				}
+			} catch (Exception e) {
+			}
 		}
 	}
 

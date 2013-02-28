@@ -18,7 +18,6 @@ package org.moxie;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -852,9 +851,7 @@ public class Docs {
 				if (!data.exists()) {
 					data = new File(doc.sourceDirectory, template.data);
 				}
-				FileInputStream is = new FileInputStream(data);
-				MaxmlMap dataMap = Maxml.parse(is);
-				is.close();
+				MaxmlMap dataMap = Maxml.parse(data);
 				
 				// populate map with build properties by splitting them into maps
 				for (Substitute sub : doc.substitutions) {

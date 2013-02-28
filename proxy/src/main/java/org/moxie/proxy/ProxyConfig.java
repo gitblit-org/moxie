@@ -16,7 +16,6 @@
 package org.moxie.proxy;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -131,7 +130,7 @@ public class ProxyConfig {
 			configLastModified = lastModified;
 
 			try {
-				MaxmlMap map = Maxml.parse(new FileInputStream(configFile));
+				MaxmlMap map = Maxml.parse(configFile);
 				if (!isLoaded) {
 					// only read these settings on a cold start
 					httpPort = map.getInt("httpPort", httpPort);

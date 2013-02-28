@@ -17,7 +17,6 @@ package org.moxie.ant;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -328,6 +327,11 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 			map = Maxml.parse(is);
 		} catch (MaxmlException e) {
 			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+			} catch (Exception e) {
+			}
 		}
     	
     	// property substitution
@@ -505,9 +509,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	File gitAliases = new File(root, "git.moxie");
     	if (gitAliases.exists()) {
     		try {
-    			FileInputStream is = new FileInputStream(gitAliases);
-    			MaxmlMap map = Maxml.parse(is);
-    			is.close();
+    			MaxmlMap map = Maxml.parse(gitAliases);
     			// look for protocol alias matches
     			for (String alias : map.keySet()) {
     				// ensure alias is legal
