@@ -19,18 +19,29 @@ import java.io.File;
 
 import org.moxie.Build;
 import org.moxie.Dependency;
+import org.moxie.utils.JGitUtils;
 
 
 public class MxGitTask extends MxTask {
 
-	protected File repositoryDirectory;
+	private File repositoryDirectory;
 
 	public void setRepositoryDir(String path) {
 		this.repositoryDirectory = new File(path);
 	}
-
+	
+	public File getRepositoryDir() {
+		if (repositoryDirectory == null || !repositoryDirectory.exists()) {
+			repositoryDirectory = getBuild().getConfig().getProjectDirectory();
+		}
+		repositoryDirectory = JGitUtils.findRepositoryDir(repositoryDirectory);
+		if (repositoryDirectory == null) {
+			getConsole().warn("Failed to determine Git repository folder!");
+		}
+		return repositoryDirectory;
+	}
+	
 	protected void loadDependency(Build build) {
-		build.getSolver().loadDependency(new Dependency("mx:jgit"),
-				new Dependency("mx:jgit-ant @jar"));
+		build.getSolver().loadDependency(new Dependency("mx:jgit"));
 	}
 }

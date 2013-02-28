@@ -37,7 +37,8 @@
 					<page name="mx:GenJar" src="mxgenjar.mkd" />
 					<page name="mx:Get" src="mxget.mkd" />
 					<page name="mx:GhPages" src="mxghpages.mkd" />					
-					<page name="mx:GitId" src="mxgitid.mkd" />
+					<page name="mx:CommitId" src="mxcommitid.mkd" />
+					<page name="mx:Commit" src="mxcommit.mkd" />
 					<page name="mx:If" src="mxif.mkd" />
 					<page name="mx:Install" src="mxinstall.mkd" />
 					<page name="mx:Init" src="mxinit.mkd" />

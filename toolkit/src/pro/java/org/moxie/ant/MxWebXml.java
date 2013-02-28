@@ -133,17 +133,17 @@ public class MxWebXml extends MxTask {
 							StringUtils.escapeForHtml(setting.value, false)));
 				}
 			} catch (Throwable t) {
-				build.getConsole().error(t);
+				getConsole().error(t);
 				throw new BuildException(t);
 			}
 		}
 
-		build.getConsole().title(getClass());
-		build.getConsole().key("source", prototypeFile.getAbsolutePath());
+		titleClass();
+		getConsole().key("source", prototypeFile.getAbsolutePath());
 		if (propertiesFile != null) {
 			build.getConsole().key("properties", propertiesFile.getAbsolutePath());
 		}
-		build.getConsole().key("generated", destinationFile.getAbsolutePath());
+		getConsole().key("generated", destinationFile.getAbsolutePath());
 		try {
 			// Read the prototype web.xml file
 			char[] buffer = new char[(int) prototypeFile.length()];

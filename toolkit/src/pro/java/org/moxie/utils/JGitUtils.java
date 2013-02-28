@@ -25,7 +25,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.eclipse.jgit.api.AddCommand;
+import org.eclipse.jgit.api.CommitCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.TagCommand;
 import org.eclipse.jgit.api.errors.ConcurrentRefUpdateException;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheBuilder;
@@ -51,6 +56,19 @@ import org.eclipse.jgit.util.FS;
 import org.moxie.MoxieException;
 
 public class JGitUtils {
+	
+	public static File findRepositoryDir(File dir) {
+		File resolved = FileKey.resolve(dir, FS.detect());
+		if (resolved != null) {
+			return resolved;
+		} else {
+			resolved = FileKey.resolve(dir.getParentFile(), FS.detect());
+			if (resolved != null) {
+				return resolved;
+			}
+		}
+		return null;
+	}
 
 	public static String getCommitId(File folder) {
 		// try specified folder or subfolder
@@ -325,5 +343,32 @@ public class JGitUtils {
 			}
 		}
 		return files;
+	}
+	
+	public static String commitFiles(File dir, List<String> files, String message, 
+			String tagName, String tagMessage) throws IOException, GitAPIException {
+		Git git = Git.open(dir);		
+		AddCommand add = git.add();
+		for (String file : files) {
+			add.addFilepattern(file);
+		}
+		add.call();
+		
+		// execute the commit
+		CommitCommand commit = git.commit();
+		commit.setMessage(message);
+		RevCommit revCommit = commit.call();
+		
+		if (!StringUtils.isEmpty(tagName) && !StringUtils.isEmpty(tagMessage)) {
+			// tag the commit
+			TagCommand tagCommand = git.tag();
+			tagCommand.setName(tagName);
+			tagCommand.setMessage(tagMessage);
+			tagCommand.setForceUpdate(true);
+			tagCommand.setObjectId(revCommit);
+			tagCommand.call();
+		}
+		git.getRepository().close();
+		return revCommit.getId().getName();
 	}
 }

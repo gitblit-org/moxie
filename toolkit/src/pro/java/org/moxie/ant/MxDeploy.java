@@ -87,7 +87,7 @@ public class MxDeploy extends MxRepositoryTask {
 		File artifactDir = artifactFile.getParentFile();
 		File sourceDir = build.getConfig().getTargetDirectory();
 		
-		getConsole().title(getClass(), pom.artifactId + "-" + pom.version);
+		titleClass(pom.artifactId + "-" + pom.version);
 
 		if (asDependency.isSnapshot()) {
 			deploySnapshot(pom, sourceDir, artifactDir, artifactCache);

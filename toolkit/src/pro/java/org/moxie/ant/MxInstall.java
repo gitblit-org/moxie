@@ -48,7 +48,7 @@ public class MxInstall extends MxRepositoryTask {
 		File artifactDir = artifactFile.getParentFile();
 		File sourceDir = build.getConfig().getTargetDirectory();
 		
-		getConsole().title(getClass(), pom.artifactId + "-" + pom.version);
+		titleClass(pom.artifactId + "-" + pom.version);
 
 		deployRelease(pom, sourceDir, artifactDir, false);
 	}

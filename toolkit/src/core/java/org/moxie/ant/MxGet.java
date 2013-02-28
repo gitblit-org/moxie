@@ -85,7 +85,7 @@ public class MxGet extends MxTask {
 		}
 
 		Build build = getBuild();
-		getConsole().title(getClass());
+		titleClass();
 
 		List<Dependency> dependencies = new ArrayList<Dependency>();
 		for (ScopedDependency dep : deps) {

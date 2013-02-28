@@ -19,7 +19,6 @@
 			<dependency coordinates="org.apache.ant:ant-compress:1.2 !org.apache.ant:ant" />
 			<dependency coordinates="mx:markdownpapers" />
 			<dependency coordinates="mx:jgit" />
-			<dependency coordinates="mx:jgit-ant @jar" />
 			<dependency coordinates="mx:rhino" />
 		</mx:get>
 			

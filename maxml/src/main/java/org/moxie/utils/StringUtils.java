@@ -371,4 +371,21 @@ public class StringUtils {
 		}
 		return url;
 	}
+	
+	/**
+	 * Returns a string trimmed to a maximum length with trailing ellipses. If
+	 * the string length is shorter than the max, the original string is
+	 * returned.
+	 * 
+	 * @param value
+	 * @param max
+	 * @return trimmed string
+	 */
+	public static String trimString(String value, int max) {
+		if (value.length() <= max) {
+			return value;
+		}
+		return value.substring(0, max - 3) + "...";
+	}
+
 }

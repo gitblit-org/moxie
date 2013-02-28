@@ -22,11 +22,14 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.apache.tools.ant.AntClassLoader;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Path;
 import org.moxie.Build;
 import org.moxie.Dependency;
 import org.moxie.MoxieException;
@@ -43,11 +46,18 @@ public abstract class MxTask extends Task {
 	private Console console;
 
 	private Boolean verbose;
-
+	
+	private boolean requiredGoal;
+	
+	public MxTask() {
+		super();
+		requiredGoal = true;
+	}
+	
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
 	}
-	
+
 	public boolean isVerbose() {
 		if (verbose == null) {
 			String mxvb = System.getProperty(Toolkit.MX_VERBOSE);
@@ -64,7 +74,67 @@ public abstract class MxTask extends Task {
 		}
 		return verbose;
 	}
+
+	private Boolean showtitle;
+
+	public void setShowtitle(boolean value) {
+		this.showtitle = value;
+	}
 	
+	public boolean isShowTitle() {
+		return showtitle == null || showtitle;
+	}
+	
+	public boolean isRequiredGoal() {
+		return requiredGoal;
+	}
+	
+	public void setRequiredGoal(boolean value) {
+		requiredGoal = value;
+	}
+	
+	public void title(String title) {
+		if (isShowTitle()) {
+			getConsole().title(title);
+		}
+	}
+
+	public void title(String title, String parameter) {
+		if (isShowTitle()) {
+			getConsole().title(title, parameter);
+		}
+	}
+	
+	public void titleClass() {
+		if (isShowTitle()) {
+			getConsole().title(getClass());
+		}
+	}
+
+	public void titleClass(String parameter) {
+		if (isShowTitle()) {
+			getConsole().title(getClass(), parameter);
+		}
+	}
+	
+	/**
+	 * Console offset is a one-time correction factor
+	 * to improve readability of the output.
+	 * @return
+	 */
+	public int getConsoleOffset() {
+		int consoleOffset = 0;
+		String offset = getProject().getProperty("console.offset");
+		if (!StringUtils.isEmpty(offset)) {
+			consoleOffset = Integer.parseInt(offset);
+		}
+		return consoleOffset;
+	}
+	
+	public void setConsoleOffset(int value) {
+		getProject().setProperty("console.offset", "" + value);
+	}
+
 	public Build getBuild() {
 		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		return build;
@@ -220,5 +290,35 @@ public abstract class MxTask extends Task {
 			name = getBuild().getPom().getName() + " (" + name + ")";
 		}
 		return name;
+	}
+	
+	public void sharePaths(String... paths) {
+		getProject().setProperty("mxshared.path", StringUtils.flattenStrings(
+				Arrays.asList(paths), File.pathSeparator));
+	}
+	
+	public Path getSharedPaths() {
+		Path path = new Path(getProject());
+		String paths  = getProject().getProperty("mxshared.path");
+		if (!StringUtils.isEmpty(paths)) {
+			for (String fp : paths.split(File.pathSeparator)) {
+				FileSet fs = new FileSet();
+				fs.setProject(getProject());
+				File file = new File(fp);
+				if (file.isDirectory()) {
+					fs.setDir(file);
+				} else {
+					fs.setFile(file);
+				}
+				path.add(fs);
+			}
+		}
+		return path;
+	}
+	
+	public Path consumeSharedPaths() {
+		Path path = getSharedPaths();
+		getProject().setProperty("mxshared.path", "");
+		return path;
 	}
 }

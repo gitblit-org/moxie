@@ -64,7 +64,8 @@ public class MxJar extends Jar {
 
 	String tag;
 	String classifier;
-	private boolean configured;
+	private boolean configured;	
+	Boolean showtitle;
 	
 	public MxJar() {
 		super();
@@ -170,6 +171,14 @@ public class MxJar extends Jar {
 		if (build != null) {
 			configure(build);
 		}
+	}
+	
+	public void setShowtitle(boolean value) {
+		this.showtitle = value;
+	}
+	
+	public boolean isShowTitle() {
+		return showtitle == null || showtitle;
 	}
 
 	private void configure(Build build) {
@@ -327,7 +336,9 @@ public class MxJar extends Jar {
 		
 		addMavenEntries();
 		
-		console.title(getClass(), destFile.getName());
+		if (isShowTitle()) {
+			console.title(getClass(), destFile.getName());
+		}
 		
 		console.debug(getTaskName() + " configuration");
 

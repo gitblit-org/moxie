@@ -24,6 +24,7 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Target;
 import org.apache.tools.ant.helper.ProjectHelper2;
 import org.apache.tools.ant.taskdefs.Taskdef;
+import org.moxie.ArtifactVersion;
 import org.moxie.utils.StringUtils;
 
 /**
@@ -174,22 +175,40 @@ public class ProjectHelper extends ProjectHelper2 {
 	}
 	
 	private Target newReleasePhase(Project project) {
-		Target phase = newPhase(project, "release");
+		Target phase = newPhase(project, "release", "init");
 		phase.setDescription("prepares a new release and begins a new development cycle");
 
+		// drop snapshot from build identifier and stamp the release log
 		MxVersion releaseVersion = new MxVersion();
 		releaseVersion.setProject(project);
 		releaseVersion.setStage("release");
 		phase.addTask(releaseVersion);
 		
-		// TODO commit release
+		// commit and tag release identifier change and release log
+		MxCommit commitRelease = new MxCommit();
+		commitRelease.setProject(project);
+		commitRelease.setRequiredGoal(false);
+		commitRelease.setShowtitle(false);
+		commitRelease.createMessage().setValue("Prepare ${project.version} release");
+		Tag tag = commitRelease.createTag();
+		tag.setName("v${project.version}");
+		tag.createMessage().setValue("${project.version} release");
+		phase.addTask(commitRelease);
 		
+		// change build identifier to next snapshot and inject a release log template
 		MxVersion snapshotVersion = new MxVersion();
 		snapshotVersion.setProject(project);
 		snapshotVersion.setStage("snapshot");
+		snapshotVersion.setIncrementNumber(ArtifactVersion.NumberField.incremental.name());
 		phase.addTask(snapshotVersion);
 
-		// TODO commit snapshot
+		// commit snapshot identifier change and release log template
+		MxCommit commitSnapshot = new MxCommit();		
+		commitSnapshot.setProject(project);
+		commitSnapshot.setRequiredGoal(false);
+		commitSnapshot.setShowtitle(false);
+		commitSnapshot.createMessage().setValue("Reset build identifiers for next development cycle");
+		phase.addTask(commitSnapshot);
 		
 		return phase;
 	}

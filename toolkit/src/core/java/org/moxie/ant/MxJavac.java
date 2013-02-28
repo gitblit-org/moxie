@@ -51,6 +51,8 @@ public class MxJavac extends Javac {
 	
 	private boolean configured;
 	
+	private Boolean showtitle;
+
 	public MxJavac() {
 		super();
 		setTaskName("mx:javac");
@@ -109,6 +111,14 @@ public class MxJavac extends Javac {
 		this.excludes = excludes;
 	}
 	
+	public void setShowtitle(boolean value) {
+		this.showtitle = value;
+	}
+	
+	public boolean isShowTitle() {
+		return showtitle == null || showtitle;
+	}
+
 	@Override
 	public void setProject(Project project) {
 		super.setProject(project);
@@ -189,6 +199,7 @@ public class MxJavac extends Javac {
 
 					MxJavac subCompile = new MxJavac(builds);
 					subCompile.setProject(project);
+					subCompile.setShowtitle(false);
 					subCompile.perform();
 				} catch (Exception e) {
 					console.error(e);
@@ -197,7 +208,9 @@ public class MxJavac extends Javac {
 			}
 		}
 
-		console.title(getClass(), build.getPom().getCoordinates() + ", " + scope.name());
+		if (isShowTitle()) {
+			console.title(getClass(), build.getPom().getCoordinates() + ", " + scope.name());
+		}
 
 		console.debug("mxjavac configuration");
 

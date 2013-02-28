@@ -7,11 +7,12 @@
 
 	<!-- Pro -->
 	<taskdef name="clean" classname="org.moxie.ant.MxClean" />
+	<taskdef name="commit" classname="org.moxie.ant.MxCommit" />
+	<taskdef name="commitid" classname="org.moxie.ant.MxCommitId" />
 	<taskdef name="deploy" classname="org.moxie.ant.MxDeploy" />
 	<taskdef name="extract" classname="org.moxie.ant.MxExtract" />
 	<taskdef name="genjar" classname="org.moxie.ant.MxGenJar" />
 	<taskdef name="ghpages" classname="org.moxie.ant.MxGhPages" />
-	<taskdef name="gitid" classname="org.moxie.ant.MxGitId" />
 	<taskdef name="if" classname="org.moxie.ant.MxIf" />
 	<taskdef name="install" classname="org.moxie.ant.MxInstall" />
 	<taskdef name="jar" classname="org.moxie.ant.MxJar" />

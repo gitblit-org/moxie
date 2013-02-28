@@ -29,10 +29,20 @@ import org.moxie.utils.StringUtils;
 
 public class MxRun extends Java {
 	
+	Boolean showtitle;
+	
 	public MxRun() {
 		super();
 		setTaskName("mx:run");
 		setFork(true);
+	}
+	
+	public void setShowtitle(boolean value) {
+		this.showtitle = value;
+	}
+	
+	public boolean isShowTitle() {
+		return showtitle == null || showtitle;
 	}
 	
 	@Override
@@ -40,7 +50,9 @@ public class MxRun extends Java {
 		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		Console console = build.getConsole();
 		
-		console.title(getClass(), build.getPom().getCoordinates());
+		if (isShowTitle()) {
+			console.title(getClass(), build.getPom().getCoordinates());
+		}
 
 		if (StringUtils.isEmpty(getCommandLine().getClassname())) {
 			getCommandLine().setClassname(build.getConfig().getProjectConfig().getMainclass());

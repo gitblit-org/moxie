@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.tools.ant.DefaultLogger;
 import org.moxie.ArtifactVersion;
 import org.moxie.ArtifactVersion.NumberField;
 import org.moxie.Constants;
@@ -142,7 +143,7 @@ public class MxVersion extends MxTask {
 				// preserve major.minor.incremental, increment build number
 				releaseVersion = artifactVersion.incrementBuildNumber().toString();
 			}
-			getConsole().log("Preparing RELEASE version {0}", releaseVersion);
+			title("Preparing RELEASE", releaseVersion);
 			version = releaseVersion;
 			releaseDate = buildDate;
 			replacements.add(new Substitute(Toolkit.Key.version.name(), releaseVersion));
@@ -184,7 +185,7 @@ public class MxVersion extends MxTask {
 			}
 			
 			version = artifactVersion.toString();
-			getConsole().log("Preparing SNAPSHOT version {0}", version);
+			title("Preparing SNAPSHOT", version);
 			replacements.add(new Substitute(Toolkit.Key.version.name(), version));
 			updateDescriptor(replacements);
 
@@ -203,7 +204,20 @@ public class MxVersion extends MxTask {
 		getProject().setProperty(Toolkit.Key.releaseVersion.projectId(), releaseVersion);
 		getProject().setProperty(Toolkit.Key.releaseDate.projectId(), releaseDate);
 		getProject().setProperty(Toolkit.Key.buildDate.projectId(), buildDate);
+		
+		if (isShowTitle()) {
+			// 3 is for "[] "
+			setConsoleOffset(getTaskName().length() + 3 - DefaultLogger.LEFT_COLUMN_SIZE);
+		}
+		
+		// share these paths for consumption by another task (e.g. mx:Commit)
+		if (releaseLog.exists()) {
+			sharePaths(moxieFile.getAbsolutePath(), releaseLog.getAbsolutePath());
+		} else {
+			sharePaths(moxieFile.getAbsolutePath());
+		}
 	}
+	
 	
 	/**
 	 * Updates the Moxie descriptor with the specified key:value pairs.

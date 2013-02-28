@@ -33,12 +33,24 @@
 	    <taskdef uri="antlib:org.moxie">
 			<classpath location="${basedir}/toolkit/build/target/moxie.jar" />
 		</taskdef>
+		
+		<mx:init />
+		
 		<!-- release -->
-		<property name="dryrun" value="true" />
+		<property name="dryrun" value="false" />
 		<mx:version stage="release" dryrun="${dryrun}" />
+		<mx:commit showtitle="no">
+		    <message>Prepare ${project.version} release</message>
+			<tag name="v${project.version}">
+				<message>${project.name} ${project.version} release</message>
+			</tag>
+		</mx:commit>
 		
 		<!-- next cycle -->
 		<mx:version stage="snapshot" incrementNumber="minor" dryrun="${dryrun}" />
+		<mx:commit showtitle="no">
+		    <message>Reset build identifiers for next development cycle</message>
+		</mx:commit>
 	</target>
 
 </project>

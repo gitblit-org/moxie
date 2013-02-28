@@ -16,6 +16,7 @@ r3: {
      - Fixed regression with artifact resolution when using multiple source repositories
 
     changes:
+	 - Renamed mx:GitId to mx:CommitId
      - Change moxie.* targets to phase:* targets to better match Maven
      - Replaced dependency repository boost with repository affinities
      - Separated resource directories from source directories
@@ -41,6 +42,9 @@ r3: {
      - Added mx:War task
      - Added mx:Deploy task
      - Added mx:Version task
+	 - Added mx:Commit task
+	 - Added phase:deploy to Moxie+Ant
+	 - Added phase:release to Moxie+Ant
 
     dependencyChanges:
      - Twitter Bootstrap 2.3.0

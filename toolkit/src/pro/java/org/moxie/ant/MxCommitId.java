@@ -24,13 +24,13 @@ import org.moxie.utils.JGitUtils;
 import org.moxie.utils.StringUtils;
 
 
-public class MxGitId extends MxGitTask {
+public class MxCommitId extends MxGitTask {
 
 	private String property;
 	
-	public MxGitId() {
+	public MxCommitId() {
 		super();
-		setTaskName("mx:gitid");
+		setTaskName("mx:commitid");
 	}
 
 	public void setProperty(String property) {
@@ -42,12 +42,10 @@ public class MxGitId extends MxGitTask {
 		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		loadDependency(build);
 
-		if (repositoryDirectory == null || !repositoryDirectory.exists()) {
-			repositoryDirectory = new File(getProject().getProperty("basedir"));			
-		}
-		String hashid = JGitUtils.getCommitId(repositoryDirectory);
+		File dir = getRepositoryDir();
+		String hashid = JGitUtils.getCommitId(dir);
 
-		getConsole().title(getClass(), repositoryDirectory.getAbsolutePath());
+		titleClass(dir.getAbsolutePath());
 
 		setVerbose(false);
 		if (StringUtils.isEmpty(property)) {

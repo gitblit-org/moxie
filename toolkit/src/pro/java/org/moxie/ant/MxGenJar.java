@@ -74,6 +74,7 @@ public class MxGenJar extends GenJar {
 
 	String classifier;
 	private boolean configured;
+	Boolean showtitle;
 	
 	public MxGenJar() {
 		super();
@@ -180,6 +181,14 @@ public class MxGenJar extends GenJar {
 	
 	public void setPackagesources(boolean sources) {
 		this.packageSources = sources;
+	}
+
+	public void setShowtitle(boolean value) {
+		this.showtitle = value;
+	}
+	
+	public boolean isShowTitle() {
+		return showtitle == null || showtitle;
 	}
 
 	
@@ -324,7 +333,9 @@ public class MxGenJar extends GenJar {
 			}
 		}
 		
-		console.title(getClass(), destFile.getName());
+		if (isShowTitle()) {
+			console.title(getClass(), destFile.getName());
+		}
 		
 		console.debug(getTaskName() + " configuration");
 

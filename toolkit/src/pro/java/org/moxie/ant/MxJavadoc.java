@@ -46,6 +46,7 @@ public class MxJavadoc extends Javadoc {
 
 	private JavadocRedirector redirector = new JavadocRedirector(this);
 	private RedirectorElement redirectorElement;
+	Boolean showtitle;
 
 	public MxJavadoc() {
 		super();
@@ -62,6 +63,14 @@ public class MxJavadoc extends Javadoc {
 	public void setDestdir(File dir) {
 		destDir = dir;
 		super.setDestdir(dir);
+	}
+	
+	public void setShowtitle(boolean value) {
+		this.showtitle = value;
+	}
+	
+	public boolean isShowTitle() {
+		return showtitle == null || showtitle;
 	}
 	
 	/**
@@ -97,7 +106,9 @@ public class MxJavadoc extends Javadoc {
 			}
 		}
 
-		console.title(getClass(), build.getPom().getCoordinates());
+		if (isShowTitle()) {
+			console.title(getClass(), build.getPom().getCoordinates());
+		}
 		
 		if (redirectorElement != null) {
 			console.log(1, "Generating Javadoc... please wait");

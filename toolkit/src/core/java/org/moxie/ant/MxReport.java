@@ -45,7 +45,7 @@ public class MxReport extends MxTask {
 	
 	public void execute() {
 		Build build = getBuild();		
-		getConsole().title(getClass(), build.getPom().getCoordinates());
+		titleClass(build.getPom().getCoordinates());
 
 		Scope [] scopes;
 		if (scope == null) {

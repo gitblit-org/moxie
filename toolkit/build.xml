@@ -96,7 +96,7 @@
 		<taskdef classname="org.moxie.ant.MxDeploy" name="deploy" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxGenJar" name="genjar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxTest" name="test" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
-		<taskdef classname="org.moxie.ant.MxGitId" name="gitid" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxCommitId" name="commitid" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxVersion" name="version" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 
 		<!-- Prepare the project -->
@@ -107,7 +107,7 @@
 	Build the Moxie release
 	-->
 	<target name="main" depends="prepare">		
-		<mx:gitid verbose="true" />
+		<mx:commitid verbose="true" />
 				
 		<!-- Delete the target folder -->
 		<delete dir="${project.targetDirectory}" />
@@ -117,9 +117,9 @@
 		<!-- Moxie-Core -->
 		<mx:genjar tag="core" classifier="core" excludeClasspathJars="true">
 				
+			<class name="org.moxie.ant.MxGet" />
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
-			<class name="org.moxie.ant.MxGet" />
 
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
@@ -133,32 +133,33 @@
 		<mx:genjar tag="pro" classifier="pro" excludeClasspathJars="true">
 			
 			<!-- core -->
+			<class name="org.moxie.ant.MxGet" />
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
-			<class name="org.moxie.ant.MxGet" />
 				
 			<!-- pro -->
 			<class name="org.moxie.ant.ProjectHelper" />
-			<class name="org.moxie.ant.MxIf" />
 			<class name="org.moxie.ant.MxClean" />
-			<class name="org.moxie.ant.MxJavac" />
-			<class name="org.moxie.ant.MxInstall" />
-			<class name="org.moxie.ant.MxRun" />
-			<class name="org.moxie.ant.MxJar" />
-			<class name="org.moxie.ant.MxGenJar" />
-			<class name="org.moxie.ant.MxTest" />
-			<class name="org.moxie.ant.MxZip" />
-			<class name="org.moxie.ant.MxKeys" />
+			<class name="org.moxie.ant.MxCommit" />
+			<class name="org.moxie.ant.MxCommitId" />
+			<class name="org.moxie.ant.MxDeploy" />
 			<class name="org.moxie.ant.MxExtract" />
-			<class name="org.moxie.ant.MxGitId" />
+			<class name="org.moxie.ant.MxGenJar" />
 			<class name="org.moxie.ant.MxGhPages" />
+			<class name="org.moxie.ant.MxIf" />
+			<class name="org.moxie.ant.MxInstall" />
+			<class name="org.moxie.ant.MxJar" />
+			<class name="org.moxie.ant.MxJavac" />
+			<class name="org.moxie.ant.MxJavadoc" />
+			<class name="org.moxie.ant.MxKeys" />
+			<class name="org.moxie.ant.MxRun" />
+			<class name="org.moxie.ant.MxTar" />
+			<class name="org.moxie.ant.MxTest" />
 			<class name="org.moxie.ant.MxThumbs" />
 			<class name="org.moxie.ant.MxVersion" />
 			<class name="org.moxie.ant.MxWar" />
 			<class name="org.moxie.ant.MxWebXml" />
-			<class name="org.moxie.ant.MxJavadoc" />
-			<class name="org.moxie.ant.MxTar" />
-			<class name="org.moxie.ant.MxDeploy" />
+			<class name="org.moxie.ant.MxZip" />
 
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
@@ -173,32 +174,33 @@
 		<mx:genjar packageSources="true" excludeClasspathJars="true">
 			
 			<!-- core -->
+			<class name="org.moxie.ant.MxGet" />
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
-			<class name="org.moxie.ant.MxGet" />
 			
 			<!-- pro -->
 			<class name="org.moxie.ant.ProjectHelper" />
-			<class name="org.moxie.ant.MxIf" />
 			<class name="org.moxie.ant.MxClean" />
-			<class name="org.moxie.ant.MxJavac" />
-			<class name="org.moxie.ant.MxInstall" />
-			<class name="org.moxie.ant.MxRun" />
-			<class name="org.moxie.ant.MxJar" />
-			<class name="org.moxie.ant.MxGenJar" />
-			<class name="org.moxie.ant.MxTest" />
-			<class name="org.moxie.ant.MxZip" />
-			<class name="org.moxie.ant.MxKeys" />
+			<class name="org.moxie.ant.MxCommit" />
+			<class name="org.moxie.ant.MxCommitId" />
+			<class name="org.moxie.ant.MxDeploy" />
 			<class name="org.moxie.ant.MxExtract" />
-			<class name="org.moxie.ant.MxGitId" />
+			<class name="org.moxie.ant.MxGenJar" />
 			<class name="org.moxie.ant.MxGhPages" />
+			<class name="org.moxie.ant.MxIf" />
+			<class name="org.moxie.ant.MxInstall" />
+			<class name="org.moxie.ant.MxJar" />
+			<class name="org.moxie.ant.MxJavac" />
+			<class name="org.moxie.ant.MxJavadoc" />
+			<class name="org.moxie.ant.MxKeys" />
+			<class name="org.moxie.ant.MxRun" />
+			<class name="org.moxie.ant.MxTar" />
+			<class name="org.moxie.ant.MxTest" />
 			<class name="org.moxie.ant.MxThumbs" />
 			<class name="org.moxie.ant.MxVersion" />
 			<class name="org.moxie.ant.MxWar" />
 			<class name="org.moxie.ant.MxWebXml" />
-			<class name="org.moxie.ant.MxJavadoc" />
-			<class name="org.moxie.ant.MxTar" />
-			<class name="org.moxie.ant.MxDeploy" />
+			<class name="org.moxie.ant.MxZip" />
 			
 			<!-- all -->
 			<class name="org.moxie.ant.MxDoc" />

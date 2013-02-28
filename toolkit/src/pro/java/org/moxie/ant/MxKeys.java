@@ -107,7 +107,7 @@ public class MxKeys extends MxTask {
 			FileWriter fw = new FileWriter(file, false);
 			fw.write(root.generateClass(className));
 			fw.close();
-			getConsole().title(getClass(), className);
+			titleClass(className);
 			getConsole().key("input",propertiesFile.getAbsolutePath());
 			getConsole().key("output", file.getAbsolutePath());
 		} catch (Throwable t) {

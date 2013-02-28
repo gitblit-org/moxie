@@ -1,5 +1,0 @@
-## mx:GitId %PRO% %ALL%
-
-%BEGINXML%
-<mx:gitid repositoryFolder="${basedir}" property="gb.version" />
-%ENDXML%
