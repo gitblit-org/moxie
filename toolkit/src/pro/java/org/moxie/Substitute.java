@@ -19,6 +19,14 @@ public class Substitute {
 	public String token;
 	public String value;
 	public boolean isTemplate;
+	
+	public Substitute() {
+	}
+
+	public Substitute(String token, String value) {
+		this.token = token;
+		this.value = value;
+	}
 
 	public void setToken(String token) {
 		this.token = token;

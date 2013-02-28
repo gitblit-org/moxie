@@ -1,41 +1,5 @@
 #
-# 0.4.0 release
-#
-r1: {
-    title: Moxie 0.4.0 Released
-    id: 0.4.0
-    date: 2012-07-05
-    note: ~
-    text: Milestone 1: basic transitive dependency handling and most core tasks
-}
-
-#
-# 0.5.0 release
-#
-r2: {
-    title: Moxie 0.5.0 Released
-    id: 0.5.0
-    date: 2013-01-23
-    note: Please delete your .moxie/data folder before upgrading!
-    text: Milestone 2: Most tasks and features to build Gitblit
-
-    changes:
-     - Support MX_COLOR and MX_DEBUG environment variables
-     - Re-use Maven proxy settings, if available
-
-    additions:
-     - SNAPSHOT, RELEASE and LATEST resolution
-     - Dependency tags
-     - Added Moxie Proxy, a standalone Maven artifact proxy server
-     - Added mx:Test, mx:Run, mx:WebXml, mx:Thumbs, and mx:Zip tasks
-     - Added <launcher /> support for mx:GenJar and mx:Jar tasks
-     - Added IntelliJ IDEA .iml file generation
-     - Created Moxie+Ant distribution
-     - Support linked source modules (projects)
-}
-
-#
-# Pending release
+# ${project.version} release
 #
 r3: {
     title: Moxie ${project.version} Released
@@ -76,11 +40,51 @@ r3: {
      - Added mx:Javadoc task to redirect verbose javadoc output to a log file
      - Added mx:War task
      - Added mx:Deploy task
+     - Added mx:Version task
 
     dependencyChanges:
      - Twitter Bootstrap 2.3.0
 }
 
-current: &r2
-pending: &r3
+#
+# 0.5.0 release
+#
+r2: {
+    title: Moxie 0.5.0 Released
+    id: 0.5.0
+    date: 2013-01-23
+    note: Please delete your .moxie/data folder before upgrading!
+    text: Milestone 2: Most tasks and features to build Gitblit
+
+    changes:
+     - Support MX_COLOR and MX_DEBUG environment variables
+     - Re-use Maven proxy settings, if available
+
+    additions:
+     - SNAPSHOT, RELEASE and LATEST resolution
+     - Dependency tags
+     - Added Moxie Proxy, a standalone Maven artifact proxy server
+     - Added mx:Test, mx:Run, mx:WebXml, mx:Thumbs, and mx:Zip tasks
+     - Added <launcher /> support for mx:GenJar and mx:Jar tasks
+     - Added IntelliJ IDEA .iml file generation
+     - Created Moxie+Ant distribution
+     - Support linked source modules (projects)
+}
+
+#
+# 0.4.0 release
+#
+r1: {
+    title: Moxie 0.4.0 Released
+    id: 0.4.0
+    date: 2012-07-05
+    note: ~
+    text: Milestone 1: basic transitive dependency handling and most core tasks
+}
+
+#
+# Release log data
+#
+release: &r2
+snapshot: &r3
 releases: &r[1..2]

@@ -11,6 +11,7 @@
 	-->
 	<target name="main">
 		<mx:init />
+		<property name="releaselog" value="${basedir}/../releases.moxie" />
 		
 		<!-- Build the site documentation -->
 		<mx:doc googlePlusOne="true" injectPrettify="true" minify="true" 
@@ -49,6 +50,7 @@
 					<page name="mx:Tar" src="mxtar.mkd" />
 					<page name="mx:Test" src="mxtest.mkd" />
 					<page name="mx:Thumb" src="mxthumb.mkd" />
+					<page name="mx:Version" src="mxversion.mkd" />
 					<page name="mx:War" src="mxwar.mkd" />
 					<page name="mx:WebXml" src="mxwebxml.mkd" />
 					<page name="mx:Zip" src="mxzip.mkd" />
@@ -58,11 +60,11 @@
 				<page name="maxml" src="maxml.mkd" toc="yes" headerLinks="true" />
 				<!-- Current Release and Next Release page -->
 				<page name="release notes" as="releasenotes.html">
-					<template src="releasecurrent.ftl" data="${basedir}/releases.moxie" />
+					<template src="releasecurrent.ftl" data="${releaselog}" />
 				</page>
 				<!--All Releases page, not in navbar -->
 				<page as="releases.html" navbarLink="false">
-					<template src="releasehistory.ftl" data="${basedir}/releases.moxie" />
+					<template src="releasehistory.ftl" data="${releaselog}" />
 				</page>
 				<menu name="downloads">
 					<link name="moxie toolkit (core)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}-core.jar" />
@@ -87,10 +89,10 @@
 			</structure>
 			<!-- Generate RSS and Atom feeds from the release history -->
 			<page as="atom.xml">
-				<template src="atom.ftl" data="${basedir}/releases.moxie" />
+				<template src="atom.ftl" data="${releaselog}" />
 			</page>
 			<page as="rss.xml">
-				<template src="rss.ftl" data="${basedir}/releases.moxie" />
+				<template src="rss.ftl" data="${releaselog}" />
 			</page>
 			<references src="references.mkd" />
 			<replace token="%CORE%" value="&lt;span class='label'&gt;core&lt;/span&gt;" />

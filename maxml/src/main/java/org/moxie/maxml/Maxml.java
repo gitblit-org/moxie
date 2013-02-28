@@ -3,6 +3,8 @@ package org.moxie.maxml;
 import static java.text.MessageFormat.format;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -90,4 +92,30 @@ public class Maxml {
 			throw new MaxmlException(e);
 		}
 	}
+	
+	/**
+	 * Parse the content of the Maxml document and return an object map of the
+	 * content.
+	 * 
+	 * @param file
+	 *            a file
+	 * @return an object map
+	 */
+	public static MaxmlMap parse(File file)
+			throws MaxmlException {
+		InputStream is = null;
+		try {
+			is = new FileInputStream(file);
+			return parse(is);
+		} catch (Exception e) {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (Exception x) {
+				}
+			}
+			throw new MaxmlException(e);
+		}
+	}
+
 }

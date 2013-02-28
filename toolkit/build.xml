@@ -97,6 +97,7 @@
 		<taskdef classname="org.moxie.ant.MxGenJar" name="genjar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxTest" name="test" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxGitId" name="gitid" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxVersion" name="version" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 
 		<!-- Prepare the project -->
 		<mx:init />
@@ -152,6 +153,7 @@
 			<class name="org.moxie.ant.MxGitId" />
 			<class name="org.moxie.ant.MxGhPages" />
 			<class name="org.moxie.ant.MxThumbs" />
+			<class name="org.moxie.ant.MxVersion" />
 			<class name="org.moxie.ant.MxWar" />
 			<class name="org.moxie.ant.MxWebXml" />
 			<class name="org.moxie.ant.MxJavadoc" />
@@ -191,6 +193,7 @@
 			<class name="org.moxie.ant.MxGitId" />
 			<class name="org.moxie.ant.MxGhPages" />
 			<class name="org.moxie.ant.MxThumbs" />
+			<class name="org.moxie.ant.MxVersion" />
 			<class name="org.moxie.ant.MxWar" />
 			<class name="org.moxie.ant.MxWebXml" />
 			<class name="org.moxie.ant.MxJavadoc" />

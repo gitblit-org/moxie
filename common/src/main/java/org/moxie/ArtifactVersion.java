@@ -195,4 +195,69 @@ public class ArtifactVersion implements Comparable<ArtifactVersion> {
 		}
 		return buf.toString();
 	}
+	
+	public static enum NumberField {
+		major, minor, incremental, build;
+	}
+	
+	public ArtifactVersion incrementMajorVersion() {
+		return increment(NumberField.major, 1);		
+	}
+
+	public ArtifactVersion incrementMinorVersion() {
+		return increment(NumberField.minor, 1);
+	}
+
+	public ArtifactVersion incrementIncrementalVersion() {
+		return increment(NumberField.incremental, 1);
+	}
+
+	public ArtifactVersion incrementBuildNumber() {
+		return increment(NumberField.build, 1);
+	}
+	
+	private ArtifactVersion increment(NumberField v, int step) {
+		switch (v) {
+		case major:
+			majorVersion = getMajorVersion() + step;
+			if (minorVersion != null) {
+				minorVersion = 0;
+			}
+			if (incrementalVersion != null) {
+				incrementalVersion = 0;
+			}
+			incrementalVersion = null;
+			buildNumber = null;
+			break;
+		case minor:
+			minorVersion = getMinorVersion() + step;
+			if (incrementalVersion != null) {
+				incrementalVersion = 0;
+			}
+			buildNumber = null;
+			break;
+		case incremental:
+			incrementalVersion = getIncrementalVersion() + step;
+			buildNumber = null;
+			break;
+		case build:
+			buildNumber = getBuildNumber() + step;
+			default:
+				break;
+		}
+		return this;
+	}
+	
+	public boolean isSnapshot() {
+		return "SNAPSHOT".equalsIgnoreCase(qualifier);
+	}
+	
+	public ArtifactVersion setSnapshot(boolean isSnapshot) {
+		if (isSnapshot) {
+			qualifier = "SNAPSHOT";
+		} else {
+			qualifier = null;
+		}
+		return this;
+	}
 }

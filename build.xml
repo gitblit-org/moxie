@@ -26,4 +26,19 @@
 		
 	</target>
 
+	<!--
+	Release a new version and prepare for the next development cycle.
+	-->
+	<target name="release">
+	    <taskdef uri="antlib:org.moxie">
+			<classpath location="${basedir}/toolkit/build/target/moxie.jar" />
+		</taskdef>
+		<!-- release -->
+		<property name="dryrun" value="true" />
+		<mx:version stage="release" dryrun="${dryrun}" />
+		
+		<!-- next cycle -->
+		<mx:version stage="snapshot" incrementNumber="minor" dryrun="${dryrun}" />
+	</target>
+
 </project>

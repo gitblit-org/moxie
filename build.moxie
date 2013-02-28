@@ -4,7 +4,7 @@
 name: Moxie Build Toolkit
 groupId: org.moxie
 artifactId: moxie-parent
-version: 0.5.1-SNAPSHOT
+version: 0.6.0-SNAPSHOT
 organization: James Moger 
 organizationUrl: 'https://plus.google.com/u/0/116428776452027956920'
 inceptionYear: 2012

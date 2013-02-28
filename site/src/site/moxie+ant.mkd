@@ -25,6 +25,8 @@ Moxie+Ant automatically injects several phase targets at runtime which you may u
  <dd>generates a dependency report to the console or to a text file</dd>
  <dt>phase:clean</dt>
  <dd>clean build and target folders</dd>
+ <dt>phase:release</dt>
+ <dd>prepares a new release and begins a new development cycle</dd>
 </dl>
 
 ### Archetypes

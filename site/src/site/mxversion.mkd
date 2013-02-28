@@ -1,0 +1,5 @@
+## mx:Version
+
+%BEGINXML%
+<mx:version />
+%ENDXML%

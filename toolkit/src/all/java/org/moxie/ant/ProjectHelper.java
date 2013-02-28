@@ -60,6 +60,7 @@ public class ProjectHelper extends ProjectHelper2 {
 			newCleanPhase(project);
 			newReportPhase(project);
 			newRunPhase(project);
+			newReleasePhase(project);
 		}		
 		
 		// continue normal parsing
@@ -169,6 +170,27 @@ public class ProjectHelper extends ProjectHelper2 {
 		MxRun task = new MxRun();
 		task.setProject(project);
 		phase.addTask(task);
+		return phase;
+	}
+	
+	private Target newReleasePhase(Project project) {
+		Target phase = newPhase(project, "release");
+		phase.setDescription("prepares a new release and begins a new development cycle");
+
+		MxVersion releaseVersion = new MxVersion();
+		releaseVersion.setProject(project);
+		releaseVersion.setStage("release");
+		phase.addTask(releaseVersion);
+		
+		// TODO commit release
+		
+		MxVersion snapshotVersion = new MxVersion();
+		snapshotVersion.setProject(project);
+		snapshotVersion.setStage("snapshot");
+		phase.addTask(snapshotVersion);
+
+		// TODO commit snapshot
+		
 		return phase;
 	}
 }
