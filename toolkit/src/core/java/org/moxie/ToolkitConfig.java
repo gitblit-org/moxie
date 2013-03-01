@@ -585,15 +585,20 @@ public class ToolkitConfig implements Serializable {
 						def = def.substring(scopeString.length()).trim();
 						int x = def.indexOf(' ') == -1 ? def.length() - 1 : def.indexOf(' ');
 						String dir = StringUtils.stripQuotes(def.substring(0, x));
+						
 						SourceDirectory sd = new SourceDirectory(dir, scope);
 						values.add(sd);
 						
 						def = def.substring(x + 1);
-						if (StringUtils.isEmpty(def)) {
+						if (!StringUtils.isEmpty(def)) {
 							def = def.substring(def.indexOf(' ') + 1);
-							for (String tag : def.split(" ")) {
-								if (!StringUtils.isEmpty(tag)) {
-									sd.tags.add(tag.substring(1).toLowerCase());
+							for (String defValue : def.split(" ")) {
+								if (!StringUtils.isEmpty(defValue)) {
+									switch (defValue.charAt(0)) {
+									case ':':
+										sd.tags.add(defValue.substring(1).toLowerCase());
+										break;
+									}
 								}
 							}
 						}
@@ -642,7 +647,7 @@ public class ToolkitConfig implements Serializable {
 			}
 			if (sf.resolve(baseDirectory, outDir)) {
 				resolved.add(sf);
-			}			
+			}
 		}
 		return resolved;
 	}

@@ -668,18 +668,18 @@ public class Build {
 
 		if (config.isVerbose()) {
 			console.separator();
-			console.log("source folders");
-			for (SourceDirectory folder : config.getSourceDirectories()) {
-				console.sourceFolder(folder);
+			console.log("source directories");
+			for (SourceDirectory directory : config.getSourceDirectories()) {
+				console.sourceDirectory(directory);
 			}
 			console.separator();
-			console.log("resource folders");
-			for (SourceDirectory folder : config.getResourceDirectories()) {
-				console.sourceFolder(folder);
+			console.log("resource directories");
+			for (SourceDirectory directory : config.getResourceDirectories()) {
+				console.sourceDirectory(directory);
 			}
 			console.separator();
 
-			console.log("output folder");
+			console.log("output directory");
 			console.log(1, config.getOutputDirectory(null).toString());
 			console.separator();
 		}

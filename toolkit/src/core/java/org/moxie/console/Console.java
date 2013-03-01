@@ -124,12 +124,16 @@ public class Console {
 		subheader();
 	}
 	
-	public void sourceFolder(SourceDirectory sourceFolder) {
+	public void sourceDirectory(SourceDirectory dir) {
 		out.append(INDENT);
-		out.print(ansi().fg(Color.GREEN).a(sourceFolder.name).reset());
+		out.print(ansi().fg(Color.GREEN).a(dir.name).reset());
 		out.print(" (");
-		out.print(ansi().bold().fg(Color.MAGENTA).a(sourceFolder.scope).boldOff().reset());
-		out.println(")");
+		out.print(ansi().bold().fg(Color.MAGENTA).a(dir.scope).boldOff().reset());
+		if (dir.tags.isEmpty()) {
+			out.println(")");
+		} else {
+			out.append(") ").println(ansi().fg(Color.YELLOW).a(dir.tags).reset());
+		}
 	}
 	
 	public String scope(Scope scope, int count) {
