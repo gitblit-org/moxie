@@ -48,7 +48,7 @@ r3: {
 	 - Improve source directory resolution to automatically identify common Eclipse project layouts
 
     dependencyChanges:
-     - Twitter Bootstrap 2.3.0
+     - Twitter Bootstrap 2.3.1
 }
 
 #
