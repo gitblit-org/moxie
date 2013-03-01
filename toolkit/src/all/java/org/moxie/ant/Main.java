@@ -93,27 +93,41 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 	public void startAnt(String[] args, Properties additionalUserProperties, ClassLoader coreLoader) {
 		boolean startAnt = true;
 		boolean specifiedBuildFile = false;
-		 for (int i = 0; i < args.length; i++) {
-	            String arg = args[i];
+		List<String> antArgs = new ArrayList<String>(Arrays.asList(args));
+		if (antArgs.contains("-color")) {
+			antArgs.remove("-color");
+			System.setProperty(Toolkit.MX_COLOR, "true");
+		}
+		if (antArgs.contains("-c")) {
+			antArgs.remove("-c");
+			System.setProperty(Toolkit.MX_COLOR, "true");
+		}
+		if (antArgs.contains("-debug") || antArgs.contains("-d")) {
+			System.setProperty(Toolkit.MX_DEBUG, "true");
+		}
+		if (antArgs.contains("-verbose") || antArgs.contains("-v")) {
+			System.setProperty(Toolkit.MX_VERBOSE, "true");
+		}
 
-	            if (arg.equals("-help") || arg.equals("-h")) {
-	                printUsage();
-	                startAnt = false;
-	            } else if (arg.equals("-version")) {
-	                printVersion();
-	                startAnt = false;
-	            } else if (arg.equals("-new")) {
-	            	// new project
-	            	String [] dest = new String[args.length - i - 1];
-	            	System.arraycopy(args, i + 1, dest, 0, dest.length);
-	                newProject = newProject(dest);
-	                args = new String[] { "moxie.init" };
-	                break;
-	            } else if (arg.equals("-f") || arg.equals("-buildfile") || arg.equals("-file")) {
-	            	specifiedBuildFile = true;
-	            }
-		 }
-		 
+		for (int i = 0; i < args.length; i++) {
+			String arg = args[i];
+
+			if (arg.equals("-help") || arg.equals("-h")) {
+				printUsage();
+				startAnt = false;
+			} else if (arg.equals("-version")) {
+				printVersion();
+				startAnt = false;
+			} else if (arg.equals("-new")) {
+				// new project
+				newProject = newProject(antArgs);
+				antArgs = Arrays.asList("phase:init");
+				break;
+			} else if (arg.equals("-f") || arg.equals("-buildfile") || arg.equals("-file")) {
+				specifiedBuildFile = true;
+			}
+		}
+
 		if (startAnt) {
 			List<String> moxieArgs = new ArrayList<String>();			
 	        moxieArgs.add("-logger");
@@ -151,7 +165,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 	            	}
 	        	}
 	        }
-	        moxieArgs.addAll(Arrays.asList(args));
+	        moxieArgs.addAll(antArgs);
 	        String [] newArgs = moxieArgs.toArray(new String[moxieArgs.size()]);
 			super.startAnt(newArgs, additionalUserProperties, coreLoader);
 		}
@@ -166,7 +180,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 	private void printVersion() {
 		System.out.println();
 		System.out.println("Moxie+Ant v" + Toolkit.getVersion());
-		System.out.println("based on " + getAntVersion());
+		System.out.println("executing on " + getAntVersion());
 		System.out.println();
 	}
 	
@@ -183,6 +197,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
         msg.append("  -version               print the version information and exit" + lSep);
         msg.append("  -diagnostics           print information that might be helpful to" + lSep);
         msg.append("                         diagnose or report problems." + lSep);
+        msg.append("  -color, -c             use ANSI color sequences" + lSep);
         msg.append("  -quiet, -q             be extra quiet" + lSep);
         msg.append("  -verbose, -v           be extra verbose" + lSep);
         msg.append("  -debug, -d             print debugging information" + lSep);
@@ -225,7 +240,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
      * 
      * @param args
      */
-    private NewProject newProject(String [] args) {
+    private NewProject newProject(List<String> args) {
     	File basedir = new File(System.getProperty("user.dir"));
     	File moxieFile = new File(basedir, "build.moxie");
     	if (moxieFile.exists()) {
@@ -240,7 +255,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	apply.add(Toolkit.APPLY_CACHE);
     	
     	// parse args
-    	if (args.length > 0) {
+    	if (args.size() > 0) {
     		List<String> projectArgs = new ArrayList<String>();
     		for (String arg : args) {
     			if (arg.startsWith("-git")) {
