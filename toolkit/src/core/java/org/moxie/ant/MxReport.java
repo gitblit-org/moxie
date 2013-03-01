@@ -81,6 +81,8 @@ public class MxReport extends MxTask {
 				sb.append(Console.SEP).append('\n');
 				sb.append(summary).append('\n');
 			}
+			getConsole().separator();
+			sb.append(Console.SEP).append('\n');
 		}
 		if (destFile != null) {
 			if (isVerbose()) {
