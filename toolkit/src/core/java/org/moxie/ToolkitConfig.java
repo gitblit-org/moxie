@@ -84,10 +84,19 @@ public class ToolkitConfig implements Serializable {
 				new SourceDirectory("src/main/java", Scope.compile),
 				new SourceDirectory("src/main/webapp", Scope.compile),
 				new SourceDirectory("src/test/java", Scope.test),
+				new SourceDirectory("src/java", Scope.compile),
+				new SourceDirectory("src", Scope.compile),
+				new SourceDirectory("src/test", Scope.test),
+				new SourceDirectory("tests", Scope.test),
+				new SourceDirectory("test", Scope.test),
 				new SourceDirectory("src/site", Scope.site));
 		resourceDirectories = Arrays.asList(
 				new SourceDirectory("src/main/resources", Scope.compile),
-				new SourceDirectory("src/test/resources", Scope.test));
+				new SourceDirectory("resources/java", Scope.compile),
+				new SourceDirectory("resources/main", Scope.compile),
+				new SourceDirectory("resources", Scope.compile),
+				new SourceDirectory("src/test/resources", Scope.test),
+				new SourceDirectory("resources/test", Scope.test));
 		outputDirectory = new File("build");
 		targetDirectory = new File("build/target");
 		linkedModules = new ArrayList<Module>();
@@ -640,16 +649,43 @@ public class ToolkitConfig implements Serializable {
 
 		// resolve source directories
 		List<SourceDirectory> resolved = new ArrayList<SourceDirectory>();
-		for (SourceDirectory sf : values) {
+		for (SourceDirectory sd : values) {
 			File outDir = outputDirectory;
-			if (Scope.site.equals(sf.scope)) {
+			if (Scope.site.equals(sd.scope)) {
 				outDir = targetDirectory;
 			}
-			if (sf.resolve(baseDirectory, outDir)) {
-				resolved.add(sf);
+			if (sd.resolve(baseDirectory, outDir)) {
+				// Only add this source directory if it is not the parent
+				// of an already added source directory.  This is used to
+				// automatically support standard Maven projects and standard
+				// Eclipse projects without manual source directory definition.
+				if (!isParentDir(resolved, sd.scope, sd.getSources())) {
+					resolved.add(sd);
+				}
 			}
 		}
 		return resolved;
+	}
+	
+	/**
+	 * Returns true if the specified dir is the parent of one of the source
+	 * directories in the list.
+	 * 
+	 * @param dirs
+	 * @param scope
+	 * @param dir
+	 * @return true if the dir is a parent of a source directory
+	 */
+	boolean isParentDir(List<SourceDirectory> dirs, Scope scope, File dir) {
+		for (SourceDirectory sd : dirs) {
+			if (scope.equals(sd.scope)) {
+				if (FileUtils.getRelativePath(dir, sd.getSources()) != null) {
+					// source directory is located relative to dir
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	List<Module> readModules(MaxmlMap map, Key key) {

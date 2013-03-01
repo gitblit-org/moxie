@@ -12,10 +12,17 @@ mavenCacheStrategy: IGNORE
 # Source directories are verified during initialization.
 # Defined directories that do not exist are excluded.
 # Defined order is preserved.
+# Directories are excluded if they are the parent of an already
+# included directory for the specified scope.
 sourceDirectories:
 - compile 'src/main/java'
 - compile 'src/main/webapp'
+- compile 'src/java'
+- compile 'src'
 - test 'src/test/java'
+- test 'src/test'
+- test 'tests'
+- test 'test'
 - site 'src/site'
 
 # Resource directories are verified during initialization.
@@ -23,6 +30,7 @@ sourceDirectories:
 # Defined order is preserved.
 resourceDirectories:
 - compile 'src/main/resources'
+
 - test 'src/test/resources'
 
 # Default base directory within the project for compiled classes.
