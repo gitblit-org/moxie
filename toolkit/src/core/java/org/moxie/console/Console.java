@@ -17,11 +17,14 @@ package org.moxie.console;
 
 import static org.moxie.console.Ansi.ansi;
 
+import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.moxie.Dependency;
 import org.moxie.License;
@@ -30,6 +33,7 @@ import org.moxie.Scope;
 import org.moxie.SourceDirectory;
 import org.moxie.Toolkit.Key;
 import org.moxie.console.Ansi.Color;
+import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 
 
@@ -139,7 +143,7 @@ public class Console {
 		out.println(ansi().fg(Color.GREEN).a(dependency.getDetailedCoordinates()).reset());
 	}
 	
-	public String license(Dependency dependency, Pom pom) {
+	public String dependencyReport(Dependency dependency, Pom pom, File artifact) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < (dependency.ring + 1); i++) {
 			sb.append("  ");
@@ -148,7 +152,14 @@ public class Console {
 		String md = dd + INDENT + " ";
 		StringBuilder rs = new StringBuilder();
 		out.append(dd).append(ansi().fg(Color.YELLOW).a(dependency.ring + ":").toString()).println(ansi().fg(Color.GREEN).a(dependency.getDetailedCoordinates()).reset());
-		rs.append(dd).append(dependency.ring).append(':').append(dependency.getDetailedCoordinates()).append('\n');
+		rs.append(dd).append(dependency.ring).append(':').append(dependency.getDetailedCoordinates());
+		if (artifact != null && artifact.exists()) {
+			// display size and last modified
+			String size = FileUtils.formatSize(artifact.length());
+			String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date(artifact.lastModified()));
+			out.append(md).append(ansi().fg(Color.YELLOW).a(size).reset().toString()).println(MessageFormat.format("  last modified {0}", date));
+			rs.append(md).append(MessageFormat.format("{0}  last modified {1}", size, date)).append('\n');
+		}
 		if (pom.getLicenses().size() == 0) {
 			out.append(md).println(ansi().bold().fg(Color.YELLOW).a("unknown!").boldOff().reset());
 			rs.append(md).append("unknown!\n");

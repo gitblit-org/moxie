@@ -16,12 +16,14 @@
 package org.moxie.ant;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.Set;
 
 import org.moxie.Build;
 import org.moxie.Dependency;
 import org.moxie.Pom;
 import org.moxie.Scope;
+import org.moxie.console.Console;
 import org.moxie.utils.FileUtils;
 
 public class MxReport extends MxTask {
@@ -62,9 +64,22 @@ public class MxReport extends MxTask {
 
 			sb.append(getConsole().scope(scope, dependencies.size()));
 			sb.append('\n');
+			long totalArtifactsSize = 0;
 			for (Dependency dep : dependencies) {
 				Pom depPom = build.getSolver().getPom(dep);
-				sb.append(getConsole().license(dep, depPom));
+				File artifact = build.getSolver().getArtifact(dep);
+				if (artifact != null && artifact.exists()) {
+					totalArtifactsSize += artifact.length();
+				}
+				sb.append(getConsole().dependencyReport(dep, depPom, artifact));
+			}
+			if (totalArtifactsSize > 0) {
+				String summary = MessageFormat.format("{0} artifacts totaling {1} for {2} scope", dependencies.size(), FileUtils.formatSize(totalArtifactsSize), scope);
+				getConsole().separator();
+				getConsole().log(1, summary);
+				
+				sb.append(Console.SEP).append('\n');
+				sb.append(summary).append('\n');
 			}
 		}
 		if (destFile != null) {
