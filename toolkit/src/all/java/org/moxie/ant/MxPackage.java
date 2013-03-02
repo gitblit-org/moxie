@@ -28,7 +28,7 @@ public class MxPackage extends MxTask {
 	public void execute() {
 		Build build = getBuild();
 		MxJar task = null;
-		if ("war".equals(build.getConfig().getPom().packaging)) {
+		if ("war".equals(build.getConfig().getPom().getExtension())) {
 			task = new MxWar();
 		} else {
 			task = new MxJar();

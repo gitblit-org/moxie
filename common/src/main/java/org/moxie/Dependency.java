@@ -34,6 +34,7 @@ public class Dependency implements Serializable {
 	public String version;
 	public String revision;
 	public String type;
+	public String extension;
 	public String classifier;
 	public boolean optional;	
 	public boolean resolveDependencies;
@@ -46,6 +47,7 @@ public class Dependency implements Serializable {
     
 	public Dependency() {
 		type = "jar";
+		extension = type;
 		resolveDependencies = true;
 		exclusions = new TreeSet<String>();
 		tags = new TreeSet<String>();
@@ -57,16 +59,18 @@ public class Dependency implements Serializable {
 		String coordinates = StringUtils.stripQuotes(principals[0]);
 		if (coordinates.indexOf('@') > -1) {
 			// strip @ext
-			type = coordinates.substring(coordinates.indexOf('@') + 1);			
+			extension = coordinates.substring(coordinates.indexOf('@') + 1);
+			type = extension;
 			coordinates = coordinates.substring(0, coordinates.indexOf('@'));
 			resolveDependencies = false;
 		} else {
-			type = "jar";
+			extension = "jar";
+			type = extension;
 			resolveDependencies = true;
 		}
 
 		// determine Maven artifact coordinates
-		String [] fields = { groupId, artifactId, version, classifier, type };
+		String [] fields = { groupId, artifactId, version, classifier, extension };
 		
 		// append trailing colon for custom splitting algorithm
 		coordinates = coordinates + ":";
@@ -97,7 +101,7 @@ public class Dependency implements Serializable {
 		this.artifactId = fields[1];
 		this.version = fields[2];
 		this.classifier = fields[3];
-		this.type = fields[4];
+		this.extension = fields[4];
 
 		// determine dependency options and transitive dependency exclusions
 		exclusions = new TreeSet<String>();
@@ -109,7 +113,7 @@ public class Dependency implements Serializable {
 				exclusions.add(option.substring(1));
 			} else if (option.charAt(0) == '@') {
 				// fixed extension retrieval
-				type = option.substring(1);			
+				extension = option.substring(1);			
 				resolveDependencies = false;
 			} else if (option.charAt(0) == ':') {
 				// tag
@@ -140,7 +144,7 @@ public class Dependency implements Serializable {
 	public Dependency getPomArtifact() {
 		Dependency pom = new Dependency(getDetailedCoordinates());
 		pom.revision = revision;
-		pom.type = Constants.POM;
+		pom.extension = Constants.POM;
 		return pom;
 	}
 
@@ -171,7 +175,7 @@ public class Dependency implements Serializable {
 	}
 
 	public String getMediationId() {
-		return groupId + ":" + artifactId + (classifier == null ? "" : (":" + classifier)) + ":" + type;
+		return groupId + ":" + artifactId + (classifier == null ? "" : (":" + classifier)) + ":" + extension;
 	}
 
 	public String getManagementId() {
@@ -183,7 +187,7 @@ public class Dependency implements Serializable {
 	}
 
 	public String getDetailedCoordinates() {
-		return groupId + ":" + artifactId + ":" + version + ":" + (classifier == null ? "" : classifier) + ":" + type;
+		return groupId + ":" + artifactId + ":" + version + ":" + (classifier == null ? "" : classifier) + ":" + extension;
 	}
 	
 	public boolean excludes(Dependency dependency) {

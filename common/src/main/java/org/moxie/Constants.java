@@ -15,6 +15,11 @@
  */
 package org.moxie;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.moxie.utils.StringUtils;
+
 
 public class Constants {
 	
@@ -60,5 +65,33 @@ public class Constants {
 			}
 			return null;
 		}
+	}
+	
+	// https://issues.apache.org/jira/browse/IVY-899
+	@SuppressWarnings("serial")
+	public final static Map<String, String> packagingMap = new HashMap<String, String>() {{
+		put("bundle", "jar");
+		put("ear", "ear");
+		put("eclipse-plugin", "jar");
+		put("ejb", "jar");
+		put("jar", "jar");
+		put("jbi-component", "jar");
+		put("jbi-shared-library", "jar");
+		put("maven-plugin", "jar");
+		put("orbit", "jar");
+		put("pear", "jar");
+		put("pom", "pom");
+		put("war", "war");
+	}};
+	
+	public static String getExtension(String packaging) {
+		if (StringUtils.isEmpty(packaging)) {
+			return "jar";
+		}
+		String ext = packagingMap.get(packaging.toLowerCase());
+		if (ext == null) {
+			ext = packaging;
+		}
+		return ext;
 	}
 }

@@ -255,6 +255,7 @@ public class PomReader {
 		dep.version = readStringTag(node, Key.version);
 		dep.classifier = readStringTag(node, Key.classifier);
 		dep.type = readStringTag(node, Key.type);
+		dep.extension = Constants.getExtension(dep.type);
 		dep.optional = readBooleanTag(node, Key.optional);
 		dep.exclusions.addAll(readExclusions(node));
 		return dep;

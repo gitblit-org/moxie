@@ -404,7 +404,7 @@ public class ProxyConfig {
 		for (String repository : localRepositories) {
 			File cacheRoot = new File(localArtifactsRoot, repository);
 			IMavenCache cache = new MavenCache(cacheRoot);
-			File file = cache.getArtifact(dependency, dependency.type);
+			File file = cache.getArtifact(dependency, dependency.extension);
 			if (file != null && file.exists()) {				
 				path = repository + "/" + FileUtils.getRelativePath(cacheRoot, file.getParentFile());
 			}
@@ -414,7 +414,7 @@ public class ProxyConfig {
 			String folder = StringUtils.urlToFolder(repository.url);
 			File cacheRoot = new File(remoteArtifactsRoot, folder);
 			IMavenCache cache = new MavenCache(cacheRoot);
-			File file = cache.getArtifact(dependency, dependency.type);
+			File file = cache.getArtifact(dependency, dependency.extension);
 			if (file != null && file.exists()) {
 				path = repository.id + "/" + FileUtils.getRelativePath(cacheRoot, file.getParentFile());
 			}

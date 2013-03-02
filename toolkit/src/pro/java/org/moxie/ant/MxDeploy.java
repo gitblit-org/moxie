@@ -83,7 +83,7 @@ public class MxDeploy extends MxRepositoryTask {
 		
 		Dependency asDependency = new Dependency(pom.getCoordinates());
 		IMavenCache artifactCache = getArtifactCache(pom.isSnapshot());
-		File artifactFile = artifactCache.getArtifact(asDependency, asDependency.type);
+		File artifactFile = artifactCache.getArtifact(asDependency, asDependency.extension);
 		File artifactDir = artifactFile.getParentFile();
 		File sourceDir = build.getConfig().getTargetDirectory();
 		

@@ -177,7 +177,7 @@ public class Solver {
 	}
 
 	public File getArtifact(Dependency dependency) {
-		return moxieCache.getArtifact(dependency, dependency.type);
+		return moxieCache.getArtifact(dependency, dependency.extension);
 	}
 
 	public Set<Dependency> getDependencies(Scope scope) {
@@ -397,7 +397,7 @@ public class Solver {
 								console.dependency(dependency);
 							}
 							File artifactFile = retrieveArtifact(dependency);
-							if (artifactFile == null && !Constants.POM.equals(dependency.type)) {
+							if (artifactFile == null && !Constants.POM.equals(dependency.extension)) {
 								console.artifactResolutionFailed(dependency);
 								if (config.isFailFastOnArtifactResolution()) {
 									throw new MoxieException(MessageFormat.format("Failed to resolve {0}", dependency.getCoordinates()));
@@ -746,7 +746,7 @@ public class Solver {
 	 * @return
 	 */
 	private File retrieveArtifact(Dependency dependency) {
-		if (Constants.POM.equals(dependency.type)) {
+		if (Constants.POM.equals(dependency.extension)) {
 			// POM dependencies do not have other artifacts
 			if (dependency.isSnapshot()) {
 				// ... but we still have to purge old pom snapshots
@@ -773,7 +773,7 @@ public class Solver {
 			}
 			
 			// Determine to download/update the dependency
-			File artifactFile = moxieCache.getArtifact(dependency, dependency.type);
+			File artifactFile = moxieCache.getArtifact(dependency, dependency.extension);
 			boolean downloadDependency = !artifactFile.exists();				
 			if (!downloadDependency && dependency.isSnapshot()) {
 				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
@@ -787,12 +787,12 @@ public class Solver {
 			
 			if (downloadDependency && isOnline()) {
 				// Download primary artifact (e.g. jar)
-				artifactFile = repository.download(this, dependency, dependency.type);
+				artifactFile = repository.download(this, dependency, dependency.extension);
 				
 				if (artifactFile != null) {
 					// Download sources artifact (e.g. -sources.jar)
 					Dependency sources = dependency.getSourcesArtifact();
-					repository.download(this, sources, sources.type);
+					repository.download(this, sources, sources.extension);
 				}
 			}
 			
@@ -826,7 +826,7 @@ public class Solver {
 				
 				// copy source jar
 				Dependency source = dependency.getSourcesArtifact();
-				File sourceFile = moxieCache.getArtifact(source, source.type);					
+				File sourceFile = moxieCache.getArtifact(source, source.extension);					
 				File projectSourceFile = new File(config.getProjectConfig().getDependencySourceDirectory(), sourceFile.getName());
 				if (dependency.isSnapshot() || !projectSourceFile.exists()) {
 					console.debug(1, "copying {0} to {1}", sourceFile.getName(), projectSourceFile.getParent());
@@ -869,7 +869,7 @@ public class Solver {
 						} else {
 							suffix = "";
 						}
-						suffix += "." + dependency.type;
+						suffix += "." + dependency.extension;
 						suffix = suffix.toLowerCase();
 						if (n.endsWith(suffix)) {
 							// isolate middle section - which may be just
@@ -947,7 +947,7 @@ public class Solver {
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		Class<?> sysclass = URLClassLoader.class;
 		for (Dependency dependency : solution) {
-			File file = moxieCache.getArtifact(dependency, dependency.type);
+			File file = moxieCache.getArtifact(dependency, dependency.extension);
 			if (file.exists()) {
 				try {
 					URL u = file.toURI().toURL();
@@ -1027,7 +1027,7 @@ public class Solver {
 				SystemDependency sys = (SystemDependency) dependency;				
 				jar = new File(sys.path);
 			} else {
-				jar = moxieCache.getArtifact(dependency, dependency.type); 
+				jar = moxieCache.getArtifact(dependency, dependency.extension); 
 				if (projectFolder != null) {
 					File pJar = new File(projectFolder, jar.getName());
 					if (pJar.exists()) {

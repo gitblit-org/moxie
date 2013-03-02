@@ -74,6 +74,7 @@ public class Pom {
 	private final List<Person> developers;
 	private final List<Person> contributors;
 	
+	@SuppressWarnings("serial")
 	public Pom() {
 		version = "";
 		managedVersions = new TreeMap<String, String>();
@@ -237,8 +238,8 @@ public class Pom {
 			return;
 		}
 
-		if (!StringUtils.isEmpty(dep.type)) {
-			dep.type = "jar";
+		if (!StringUtils.isEmpty(dep.extension)) {
+			dep.extension = "jar";
 		}
 		
 		managedVersions.put(dep.getManagementId(), dep.version);
@@ -285,8 +286,8 @@ public class Pom {
 			dep.version = resolveProperties(dep.version);
 
 			// set default extension, if unspecified
-			if (StringUtils.isEmpty(dep.type)) {
-				dep.type = "jar";
+			if (StringUtils.isEmpty(dep.extension)) {
+				dep.extension = "jar";
 			}
 			
 			if (dep.getManagementId().equals(getManagementId())) {
@@ -476,15 +477,19 @@ public class Pom {
 	}
 	
 	public boolean isPOM() {
-		return !StringUtils.isEmpty(packaging) && packaging.equalsIgnoreCase(Constants.POM);
+		return getExtension().equalsIgnoreCase(Constants.POM);
 	}
 
 	public boolean isJAR() {
-		return StringUtils.isEmpty(packaging) || packaging.equalsIgnoreCase("jar");
+		return getExtension().equalsIgnoreCase("jar");
 	}
 
 	public boolean isWAR() {
-		return !StringUtils.isEmpty(packaging) && packaging.equalsIgnoreCase("war");
+		return getExtension().equalsIgnoreCase("war");
+	}
+	
+	public String getExtension() {
+		return Constants.getExtension(packaging);
 	}
 	
 	public boolean isSnapshot() {

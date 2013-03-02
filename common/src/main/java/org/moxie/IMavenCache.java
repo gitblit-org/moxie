@@ -61,7 +61,7 @@ public abstract class IMavenCache {
 		if (dep.isSnapshot()) {
 			identifier = dep.revision;
 		}
-		File artifact = getArtifact(dep, dep.type);
+		File artifact = getArtifact(dep, dep.extension);
 		File folder = artifact.getParentFile();
 		if (folder == null || !folder.exists()) {
 			System.out.println("   ! skipping non existent folder " + folder);

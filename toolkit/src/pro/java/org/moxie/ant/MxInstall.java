@@ -44,7 +44,7 @@ public class MxInstall extends MxRepositoryTask {
 		
 		Dependency asDependency = new Dependency(pom.getCoordinates());
 		IMavenCache cache = getArtifactCache(pom.isSnapshot());
-		File artifactFile = cache.getArtifact(asDependency, asDependency.type);
+		File artifactFile = cache.getArtifact(asDependency, asDependency.extension);
 		File artifactDir = artifactFile.getParentFile();
 		File sourceDir = build.getConfig().getTargetDirectory();
 		

@@ -29,7 +29,7 @@ public class DependencyParseTest extends Assert {
 		assertEquals("moxie", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertNull(dep.classifier);
-		assertEquals("jar", dep.type);
+		assertEquals("jar", dep.extension);
 		assertTrue(dep.resolveDependencies);
 		assertFalse(dep.optional);
 	}
@@ -41,7 +41,7 @@ public class DependencyParseTest extends Assert {
 		assertEquals("moxie", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertEquals("jdk15", dep.classifier);
-		assertEquals("jar", dep.type);
+		assertEquals("jar", dep.extension);
 		assertTrue(dep.resolveDependencies);
 		assertFalse(dep.optional);
 	}
@@ -53,7 +53,7 @@ public class DependencyParseTest extends Assert {
 		assertEquals("moxie", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertEquals("jdk15", dep.classifier);
-		assertEquals("jar", dep.type);
+		assertEquals("jar", dep.extension);
 		assertTrue(dep.resolveDependencies);
 		assertFalse(dep.optional);
 	}
@@ -65,7 +65,7 @@ public class DependencyParseTest extends Assert {
 		assertEquals("moxie", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertNull(dep.classifier);
-		assertEquals("zip", dep.type);
+		assertEquals("zip", dep.extension);
 		assertFalse(dep.resolveDependencies);
 		assertFalse(dep.optional);
 	}
@@ -77,7 +77,7 @@ public class DependencyParseTest extends Assert {
 		assertEquals("moxie", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertEquals("jdk15", dep.classifier);
-		assertEquals("exe", dep.type);
+		assertEquals("exe", dep.extension);
 		assertFalse(dep.resolveDependencies);
 		assertFalse(dep.optional);
 	}
@@ -89,7 +89,7 @@ public class DependencyParseTest extends Assert {
 		assertEquals("moxie", dep.artifactId);
 		assertEquals("1.0.0", dep.version);
 		assertNull(dep.classifier);
-		assertEquals("doc", dep.type);
+		assertEquals("doc", dep.extension);
 		assertTrue(dep.resolveDependencies);
 		assertTrue(dep.optional);
 		

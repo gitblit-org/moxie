@@ -208,9 +208,9 @@ public class Build {
 				SystemDependency sys = (SystemDependency) dependency;
 				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, new File(sys.path))));
 			} else {				
-				File jar = solver.getMoxieCache().getArtifact(dependency, dependency.type);
+				File jar = solver.getMoxieCache().getArtifact(dependency, dependency.extension);
 				Dependency sources = dependency.getSourcesArtifact();
-				File srcJar = solver.getMoxieCache().getArtifact(sources, sources.type);				
+				File srcJar = solver.getMoxieCache().getArtifact(sources, sources.extension);				
 				String jarPath;
 				String srcPath;
 				if ("var".equals(kind)) {
@@ -548,9 +548,9 @@ public class Build {
                     scope = dependency.definedScope;
                 }
 
-                jar = solver.getMoxieCache().getArtifact(dependency, dependency.type);
+                jar = solver.getMoxieCache().getArtifact(dependency, dependency.extension);
                 Dependency sources = dependency.getSourcesArtifact();
-                srcJar = solver.getMoxieCache().getArtifact(sources, sources.type);
+                srcJar = solver.getMoxieCache().getArtifact(sources, sources.extension);
 
                 if (variableRelative) {
                     // relative to MOXIE_HOME
