@@ -36,4 +36,20 @@ public class MoxieException extends RuntimeException {
 	public MoxieException(String message, Object... args) {
 		super(MessageFormat.format(message, args));
 	}
+	
+	public static class MissingParentPomException extends MoxieException {
+
+		private static final long serialVersionUID = 1L;
+		
+		private final Dependency parent;
+
+		public MissingParentPomException(Dependency parent) {
+			super(parent.getCoordinates());
+			this.parent = parent;
+		}
+		
+		public Dependency getParent() {
+			return parent;
+		}
+	}
 }

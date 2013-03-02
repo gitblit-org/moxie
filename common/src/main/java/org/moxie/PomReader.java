@@ -26,6 +26,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.moxie.Constants.Key;
+import org.moxie.MoxieException.MissingParentPomException;
 import org.moxie.utils.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -35,6 +36,22 @@ import org.w3c.dom.NodeList;
 
 public class PomReader {
 
+	/**
+	 * Enum to control how strictly the PomReader enforces missing or incomplete
+	 * data.
+	 */
+	public static enum Requirements {
+		STRICT(true, true), LOOSE(false, false);
+		
+		final boolean requireParent;
+		final boolean resolveProperties;
+		
+		Requirements(boolean requireParent, boolean resolveProperties) {
+			this.requireParent = requireParent;
+			this.resolveProperties = resolveProperties;
+		}
+	}
+	
 	/**
 	 * Reads a POM file from an artifact cache.  Parent POMs will be read and
 	 * applied automatically, if they exist in the cache.
@@ -49,7 +66,7 @@ public class PomReader {
 		if (!pomFile.exists()) {
 			return null;
 		}
-		return readPom(cache, pomFile);
+		return readPom(cache, pomFile, Requirements.STRICT);
 	}
 	
 	/**
@@ -61,7 +78,21 @@ public class PomReader {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Pom readPom(IMavenCache cache, File pomFile) {		
+	public static Pom readPom(IMavenCache cache, File pomFile) {	
+		return readPom(cache, pomFile, Requirements.STRICT);
+	}
+	
+	/**
+	 * Reads a POM file from an artifact cache.  Parent POMs will be read and
+	 * applied automatically, if they exist in the cache.
+	 * 
+	 * @param cache
+	 * @param pomFile
+	 * @param requirements
+	 * @return
+	 * @throws Exception
+	 */
+	public static Pom readPom(IMavenCache cache, File pomFile, Requirements requirements) {		
 		Document doc = null;
 		try {
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -94,9 +125,15 @@ public class PomReader {
 					Pom parentPom = readPom(cache, parent);
 					
 					if (parentPom == null) {
+						// we do not have the parent POM in the cache
+						if (requirements.requireParent) {
+							// notify the caller of the missing POM
+							throw new MissingParentPomException(parent);
+						}
+						// loose parsing option:
 						// we do not have the parent pom yet likely because we
 						// are in the middle of downloading so make a fake one
-						// to satisfy property inheritance
+						// to satisfy ${parent.} property inheritance
 						parentPom = new Pom();
 						parentPom.groupId = pom.parentGroupId;
 						parentPom.artifactId = pom.parentArtifactId;
@@ -224,7 +261,10 @@ public class PomReader {
 				}
 			}
 		}
-		pom.resolveProperties();
+		
+		if (requirements.resolveProperties) {
+			pom.resolveProperties();
+		}
 		
 		// Add managed dependencies after resolving all properties
 		for (Dependency dep : managedList) {
@@ -236,13 +276,13 @@ public class PomReader {
 				}					
 			} else {
 				// add dependency management definition
-				pom.addManagedDependency(dep, dep.definedScope);
+				pom.addManagedDependency(dep, dep.definedScope, requirements.resolveProperties);
 			}
 		}
 		
 		// Add dependencies after adding all managed dependencies
 		for (Dependency dep : dependencyList) {
-			 Scope addedScope = pom.addDependency(dep, dep.definedScope);
+			 Scope addedScope = pom.addDependency(dep, dep.definedScope, requirements.resolveProperties);
 			 dep.definedScope = addedScope;
 		}
 		return pom;

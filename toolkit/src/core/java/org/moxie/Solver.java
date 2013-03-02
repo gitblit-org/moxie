@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.moxie.MoxieException.MissingParentPomException;
 import org.moxie.console.Console;
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
@@ -716,15 +717,28 @@ public class Solver {
 			}
 
 			try {
-				Pom pom = PomReader.readPom(moxieCache, pomFile);
-				// retrieve parent POM
-				if (pom.hasParentDependency()) {			
-					Dependency parent = pom.getParentDependency();
+				Pom pom = null;
+				try {
+					pom = PomReader.readPom(moxieCache, pomFile);
+					if (pom.hasParentDependency()) {
+						// we already have the parent POM locally 
+						Dependency parent = pom.getParentDependency();
+						parent.ring = dependency.ring;
+						retrievePOM(parent, retrieved);
+					}
+				} catch (MissingParentPomException e) {
+					// traverse up the graph and retrieve parent POM
+					Dependency parent = e.getParent();
 					parent.ring = dependency.ring;
 					retrievePOM(parent, retrieved);
+					
+					// Re-read this POM now that we have the parent.
+					// This allows for resolving properties defined in the
+					// parent POM on first retrieval.
+					pom = PomReader.readPom(moxieCache, pomFile);
 				}
-				
-				// retrieve all dependent POMs
+
+				// traverse down the graph and retrieve all dependent POMs
 				for (Scope scope : pom.getScopes()) {
 					for (Dependency dep : pom.getDependencies(scope, dependency.ring + 1)) {
 						retrievePOM(dep, retrieved);

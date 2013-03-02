@@ -14,6 +14,7 @@ r3: {
     fixes:
      - Resolve all POM properties in dependencies and managedDependencies after parsing is completed and properties are inherited
      - Fixed regression with artifact resolution when using multiple source repositories
+     - Fixed property resolution when property is defined in a parent pom and none of the poms are yet in the cache
 
     changes:
 	 - Renamed mx:GitId to mx:CommitId

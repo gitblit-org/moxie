@@ -228,10 +228,16 @@ public class Pom {
 	public List<Person> getContributors() {
 		return contributors;
 	}
-
+	
 	public void addManagedDependency(Dependency dep, Scope scope) {
-		dep.groupId = resolveProperties(dep.groupId);
-		dep.version = resolveProperties(dep.version);
+		addManagedDependency(dep, scope, true);
+	}
+
+	public void addManagedDependency(Dependency dep, Scope scope, boolean resolveProperties) {
+		if (resolveProperties) {
+			dep.groupId = resolveProperties(dep.groupId);
+			dep.version = resolveProperties(dep.version);
+		}
 
 		if (dep.getManagementId().equals(getManagementId())) {
 			System.out.println(MessageFormat.format("WARNING: ignoring circular managedDependency {0}", dep.getManagementId()));
@@ -275,15 +281,23 @@ public class Pom {
 	}
 	
 	public Scope addDependency(Dependency dep, Scope scope) {
+		return addDependency(dep, scope, true);
+	}
+	
+	public Scope addDependency(Dependency dep, Scope scope, boolean resolveProperties) {
 		if (dep.isMavenObject()) {
 			// determine group
-			dep.groupId = resolveProperties(dep.groupId);
+			if (resolveProperties) {
+				dep.groupId = resolveProperties(dep.groupId);
+			}
 			
 			// determine version
 			if (StringUtils.isEmpty(dep.version)) {
 				dep.version = getManagedVersion(dep);
-			}			
-			dep.version = resolveProperties(dep.version);
+			}
+			if (resolveProperties) {
+				dep.version = resolveProperties(dep.version);
+			}
 
 			// set default extension, if unspecified
 			if (StringUtils.isEmpty(dep.extension)) {

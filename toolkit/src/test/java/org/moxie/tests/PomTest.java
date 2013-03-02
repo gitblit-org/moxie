@@ -17,6 +17,7 @@ package org.moxie.tests;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -40,22 +41,40 @@ public class PomTest extends Assert {
 		}
 		folder.mkdirs();
 		System.setProperty("mx.root", folder.getAbsolutePath());
+		System.out.println("mx.root=" + folder.getAbsolutePath());
 		BuildConfig config = new BuildConfig(new File("test.moxie"), null);		
 		Solver solver = new Solver(new Console(), config);				
 		return solver;
 	}
 	
+	private Solver solve(Dependency dep) throws IOException, MaxmlException {
+		Solver solver = getSolver();
+		solver.getBuildConfig().getPom().addDependency(dep, Scope.compile);
+		solver.solve();
+		return solver;
+	}
+	
 	@Test
 	public void testParsing1() throws IOException, MaxmlException {
-		Dependency jetty_ajp = new Dependency("org.eclipse.jetty:jetty-ajp:7.4.2.v20110526");
-		
-		Solver solver = getSolver();
-		solver.getBuildConfig().getPom().addDependency(jetty_ajp, Scope.compile);
-		solver.solve();
-		
-		Pom pom = solver.getPom(jetty_ajp);
+		Dependency dep = new Dependency("org.eclipse.jetty:jetty-ajp:7.4.2.v20110526");
+		Solver solver = solve(dep);
+		Pom pom = solver.getPom(dep);
 		assertEquals("org.eclipse.jetty", pom.groupId);
 		assertEquals("7.4.2.v20110526", pom.version);
+	}
+	
+	@Test
+	public void testParentProperties() throws Exception {
+		Dependency dep = new Dependency("org.jboss.resteasy.mobile:resteasy-mobile:1.0.0");		
+		Solver solver = solve(dep);
+		// [httpcomponents-client:4.0.3]
+		//    ${httpcore.version} = 4.0.1
+		// [httpclient:4.0.3]
+		//    [httpcore:${httpcore.version}]
+		// [resteasy-mobile:1.0.0]
+		Set<Dependency> deps = solver.getDependencies(Scope.compile);
+		Dependency httpcore = new Dependency("org.apache.httpcomponents:httpcore:4.0.1");		
+		assertTrue(deps.contains(httpcore));
 	}
 
 }
