@@ -65,6 +65,7 @@ dependencyManagement:
 - 'org.freemarker:freemarker:2.3.19'
 - 'org.mozilla:rhino:1.7R4'
 - 'org.jacoco:org.jacoco.ant:0.6.1.201212231917'
+- 'commons-net:commons-net:1.4.0'
 
 # dependency aliases allow you to specify shorthand notation for a dependency
 # which will be resolved at runtime to the full coordinates.
@@ -78,6 +79,7 @@ dependencyAliases: {
 	'mx:markdownpapers': 'org.tautua.markdownpapers:markdownpapers-core'
 	'mx:freemarker': 'org.freemarker:freemarker'
 	'mx:rhino': 'org.mozilla:rhino'
+	'mx:commons-net': 'commons-net:commons-net'
 }
 
 # Dependency overrides are used to redefine the dependencies of released/published

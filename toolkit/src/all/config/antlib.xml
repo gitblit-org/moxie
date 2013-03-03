@@ -11,6 +11,7 @@
 	<taskdef name="commitid" classname="org.moxie.ant.MxCommitId" />
 	<taskdef name="deploy" classname="org.moxie.ant.MxDeploy" />
 	<taskdef name="extract" classname="org.moxie.ant.MxExtract" />
+	<taskdef name="ftp" classname="org.moxie.ant.MxFtp" />
 	<taskdef name="genjar" classname="org.moxie.ant.MxGenJar" />
 	<taskdef name="ghpages" classname="org.moxie.ant.MxGhPages" />
 	<taskdef name="if" classname="org.moxie.ant.MxIf" />

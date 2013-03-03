@@ -1,0 +1,5 @@
+## mx:Ftp %PRO% %ALL%
+
+%BEGINXML%
+<mx:ftp />
+%ENDXML%

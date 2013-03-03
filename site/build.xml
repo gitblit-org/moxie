@@ -34,6 +34,7 @@
 					<page name="mx:Deploy" src="mxdeploy.mkd" />
 					<page name="mx:Doc" src="mxdoc.mkd" />
 					<page name="mx:Extract" src="mxextract.mkd" />
+					<page name="mx:Ftp" src="mxftp.mkd" />
 					<page name="mx:GenJar" src="mxgenjar.mkd" />
 					<page name="mx:Get" src="mxget.mkd" />
 					<page name="mx:GhPages" src="mxghpages.mkd" />					

@@ -43,10 +43,11 @@ r3: {
      - Added mx:War task
      - Added mx:Deploy task
      - Added mx:Version task
-	 - Added mx:Commit task
-	 - Added phase:deploy to Moxie+Ant
-	 - Added phase:release to Moxie+Ant
-	 - Improve source directory resolution to automatically identify common Eclipse project layouts
+     - Added mx:Commit task
+     - Added mx:Ftp task
+     - Added phase:deploy to Moxie+Ant
+     - Added phase:release to Moxie+Ant
+     - Improve source directory resolution to automatically identify common Eclipse project layouts
 
     dependencyChanges:
      - Twitter Bootstrap 2.3.1
