@@ -302,7 +302,7 @@ public class ToolkitConfig implements Serializable {
 		List<String> managedDependencies = readStrings(map, Key.dependencyManagement, new ArrayList<String>());
 		for (String dependency : managedDependencies) {
 			Dependency dep = new Dependency(dependency);
-			pom.addManagedDependency(dep, null, true);
+			pom.addManagedDependency(dep, null, true, true);
 		}
 
 		registeredRepositories = parseRemoteRepositories(map, Key.registeredRepositories, registeredRepositories);

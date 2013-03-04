@@ -41,13 +41,15 @@ public class PomReader {
 	 * data.
 	 */
 	public static enum Requirements {
-		STRICT(true, true), LOOSE(false, false);
+		STRICT(true, true, true), IGNORE_VERSION_RANGES(true, false, true), LOOSE(false, false, false);
 		
 		final boolean requireParent;
+		final boolean enforceRangeChecking;
 		final boolean resolveProperties;
 		
-		Requirements(boolean requireParent, boolean resolveProperties) {
+		Requirements(boolean requireParent, boolean enforceRangeChecking, boolean resolveProperties) {
 			this.requireParent = requireParent;
+			this.enforceRangeChecking = enforceRangeChecking;
 			this.resolveProperties = resolveProperties;
 		}
 	}
@@ -276,13 +278,15 @@ public class PomReader {
 				}					
 			} else {
 				// add dependency management definition
-				pom.addManagedDependency(dep, dep.definedScope, requirements.resolveProperties);
+				pom.addManagedDependency(dep, dep.definedScope,
+						requirements.resolveProperties, requirements.enforceRangeChecking);
 			}
 		}
 		
 		// Add dependencies after adding all managed dependencies
 		for (Dependency dep : dependencyList) {
-			 Scope addedScope = pom.addDependency(dep, dep.definedScope, requirements.resolveProperties);
+			 Scope addedScope = pom.addDependency(dep, dep.definedScope,
+					 requirements.resolveProperties, requirements.enforceRangeChecking);
 			 dep.definedScope = addedScope;
 		}
 		return pom;

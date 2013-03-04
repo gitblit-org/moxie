@@ -230,10 +230,10 @@ public class Pom {
 	}
 	
 	public void addManagedDependency(Dependency dep, Scope scope) {
-		addManagedDependency(dep, scope, true);
+		addManagedDependency(dep, scope, true, true);
 	}
 
-	public void addManagedDependency(Dependency dep, Scope scope, boolean resolveProperties) {
+	public void addManagedDependency(Dependency dep, Scope scope, boolean resolveProperties, boolean enforceRangeLimits) {
 		if (resolveProperties) {
 			dep.groupId = resolveProperties(dep.groupId);
 			dep.version = resolveProperties(dep.version);
@@ -246,6 +246,10 @@ public class Pom {
 
 		if (!StringUtils.isEmpty(dep.extension)) {
 			dep.extension = "jar";
+		}
+		
+		if (enforceRangeLimits) {
+			enforceVersionRangeLimits(dep);
 		}
 		
 		managedVersions.put(dep.getManagementId(), dep.version);
@@ -281,10 +285,10 @@ public class Pom {
 	}
 	
 	public Scope addDependency(Dependency dep, Scope scope) {
-		return addDependency(dep, scope, true);
+		return addDependency(dep, scope, true, true);
 	}
 	
-	public Scope addDependency(Dependency dep, Scope scope, boolean resolveProperties) {
+	public Scope addDependency(Dependency dep, Scope scope, boolean resolveProperties, boolean enforceRangeLimits) {
 		if (dep.isMavenObject()) {
 			// determine group
 			if (resolveProperties) {
@@ -332,7 +336,9 @@ public class Pom {
 			dependencies.put(scope, new ArrayList<Dependency>());
 		}
 		
-		enforceVersionRangeLimits(dep);
+		if (enforceRangeLimits) {
+			enforceVersionRangeLimits(dep);
+		}
 		
 		dependencies.get(scope).add(dep);
 		return scope;
@@ -345,12 +351,37 @@ public class Pom {
 		// check for version ranges
 		switch (dependency.version.charAt(0)) {
 		case '[':
-			String minVersion = dependency.version.substring(1).split(",")[0];			
-			System.out.println(MessageFormat.format("{0}: {1} is resolving to {2} because version ranges are not supported!", getCoordinates(), dependency.getCoordinates(), minVersion));
-			dependency.version = minVersion;
-			break;
 		case '(':
-			throw new MoxieException(MessageFormat.format("{0}: Failed to resolve {1} because exclusive minimum version ranges (x,y) are prohibited!", getCoordinates(), dependency.getCoordinates()));
+			// [1.2.2,)
+			// (1.2.3, 1.2.9]
+			boolean inclusiveMin = '[' == dependency.version.charAt(0);
+			boolean inclusiveMax = ']' == dependency.version.charAt(dependency.version.length() - 1);
+			String [] altVersions = dependency.version.substring(1, dependency.version.length() - 2).split(",");
+			String altVersion = null;
+			if (inclusiveMin) {
+				// inclusive minimum version [1.2.3, or [,1.2.3]
+				if (!StringUtils.isEmpty(altVersions[0])) {
+					// use defined inclusive minimum
+					altVersion = altVersions[0];
+				} else if (inclusiveMax && !StringUtils.isEmpty(altVersions[1])) {
+					// use defined inclusive maximum
+					altVersion = altVersions[1];
+				}
+			} else {
+				// exclusive minimum version (1.2.3,
+				if (inclusiveMax && !StringUtils.isEmpty(altVersions[1])) {
+					// we are saved by the inclusive max (1.2.3, 1.2.9]
+					altVersion = altVersions[1];
+				}
+			}
+
+			if (!StringUtils.isEmpty(altVersion)) {
+				System.out.println(MessageFormat.format("{0}: {1} is resolving to {2} because version ranges are not supported!", getCoordinates(), dependency.getCoordinates(), altVersion));
+				dependency.version = altVersion;
+			} else {
+				throw new MoxieException(MessageFormat.format("{0}: Failed to resolve {1} because of unsupported version range {2}!", getCoordinates(), dependency.getManagementId(), dependency.version));
+			}
+			break;
 		default:
 			break;
 		}

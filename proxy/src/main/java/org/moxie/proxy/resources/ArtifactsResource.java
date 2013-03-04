@@ -97,7 +97,7 @@ public class ArtifactsResource extends BaseResource {
 		if (pom != null) {
 			// artifact
 			sb.append("dependencies:\n");
-			sb.append(" - compile ").append(pom.getCoordinates());
+			sb.append(" - compile '").append(pom.getCoordinates()).append('\'');
 		} else if (isRemoteRepository()) {
 			// proxy settings
 			RemoteRepository repository = getProxyConfig().getRemoteRepository(getBasePath());			

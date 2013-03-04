@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 import org.moxie.IMavenCache;
 import org.moxie.Pom;
 import org.moxie.PomReader;
+import org.moxie.PomReader.Requirements;
 import org.moxie.RemoteRepository;
 import org.moxie.proxy.connection.ProxyConnectionServer;
 import org.moxie.proxy.resources.ArtifactsResource;
@@ -212,7 +213,7 @@ public class MoxieProxy extends Application {
 			}
 			File pomFile = poms[0];
 			IMavenCache cache = config.getMavenCache(folder);
-			return PomReader.readPom(cache, pomFile);
+			return PomReader.readPom(cache, pomFile, Requirements.IGNORE_VERSION_RANGES);
 		}
 		return null;
 	}
