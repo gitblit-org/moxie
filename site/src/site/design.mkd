@@ -14,4 +14,5 @@ Moxie is not designed to be Maven.  It is designed to be an Ant enhancement.
 - [Maven settings.xml reference][mvnsettings]
 - [Maven LifeCycle reference][mvnlifecycle]
 - [Ivy's XML config file reference][ivyxml]
+- [Ivy Main Concepts][ivyconcepts]
 - [Gradle Cache Design][gradlecache]

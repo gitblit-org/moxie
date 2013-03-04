@@ -25,3 +25,4 @@
 [mvnlifecycle]: http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 [mvnproperties]: http://www.sonatype.com/books/mvnref-book/reference/resource-filtering-sect-properties.html
 [gradlecache]: http://forums.gradle.org/gradle/topics/improved_gradle_dependency_cache
+[ivyconcepts]: https://ant.apache.org/ivy/history/trunk/concept.html "Apache Ivy Main Concepts"
