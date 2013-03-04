@@ -21,6 +21,8 @@ import java.util.jar.Manifest;
 
 public class Toolkit {
 	
+	public static final String DEPENDENCY_FILENAME_PATTERN = "[artifactId]-[version](-[classifier]).[ext]";
+	
 	public static final String APPLY_ECLIPSE = "eclipse";
 	
     public static final String APPLY_INTELLIJ = "intellij";
@@ -75,7 +77,7 @@ public class Toolkit {
 		parentPom, mainclass, modules, mavenCacheStrategy, coordinates, releaseVersion, releaseDate,
 		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl,
 		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution, mavenUrl, 
-		resourceDirectories, parallelDownloads;
+		resourceDirectories, parallelDownloads, dependencyNamePattern;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

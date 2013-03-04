@@ -78,6 +78,7 @@ public class ToolkitConfig implements Serializable {
 	MavenCacheStrategy mavenCacheStrategy;
 	boolean failFastOnArtifactResolution;
 	boolean parallelDownloads;
+	String dependencyNamePattern;
 
 	public ToolkitConfig() {
 		// default configuration
@@ -105,6 +106,7 @@ public class ToolkitConfig implements Serializable {
 		registeredRepositories = Arrays.asList(new RemoteRepository("central", "http://repo1.maven.org/maven2", false));		
 		pom = new Pom();
 		dependencyDirectory = null;
+		dependencyNamePattern = Toolkit.DEPENDENCY_FILENAME_PATTERN;
 		apply = new TreeSet<String>();
 		proxies = new ArrayList<Proxy>();
 		modules = new ArrayList<Module>();
@@ -273,6 +275,7 @@ public class ToolkitConfig implements Serializable {
 		}
 		resourceDirectories = readSourceDirectories(map, Key.resourceDirectories, resourceDirectories);
 		dependencyDirectory = readFile(map, Key.dependencyDirectory, null);
+		dependencyNamePattern = map.getString(Key.dependencyNamePattern.name(), dependencyNamePattern);
 		
 		String policy = readString(map, Key.updatePolicy, null);
 		if (!StringUtils.isEmpty(policy)) {
@@ -759,6 +762,18 @@ public class ToolkitConfig implements Serializable {
 		return new File(dependencyDirectory, "src");
 	}
 	
+	public File getProjectDependencyArtifact(Dependency dependency) {
+		File baseFolder = getDependencyDirectory();
+		String filename = Dependency.getFilename(dependency, dependency.extension, dependencyNamePattern);
+		return new File(baseFolder, filename);
+	}
+
+	public File getProjectDependencySourceArtifact(Dependency dependency) {
+		File baseFolder = getDependencySourceDirectory();
+		String filename = Dependency.getFilename(dependency, dependency.extension, dependencyNamePattern);
+		return new File(baseFolder, filename);
+	}
+
 	public List<Proxy> getProxies() {
 		return proxies;
 	}

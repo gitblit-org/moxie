@@ -827,12 +827,12 @@ public class Solver {
 		if (artifactFile != null && artifactFile.exists()) {
 			if (config.getProjectConfig().getDependencyDirectory() != null) {
 				// copy jar
-				File projectFile = new File(config.getProjectConfig().getDependencyDirectory(), artifactFile.getName());
+				File projectFile = config.getProjectConfig().getProjectDependencyArtifact(dependency);
 				if (dependency.isSnapshot() || !projectFile.exists()) {
 					console.debug(1, "copying {0} to {1}", artifactFile.getName(), projectFile.getParent());
 					try {
 						projectFile.getParentFile().mkdirs();
-						FileUtils.copy(projectFile.getParentFile(), artifactFile);
+						FileUtils.copyFile(artifactFile, projectFile);
 					} catch (IOException e) {
 						throw new RuntimeException("Error writing to file " + projectFile, e);
 					}
@@ -841,12 +841,12 @@ public class Solver {
 				// copy source jar
 				Dependency source = dependency.getSourcesArtifact();
 				File sourceFile = moxieCache.getArtifact(source, source.extension);					
-				File projectSourceFile = new File(config.getProjectConfig().getDependencySourceDirectory(), sourceFile.getName());
-				if (dependency.isSnapshot() || !projectSourceFile.exists()) {
+				File projectSourceFile = config.getProjectConfig().getProjectDependencySourceArtifact(dependency);
+				if (sourceFile.exists() && (dependency.isSnapshot() || !projectSourceFile.exists())) {
 					console.debug(1, "copying {0} to {1}", sourceFile.getName(), projectSourceFile.getParent());
 					try {
 						projectSourceFile.getParentFile().mkdirs();
-						FileUtils.copy(projectSourceFile.getParentFile(), sourceFile);
+						FileUtils.copyFile(sourceFile, projectSourceFile);
 					} catch (IOException e) {
 						throw new RuntimeException("Error writing to file " + projectSourceFile, e);
 					}
@@ -1043,7 +1043,7 @@ public class Solver {
 			} else {
 				jar = moxieCache.getArtifact(dependency, dependency.extension); 
 				if (projectFolder != null) {
-					File pJar = new File(projectFolder, jar.getName());
+					File pJar = config.getProjectConfig().getProjectDependencyArtifact(dependency);
 					if (pJar.exists()) {
 						jar = pJar;
 					}

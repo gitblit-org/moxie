@@ -48,6 +48,7 @@ r3: {
      - Added mx:Ftp task
      - Added phase:deploy to Moxie+Ant
      - Added phase:release to Moxie+Ant
+     - Added dependencyNamePattern option for copying artifacts to the project-relative directory
      - Improve source directory resolution to automatically identify common Eclipse project layouts
 
     dependencyChanges:

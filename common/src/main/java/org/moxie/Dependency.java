@@ -16,6 +16,8 @@
 package org.moxie;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -264,30 +266,63 @@ public class Dependency implements Serializable {
 	}
 	
 	public static String getMavenPath(Dependency dep, String ext, String pattern) {
-		return getPath(dep,  ext, pattern, false);
+		return getPath(dep,  ext, pattern, true);
 	}
 	
-	private static String getPath(Dependency dep, String ext, String pattern, boolean groupIdAsPath) {
-		String url = pattern;
-		if (groupIdAsPath) {
-			// Ivy-style paths (preferred, but add complexity)
-			url = url.replace("${groupId}", dep.groupId);
-		} else {
-			// Maven-style paths
-			url = url.replace("${groupId}", dep.groupId.replace('.', '/'));
+	public static String getFilename(Dependency dep, String ext, String pattern) {
+		return getPath(dep, ext, pattern, false);
+	}
+	
+	private static String getPath(Dependency dep, String ext, String pattern, boolean splitGroupId) {
+		Map<String, String> optionals = new HashMap<String, String>();
+		String newpattern = pattern;
+		int op = -1;
+		while ((op = pattern.indexOf('(', op + 1)) > -1) {
+			int cp = pattern.indexOf(')', op) + 1;
+			if (cp > 0) {
+				String s = pattern.substring(op, cp);
+				int ob = s.indexOf('[');
+				int cb = s.indexOf(']', ob) + 1;
+				String field = s.substring(ob, cb);
+				optionals.put(field, s.substring(1, s.length() - 1));
+				newpattern = newpattern.replace(s, field);
+			}
 		}
-		url = url.replace("${artifactId}", dep.artifactId);
-		url = url.replace("${version}", dep.version);
-		url = url.replace("${revision}", StringUtils.isEmpty(dep.revision) ? dep.version : dep.revision);
+		
+		String url = newpattern;
+		if (splitGroupId) {
+			// Maven-style: groupId is split into paths
+			url = replace(url, "[groupId]", dep.groupId.replace('.', '/'), optionals);
+		} else {
+			// Ivy-style: groupId is left in dot-notation
+			url = replace(url, "[groupId]", dep.groupId, optionals);
+		}
+		url = replace(url, "[artifactId]", dep.artifactId, optionals);
+		url = replace(url, "[version]", dep.version, optionals);
+		url = replace(url, "[revision]", StringUtils.isEmpty(dep.revision) ? dep.version : dep.revision, optionals);
+
 		if (ext != null && ext.equalsIgnoreCase(Constants.POM)) {
 			// POMs do not have classifiers
-			url = url.replace("${classifier}", "");
+			url = url.replace("[classifier]", "");
 		} else {
-			url = url.replace("${classifier}", dep.classifier == null ? "":("-" + dep.classifier));
+			url = replace(url, "[classifier]", dep.classifier, optionals);
 		}
 		if (ext != null) {
-			url = url.replace("${ext}", ext);
+			url = replace(url, "[ext]", ext, optionals);
 		}
 		return url;
+	}
+	
+	private static String replace(String target, String key, String value, Map<String, String> substitutes) {
+		String newtarget;
+		if (StringUtils.isEmpty(value)) {
+			newtarget = target.replace(key, "");
+		} else if (substitutes.containsKey(key)) {
+			String sub = substitutes.get(key).replace(key, value);
+			newtarget = target.replace(key, sub);
+		} else {
+		  newtarget = target.replace(key, value);
+		}
+		return newtarget;
 	}
 }

@@ -221,12 +221,10 @@ public class Build {
 					// filesystem path
 					if (extRelative) {
 						// relative to project dependency folder
-						File baseFolder = config.getProjectConfig().getDependencyDirectory();
-						jar = new File(baseFolder, jar.getName());
+						jar = config.getProjectConfig().getProjectDependencyArtifact(dependency);
 						
 						// relative to project dependency source folder
-						baseFolder = config.getProjectConfig().getDependencySourceDirectory();
-						srcJar = new File(baseFolder, srcJar.getName());
+						srcJar = config.getProjectConfig().getProjectDependencySourceArtifact(dependency);
 						
 						jarPath = FileUtils.getRelativePath(projectFolder, jar);
 						srcPath = FileUtils.getRelativePath(projectFolder, srcJar);
@@ -593,13 +591,11 @@ public class Build {
                 } else {
                     // filesystem path
                     if (extRelative) {
-                        // relative to project dependency folder
-                        File baseFolder = config.getProjectConfig().getDependencyDirectory();
-                        jar = new File(baseFolder, jar.getName());
-
-                        // relative to project dependency source folder
-                        baseFolder = config.getProjectConfig().getDependencySourceDirectory();
-                        srcJar = new File(baseFolder, srcJar.getName());
+						// relative to project dependency folder
+						jar = config.getProjectConfig().getProjectDependencyArtifact(dependency);
+						
+						// relative to project dependency source folder
+						srcJar = config.getProjectConfig().getProjectDependencySourceArtifact(dependency);
 
                         jarPath = format("jar://$MODULE_DIR$/{0}!/", FileUtils.getRelativePath(projectFolder, jar));
                         srcPath = format("jar://$MODULE_DIR$/{0}!/", FileUtils.getRelativePath(projectFolder, srcJar));

@@ -23,11 +23,11 @@ import org.moxie.utils.StringUtils;
 
 public class Constants {
 	
-	public static final String MAVEN2_PATTERN = "${groupId}/${artifactId}/${version}/${artifactId}-${revision}${classifier}.${ext}";
+	public static final String MAVEN2_PATTERN = "[groupId]/[artifactId]/[version]/[artifactId]-[revision](-[classifier]).[ext]";
 
-	public static final String MAVEN2_METADATA_PATTERN = "${groupId}/${artifactId}/maven-metadata.${ext}";
+	public static final String MAVEN2_METADATA_PATTERN = "[groupId]/[artifactId]/maven-metadata.[ext]";
 	
-	public static final String MAVEN2_SNAPSHOT_PATTERN = "${groupId}/${artifactId}/${version}/maven-metadata.${ext}";
+	public static final String MAVEN2_SNAPSHOT_PATTERN = "[groupId]/[artifactId]/[version]/maven-metadata.[ext]";
 	
 	public static final String RELEASE = "RELEASE";
 	
