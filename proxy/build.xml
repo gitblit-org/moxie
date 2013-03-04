@@ -22,6 +22,7 @@
 		<!-- Create a zip deployment -->
 		<mx:zip>
 			<artifact />
+			<fileset dir="${basedir}/src/main/config" />
 			<dependencies prefix="ext" />
 		</mx:zip>
 		

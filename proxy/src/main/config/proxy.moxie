@@ -50,7 +50,7 @@ rootFolder: moxie
 # Local artifact repositories relative to rootFolder
 #
 # RESTART REQUIRED
-localRepositories:
+localRepositories :
 - releases
 - snapshots
 
