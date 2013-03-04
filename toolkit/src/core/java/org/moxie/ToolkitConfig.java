@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -766,6 +767,60 @@ public class ToolkitConfig implements Serializable {
 		return apply.contains(value.toLowerCase());
 	}
 	
+	EclipseSettings getEclipseSettings() {
+		EclipseSettings settings = apply(EclipseSettings.class, Toolkit.APPLY_ECLIPSE);
+		return settings;
+	}
+
+	IntelliJSettings getIntelliJSettings() {
+		IntelliJSettings settings = apply(IntelliJSettings.class, Toolkit.APPLY_INTELLIJ);
+		return settings;
+	}
+	
+	<X> X apply(Class<X> clazz, String parameter) {
+		for (String value : apply) {
+			if (value.toLowerCase().startsWith(parameter)) {
+				try {
+					X x = clazz.newInstance();
+					String switches = value.substring(parameter.length());
+					if (switches.length() > 0 && switches.charAt(0) == ':') {
+						switches = switches.substring(1);
+						for (String sw : switches.split("\\+")) {
+							sw = sw.trim();
+							String [] kvp = sw.split("=");
+							String key = kvp[0];
+							if (StringUtils.isEmpty(key)) {
+								continue;
+							}
+							String keyValue;
+							if (kvp.length == 1) {
+								keyValue = "true";
+							} else {
+								keyValue = kvp[1];
+							}
+							try {
+								Field field = clazz.getDeclaredField(key);
+								field.setAccessible(true);
+								Class<?> fieldClass = field.getType();
+								if ((boolean.class == fieldClass) || Boolean.class.isAssignableFrom(fieldClass)) {
+									field.set(x, true);
+								} else if (String.class == fieldClass) {
+									field.set(x, keyValue);
+								}
+							} catch (NoSuchFieldException e) {
+								System.out.println(MessageFormat.format("WARNING: Unrecognized switch \"{1}\" for apply parameter \"{0}\"", parameter, sw));
+							}
+						}				
+					}
+					return x;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
+	}
+
 	List<Proxy> getActiveProxies() {
 		List<Proxy> activeProxies = new ArrayList<Proxy>();
 		for (Proxy proxy : proxies) {

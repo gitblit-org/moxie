@@ -23,11 +23,7 @@ public class Toolkit {
 	
 	public static final String APPLY_ECLIPSE = "eclipse";
 	
-	public static final String APPLY_ECLIPSE_VAR = "eclipse-var";
-
     public static final String APPLY_INTELLIJ = "intellij";
-
-    public static final String APPLY_INTELLIJ_VAR = "intellij-var";
 
     public static final String APPLY_POM = "pom";
 	

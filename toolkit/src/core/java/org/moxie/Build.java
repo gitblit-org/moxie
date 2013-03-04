@@ -128,20 +128,20 @@ public class Build {
 			boolean applied = false;
 			
 			// create/update Eclipse configuration files
-			if (solutionBuilt && (project.apply(Toolkit.APPLY_ECLIPSE)
-					|| project.apply(Toolkit.APPLY_ECLIPSE_VAR))) {
-				writeEclipseClasspath();
-				writeEclipseProject();
+			if (solutionBuilt && (project.getEclipseSettings() != null)) {
+				EclipseSettings settings = project.getEclipseSettings();
+				writeEclipseClasspath(settings);
+				writeEclipseProject(settings);
 				console.notice(1, "rebuilt Eclipse configuration");
 				applied = true;
 			}
 
             // create/update IntelliJ IDEA configuration files
-            if (solutionBuilt && (project.apply(Toolkit.APPLY_INTELLIJ)
-                    || project.apply(Toolkit.APPLY_INTELLIJ_VAR))) {
-           		writeIntelliJProject();
+            if (solutionBuilt && (project.getIntelliJSettings() != null)) {
+            	IntelliJSettings settings = project.getIntelliJSettings();
+           		writeIntelliJProject(settings);
            		writeIntelliJAnt();
-                writeIntelliJClasspath();
+                writeIntelliJClasspath(settings);
                 console.notice(1, "rebuilt IntelliJ IDEA configuration");
                 applied = true;
             }
@@ -172,7 +172,7 @@ public class Build {
 		}
 	}
 	
-	private void writeEclipseClasspath() {
+	private void writeEclipseClasspath(EclipseSettings settings) {
 		if (config.getSourceDirectories().isEmpty()
     			|| config.getPom().isPOM()
     			|| !config.getModules().isEmpty()) {
@@ -198,7 +198,7 @@ public class Build {
 		}
 		
 		// determine how to output dependencies (fixed-path or variable-relative)
-		String kind = getConfig().getProjectConfig().apply(Toolkit.APPLY_ECLIPSE_VAR) ? "var" : "lib";
+		String kind = settings.var ? "var" : "lib";
 		boolean extRelative = getConfig().getProjectConfig().dependencyDirectory != null && getConfig().getProjectConfig().dependencyDirectory.exists();
 		
 		// always link classpath against Moxie artifact cache
@@ -282,6 +282,15 @@ public class Build {
 		}
 		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\" />\n");
 		
+		if (settings.groovy) {
+			sb.append("<classpathentry exported=\"true\" kind=\"con\" path=\"GROOVY_SUPPORT\" />\n");
+			sb.append("<classpathentry exported=\"true\" kind=\"con\" path=\"GROOVY_DSL_SUPPORT\" />\n");
+		}		
+		if (settings.wst){
+			sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jst.j2ee.internal.web.container\" />\n");
+			sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jst.j2ee.internal.module.container\" />\n");
+		}
+
 		StringBuilder file = new StringBuilder();
 		file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		file.append("<classpath>\n");
@@ -291,7 +300,7 @@ public class Build {
 		FileUtils.writeContent(new File(projectFolder, ".classpath"), file.toString());
 	}
 	
-	private void writeEclipseProject() {
+	private void writeEclipseProject(EclipseSettings settings) {
     	if (!config.getModules().isEmpty()) {
     		// do not write project file for a parent descriptor
     		return;
@@ -357,17 +366,42 @@ public class Build {
 		sb.append("\t<projects>\n");
 		sb.append("\t</projects>\n");
 		sb.append("\t<buildSpec>\n");
-		sb.append("\t\t<buildCommand>\n");
+		
+		List<String> buildCommands = new ArrayList<String>();
 		if (config.getSourceDirectories().size() > 0) {
-			sb.append("\t\t\t<name>org.eclipse.jdt.core.javabuilder</name>\n");
+			buildCommands.add("org.eclipse.jdt.core.javabuilder");
+		}
+		
+		if (settings.wst) {
+			buildCommands.add("org.eclipse.wst.common.project.facet.core.builder");
+			buildCommands.add("org.eclipse.wst.validation.validationbuilder");
+			buildCommands.add("org.eclipse.wst.jsdt.core.javascriptValidator");
+		}
+
+		for (String cmd : buildCommands) {
+			sb.append("\t\t<buildCommand>\n");
+			sb.append(MessageFormat.format("\t\t\t<name>{0}</name>\n", cmd));
 			sb.append("\t\t\t<arguments>\n");
 			sb.append("\t\t\t</arguments>\n");
+			sb.append("\t\t</buildCommand>\n");
 		}
-		sb.append("\t\t</buildCommand>\n");
+
 		sb.append("\t</buildSpec>\n");
 		sb.append("\t<natures>\n");
 		if (config.getSourceDirectories().size() > 0) {
-			sb.append("\t\t<nature>org.eclipse.jdt.core.javanature</nature>\n");
+			List<String> natures = new ArrayList<String>();
+			natures.add("org.eclipse.jdt.core.javanature");
+			if (settings.groovy) {
+				natures.add("org.eclipse.jdt.groovy.core.groovyNature");
+			}
+			if (settings.wst){
+				natures.add("org.eclipse.wst.common.modulecore.ModuleCoreNature");
+				natures.add("org.eclipse.wst.common.project.facet.core.nature");
+				natures.add("org.eclipse.wst.jsdt.core.jsNature");
+			}			
+			for (String nature : natures) {
+				sb.append(MessageFormat.format("\t\t<nature>{0}</nature>\n", nature));
+			}
 		}
 		sb.append("\t</natures>\n");
 		sb.append("</projectDescription>\n\n");
@@ -375,7 +409,7 @@ public class Build {
 		FileUtils.writeContent(dotProject, sb.toString());
 	}
 	
-	private void writeIntelliJProject() {
+	private void writeIntelliJProject(IntelliJSettings settings) {
     	if (config.getModules().isEmpty()) {
     		// no modules to write project files
     		return;
@@ -489,7 +523,7 @@ public class Build {
         FileUtils.writeContent(antFile, file.toString());
 	}
 
-    private void writeIntelliJClasspath() {
+    private void writeIntelliJClasspath(IntelliJSettings settings) {
     	if (config.getSourceDirectories().isEmpty()
     			|| config.getPom().isPOM()
     			|| !config.getModules().isEmpty()) {

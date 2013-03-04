@@ -263,22 +263,18 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     				if (arg.startsWith("-git:"))  {
     					project.gitOrigin = arg.substring(5);
     				}
-    			} else if ("-eclipse".equals(arg)) {
-    				// Eclipse uses hard-coded paths to MOXIE_HOME in USER_HOME
-    				project.eclipse = Eclipse.user;
-    				apply.add(Toolkit.APPLY_ECLIPSE);
-    			} else if ("-eclipse-var".equals(arg)) {
-    				// Eclipse uses MOXIE_HOME relative classpath
-    				project.eclipse = Eclipse.var;
-    				apply.add(Toolkit.APPLY_ECLIPSE_VAR);
-                } else if ("-idea".equals(arg)) {
-                    // IntelliJ IDEA uses USER_HOME relative paths
-                    project.idea = IntelliJ.user;
-                    apply.add(Toolkit.APPLY_INTELLIJ);
-                } else if ("-idea-var".equals(arg)) {
-                    // IntelliJ IDEA uses MOXIE_HOME relative classpath
-                    project.idea = IntelliJ.var;
-                    apply.add(Toolkit.APPLY_INTELLIJ_VAR);
+    			} else if (arg.startsWith("-eclipse")) {
+    				if (args.contains("+var")) {
+        				// Eclipse uses variable-relative paths
+    					project.eclipse = Eclipse.var;
+    				} else {
+        				// Eclipse uses hard-coded paths to MOXIE_HOME in USER_HOME
+    					project.eclipse = Eclipse.user;
+    				}
+    				apply.add(arg.substring(1));
+    			} else if (arg.startsWith("-intellij")) {
+   					project.idea = IntelliJ.var;
+    				apply.add(arg.substring(1));
     			} else if (arg.startsWith("-apply:")) {
     				// -apply:a,b,c,d
     				// -apply:a -apply:b
@@ -290,18 +286,16 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     				
     				// special apply cases
     				for (String val : vals) {
-    					if (Toolkit.APPLY_ECLIPSE.equals(val)) {
-    						// Eclipse uses hard-coded paths to MOXIE_HOME in USER_HOME
-    						project.eclipse = Eclipse.user;
-    					} else if (Toolkit.APPLY_ECLIPSE_VAR.equals(val)) {
-    						// Eclipse uses MOXIE_HOME relative classpath
-    						project.eclipse = Eclipse.var;
-                        } else if (Toolkit.APPLY_INTELLIJ.equals(val)) {
-                            // IntelliJ IDEA uses USER_HOME relative classpath
-                            project.idea = IntelliJ.user;
-                        } else if (Toolkit.APPLY_INTELLIJ_VAR.equals(val)) {
-                            // IntelliJ IDEA uses MOXIE_HOME relative classpath
-                            project.idea = IntelliJ.var;
+    					if (val.startsWith(Toolkit.APPLY_ECLIPSE)) {
+    						if (args.contains("+var")) {
+    	        				// Eclipse uses variable-relative paths
+    	    					project.eclipse = Eclipse.var;
+    						} else {
+        						// Eclipse uses hard-coded paths to MOXIE_HOME in USER_HOME
+        						project.eclipse = Eclipse.user;
+    						}
+                        } else if (val.equals(Toolkit.APPLY_INTELLIJ)) {
+   	    					project.idea = IntelliJ.var;
                         }
     				}
     			} else {
@@ -575,7 +569,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     }
 
     private enum IntelliJ {
-        none, user, var;
+        none, var;
 
         boolean includeProject() {
             return this.ordinal() > none.ordinal();

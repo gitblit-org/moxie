@@ -17,7 +17,8 @@ r3: {
      - Fixed property resolution when property is defined in a parent pom and none of the poms are yet in the cache
 
     changes:
-	 - Renamed mx:GitId to mx:CommitId
+     - Support apply switches for Eclipse and IntelliJ
+     - Renamed mx:GitId to mx:CommitId
      - Change moxie.* targets to phase:* targets to better match Maven
      - Replaced dependency repository boost with repository affinities
      - Separated resource directories from source directories
