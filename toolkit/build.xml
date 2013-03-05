@@ -153,6 +153,7 @@
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxJavadoc" />
 			<class name="org.moxie.ant.MxKeys" />
+			<class name="org.moxie.ant.MxPackage" />
 			<class name="org.moxie.ant.MxRun" />
 			<class name="org.moxie.ant.MxTar" />
 			<class name="org.moxie.ant.MxTest" />
@@ -195,6 +196,7 @@
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxJavadoc" />
 			<class name="org.moxie.ant.MxKeys" />
+			<class name="org.moxie.ant.MxPackage" />
 			<class name="org.moxie.ant.MxRun" />
 			<class name="org.moxie.ant.MxTar" />
 			<class name="org.moxie.ant.MxTest" />
@@ -206,7 +208,6 @@
 			
 			<!-- all -->
 			<class name="org.moxie.ant.MxDoc" />
-			<class name="org.moxie.ant.MxPackage" />
 			<class name="org.moxie.ant.Main" />
 
 			<resource>

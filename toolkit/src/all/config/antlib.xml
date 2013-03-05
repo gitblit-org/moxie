@@ -20,6 +20,7 @@
 	<taskdef name="javac" classname="org.moxie.ant.MxJavac" />
 	<taskdef name="javadoc" classname="org.moxie.ant.MxJavadoc" />
 	<taskdef name="keys" classname="org.moxie.ant.MxKeys" />
+	<taskdef name="package" classname="org.moxie.ant.MxPackage" />
 	<taskdef name="run" classname="org.moxie.ant.MxRun" />
 	<taskdef name="tar" classname="org.moxie.ant.MxTar" />
 	<taskdef name="test" classname="org.moxie.ant.MxTest" />
@@ -31,5 +32,4 @@
 	
 	<!-- All -->
 	<taskdef name="doc" classname="org.moxie.ant.MxDoc" />
-	<taskdef name="package" classname="org.moxie.ant.MxPackage" />
 </antlib>

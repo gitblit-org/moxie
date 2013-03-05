@@ -1,0 +1,5 @@
+## mx:Package %PRO% %ALL%
+
+%BEGINXML%
+<mx:package />
+%ENDXML%
