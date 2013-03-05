@@ -165,6 +165,7 @@
 
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
+				<fileset dir="${basedir}/src/pro/resources" />
 			</resource>
 			<resource prefix="org/moxie">
 				<fileset file="${basedir}/src/pro/config/antlib.xml" />
@@ -212,6 +213,7 @@
 
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
+				<fileset dir="${basedir}/src/pro/resources" />
 				<fileset dir="${basedir}/src/all/resources" />
 			</resource>
 			<resource prefix="org/moxie">

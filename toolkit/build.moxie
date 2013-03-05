@@ -12,6 +12,7 @@ sourceDirectories:
 - { scope: test, dir: 'src/test/java' }
 resourceDirectories:
 - compile 'src/core/resources' :core :pro
+- compile 'src/pro/resources' :pro
 - compile 'src/all/resources'
 dependencies:
 - provided 'org.apache.ant:ant:${ant.version}' :core :pro

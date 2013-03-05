@@ -190,8 +190,16 @@ public abstract class MxTask extends Task {
 			}
 		}
 	}
+
+	protected boolean extractResource(File outputFolder, String resource) {
+		return extractResource(outputFolder, resource, resource, true);
+	}
 	
-	protected void extractResource(File outputFolder, String resource) {
+	protected boolean extractResource(File outputFolder, String resource, String asResource, boolean overwrite) {
+		File targetFile = new File(outputFolder, asResource);
+		if (targetFile.exists() && !overwrite) {
+			return false;
+		}
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		try {
 			InputStream is = getClass().getResourceAsStream("/" + resource);
@@ -204,9 +212,9 @@ public abstract class MxTask extends Task {
 		} catch (Exception e) {
 			getConsole().error(e, "Can't extract {0}!", resource);
 		}
-		File file = new File(outputFolder, resource);
-		file.getParentFile().mkdirs();
-		FileUtils.writeContent(file, os.toByteArray());
+		targetFile.getParentFile().mkdirs();
+		FileUtils.writeContent(targetFile, os.toByteArray());
+		return true;
 	}
 	
 	protected boolean hasClass(String classname) {

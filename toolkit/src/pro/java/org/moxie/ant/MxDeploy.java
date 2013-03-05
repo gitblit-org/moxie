@@ -27,12 +27,14 @@ import org.moxie.Metadata;
 import org.moxie.MetadataReader;
 import org.moxie.Pom;
 import org.moxie.PurgePolicy;
+import org.moxie.utils.FileUtils;
 
 
 public class MxDeploy extends MxRepositoryTask {
 	
 	private int revisionRetentionCount = -1;
 	private int revisionPurgeAfterDays = -1;
+	private boolean generateIndexPage;
 	
 	public MxDeploy() {
 		super();
@@ -49,7 +51,11 @@ public class MxDeploy extends MxRepositoryTask {
 	public void setRevisionPurgeAfterDays(int value) {
 		this.revisionPurgeAfterDays = value;
 	}
-	
+
+	public void setGenerateIndexPage(boolean value) {
+		this.generateIndexPage = value;
+	}
+
 	protected PurgePolicy getPurgePolicy() {
 		PurgePolicy policy;
 		if (baseDir == null) {
@@ -83,6 +89,7 @@ public class MxDeploy extends MxRepositoryTask {
 		
 		Dependency asDependency = new Dependency(pom.getCoordinates());
 		IMavenCache artifactCache = getArtifactCache(pom.isSnapshot());
+		File cacheRoot = artifactCache.getRootFolder();
 		File artifactFile = artifactCache.getArtifact(asDependency, asDependency.extension);
 		File artifactDir = artifactFile.getParentFile();
 		File sourceDir = build.getConfig().getTargetDirectory();
@@ -93,6 +100,19 @@ public class MxDeploy extends MxRepositoryTask {
 			deploySnapshot(pom, sourceDir, artifactDir, artifactCache);
 		} else {
 			deployRelease(pom, sourceDir, artifactDir, true);
+		}
+		
+		if (generateIndexPage) {
+			boolean extracted = extractResource(cacheRoot, "maven/index.html", "index.html", false);			
+			extractResource(cacheRoot, "maven/favicon.png", "favicon.png", false);
+			
+			if (extracted) {
+				// substitute properties and re-write index
+				File index = new File(cacheRoot, "index.html");
+				String content = FileUtils.readContent(index, "\n");
+				content = getProject().replaceProperties(content);
+				FileUtils.writeContent(index, content);
+			}
 		}
 	}
 	
@@ -147,5 +167,5 @@ public class MxDeploy extends MxRepositoryTask {
 		
 		// update ARTIFACTS metadata
 		updateArtifactsMetadata(artifactDir, asDependency);
-	}
+	}	
 }
