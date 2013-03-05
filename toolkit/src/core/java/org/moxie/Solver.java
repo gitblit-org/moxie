@@ -24,6 +24,7 @@ import java.net.URLClassLoader;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,10 +66,10 @@ public class Solver {
 	private final MoxieCache moxieCache;
 	private final Console console;
 	
+	private final Map<Scope, Collection<Dependency>> requiredDependencies;
 	private final Map<Scope, Set<Dependency>> solutions;	
 	private final Map<Scope, List<File>> classpaths;
 	private final Set<String> registeredUrls;
-	
 	private List<Build> linkedModuleBuilds;
 	
 	private boolean silent;
@@ -79,6 +80,7 @@ public class Solver {
 		this.config = config;
 		
 		this.moxieCache = new MoxieCache(config.getMoxieRoot());
+		this.requiredDependencies = new HashMap<Scope, Collection<Dependency>>();
 		this.solutions = new HashMap<Scope, Set<Dependency>>();
 		this.classpaths = new HashMap<Scope, List<File>>();
 		this.linkedModuleBuilds = new ArrayList<Build>();
@@ -86,6 +88,12 @@ public class Solver {
 		this.console = console == null ? new Console(config.isColor()) : console;
 		
 		this.moxieCache.setMavenCacheStrategy(config.getMavenCacheStrategy());
+		
+		// define required dependencies
+		requiredDependencies.put(Scope.build,resolveAliasedDependencies(
+				new Dependency("mx:commons-net"),
+				new Dependency("mx:oro")
+				));
 	}
 	
 	boolean isOnline() {
@@ -123,8 +131,10 @@ public class Solver {
 		resolveAliasedDependencies(config.getPom().getDependencies(false).toArray(new Dependency[0]));
 	}
 	
-	private void resolveAliasedDependencies(Dependency... dependencies) {
+	private List<Dependency> resolveAliasedDependencies(Dependency... dependencies) {
+		List<Dependency> list = new ArrayList<Dependency>();
 		for (Dependency dep : dependencies) {
+			list.add(dep);
 			// check for alias
 			String name = null;
 			if (StringUtils.isEmpty(dep.artifactId) && config.getAliases().containsKey(dep.groupId)) {
@@ -155,6 +165,7 @@ public class Solver {
 				}
 			}
 		}
+		return list;
 	}
 		
 	public List<Build> getLinkedModules() {
@@ -434,6 +445,11 @@ public class Solver {
 		// assemble the flat, ordered list of dependencies
 		// this list may have duplicates/conflicts
 		List<Dependency> all = new ArrayList<Dependency>();
+		
+		// add in required dependencies (designed for build scope)
+		if (requiredDependencies.containsKey(solutionScope)) {
+			all.addAll(requiredDependencies.get(solutionScope));
+		}
 		for (Dependency dependency : config.getPom().getDependencies(solutionScope, Constants.RING1)) {
 			console.debug(dependency.getDetailedCoordinates());
 			all.add(dependency);

@@ -15,29 +15,13 @@
  */
 package org.moxie.ant;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.taskdefs.optional.net.RExecTask;
-import org.moxie.Build;
-import org.moxie.Dependency;
-import org.moxie.Toolkit.Key;
+import org.moxie.ftp.FTPTask;
 
-
-public class MxFtp extends RExecTask {
+public class MxFtp extends FTPTask {
 
 	public MxFtp() {
 		super();
 		setTaskName("mx:ftp");
 	}
-	
-	protected void loadDependencies() {
-		Build build = (Build) getProject().getReference(Key.build.referenceId());
-		build.getSolver().loadDependency(new Dependency("mx:commons-net"));
-	}
-	
-	@Override
-	public void execute() throws BuildException {
-		loadDependencies();
-		
-		super.execute();
-	}
+
 }

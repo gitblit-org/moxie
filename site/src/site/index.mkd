@@ -49,12 +49,12 @@ The Moxie binaries and this site are built with Moxie.
 The %CORE% package includes the tasks necessary to retrieve & report on Maven-sourced dependencies, to generate Eclipse and IntelliJ IDEA project files, and to setup Ant build properties so you don't have to.
 
 <br/><br/>
-<h4>Pro Package (350KB)</h4>
+<h4>Pro Package (400KB)</h4>
 
 The %PRO% package builds on the <b>core</b> package by adding Moxie Extension (<code>mx:</code>) tasks of standard Ant tasks.  These tasks use defaults derived from your <code>build.moxie</code> descriptor to compile your sources, execute your unit tests, and package your compiled code.
 
 <br/><br/>
-<h4>All Package (600KB)</h4>
+<h4>All Package (650KB)</h4>
 
 The %ALL% package includes the <b>pro</b> package plus <code>mx:doc</code>, the Moxie site/document-generation tool.
 <br/><br/>
