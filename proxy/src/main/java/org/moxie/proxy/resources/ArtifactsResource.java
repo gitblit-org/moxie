@@ -91,6 +91,11 @@ public class ArtifactsResource extends BaseResource {
 			return MessageFormat.format(message, repository);
 		}
 	}
+	
+	String getRepositoryId() {
+		String repository = getBasePath();
+		return "moxie" + Character.toUpperCase(repository.charAt(0)) + repository.substring(1);
+	}
 
 	String getMoxieSnippet(Pom pom) {		
 		StringBuilder sb = new StringBuilder();
@@ -105,8 +110,9 @@ public class ArtifactsResource extends BaseResource {
 			sb.append(MessageFormat.format("- '{'\n    active: true\n    id: moxieProxy\n    protocol: {0}\n    host: {1}\n    port: {2,number,0}\n    username: username\n    password: password\n    proxyHosts: {3}\n'}'", getRootRef().getScheme(), getRootRef().getHostDomain(), getProxyConfig().getProxyPort(), repository.getHost()));
 		} else {
 			// repository settings
-			sb.append("repositories:\n");
-			sb.append(" - ").append(getRepositoryUrl());
+			sb.append("registeredRepositories:\n");
+			sb.append(MessageFormat.format(" - { id: '{0}', url: '{1}' }\n", getRepositoryId(), getRepositoryUrl()));
+			sb.append(MessageFormat.format("repositories: 'central, '{0}'\n", getRepositoryId()));			
 		}
 		return sb.toString();
 	}
@@ -137,7 +143,7 @@ public class ArtifactsResource extends BaseResource {
 		} else {
 			// repository settings
 			sb.append("<repository>\n");
-			sb.append(StringUtils.toXML("id", "moxie" + Character.toUpperCase(repository.charAt(0)) + repository.substring(1)));
+			sb.append(StringUtils.toXML("id", getRepositoryId()));
 			sb.append(StringUtils.toXML("name", Constants.getName() + " " + repository));
 			sb.append(StringUtils.toXML("url", getRepositoryUrl()));		
 			sb.append(StringUtils.toXML("layout", "default"));		
@@ -183,7 +189,7 @@ public class ArtifactsResource extends BaseResource {
 			// proxy settings
 		} else {
 			// repository settings
-			sb.append(MessageFormat.format("@GrabResolver(\n\tname=''moxieProxy'',\n\troot=''{0}'')", getRepositoryUrl()));
+			sb.append(MessageFormat.format("@GrabResolver(\n\tname=''{0}'',\n\troot=''{1}'')", getRepositoryId(), getRepositoryUrl()));
 		}
 		return StringUtils.escapeForHtml(sb.toString(), false);		
 	}
@@ -199,7 +205,7 @@ public class ArtifactsResource extends BaseResource {
 		} else {
 			// repository settings
 			sb.append("<resolvers>\n");
-		    sb.append(MessageFormat.format("   <ibiblio name=\"moxieProxy\" m2compatible=\"true\"\n\troot=\"{0}\" />\n", getRepositoryUrl()));
+		    sb.append(MessageFormat.format("   <ibiblio name=\"{0}\" m2compatible=\"true\"\n\troot=\"{1}\" />\n", getRepositoryId(), getRepositoryUrl()));
 		    sb.append("</resolvers>");
 		}
 		return StringUtils.escapeForHtml(sb.toString(), false);		
