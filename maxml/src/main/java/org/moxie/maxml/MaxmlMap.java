@@ -19,9 +19,11 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * MaxmlMap is a subclass of LinkedHashMap that forces keys to lowercase.
@@ -102,6 +104,27 @@ public class MaxmlMap extends LinkedHashMap<String, Object> {
 			Object o = get(key);
 			if (o instanceof Date) {
 				return (Date) o;
+			} else if (o instanceof String) {
+				// try to convert the string to a date
+				DateFormat canonical = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+				DateFormat iso8601 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+				DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+				Pattern datePattern = Pattern.compile("^[0-9]{4}-[0-9]{2}-[0-9]{2}");
+				if (datePattern.matcher((String) o).find()) {
+					DateFormat[] formats = { canonical, iso8601, date };
+					for (DateFormat df : formats) {
+						try {
+							Date aDate = df.parse((String) o);
+							// reset milliseconds to 0
+							Calendar cal = Calendar.getInstance();
+							cal.setTime(aDate);
+							cal.set(Calendar.MILLISECOND, 0);
+							return cal.getTime();
+						} catch (Throwable t) {
+							// t.printStackTrace();
+						}
+					}
+				}
 			}
 		}
 		return defaultValue;

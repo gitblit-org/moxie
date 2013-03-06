@@ -182,7 +182,7 @@ public class MxDoc extends MxTask {
 		doc.atomFeed = feed;
 	}
 
-	protected void setToken(String token, String value) {
+	protected void setToken(String token, Object value) {
 		if (value == null) {
 			value = "${" + token + "}";
 		}
@@ -215,12 +215,15 @@ public class MxDoc extends MxTask {
 		setToken(Toolkit.Key.version.projectId(), build.getPom().version);
 		setToken(Toolkit.Key.coordinates.projectId(), build.getPom().getCoordinates());
 		
-		setToken(Toolkit.Key.buildDate.projectId(), build.getBuildDate());
+		setToken(Toolkit.Key.buildDate.projectId(), build.getBuildDateString());
 		setToken(Toolkit.Key.buildTimestamp.projectId(), build.getBuildTimestamp());
 		
 		setToken(Toolkit.Key.releaseVersion.projectId(), build.getPom().releaseVersion);
-		setToken(Toolkit.Key.releaseDate.projectId(), build.getPom().releaseDate);
-		
+		setToken(Toolkit.Key.releaseDate.projectId(), build.getReleaseDateString());
+
+		setToken(Toolkit.Key.releaseDate.referenceId(), build.getReleaseDate());
+		setToken(Toolkit.Key.buildDate.referenceId(), build.getBuildDate());
+
 		for (Map.Entry<String, String> entry : build.getPom().getProperties().entrySet()) {
 			setToken(entry.getKey(), entry.getValue());
 		}

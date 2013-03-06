@@ -254,7 +254,7 @@ public class ToolkitConfig implements Serializable {
 		
 		mainclass = readString(map, Key.mainclass, null);
 		pom.releaseVersion = readString(map, Key.releaseVersion, pom.releaseVersion);
-		pom.releaseDate = readString(map, Key.releaseDate, pom.releaseDate);
+		pom.releaseDate = map.getDate(Key.releaseDate.name(), pom.releaseDate);
 
 		// build parameters
 		mavenCacheStrategy = MavenCacheStrategy.fromString(map.getString(Key.mavenCacheStrategy.name(), mavenCacheStrategy == null ? null : mavenCacheStrategy.name()));
@@ -553,7 +553,7 @@ public class ToolkitConfig implements Serializable {
 		}
 		return defaultValue;
 	}
-
+	
 	File readFile(MaxmlMap map, Key key, File defaultValue) {
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());

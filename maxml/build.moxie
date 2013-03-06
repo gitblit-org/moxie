@@ -1,5 +1,5 @@
 name: Moxie-Maxml
-description: Maxml parser
+description: 'a parser for Maxml, a YAML-like format'
 groupId: org.moxie
 artifactId: maxml
 parent: ../build.moxie

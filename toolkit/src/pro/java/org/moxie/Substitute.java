@@ -17,13 +17,13 @@ package org.moxie;
 
 public class Substitute {
 	public String token;
-	public String value;
+	public Object value;
 	public boolean isTemplate;
 	
 	public Substitute() {
 	}
 
-	public Substitute(String token, String value) {
+	public Substitute(String token, Object value) {
 		this.token = token;
 		this.value = value;
 	}
@@ -36,7 +36,7 @@ public class Substitute {
 		this.value = value;
 	}
 	
-	public void set(String token, String value) {
+	public void set(String token, Object value) {
 		this.token = token;
 		this.value = value;
 	}

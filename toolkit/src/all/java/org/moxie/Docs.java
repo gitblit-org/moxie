@@ -192,7 +192,7 @@ public class Docs {
 					
 					for (Substitute sub : doc.substitutions) {
 						if (link.processSubstitutions || sub.isTemplate) {
-							content = content.replace(sub.token, sub.value);
+							content = content.replace(sub.token, sub.value.toString());
 						}
 					}
 					for (Regex regex : doc.regexes) {
@@ -362,7 +362,7 @@ public class Docs {
 
 					for (Substitute sub : doc.substitutions) {
 						if (link.processSubstitutions || sub.isTemplate) {
-							content = content.replace(sub.token, sub.value);
+							content = content.replace(sub.token, sub.value.toString());
 						}
 					}
 					
@@ -514,7 +514,7 @@ public class Docs {
 					processTemplates(doc, page);
 					for (Substitute sub : doc.substitutions) {
 						if (page.processSubstitutions || sub.isTemplate) {
-							content = content.replace(sub.token, sub.value);
+							content = content.replace(sub.token, sub.value.toString());
 						}
 					}
 					for (Regex regex : doc.regexes) {

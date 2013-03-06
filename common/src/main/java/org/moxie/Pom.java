@@ -19,6 +19,7 @@ import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -54,7 +55,7 @@ public class Pom {
 	public String parentVersion;
 	
 	public String releaseVersion;
-	public String releaseDate;
+	public Date releaseDate;
 
 	public String forumUrl;
 	public String socialNetworkUrl;
@@ -74,7 +75,6 @@ public class Pom {
 	private final List<Person> developers;
 	private final List<Person> contributors;
 	
-	@SuppressWarnings("serial")
 	public Pom() {
 		version = "";
 		managedVersions = new TreeMap<String, String>();

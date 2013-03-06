@@ -2,7 +2,7 @@
 # Moxie project descriptor
 #
 name: Moxie Build Toolkit
-description: an ANT task suite
+description: 'tools to faciltate building Java projects'
 groupId: org.moxie
 artifactId: moxie-parent
 version: 0.6.0-SNAPSHOT
@@ -12,7 +12,7 @@ inceptionYear: 2012
 
 # Current stable release
 releaseVersion: 0.5.0
-releaseDate: '2013-01-23'
+releaseDate: 2013-01-23
 
 # Project urls
 url: 'http://moxie.gitblit.com'

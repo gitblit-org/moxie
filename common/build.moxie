@@ -1,5 +1,5 @@
 name: Moxie-Common
-description: Common classes for Moxie
+description: 'common classes for Moxie'
 groupId: org.moxie
 artifactId: moxie-common
 parent: ../build.moxie

@@ -159,9 +159,12 @@ public class MxInit extends MxTask {
 			}
 			setProjectProperty(Key.mainclass, buildConfig.getProjectConfig().getMainclass());
 			setProjectProperty(Key.releaseVersion, buildConfig.getPom().releaseVersion);
-			setProjectProperty(Key.releaseDate, buildConfig.getPom().releaseDate);
-			setProjectProperty(Key.buildDate, build.getBuildDate());
+			setProjectProperty(Key.releaseDate, build.getReleaseDateString());
+			setProjectProperty(Key.buildDate, build.getBuildDateString());
 			setProjectProperty(Key.buildTimestamp, build.getBuildTimestamp());
+
+			setReference(Key.buildDate, build.getBuildDate());
+			setReference(Key.releaseDate, build.getReleaseDate());
 
 			setProjectProperty(Key.outputDirectory, buildConfig.getOutputDirectory(null).toString());
 			setProjectProperty(Key.compileOutputDirectory, buildConfig.getOutputDirectory(Scope.compile).toString());
@@ -214,7 +217,7 @@ public class MxInit extends MxTask {
 			PathElement element = sources.createPathElement();
 			element.setLocation(file);
 		}
-		addReference(key, sources, true);
+		setPathReference(key, sources, true);
 	}
 	
 	private void setClasspath(Key key, Build build, Scope scope, boolean includeResources) {
@@ -255,7 +258,7 @@ public class MxInit extends MxTask {
 			element.setLocation(jar);
 		}
 
-		addReference(key, cp, true);
+		setPathReference(key, cp, true);
 	}
 	
 	private void setDependencypath(Key key, Build build, Scope scope) {
@@ -265,7 +268,7 @@ public class MxInit extends MxTask {
 			PathElement element = cp.createPathElement();
 			element.setLocation(jar);
 		}
-		addReference(key, cp, true);
+		setPathReference(key, cp, true);
 	}
 	
 	private List<File> buildDependentProjectsClasspath(Build build) {

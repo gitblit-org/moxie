@@ -164,7 +164,7 @@ public class MxWebXml extends MxTask {
 			
 			String content = sb.toString();
 			for (Substitute sub : substitutions) {
-				content = content.replace(sub.token, sub.value);
+				content = content.replace(sub.token, sub.value.toString());
 			}
 
 			// Save the merged web.xml to the destination file

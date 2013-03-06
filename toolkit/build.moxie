@@ -1,5 +1,5 @@
 name: Moxie-Toolkit
-description: Java Project Build Toolkit for Ant
+description: 'a Java build toolkit for ANT'
 groupId: org.moxie
 artifactId: moxie-toolkit
 parent: ../build.moxie

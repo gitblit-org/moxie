@@ -1,5 +1,5 @@
 name: Moxie+Ant
-description: Moxie+Ant distribution
+description: 'Moxie+Ant distribution'
 groupId: org.moxie
 artifactId: moxie+ant
 parent: ../build.moxie

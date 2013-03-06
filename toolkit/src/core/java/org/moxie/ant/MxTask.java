@@ -165,15 +165,22 @@ public abstract class MxTask extends Task {
 			log(prop, value, false);
 		}
 	}
+	
+	protected void setReference(Key prop, Object obj) {
+		if (obj == null) {
+			return;
+		}
+		getProject().addReference(prop.referenceId(), obj);
+	}
 
-	protected void addReference(Key prop, Object obj, boolean split) {
-		// add path as both a property and a reference
+	protected void setPathReference(Key prop, Object obj, boolean split) {
+		// set path as both a property and a reference
 		// the property is accessible from all Ants
 		// the reference is accessible internally from mx tasks
 		// and when using Moxie on the Ant classpath (-lib and Moxie+Ant)
 		getProject().setProperty(prop.projectId(), obj.toString());
 		log(prop.projectId(), obj.toString(), split);
-		getProject().addReference(prop.referenceId(), obj);
+		setReference(prop, obj);
 	}
 	
 	protected void log(String key, String value, boolean split) {

@@ -1,7 +1,7 @@
 <#include "macros.ftl" >
 
 <!-- CURRENT RELEASE -->
-<@LogMacro title="Current Release" log=release version=project.releaseVersion date=project.releaseDate?string("yyyy-MM-dd") description="this is the current stable release" />
+<@LogMacro title="Current Release" log=release version=project.releaseVersion date=reference.releaseDate?string("yyyy-MM-dd") description="this is the current stable release" />
 
 <!-- NEXT RELEASE -->
 <#if snapshot??>

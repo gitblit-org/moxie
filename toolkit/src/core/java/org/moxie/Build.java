@@ -73,16 +73,27 @@ public class Build {
 		return false;
 	}
 	
-	public Date getDate() {
+	public Date getBuildDate() {
 		return buildDate;
 	}
 	
-	public String getBuildDate() {
+	public String getBuildDateString() {
 		return new SimpleDateFormat("yyyy-MM-dd").format(buildDate);
 	}
 
 	public String getBuildTimestamp() {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(buildDate);
+	}
+	
+	public Date getReleaseDate() {
+		return config.getPom().releaseDate;
+	}
+	
+	public String getReleaseDateString() {
+		if (config.getPom().releaseDate != null) {
+			return new SimpleDateFormat("yyyy-MM-dd").format(config.getPom().releaseDate);
+		}
+		return null;
 	}
 
 	public Solver getSolver() {

@@ -123,11 +123,15 @@ public class MxVersion extends MxTask {
 		if (StringUtils.isEmpty(projectName)) {
 			projectName = groupId + ":" + artifactId;
 		}
+
 		String version;
 		String releaseVersion = map.getString(Toolkit.Key.releaseVersion.name(), "");
-		String releaseDate = map.getString(Toolkit.Key.releaseDate.name(), "");
-		String buildDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-
+		
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Date releaseDate = map.getDate(Toolkit.Key.releaseDate.name(), null);
+		String releaseDateStr = releaseDate == null ? null : df.format(releaseDate);
+		Date buildDate = new Date();
+		String buildDateStr = buildDate == null ? null : df.format(buildDate);
 		
 		ArtifactVersion artifactVersion = new ArtifactVersion(
 				map.getString(Constants.Key.version.name(), "0.0.0-SNAPSHOT"));
@@ -146,17 +150,18 @@ public class MxVersion extends MxTask {
 			title("Preparing RELEASE", releaseVersion);
 			version = releaseVersion;
 			releaseDate = buildDate;
+			releaseDateStr = buildDateStr;
 			replacements.add(new Substitute(Toolkit.Key.version.name(), releaseVersion));
 			replacements.add(new Substitute(Toolkit.Key.releaseVersion.name(), releaseVersion));
-			replacements.add(new Substitute(Toolkit.Key.releaseDate.name(), releaseDate));
+			replacements.add(new Substitute(Toolkit.Key.releaseDate.name(), releaseDateStr));
 			updateDescriptor(replacements);
 			
 			// update release log
 			properties.put(Toolkit.Key.name.projectId(), projectName);
 			properties.put(Toolkit.Key.version.projectId(), releaseVersion);
-			properties.put(Toolkit.Key.buildDate.projectId(), releaseDate);
+			properties.put(Toolkit.Key.buildDate.projectId(), releaseDateStr);
 			properties.put(Toolkit.Key.releaseVersion.projectId(), releaseVersion);
-			properties.put(Toolkit.Key.releaseDate.projectId(), releaseDate);
+			properties.put(Toolkit.Key.releaseDate.projectId(), releaseDateStr);
 			updateReleaseLog(stage, releaseLog, properties);
 			break;
 		case snapshot:
@@ -202,8 +207,8 @@ public class MxVersion extends MxTask {
 		getProject().setProperty(Toolkit.Key.artifactId.projectId(), artifactId);
 		getProject().setProperty(Toolkit.Key.version.projectId(), version);
 		getProject().setProperty(Toolkit.Key.releaseVersion.projectId(), releaseVersion);
-		getProject().setProperty(Toolkit.Key.releaseDate.projectId(), releaseDate);
-		getProject().setProperty(Toolkit.Key.buildDate.projectId(), buildDate);
+		getProject().setProperty(Toolkit.Key.releaseDate.projectId(), releaseDateStr);
+		getProject().setProperty(Toolkit.Key.buildDate.projectId(), buildDateStr);
 		
 		if (isShowTitle()) {
 			// 3 is for "[] "

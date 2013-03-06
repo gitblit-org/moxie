@@ -1,5 +1,5 @@
 name: Moxie-Proxy
-description: Stand-alone Maven 2 artifact server and artifact proxy
+description: 'a Maven 2-compatible artifact server and artifact proxy'
 parent: ../build.moxie
 artifactId: moxie-proxy
 modules:
