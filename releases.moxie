@@ -5,14 +5,9 @@ r4: {
     title: ${project.name} ${project.version} released
     id: ${project.version}
     date: ${project.buildDate}
-    note: ~
-    text: ~
-    security: ~
-    fixes: ~
-    changes: ~
-    additions: ~
-    dependencyChanges: ~
-    contributors: ~
+    text: Minor fix for module property loading from parent projects and global settings
+    fixes:
+     - Fixed property loading
 }
 
 #
@@ -26,7 +21,7 @@ r3: {
           Please delete your .moxie/data folder before upgrading!
           Please change all mxp and mxr property references to project property references!
           ''
-    text: Milestone 3: Enhanced documentation features and more intuitive syntax
+    text: Milestone 3: All major tasks implemented, enhanced documentation features, and more intuitive syntax
 
     fixes:
      - Resolve all POM properties in dependencies and managedDependencies after parsing is completed and properties are inherited

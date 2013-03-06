@@ -108,6 +108,7 @@ public class MxInit extends MxTask {
 			
 			// set any external properties into the project
 			for (Map.Entry<String, String> entry : buildConfig.getExternalProperties().entrySet()) {
+				getConsole().debug("setting external property {0} = {1}", entry.getKey(), entry.getValue());
 				getProject().setProperty(entry.getKey(), entry.getValue());
 			}
 			

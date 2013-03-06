@@ -335,8 +335,11 @@ public class ToolkitConfig implements Serializable {
 		}
 		
 		// maxml build properties
-		readExternalProperties();
-
+		if (file != null) {
+			// config object represents actual file, not internal default resource
+			importProperties(file.getParentFile());
+		}
+		
 		return this;
 	}
 	
@@ -853,18 +856,18 @@ public class ToolkitConfig implements Serializable {
 		return null;
 	}
 	
-	void readExternalProperties() {
-		if (file == null) {
-			// config object represents internal default resource
+	void importProperties(File directory) {
+		if (directory == null || !directory.exists()) {
 			return;
 		}
-		readExternalProperties(new File(baseDirectory, "moxie.properties"));
-		readExternalProperties(new File(baseDirectory, "project.properties"));
-		readExternalProperties(new File(baseDirectory, file.getName().substring(0, file.getName().lastIndexOf('.')) + ".properties"));
+		importExternalProperties(new File(directory, "moxie.properties"));
+		importExternalProperties(new File(directory, "project.properties"));
+		importExternalProperties(new File(directory, file.getName().substring(0, file.getName().lastIndexOf('.')) + ".properties"));
 	}
 	
-	void readExternalProperties(File propsFile) {
+	void importExternalProperties(File propsFile) {
 		if (propsFile.exists()) {
+			// System.out.println("importing " + propsFile.getAbsolutePath());
 			try {
 				Properties props = new Properties();
 				FileInputStream is = new FileInputStream(propsFile);
