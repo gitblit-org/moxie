@@ -1,10 +1,10 @@
 #
-# ${project.version} release
+# 0.6.0 release
 #
 r3: {
-    title: Moxie ${project.version} Released
-    id: ${project.version}
-    date: ${project.buildDate}
+    title: Moxie 0.6.0 Released
+    id: 0.6.0
+    date: 2013-03-06
     note: ''
           Please delete your .moxie/data folder before upgrading!
           Please change all mxp and mxr property references to project property references!
@@ -94,6 +94,6 @@ r1: {
 #
 # Release log data
 #
-release: &r2
-snapshot: &r3
-releases: &r[1..2]
+release: &r3
+snapshot: ~
+releases: &r[1..3]
