@@ -82,7 +82,7 @@
 <li><a href='moxie+ant.html'>moxie+ant</a></li>
 <li><a href='proxy.html'>proxy</a></li>
 <li><a href='maxml.html'>maxml</a></li>
-<li><a href='releasenotes.html'>release notes</a></li>
+<li class='active'><a href='releasenotes.html'>release notes</a></li>
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
@@ -113,25 +113,51 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 id="H1">mx:GenJar <span class='label label-success'>pro</span> <span class='label label-info'>all</span></h2>
-<p><pre class='prettyprint lang-xml'>
-&lt;mx:genjar destfile=&quot;moxie-all.jar&quot;&gt;
-	&lt;classfilter&gt;
-		&lt;exclude name=&quot;org.apache.&quot; /&gt;
-	&lt;/classfilter&gt;
-	&lt;class name=&quot;org.moxie.ant.MaxSetup&quot; /&gt;
-	&lt;class name=&quot;org.moxie.ant.MaxJar&quot; /&gt;
-	&lt;class name=&quot;org.moxie.ant.MaxExtract&quot; /&gt;
-	&lt;class name=&quot;org.moxie.ant.MaxDoc&quot; /&gt;
-	&lt;resource file=&quot;${basedir}/defs/all/tasks.properties&quot; /&gt;
-			
-	&lt;resource&gt;
-		&lt;fileset dir=&quot;${moxie.bin}&quot; includes=&quot;*.zip&quot; /&gt;					
-	&lt;/resource&gt;
-&lt;/mx:genjar&gt;
-</pre>
+
+<!-- CURRENT RELEASE -->
+	<h3 id="0.6.1" class="section"><a href="#0.6.1" class="sectionlink"><i class="icon-share-alt"> </i></a>Current Release (0.6.1) <small>this is the current stable release</small></h3>
+	<table class="table">
+		<tbody>
+			<tr>
+				<td style="background-color:inherit;width:100px">2013-03-06</td>
+				<td style="background-color:inherit;">		<p class="lead">Moxie Build Toolkit 0.6.1 released</p>		
+	
+	
+		<blockquote><p>Minor fix for module property loading from parent projects and global settings</p></blockquote>		
+
+
+   	<h4>fixes</h4>
+	<ul>
+		<li>Fixed property loading</li>
+	</ul>
+</td>
+			</tr>
+		</tbody>
+	</table>
+
+<!-- NEXT RELEASE -->
+	<h3 id="0.7.0-SNAPSHOT" class="section"><a href="#0.7.0-SNAPSHOT" class="sectionlink"><i class="icon-share-alt"> </i></a>Next Release (0.7.0-SNAPSHOT) <small>these changes are queued for an upcoming release</small></h3>
+	<table class="table">
+		<tbody>
+			<tr>
+				<td style="background-color:inherit;width:100px">PENDING</td>
+				<td style="background-color:inherit;">	
+	
+
+
+</td>
+			</tr>
+		</tbody>
+	</table>
+
+<div>
+	<ul class="pager">
+		<li class="next"><a href="releases.html">All Releases &rarr;</a></li>
+	</ul>
+</div>
+
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="mxftp.html">&larr; mx:Ftp</a></li> <li class="next"><a href="mxget.html">mx:Get &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-06</p>
+<footer class="footer"><p class="pull-right">generated 2013-03-06</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

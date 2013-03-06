@@ -1,24 +1,42 @@
 <?xml version="1.0" standalone='yes'?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<generator uri="http://gitblit.github.com/moxie" version="0.5.1-SNAPSHOT">Moxie</generator>
+	<generator uri="http://moxie.gitblit.com" version="0.7.0-SNAPSHOT">Moxie</generator>
 	<title><![CDATA[Moxie]]></title>
-	<updated>2013-01-23</updated>
+	<updated>2013-03-06</updated>
 	<entry>
 		<content type="text/plain" />
-   		<title type="text"><![CDATA[Moxie 0.4.0]]></title>
+   		<title type="text"><![CDATA[Moxie Build Toolkit 0.4.0 Released]]></title>
    		<summary type="text"><![CDATA[Milestone 1: basic transitive dependency handling and most core tasks]]></summary>
-   		<link href="http://gitblit.github.com/moxie/history.html#0.4.0" rel="via" />
-   		<guid isPermaLink="true">http://gitblit.github.com/moxie/history.html#0.4.0</guid>
+   		<link href="http://moxie.gitblit.com/history.html#0.4.0" rel="via" />
+   		<guid isPermaLink="true">http://moxie.gitblit.com/history.html#0.4.0</guid>
    		<content><![CDATA[Milestone 1: basic transitive dependency handling and most core tasks]]></content>
    		<published>2012-07-05T00:00:00-0400</published>
 	</entry>
 	<entry>
 		<content type="text/plain" />
-   		<title type="text"><![CDATA[Moxie 0.5.0]]></title>
+   		<title type="text"><![CDATA[Moxie Build Toolkit 0.5.0 Released]]></title>
    		<summary type="text"><![CDATA[Milestone 2: Most tasks and features to build Gitblit]]></summary>
-   		<link href="http://gitblit.github.com/moxie/history.html#0.5.0" rel="via" />
-   		<guid isPermaLink="true">http://gitblit.github.com/moxie/history.html#0.5.0</guid>
+   		<link href="http://moxie.gitblit.com/history.html#0.5.0" rel="via" />
+   		<guid isPermaLink="true">http://moxie.gitblit.com/history.html#0.5.0</guid>
    		<content><![CDATA[Milestone 2: Most tasks and features to build Gitblit]]></content>
    		<published>2013-01-23T00:00:00-0500</published>
+	</entry>
+	<entry>
+		<content type="text/plain" />
+   		<title type="text"><![CDATA[Moxie Build Toolkit 0.6.0 Released]]></title>
+   		<summary type="text"><![CDATA[Milestone 3: All major tasks implemented, enhanced documentation features, and more intuitive syntax]]></summary>
+   		<link href="http://moxie.gitblit.com/history.html#0.6.0" rel="via" />
+   		<guid isPermaLink="true">http://moxie.gitblit.com/history.html#0.6.0</guid>
+   		<content><![CDATA[Milestone 3: All major tasks implemented, enhanced documentation features, and more intuitive syntax]]></content>
+   		<published>2013-03-06T00:00:00-0500</published>
+	</entry>
+	<entry>
+		<content type="text/plain" />
+   		<title type="text"><![CDATA[Moxie Build Toolkit 0.6.1 released]]></title>
+   		<summary type="text"><![CDATA[Minor fix for module property loading from parent projects and global settings]]></summary>
+   		<link href="http://moxie.gitblit.com/history.html#0.6.1" rel="via" />
+   		<guid isPermaLink="true">http://moxie.gitblit.com/history.html#0.6.1</guid>
+   		<content><![CDATA[Minor fix for module property loading from parent projects and global settings]]></content>
+   		<published>2013-03-06T00:00:00-0500</published>
 	</entry>
 </feed>

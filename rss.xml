@@ -2,24 +2,40 @@
 <rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<title><![CDATA[Moxie]]></title>
-		<link>http://gitblit.github.com/moxie</link>
+		<link>http://moxie.gitblit.com</link>
 		<description><![CDATA[Moxie Java Build Toolkit for Ant]]></description>
 		<generator>Moxie Toolkit</generator>
   		<item>
-    		<title><![CDATA[Moxie 0.4.0]]></title>
-    		<link><![CDATA[http://gitblit.github.com/moxie/history.html#0.4.0]]></link>
-    		<guid isPermaLink="true">http://gitblit.github.com/moxie/history.html#0.4.0</guid>
+    		<title><![CDATA[Moxie Build Toolkit 0.4.0 Released]]></title>
+    		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.4.0]]></link>
+    		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.4.0</guid>
     		<description><![CDATA[Milestone 1: basic transitive dependency handling and most core tasks]]></description>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
     		<pubDate>Thu, 05 Jul 2012 00:00:00 -0400</pubDate>
   		</item>
   		<item>
-    		<title><![CDATA[Moxie 0.5.0]]></title>
-    		<link><![CDATA[http://gitblit.github.com/moxie/history.html#0.5.0]]></link>
-    		<guid isPermaLink="true">http://gitblit.github.com/moxie/history.html#0.5.0</guid>
+    		<title><![CDATA[Moxie Build Toolkit 0.5.0 Released]]></title>
+    		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.5.0]]></link>
+    		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.5.0</guid>
     		<description><![CDATA[Milestone 2: Most tasks and features to build Gitblit]]></description>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
     		<pubDate>Wed, 23 Jan 2013 00:00:00 -0500</pubDate>
+  		</item>
+  		<item>
+    		<title><![CDATA[Moxie Build Toolkit 0.6.0 Released]]></title>
+    		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.6.0]]></link>
+    		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.6.0</guid>
+    		<description><![CDATA[Milestone 3: All major tasks implemented, enhanced documentation features, and more intuitive syntax]]></description>
+   			<dc:creator><![CDATA[Moxie]]></dc:creator>
+    		<pubDate>Wed, 06 Mar 2013 00:00:00 -0500</pubDate>
+  		</item>
+  		<item>
+    		<title><![CDATA[Moxie Build Toolkit 0.6.1 released]]></title>
+    		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.6.1]]></link>
+    		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.6.1</guid>
+    		<description><![CDATA[Minor fix for module property loading from parent projects and global settings]]></description>
+   			<dc:creator><![CDATA[Moxie]]></dc:creator>
+    		<pubDate>Wed, 06 Mar 2013 00:00:00 -0500</pubDate>
   		</item>
   	</channel>
 </rss>
