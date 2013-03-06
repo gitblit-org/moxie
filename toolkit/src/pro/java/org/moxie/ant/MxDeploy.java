@@ -42,6 +42,7 @@ public class MxDeploy extends MxRepositoryTask {
 		setAllowsnapshots(false);
 		setGeneratePom(true);
 		setCalculatechecksums(true);
+		setGenerateIndexPage(true);
 	}
 	
 	public void setRevisionRetentionCount(int value) {

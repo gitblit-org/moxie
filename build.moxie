@@ -2,6 +2,7 @@
 # Moxie project descriptor
 #
 name: Moxie Build Toolkit
+description: an ANT task suite
 groupId: org.moxie
 artifactId: moxie-parent
 version: 0.6.0-SNAPSHOT

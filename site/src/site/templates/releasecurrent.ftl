@@ -1,10 +1,12 @@
 <#include "macros.ftl" >
 
 <!-- CURRENT RELEASE -->
-<@LogMacro title="Current Release" log=release version=project.releaseVersion date=project.releaseDate description="this is the current stable release" />
+<@LogMacro title="Current Release" log=release version=project.releaseVersion date=project.releaseDate?string("yyyy-MM-dd") description="this is the current stable release" />
 
 <!-- NEXT RELEASE -->
+<#if snapshot??>
 <@LogMacro title="Next Release" log=snapshot version=project.version date="PENDING" description="these changes are queued for an upcoming release" />
+</#if>
 
 <div>
 	<ul class="pager">

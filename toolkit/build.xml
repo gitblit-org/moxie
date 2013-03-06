@@ -86,6 +86,8 @@
 			<pathelement path="${common.bin.classes}" />
 			<pathelement path="${toolkit.bin.classes}" />
 			<pathelement path="${basedir}/src/core/resources" />
+			<pathelement path="${basedir}/src/pro/resources" />
+			<pathelement path="${basedir}/src/all/resources" />
 			<pathelement path="${maxml.bin.classes}" />
 		</path>
 

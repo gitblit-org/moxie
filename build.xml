@@ -9,14 +9,14 @@
 	-->
 	<target name="main">
 		<!-- Build Toolkit first because other projects use built artifacts -->
-		<subant buildpath="${basedir}/toolkit" />
+		<subant buildpath="${basedir}/toolkit" failonerror="true" />
 
 		<!-- Build remaining projects -->
-		<subant buildpath="${basedir}/maxml" />
-		<subant buildpath="${basedir}/moxie+ant" />
-		<subant buildpath="${basedir}/proxy" />
-		<subant buildpath="${basedir}/common" />
-		<subant buildpath="${basedir}/site" />
+		<subant buildpath="${basedir}/maxml" failonerror="true" />
+		<subant buildpath="${basedir}/moxie+ant" failonerror="true" />
+		<subant buildpath="${basedir}/proxy" failonerror="true" />
+		<subant buildpath="${basedir}/common" failonerror="true" />
+		<subant buildpath="${basedir}/site" failonerror="true" />
 		
 		<!-- Update IntelliJ IDEA .idea folder -->
 		<taskdef uri="antlib:org.moxie">
@@ -38,19 +38,41 @@
 		
 		<!-- release -->
 		<property name="dryrun" value="false" />
-		<mx:version stage="release" dryrun="${dryrun}" />
+		<mx:version stage="release" dryrun="${dryrun}" />		
+		<!-- commit build.moxie & releases.moxie (automatic) and maven artifacts -->
 		<mx:commit showtitle="no">
 		    <message>Prepare ${project.version} release</message>
 			<tag name="v${project.version}">
 				<message>${project.name} ${project.version} release</message>
 			</tag>
 		</mx:commit>
-		
+
 		<!-- next cycle -->
 		<mx:version stage="snapshot" incrementNumber="minor" dryrun="${dryrun}" />
 		<mx:commit showtitle="no">
 		    <message>Reset build identifiers for next development cycle</message>
 		</mx:commit>
+	</target>
+	
+	<!--
+	Upload artifacts to the remote Maven repository.
+	-->
+	<target name="upload">
+		<taskdef uri="antlib:org.moxie">
+			<classpath location="${basedir}/toolkit/build/target/moxie.jar" />
+		</taskdef>
+		
+		<mx:init />
+
+		<mx:ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}"
+			remotedir="${ftp.maven.dir}" verbose="yes" depends="yes" timediffauto="true"
+			preservelastmodified="true">
+			<fileset dir="${basedir}/maven">
+				<!-- exclude root files -->
+				<exclude name="*.md" />
+				<exclude name=".git*" />
+			</fileset>
+		</mx:ftp>
 	</target>
 
 </project>

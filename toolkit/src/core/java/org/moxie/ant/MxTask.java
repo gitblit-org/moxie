@@ -210,7 +210,7 @@ public abstract class MxTask extends Task {
 				os.write(buffer, 0, len);
 			}			
 		} catch (Exception e) {
-			getConsole().error(e, "Can't extract {0}!", resource);
+			getConsole().error(e, "Can not extract \"{0}\"!", resource);
 		}
 		targetFile.getParentFile().mkdirs();
 		FileUtils.writeContent(targetFile, os.toByteArray());
