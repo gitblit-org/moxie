@@ -1,4 +1,21 @@
 #
+# ${project.version} release
+#
+r4: {
+    title: ${project.name} ${project.version} released
+    id: ${project.version}
+    date: ${project.buildDate}
+    note: ~
+    text: ~
+    security: ~
+    fixes: ~
+    changes: ~
+    additions: ~
+    dependencyChanges: ~
+    contributors: ~
+}
+
+#
 # 0.6.0 release
 #
 r3: {
@@ -95,5 +112,5 @@ r1: {
 # Release log data
 #
 release: &r3
-snapshot: ~
+snapshot: &r4
 releases: &r[1..3]
