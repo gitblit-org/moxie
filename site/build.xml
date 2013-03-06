@@ -122,7 +122,7 @@
 	-->
 	<target name="upload" depends="main">
 		<mx:ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}"
-			remotedir="${ftp.site.dir}" verbose="yes" depends="yes" timediffauto="true"
+			remotedir="${ftp.site.dir}" verbose="yes" depends="no" timediffauto="true"
 			preservelastmodified="true">
 			<fileset dir="${project.siteTargetDirectory}" />
 		</mx:ftp>
