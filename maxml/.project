@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>Moxie-Maxml</name>
-	<comment>Maxml parser</comment>
+	<comment>a parser for Maxml, a YAML-like format</comment>
 	<projects>
 	</projects>
 	<buildSpec>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>Moxie-Proxy</name>
-	<comment>Stand-alone Maven 2 artifact server and artifact proxy</comment>
+	<comment>a Maven 2-compatible artifact server and artifact proxy</comment>
 	<projects>
 	</projects>
 	<buildSpec>

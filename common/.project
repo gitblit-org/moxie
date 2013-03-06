@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>Moxie-Common</name>
-	<comment>Common classes for Moxie</comment>
+	<comment>common classes for Moxie</comment>
 	<projects>
 	</projects>
 	<buildSpec>
