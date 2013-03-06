@@ -1,28 +1,35 @@
-<#macro LogMacro title version date description log>
+<#macro LogMacro title version date description log logTitle="">
 	<#if log??>
 	<h3 id="${version}" class="section"><a href="#${version}" class="sectionlink"><i class="icon-share-alt"> </i></a>${title} (${version}) <small>${description}</small></h3>
 	<table class="table">
 		<tbody>
 			<tr>
 				<td style="background-color:inherit;width:100px">${date}</td>
-				<td style="background-color:inherit;"><@LogDescriptionMacro log=log /></td>
+				<td style="background-color:inherit;"><@LogDescriptionMacro log=log title=logTitle /></td>
 			</tr>
 		</tbody>
 	</table>
 	</#if>
 </#macro>
 
-<#macro LogDescriptionMacro log>
-	<#if (log.note!?length > 0)>
-		<div class="alert alert-info">
-			<h4>Update Note</h4>
-			${log.note?html?replace("\n", "<p />")}
-		</div>
+<#macro LogDescriptionMacro log title=log.title>
+	<#if (title!?length > 0)>
+		<p class="lead">${title}</p>		
+	</#if>
+	
+	<#if (log.html!?length > 0)>
+		<p>${log.hmtl}</p>
 	</#if>
 	
 	<#if (log.text!?length > 0)>
-		${log.text!?html?replace("\n", "<br />")}
-		<p></p>
+		<blockquote><p>${log.text!?html?replace("\n", "<br />")}</p></blockquote>		
+	</#if>
+
+	<#if (log.note!?length > 0)>
+		<div class="alert alert-info">
+			<h4>Note</h4>
+			${log.note?html?replace("\n", "<p />")}
+		</div>
 	</#if>
 
 	<#if (log.security!?size > 0)>

@@ -344,6 +344,7 @@ public class MxVersion extends MxTask {
 			sb.append(indent).append("id").append(": ${project.version}\n");
 			sb.append(indent).append("date").append(": ${project.buildDate}\n");
 			sb.append(indent).append("note").append(": ~\n");
+			sb.append(indent).append("html").append(": ~\n");
 			sb.append(indent).append("text").append(": ~\n");
 			sb.append(indent).append("security").append(": ~\n");
 			sb.append(indent).append("fixes").append(": ~\n");

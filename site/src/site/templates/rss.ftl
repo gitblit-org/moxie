@@ -1,2 +1,2 @@
 <#include "macros.ftl">
-<@RssMacro posts=releases posturl="${project.url}/history.html#" />
+<@RssMacro posts=releases posturl="${project.url}/releases.html#" />

@@ -31,7 +31,7 @@ r4: {
 # 0.6.0 release
 #
 r3: {
-    title: Moxie 0.6.0 Released
+    title: Moxie Build Toolkit 0.6.0 Released
     id: 0.6.0
     date: 2013-03-06
     note: ''
@@ -88,7 +88,7 @@ r3: {
 # 0.5.0 release
 #
 r2: {
-    title: Moxie 0.5.0 Released
+    title: Moxie Build Toolkit 0.5.0 Released
     id: 0.5.0
     date: 2013-01-23
     note: Please delete your .moxie/data folder before upgrading!
@@ -113,7 +113,7 @@ r2: {
 # 0.4.0 release
 #
 r1: {
-    title: Moxie 0.4.0 Released
+    title: Moxie Build Toolkit 0.4.0 Released
     id: 0.4.0
     date: 2012-07-05
     note: ~
