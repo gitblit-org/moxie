@@ -1,5 +1,26 @@
 ## mx:Doc %ALL%
 
+Prettify Themes
+
+- bootstrap
+- desert
+- doxy
+- github
+- googlecode
+- hemisu-dark
+- hemisu-light
+- prettify
+- solarized-dark
+- solarized-light
+- sons-of-obsidian
+- sunburst
+- tomorrow
+- tomorrow-night-blue
+- tomorrow-night-dark
+- tomorrow-night-eighties
+- tomorrow-night-light
+- vibrant-ink
+
 %BEGINXML%
 <mx:doc injectPrettify="true">
 	<structure>

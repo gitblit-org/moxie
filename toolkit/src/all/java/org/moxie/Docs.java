@@ -723,7 +723,14 @@ public class Docs {
 		}
 
 		if (doc.injectPrettify) {
-			sb.append("\n<link rel=\"stylesheet\" href=\"./prettify/prettify.css\" />");
+			if (StringUtils.isEmpty(doc.prettifyTheme)) {
+				// default theme
+				sb.append("\n<link rel=\"stylesheet\" href=\"./prettify/prettify.css\" />");
+			} else {
+				// custom theme
+				sb.append(MessageFormat.format("\n<link rel=\"stylesheet\" href=\"./prettify/{0}\" />", 
+						doc.prettifyTheme + (doc.prettifyTheme.toLowerCase().endsWith(".css") ? "" : ".css")));
+			}
 		}
 		
 		if (!StringUtils.isEmpty(doc.rssFeed)) {

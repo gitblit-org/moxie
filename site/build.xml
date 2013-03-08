@@ -6,15 +6,18 @@
 		<classpath location="${basedir}/../toolkit/build/target/moxie.jar" />
 	</taskdef>
 
+	
 	<!--
-	Build the Moxie site
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+		Build the Moxie site
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 	-->
 	<target name="main">
 		<mx:init />
 		<property name="releaselog" value="${basedir}/../releases.moxie" />
 		
 		<!-- Build the site documentation -->
-		<mx:doc googlePlusOne="true" injectPrettify="true" minify="true" 
+		<mx:doc googlePlusOne="true" injectPrettify="true" prettifyTheme="googlecode" minify="true" 
 			templateDir="${project.siteSourceDirectory}/templates"
 			customLess="custom.less" rssFeed="rss.xml" atomFeed="atom.xml">
 			<structure>
@@ -110,22 +113,29 @@
 		</mx:doc>
 	</target>
 
+	
 	<!--
-	Build the Moxie gh-pages branch
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+		Build the Moxie gh-pages branch
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 		
 	-->
-	<target name="ghpages" depends="main">
+	<target name="updateGhpages" depends="main">
 		<mx:ghpages obliterate="false" repositorydir="${basedir}/../" />
 	</target>
 	
+			
 	<!--
-	Upload site to the hosting provider
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+		Upload site to the hosting provider
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 	-->
-	<target name="upload" depends="main">
+	<target name="uploadSite" depends="main">
 		<mx:ftp server="${ftp.server}" userid="${ftp.user}" password="${ftp.password}"
 			remotedir="${ftp.site.dir}" verbose="yes" depends="no" timediffauto="true"
 			preservelastmodified="true">
 			<fileset dir="${project.siteTargetDirectory}" />
 		</mx:ftp>
 	</target>
+
 
 </project>

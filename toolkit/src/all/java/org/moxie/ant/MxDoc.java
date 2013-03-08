@@ -153,6 +153,10 @@ public class MxDoc extends MxTask {
 	public void setInjectprettify(boolean value) {
 		doc.injectPrettify = value;
 	}
+	
+	public void setPrettifyTheme(String value) {
+		doc.prettifyTheme = value;
+	}
 
 	public void setMinify(boolean value) {
 		doc.minify = value;

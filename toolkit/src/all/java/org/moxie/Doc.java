@@ -57,6 +57,8 @@ public class Doc implements Serializable {
 
 	public boolean injectPrettify;
 	
+	public String prettifyTheme;
+	
 	public boolean minify;
 
 	public List<Substitute> substitutions = new ArrayList<Substitute>();
