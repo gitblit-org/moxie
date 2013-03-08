@@ -273,7 +273,7 @@ public class Docs {
 
 									// advance the i counter to endCode so we do not
 									// include the lines within the hunk
-									i = endCode + 1;
+									i = endCode;
 								} else {
 									// could not find closing token
 									strippedContent.append(line);
