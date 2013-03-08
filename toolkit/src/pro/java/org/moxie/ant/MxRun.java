@@ -55,17 +55,17 @@ public class MxRun extends Java {
 	public void execute() {
 		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		Console console = build.getConsole();
-		
+
+		if (scope == null) {
+			scope = Scope.compile;
+		}
+
 		if (isShowTitle()) {
-			console.title(getClass(), build.getPom().getCoordinates());
+			console.title(getClass(), build.getPom().getCoordinates() + ", " + scope.name());
 		}
 
 		if (StringUtils.isEmpty(getCommandLine().getClassname())) {
 			getCommandLine().setClassname(build.getConfig().getProjectConfig().getMainclass());
-		}
-		
-		if (scope == null) {
-			scope = Scope.compile;
 		}
 
 		Date start = new Date();
