@@ -73,9 +73,9 @@ public class Doc implements Serializable {
 	
 	public List<Link> freeformPages = new ArrayList<Link>();
 	
-	public Logo logo;
+	public File logo;
 	
-	public Logo favicon;
+	public File favicon;
 	
 	public boolean isResponsiveLayout;
 	

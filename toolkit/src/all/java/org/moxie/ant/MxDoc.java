@@ -51,6 +51,10 @@ public class MxDoc extends MxTask {
 	Doc doc = new Doc();
 	
 	String customLessFile;
+	
+	Logo logo;
+	
+	Logo favicon;
 
 	List<org.moxie.Resource> resources = new ArrayList<org.moxie.Resource>();
 	
@@ -108,15 +112,13 @@ public class MxDoc extends MxTask {
 	}
 	
 	public Logo createLogo() {
-		Logo logo = new Logo();
-		doc.logo = logo;
+		logo = new Logo();
 		return logo;
 	}
 	
-	public Logo createFavicon() {
-		Logo logo = new Logo();
-		doc.favicon = logo;
-		return logo;
+	public Logo createFavicon() {	
+		favicon = new Logo();
+		return favicon;		
 	}
 
 	public Link createPage() {
@@ -244,14 +246,13 @@ public class MxDoc extends MxTask {
 			doc.outputDirectory = build.getConfig().getSiteTargetDirectory();
 		}
 		
-		if (!StringUtils.isEmpty(customLessFile)) {
-			File lessfile = new File(customLessFile);
-			if (!lessfile.exists()) {
-				lessfile = new File(doc.sourceDirectory, customLessFile);
-			}
-			doc.customLessFile = lessfile;
+		doc.customLessFile = findFile(customLessFile);
+		if (logo != null) {
+			doc.logo = findFile(logo.getFile());
 		}
-
+		if (favicon != null) {
+			doc.favicon = findFile(favicon.getFile());
+		}
 		
 		titleClass(build.getPom().name);
 		
@@ -262,24 +263,24 @@ public class MxDoc extends MxTask {
 			FileUtils.delete(doc.outputDirectory);
 		}
 		doc.outputDirectory.mkdirs();
-
-		extractHtmlResources(doc.outputDirectory);
 		
-		if (doc.logo != null) {
+		if (doc.logo != null && doc.logo.exists()) {
 			try {
-				FileUtils.copy(doc.outputDirectory, doc.logo.getFile());
+				FileUtils.copy(doc.outputDirectory, doc.logo);
 			} catch (IOException e) {
 				getConsole().error(e, "Failed to copy logo file!");
 			}
 		}
 		
-		if (doc.favicon != null) {
+		if (doc.favicon != null && doc.favicon.exists()) {
 			try {
-				FileUtils.copy(doc.outputDirectory, doc.favicon.getFile());
+				FileUtils.copy(doc.outputDirectory, doc.favicon);
 			} catch (IOException e) {
 				getConsole().error(e, "Failed to copy favicon file!");
 			}
 		}
+		
+		extractHtmlResources(doc.outputDirectory);
 		
 		// setup prev/next pager links
 		for (Link menuLink : doc.structure.sublinks) {
@@ -324,6 +325,10 @@ public class MxDoc extends MxTask {
 			prepareTemplatePage(page);
 		}
 		
+		NoMarkdown nomd = createNomarkdown();
+		nomd.setStarttoken("---NOMARKDOWN---");
+		nomd.setEndtoken("---NOMARKDOWN---");
+		
 		Docs.execute(build, doc, isVerbose());
 		
 		writeDependenciesAsJson();
@@ -360,6 +365,22 @@ public class MxDoc extends MxTask {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	protected File findFile(String filename) {
+		if (!StringUtils.isEmpty(filename)) {
+			List<File> dirs = new ArrayList<File>();
+			dirs.add(null); // dir specified in filename 
+			dirs.add(getBuild().getConfig().getSiteSourceDirectory());
+			dirs.addAll(getBuild().getConfig().getResourceDirectories(Scope.site));
+			for (File dir : dirs) {
+				File aFile = new File(dir, filename);
+				if (aFile.exists()) {
+					return aFile;
+				}
+			}
+		}
+		return null;
 	}
 	
 	protected void extractHtmlResources(File outputFolder) {

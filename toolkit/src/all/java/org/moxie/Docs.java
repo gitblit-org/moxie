@@ -399,8 +399,8 @@ public class Docs {
 				String linksHtml = readResource(doc, "links.html");
 				linksHtml = linksHtml.replace("%PROJECTNAME%", projectName);
 				linksHtml = linksHtml.replace("%PROJECTLINKS%", links);
-				if (doc.logo != null && doc.logo.file != null) {
-					linksHtml = linksHtml.replace("%PROJECTLOGO%", doc.logo.getFile().getName());
+				if (doc.logo != null) {
+					linksHtml = linksHtml.replace("%PROJECTLOGO%", doc.logo.getName());
 				}
 				links = linksHtml;
 
@@ -719,7 +719,7 @@ public class Docs {
 
 		if (doc.favicon != null) {
 			sb.append("\n<link rel='shortcut icon' type='image/png' href='./"
-					+ doc.favicon.getFile().getName() + "' />");
+					+ doc.favicon.getName() + "' />");
 		}
 
 		if (doc.injectPrettify) {

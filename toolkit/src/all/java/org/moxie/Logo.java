@@ -25,7 +25,7 @@ public class Logo {
 		this.file = file;
 	}
 	
-	public File getFile() {
-		return new File(file);
+	public String getFile() {
+		return file;
 	}
 }
