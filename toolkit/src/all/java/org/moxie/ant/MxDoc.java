@@ -323,6 +323,11 @@ public class MxDoc extends MxTask {
 		Docs.execute(build, doc, isVerbose());
 		
 		writeDependenciesAsJson();
+		
+		// add site resource directories
+		for (File dir : build.getConfig().getResourceDirectories(Scope.site)) {
+			createResource().createFileset().setDir(dir);
+		}
 
 		for (org.moxie.Resource resource : resources) {
 			File destdir = doc.outputDirectory;

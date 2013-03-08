@@ -14,6 +14,7 @@ r5: {
      - add redirect attribute to mx:Javadoc as a short alternative to specifying a complete redirector
      - add ${project.javadocTargetDirectory} to Ant properties
      - automatically create javadoc jar file in mx:Javadoc
+     - automatically copy site resource directories in mx:Doc
     additions: ~
     dependencyChanges: ~
 }
