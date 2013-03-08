@@ -173,6 +173,7 @@ public class MxInit extends MxTask {
 			
 			setProjectProperty(Key.targetDirectory, buildConfig.getTargetDirectory().toString());
 			setProjectProperty(Key.reportTargetDirectory, buildConfig.getReportsTargetDirectory().toString());
+			setProjectProperty(Key.javadocTargetDirectory, buildConfig.getJavadocTargetDirectory().toString());
 			
 			setProjectProperty(Key.siteSourceDirectory, buildConfig.getSiteSourceDirectory().toString());
 			setProjectProperty(Key.siteTargetDirectory, buildConfig.getSiteTargetDirectory().toString());
