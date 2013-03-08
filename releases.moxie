@@ -9,10 +9,10 @@ r5: {
     text: ~
     security: ~
     fixes: ~
-    changes: ~
+    changes:
+     - add scope attribute to mx:Run to allow running classes with test classpath
     additions: ~
     dependencyChanges: ~
-    contributors: ~
 }
 
 #

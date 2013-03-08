@@ -31,6 +31,8 @@ public class MxRun extends Java {
 	
 	Boolean showtitle;
 	
+	Scope scope;
+	
 	public MxRun() {
 		super();
 		setTaskName("mx:run");
@@ -45,6 +47,10 @@ public class MxRun extends Java {
 		return showtitle == null || showtitle;
 	}
 	
+	public void setScope(String value) {
+		this.scope = Scope.fromString(value);
+	}
+	
 	@Override
 	public void execute() {
 		Build build = (Build) getProject().getReference(Key.build.referenceId());
@@ -57,6 +63,10 @@ public class MxRun extends Java {
 		if (StringUtils.isEmpty(getCommandLine().getClassname())) {
 			getCommandLine().setClassname(build.getConfig().getProjectConfig().getMainclass());
 		}
+		
+		if (scope == null) {
+			scope = Scope.compile;
+		}
 
 		Date start = new Date();
 		console.key("started", start.toString());
@@ -65,15 +75,23 @@ public class MxRun extends Java {
 		
 		Path classpath = createClasspath();
 		// add project compiled output path
-		classpath.createPathElement().setLocation(build.getConfig().getOutputDirectory(Scope.compile));
+		classpath.createPathElement().setLocation(build.getConfig().getOutputDirectory(scope));
+		if (!scope.isDefault()) {
+			classpath.createPathElement().setLocation(build.getConfig().getOutputDirectory(Scope.compile));
+		}
 		
 		// add resource directories
-		for (File dir : build.getConfig().getResourceDirectories(Scope.compile)) {
+		for (File dir : build.getConfig().getResourceDirectories(scope)) {
 			classpath.createPathElement().setLocation(dir);
 		}
-
+		if (!scope.isDefault()) {
+			for (File dir : build.getConfig().getResourceDirectories(Scope.compile)) {
+				classpath.createPathElement().setLocation(dir);
+			}
+		}
+		
 		// add jar classpaths
-		for (File jarFile : build.getSolver().getClasspath(Scope.compile)) {
+		for (File jarFile : build.getSolver().getClasspath(scope)) {
 			classpath.createPathElement().setLocation(jarFile);
 		}
 
