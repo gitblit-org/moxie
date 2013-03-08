@@ -1,8 +1,8 @@
 <?xml version="1.0" standalone='yes'?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<generator uri="http://moxie.gitblit.com" version="0.7.0-SNAPSHOT">Moxie</generator>
+	<generator uri="http://moxie.gitblit.com" version="0.6.2">Moxie</generator>
 	<title><![CDATA[Moxie]]></title>
-	<updated>2013-03-06</updated>
+	<updated>2013-03-08</updated>
 	<entry>
 		<content type="text/plain" />
    		<title type="text"><![CDATA[Moxie Build Toolkit 0.4.0 Released]]></title>
@@ -38,5 +38,12 @@
    		<guid isPermaLink="true">http://moxie.gitblit.com/history.html#0.6.1</guid>
    		<content><![CDATA[Minor fix for module property loading from parent projects and global settings]]></content>
    		<published>2013-03-06T00:00:00-0500</published>
+	</entry>
+	<entry>
+		<content type="text/plain" />
+   		<title type="text"><![CDATA[Moxie Build Toolkit 0.6.2 released]]></title>
+   		<link href="http://moxie.gitblit.com/history.html#0.6.2" rel="via" />
+   		<guid isPermaLink="true">http://moxie.gitblit.com/history.html#0.6.2</guid>
+   		<published>2013-03-08T00:00:00-0500</published>
 	</entry>
 </feed>
