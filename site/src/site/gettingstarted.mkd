@@ -10,9 +10,9 @@ Like Maven, Moxie supports convention-over-configuration so that the minimal bui
 
 <div class="span4">
 %BEGINMAXML%
-groupId: org.example
-artifactId: demo
-version: 1.2.3-SNAPSHOT
+groupId: 'org.example'
+artifactId: 'demo'
+version: '1.2.3-SNAPSHOT'
 %ENDMAXML%
 
 <i>minimal Moxie project descriptor</i>
@@ -32,14 +32,16 @@ For more information on the <code>build.moxie</code> descriptor please review th
 
 <div class="span6">
 %BEGINMAXML%
-name: Example 1
-description: A better example
-groupId: org.example
-artifactId: demo
-version: 1.2.3-SNAPSHOT
-organization: Example Writers
+# string quoting is optional.
+# it is used here to improve syntax highlighting
+name: 'Example 1'
+description: 'A better example'
+groupId: 'org.example'
+artifactId: 'demo'
+version: '1.2.3-SNAPSHOT'
+organization: 'Example Writers'
 url: 'http://demo.example.org'
-apply: eclipse, intellij, pom
+apply: 'eclipse', 'intellij', 'pom'
 sourceDirectories:
 - compile 'src/main/java'
 - test 'src/test/java'

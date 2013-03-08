@@ -14,7 +14,9 @@
 	<property name="toolkit.bin.classes" value="${toolkit.bin}/classes" />
 
 	<!--
-	Declare the Moxie tasks and Compile all of Moxie
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+		Declare the Moxie tasks and Compile all of Moxie
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 	-->
 	<target name="bootstrap">
 		<!-- Clean -->
@@ -70,7 +72,9 @@
 
 
 	<!--
-	Prepare all Moxie tasks and setup the Ant environment
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+		Prepare all Moxie tasks and setup the Ant environment
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 	-->
 	<target name="prepare">
 
@@ -106,7 +110,9 @@
 	</target>
 		
 	<!--
-	Build the Moxie release
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+		Build the Moxie release
+		~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
 	-->
 	<target name="main" depends="prepare">		
 		<mx:commitid verbose="true" />

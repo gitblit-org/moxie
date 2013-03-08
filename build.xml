@@ -29,7 +29,7 @@
 	<!--
 	Release a new version and prepare for the next development cycle.
 	-->
-	<target name="release">
+	<target name="tagRelease">
 	    <taskdef uri="antlib:org.moxie">
 			<classpath location="${basedir}/toolkit/build/target/moxie.jar" />
 		</taskdef>
@@ -57,7 +57,7 @@
 	<!--
 	Upload artifacts to the remote Maven repository.
 	-->
-	<target name="upload">
+	<target name="uploadArtifacts">
 		<taskdef uri="antlib:org.moxie">
 			<classpath location="${basedir}/toolkit/build/target/moxie.jar" />
 		</taskdef>
