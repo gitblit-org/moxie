@@ -73,6 +73,15 @@ public class MxJavadoc extends Javadoc {
 		return showtitle == null || showtitle;
 	}
 	
+	public void setRedirect(boolean value) {
+		if (value) {
+			redirectorElement = new RedirectorElement();
+			Build build = (Build) getProject().getReference(Key.build.referenceId());
+			redirectorElement.setOutput(new File(build.getConfig().getOutputDirectory(null), "javadoc.log"));
+			redirectorElement.setAppend(false);
+		}
+	}
+	
 	/**
 	 * Add a <code>RedirectorElement</code> to this task.
 	 * 
