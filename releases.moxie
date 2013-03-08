@@ -8,7 +8,8 @@ r5: {
     note: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+	- fixed mx:Doc nomarkdown processing which dropped the next line after a nomarkdown block
     changes:
      - add scope attribute to mx:Run to allow running classes with test classpath
      - add redirect attribute to mx:Javadoc as a short alternative to specifying a complete redirector
@@ -16,6 +17,9 @@ r5: {
      - automatically create javadoc jar file in mx:Javadoc
      - automatically copy site resource directories in mx:Doc
      - support and bundle prettify themes
+	 - support redirect boolean attribute on mx:Javadoc
+	 - support scope attribute on mx:Run to allow running classes on test classpath, for example
+	 - support ---NOMARKDOWN--- tag to start and end a block
     additions: ~
     dependencyChanges: ~
 }
