@@ -17,12 +17,14 @@ package org.moxie.ant;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.MessageFormat;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Javadoc;
 import org.apache.tools.ant.taskdefs.Redirector;
+import org.apache.tools.ant.taskdefs.Zip;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.RedirectorElement;
 import org.moxie.Build;
@@ -102,7 +104,8 @@ public class MxJavadoc extends Javadoc {
 		
 		if (destDir == null) {
 			// use default output folder
-			super.setDestdir(build.getConfig().getJavadocTargetDirectory());
+			destDir = build.getConfig().getJavadocTargetDirectory();
+			super.setDestdir(destDir);
 		}
 		
 		if (!addedFileset) {
@@ -135,6 +138,15 @@ public class MxJavadoc extends Javadoc {
 		} catch (IOException e) {
 			throw new MoxieException(e);
 		}
+		
+		// create javadoc jar
+		Zip jar = new Zip();
+		jar.setProject(getProject());
+		jar.setBasedir(destDir);
+		jar.setDestFile(new File(build.getConfig().getTargetDirectory(),
+				MessageFormat.format("{0}-{1}-javadoc.jar",
+						build.getPom().artifactId, build.getPom().version)));
+		jar.execute();
 	}
 
 	//

@@ -13,6 +13,7 @@ r5: {
      - add scope attribute to mx:Run to allow running classes with test classpath
      - add redirect attribute to mx:Javadoc as a short alternative to specifying a complete redirector
      - add ${project.javadocTargetDirectory} to Ant properties
+     - automatically create javadoc jar file in mx:Javadoc
     additions: ~
     dependencyChanges: ~
 }
