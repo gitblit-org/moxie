@@ -16,6 +16,7 @@
 package org.moxie;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -136,6 +137,9 @@ public class Dependency implements Serializable {
 	}
 	
 	public boolean isSnapshot() {
+		if (version == null) {
+			throw new MoxieException(MessageFormat.format("Version is undefined for \"{0}\"!",  getCoordinates()));
+		}
 		return version.contains("-SNAPSHOT");
 	}
 	

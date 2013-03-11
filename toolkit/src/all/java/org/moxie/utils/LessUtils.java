@@ -15,95 +15,21 @@
  */
 package org.moxie.utils;
 import java.io.File;
-import java.text.MessageFormat;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.moxie.less.LessEngine;
-import org.moxie.less.LessException;
+import com.asual.lesscss.LessException;
 
 /**
- * Aggregates the many Bootstrap LESS files into a monolithic LESS file with an
- * import for custom LESS overrides.
+ * Compiles a LESS file into CSS and optionally minifies it.
  * 
  * @author James Moger
  *
  */
 public class LessUtils {
 
-	public static void main(String... args) {
-		
-		consolidate(new File("src/all/config/bootstrap.less"), new File("src/all/resources/bootstrap/css/bootstrap.less"));
-	}
-	
-	public static void consolidate(File source, File target) {
-		long start = System.currentTimeMillis();
-		System.out.println(MessageFormat.format("consolidating {0}...", source.getAbsolutePath()));
-		String less = consolidate(source);
-		
-		less += "@import \"custom.less\";\n";
-		
-		FileUtils.writeContent(target, less);
-		System.out.println(MessageFormat.format("generated in {0} msecs", System.currentTimeMillis() - start));
-	}
-	
-	private static String consolidate(File bootstrap) {
-		StringBuilder aggregate = new StringBuilder();
-		String content = FileUtils.readContent(bootstrap, "\n");
-		for (String line : content.split("\n")) {
-			if (line.startsWith("@import")) {
-				// import
-				Pattern p = Pattern.compile("(\")(.+)(\")");
-				Matcher m = p.matcher(line);
-				if (m.find()) {
-					String importLess = m.group(2);
-					File importFile = new File(bootstrap.getParentFile(), importLess);
-					String importContent = FileUtils.readContent(importFile, "\n");
-					aggregate.append(importContent).append('\n');
-				}
-			} else {
-				// pass-through
-				aggregate.append(line).append('\n');
-			}
-		}
-		
-		return aggregate.toString();
-	}
-	
-	public static void compile(File source, File target, boolean minify) throws LessException {
-		System.out.println(MessageFormat.format("reading {0}...", source.getAbsolutePath()));
-
-		long start = System.currentTimeMillis();
-		String less = FileUtils.readContent(source, "\n");
-		
-		StringBuilder aggregate = new StringBuilder();
-		for (String line : less.split("\n")) {
-			if (line.startsWith("@import")) {
-				Pattern p = Pattern.compile("(\")(.+)(\")");
-				Matcher m = p.matcher(line);
-				if (m.find()) {
-					String importLess = m.group(2);
-					File importFile = new File(source.getParentFile(), importLess);
-					String importContent = FileUtils.readContent(importFile, "\n");
-					aggregate.append(importContent).append('\n');
-				}
-
-			} else {
-				aggregate.append(line).append('\n');
-			}
-		}
-
-		if (minify) {
-			System.out.println(MessageFormat.format("compiling and minifying {0}...", target.getAbsolutePath()));
-		} else {
-			System.out.println(MessageFormat.format("compiling {0}...", target.getAbsolutePath()));
-		}
-		
-		LessEngine engine = new LessEngine();
-
-		// compile less into css and save
-		String css = engine.compile(aggregate.toString(), minify);
-		FileUtils.writeContent(target, css);
-		System.out.println(MessageFormat.format("css generated in {0} msecs", System.currentTimeMillis() - start));
+	public static String compile(File source, boolean minify) throws LessException {
+		// compile less into css
+		com.asual.lesscss.LessEngine engine = new com.asual.lesscss.LessEngine();
+		String css = engine.compile(source, minify);
+		return css;
 	}
 }

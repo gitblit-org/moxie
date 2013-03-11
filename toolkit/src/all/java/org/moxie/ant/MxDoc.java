@@ -16,12 +16,15 @@
 package org.moxie.ant;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -256,8 +259,17 @@ public class MxDoc extends MxTask {
 		
 		titleClass(build.getPom().name);
 		
-		build.getSolver().loadDependency(new Dependency("mx:markdownpapers"));
-		build.getSolver().loadDependency(new Dependency("mx:freemarker"));
+		build.getSolver().loadDependency(
+				new Dependency("mx:markdownpapers"),
+				new Dependency("mx:freemarker"));
+
+		Dependency bootstrap = new Dependency("mx:bootstrap");
+		Dependency jquery = new Dependency("mx:jquery");
+		Dependency d3js = new Dependency("mx:d3js");
+		Dependency prettify = new Dependency("mx:prettify");
+		Dependency less = new Dependency("mx:lesscss-engine");
+		
+		build.getSolver().loadDependency(bootstrap, jquery, d3js, prettify, less);
 
 		if (doc.outputDirectory.exists()) {
 			FileUtils.delete(doc.outputDirectory);
@@ -280,7 +292,10 @@ public class MxDoc extends MxTask {
 			}
 		}
 		
-		extractHtmlResources(doc.outputDirectory);
+		extractBootstrap(bootstrap, less, doc.outputDirectory);
+		extractJQuery(jquery, doc.outputDirectory);
+		extractD3js(d3js, doc.outputDirectory);
+		extractPrettify(prettify, doc.outputDirectory);
 		
 		// setup prev/next pager links
 		for (Link menuLink : doc.structure.sublinks) {
@@ -382,45 +397,129 @@ public class MxDoc extends MxTask {
 		}
 		return null;
 	}
-	
-	protected void extractHtmlResources(File outputFolder) {
 
-		// extract resources
-		extractResource(outputFolder, "bootstrap/css/moxie.less");
-		extractResource(outputFolder, "bootstrap/css/bootstrap.less");
-		extractResource(outputFolder, "bootstrap/css/bootstrap-responsive.min.css");
-		extractResource(outputFolder, "bootstrap/js/bootstrap.min.js");
-		extractResource(outputFolder, "bootstrap/js/jquery.js");
-		extractResource(outputFolder, "bootstrap/img/glyphicons-halflings.png");
-		extractResource(outputFolder, "bootstrap/img/glyphicons-halflings-white.png");
-		extractResource(outputFolder, "d3/d3.js");
-		extractResource(outputFolder, "d3/rings.css");
-		extractResource(outputFolder, "d3/rings.js");
+	protected void extractBootstrap(Dependency bsDep, Dependency lessDep, File outputFolder) {
+		getConsole().debug("injecting Twitter Bootstrap");
 
-		// write build's LESS as custom.less
-		String lessContent = "";
-		if (doc.customLessFile != null && doc.customLessFile.exists()) {
-			lessContent = FileUtils.readContent(doc.customLessFile, "\n");
+		String wj = MessageFormat.format("META-INF/resources/webjars/{0}/{1}/", bsDep.artifactId, bsDep.version);
+
+		extractResource(outputFolder, wj + "js/bootstrap.min.js", "bootstrap/js/bootstrap.min.js", true);
+		extractResource(outputFolder, wj + "css/bootstrap-responsive.min.css", "bootstrap/css/bootstrap-responsive.min.css", true);
+		extractResource(outputFolder, wj + "img/glyphicons-halflings.png", "bootstrap/img/glyphicons-halflings.png", true);
+		extractResource(outputFolder, wj + "img/glyphicons-halflings-white.png", "bootstrap/img/glyphicons-halflings-white.png", true);
+
+		String [] modules = { "accordion", "alerts", "bootstrap", "breadcrumbs", "button-groups", "buttons",
+				"carousel", "close", "code", "component-animations", "dropdowns", "forms", "grid", "hero-unit",
+				"labels-badges", "layouts", "media", "mixins", "modals", "navbar", "navs", "pager", "pagination",
+				"popovers", "progress-bars", "reset", "scaffolding", "sprites", "tables", "thumbnails", "tooltip",
+				"type", "utilities", "variables", "wells" };
+		
+		for (String module : modules) {
+			extractResource(outputFolder, wj + "less/" + module + ".less", "bootstrap/less/" + module + ".less", true);
 		}
-		File file = new File(outputFolder, "bootstrap/css/custom.less");
-		FileUtils.writeContent(file, lessContent);
+
+		// extract Moxie's Bootstrap overrides
+		extractResource(outputFolder, "moxie.less");
+		
+		File bsLess = new File(outputFolder, "bootstrap/less/bootstrap.less");
+		String content = FileUtils.readContent(bsLess, "\n");
+		content += "\n" + FileUtils.readContent(new File(outputFolder, "moxie.less"), "\n");
+		if (doc.customLessFile != null && doc.customLessFile.exists()) {
+			content += "\n" + FileUtils.readContent(doc.customLessFile, "\n");
+		}
+		FileUtils.writeContent(bsLess, content);
 
 		Build build = getBuild();
 		build.getSolver().loadDependency(new Dependency("mx:rhino"));
 
 		// compile Bootstrap and custom.less overrides into css
 		try {
-			LessUtils.compile(new File(outputFolder, "bootstrap/css/bootstrap.less"),
-					new File(outputFolder, "bootstrap/css/bootstrap.css"), doc.minify);
+			File bsCss = new File(outputFolder, "bootstrap/css/bootstrap.css");
+			if (doc.minify) {
+				getConsole().log("compiling and minifying {0}...", bsCss.getAbsolutePath());
+			} else {
+				getConsole().log("compiling {0}...", bsCss.getAbsolutePath());
+			}
+
+			long start = System.currentTimeMillis();
+			String css = LessUtils.compile(bsLess, doc.minify);
+			FileUtils.writeContent(bsCss, css);
+
+			getConsole().log("css generated in {0} msecs", System.currentTimeMillis() - start);
+			
 		} catch (Exception e) {
 			getConsole().error(e,  "Failed to compile LESS!");
 		}
 		
-		// delete temporary resources
-		deleteResource(outputFolder, "bootstrap/css/custom.less");
-		deleteResource(outputFolder, "bootstrap/css/moxie.less");
-		deleteResource(outputFolder, "bootstrap/css/bootstrap.less");
+		// remove less folder
+		FileUtils.delete(new File(outputFolder, "less"));
 	}
+
+	protected void extractJQuery(Dependency dep, File outputFolder) {
+		getConsole().debug("injecting JQuery");
+
+		String wj = MessageFormat.format("META-INF/resources/webjars/{0}/{1}/", dep.artifactId, dep.version);
+
+		extractResource(outputFolder, wj + "jquery.min.js", "bootstrap/js/jquery.js", true);
+	}
+
+	protected void extractD3js(Dependency dep, File outputFolder) {
+		getConsole().debug("injecting D3");
+		String wj = MessageFormat.format("META-INF/resources/webjars/{0}/{1}/", dep.artifactId, dep.version);
+		extractResource(outputFolder, wj + "d3.v2.min.js", "d3/d3.js", true);
+		
+		extractResource(outputFolder, "d3/rings.css");
+		extractResource(outputFolder, "d3/rings.js");
+	}
+
+	protected void extractPrettify(Dependency dep, File outputFolder) {
+		if (!doc.injectPrettify) {
+			return;
+		}
+		getConsole().debug("injecting GoogleCode Prettify");
+
+		String wj = MessageFormat.format("META-INF/resources/webjars/{0}/{1}/", dep.artifactId, dep.version);
+
+		extractResource(outputFolder, wj + "prettify.js", "prettify/prettify.js", true);
+		extractResource(outputFolder, wj + "prettify.css", "prettify/prettify.css", true);
+		
+		String [] langs = { "apollo", "clj", "css", "go", "hs", "lisp", "lua", "ml", "n", "proto", "scala",
+				"sql", "tex", "vb", "vhdl", "wiki", "xq", "yaml" };
+		
+		for (String lang : langs) {
+			extractResource(outputFolder, wj + "lang-" + lang + ".js", "prettify/lang-" + lang + ".js", true);
+		}
+		
+		extractZippedResource("prettify-themes.zip", outputFolder, "prettify");
+	}
+	
+	protected void extractZippedResource(String zipResource, File outputDirectory, String toDir) {
+		try {
+			ZipInputStream is = new ZipInputStream(getClass().getResourceAsStream("/" + zipResource));
+			File destFolder = new File(outputDirectory, toDir);
+			destFolder.mkdirs();
+			ZipEntry entry = null;
+			while ((entry = is.getNextEntry()) != null) {
+				if (entry.isDirectory()) {
+					File file = new File(destFolder, entry.getName());
+					file.mkdirs();
+					continue;
+				}
+				FileOutputStream os = new FileOutputStream(new File(destFolder,	entry.getName()));
+				byte[] buffer = new byte[32767];
+				int len = 0;
+				while ((len = is.read(buffer)) > -1) {
+					os.write(buffer, 0, len);
+				}
+				os.close();
+				is.closeEntry();
+			}
+			is.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	
 	protected void deleteResource(File baseFolder, String file) {
 		new File(baseFolder, file).delete();

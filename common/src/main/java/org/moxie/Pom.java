@@ -538,6 +538,9 @@ public class Pom {
 	}
 	
 	public boolean isSnapshot() {
+		if (version == null) {
+			throw new MoxieException(MessageFormat.format("Version is undefined for \"{0}\"!",  getCoordinates()));
+		}
 		return version.contains("-SNAPSHOT");
 	}
 

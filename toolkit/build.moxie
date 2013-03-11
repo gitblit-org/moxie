@@ -28,3 +28,8 @@ dependencies:
 - provided 'mx:freemarker'
 - provided 'mx:rhino'
 - provided 'mx:commons-net' :pro
+- provided 'mx:d3js'
+- provided 'mx:jquery'
+- provided 'mx:bootstrap'
+- provided 'mx:prettify'
+- provided 'mx:lesscss-engine'

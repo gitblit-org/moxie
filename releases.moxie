@@ -10,7 +10,8 @@ r6: {
     text: ~
     security: ~
     fixes: ~
-    changes: ~
+    changes:
+     - Use WebJars for all js & css dependencies.  This shrinks the full toolkit jar by ~200K.
     additions: ~
     dependencyChanges: ~
     contributors: ~

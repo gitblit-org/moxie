@@ -38,8 +38,6 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import org.moxie.maxml.Maxml;
 import org.moxie.maxml.MaxmlException;
@@ -126,7 +124,6 @@ public class Docs {
 			doc.describe(build.getConsole());
 		}
 		
-		injectPrettify(doc, doc.injectPrettify, verbose);
 		if (verbose) {
 			build.getConsole().separator();
 		}
@@ -527,50 +524,6 @@ public class Docs {
 					build.getConsole().error(t, "Failed to transform " + page.src);
 				}
 			}
-		}
-	}
-
-	static void injectPrettify(Doc doc, boolean inject, boolean verbose) {
-		if (!inject) {
-			return;
-		}
-		if (verbose) {
-			out.println("injecting GoogleCode Prettify");
-		}
-		extractZippedResource(doc, null, "prettify.zip");
-	}
-
-	static void extractZippedResource(Doc doc, String folder, String resource) {
-		try {
-			ZipInputStream is = new ZipInputStream(doc.getClass()
-					.getResourceAsStream("/" + resource));
-			File destFolder;
-			if (StringUtils.isEmpty(folder)) {
-				destFolder = doc.outputDirectory;
-			} else {
-				destFolder = new File(doc.outputDirectory, folder);
-			}
-			destFolder.mkdirs();
-			ZipEntry entry = null;
-			while ((entry = is.getNextEntry()) != null) {
-				if (entry.isDirectory()) {
-					File file = new File(destFolder, entry.getName());
-					file.mkdirs();
-					continue;
-				}
-				FileOutputStream os = new FileOutputStream(new File(destFolder,
-						entry.getName()));
-				byte[] buffer = new byte[32767];
-				int len = 0;
-				while ((len = is.read(buffer)) > -1) {
-					os.write(buffer, 0, len);
-				}
-				os.close();
-				is.closeEntry();
-			}
-			is.close();
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
