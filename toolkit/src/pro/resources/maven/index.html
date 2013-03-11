@@ -73,10 +73,12 @@
 
       <!-- Begin page content -->
       <div class="container">
-        <div class="page-header">
-          <h1>${project.name} <small>${project.description}</small></h1>
+        <div class="hero-unit">
+          <h1>${project.name}</h1>
+          <p>${project.description}</p>
+          <p><a class="btn btn-primary btn-medium" href="${project.url}">Learn more</a></p>
+          <p>This Maven 2-compatible repository may be used by your preferred build tool to retrieve ${project.name} artifacts.</p>
         </div>
-        <p class="lead">This Maven 2-compatible repository may be used by your preferred build tool to retrieve ${project.name} artifacts.</p>
 	  	<!-- build tool snippets-->
 		<div class="tabbable">
 			<ul class="nav nav-tabs">
