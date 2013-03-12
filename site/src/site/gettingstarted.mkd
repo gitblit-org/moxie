@@ -80,11 +80,11 @@ This example script uses Moxie Extension tasks with automatic property defaults 
         <!-- Setup Ant build properties and resolve & retrieve Maven dependencies -->
         <mx:init />
         <!-- Compile your project -->
-        <mx:compile />
+        <mx:javac />
         <!-- Compile your unit tests and execute them -->
         <mx:test />
         <!-- Generate class and source jars of your project -->
-        <mx:jar packageSources="true" />
+        <mx:package />
         <!-- Install your generated artifacts to your local Moxie cache -->
         <mx:install />
     </target>

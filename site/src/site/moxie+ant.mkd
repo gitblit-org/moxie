@@ -29,6 +29,28 @@ Moxie+Ant automatically injects several phase targets at runtime which you may u
  <dd>prepares a new release and begins a new development cycle</dd>
 </dl>
 
-### Archetypes
+### Project Creation
 
-Moxie+Ant has very primitive archetype support.  This is a work-in-progress.
+Moxie+Ant has very primitive project creation support.  This is a work-in-progress.
+
+<pre>
+moxie -new -<archetype> <groupId>:<artifactId>:<version> -dir:<dirname> -git<:originId> -eclipse<:+var> -intellij
+</pre>
+
+#### Archetypes
+
+- jar
+- parent
+
+#### Git
+
+Passing *-git* will initialize a git repository.
+
+Specifying an *originId* will automatically setup a an origin remote.  If you are using Gitblit and your account has create-on-push permission this is sufficient to create a local project and push it to Gitblit.
+
+#### IDE parameters
+
+-eclipse generates .project and .classpath files
+-eclipse:+var generates .project and .classpath files that are relative to an Eclipse variable MX_ROOT which must be defined in your Eclipse IDE.  This is useful to version-control the .classpath file since it does not have direct path links to your personal Moxie root folder.
+-eclipse:+ext generates .project and .classpath files that are relative to the ext folder of your project.
+-intellij generates .iml files
