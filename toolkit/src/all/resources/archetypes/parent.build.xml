@@ -3,27 +3,26 @@
 
 	<!--
 		Moxie Tasks
-		
+			
 		Remove this section if you only plan to use Moxie+Ant or Ant with the
 		-lib moxie.jar command line parameter.
-		
+			
 		If you plan to use regular Ant and include the Moxie jar in your
 		project (e.g. standard Eclipse/Netbeans/etc) then uncomment this section
 		and set the appropriate path to your Moxie jar file.
 	-->
-	
+
 	<!--
 	<property name="moxie.version" value="%MOXIE_VERSION%" />
 	<property name="moxie.url" value="%MOXIE_URL%" />
-	<property name="moxie.jar" value="toolkit-${moxie.version}-all.jar" />
-	
+	<property name="moxie.jar" value="toolkit-${moxie.version}.jar" />
+	<property name="moxie.dir" value="${user.home}/.moxie" />
+		
 	<get src="${moxie.url}/org/moxie/toolkit/${moxie.version}/${moxie.jar}"
-		dest="${basedir}" skipexisting="true" verbose="true" />
-	-->
+		dest="${moxie.dir}" skipexisting="true" verbose="true" />
 
-	<!--
 	<taskdef uri="antlib:org.moxie">
-		<classpath location="${basedir}/toolkit-${moxie.version}-all.jar" />
+		<classpath location="${moxie.dir}/${moxie.jar}" />
 	</taskdef>
 	-->
 

@@ -620,7 +620,7 @@ public class ToolkitConfig implements Serializable {
 						}
 					} else if (value instanceof MaxmlMap) {
 						MaxmlMap dirMap = (MaxmlMap) value;
-						String dir = readRequiredString(dirMap, Key.dir);
+						String dir = StringUtils.stripQuotes(readRequiredString(dirMap, Key.dir));
 						Scope scope = Scope.fromString(readRequiredString(dirMap, Key.scope));
 						List<String> tags = dirMap.getStrings("tags", new ArrayList<String>());
 						if (scope == null) {
@@ -644,7 +644,7 @@ public class ToolkitConfig implements Serializable {
 				String list = o.toString();
 				for (String value : StringUtils.breakCSV(list)) {
 					if (!StringUtils.isEmpty(value)) {
-						values.add(new SourceDirectory(value, Scope.compile));
+						values.add(new SourceDirectory(StringUtils.stripQuotes(value), Scope.compile));
 					}
 				}				
 			}

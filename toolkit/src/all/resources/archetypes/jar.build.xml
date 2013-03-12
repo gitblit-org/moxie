@@ -15,24 +15,35 @@
 	<!--
 	<property name="moxie.version" value="%MOXIE_VERSION%" />
 	<property name="moxie.url" value="%MOXIE_URL%" />
-	<property name="moxie.jar" value="toolkit-${moxie.version}-all.jar" />
+	<property name="moxie.jar" value="toolkit-${moxie.version}.jar" />
+	<property name="moxie.dir" value="${user.home}/.moxie" />
 	
 	<get src="${moxie.url}/org/moxie/toolkit/${moxie.version}/${moxie.jar}"
-		dest="${basedir}" skipexisting="true" verbose="true" />
-	-->
+		dest="${moxie.dir}" skipexisting="true" verbose="true" />
 
-	<!--
 	<taskdef uri="antlib:org.moxie">
-		<classpath location="${basedir}/toolkit-${moxie.version}-all.jar" />
+		<classpath location="${moxie.dir}/${moxie.jar}" />
 	</taskdef>
 	-->
 
 	<!-- Main Target -->
 	<target name="main" description="Prepares, compiles, tests, and packages your project">
+		
+		<!-- Setup Ant build properties and resolve & retrieve Maven dependencies -->
 		<mx:init />
+		
+		<!-- Compile your project -->
 		<mx:javac />
+
+		<!-- Compile your unit tests and execute them -->			
 		<mx:test />
-		<mx:jar includeResources="true" packageSources="true" />
+		
+		<!-- Generate class and source jars of your project -->
+		<mx:package />
+		
+		<!-- Install your generated artifacts to your local Moxie cache -->
+		<mx:install />
+		
 	</target>
 	
 </project>

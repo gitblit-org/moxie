@@ -119,9 +119,16 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 				printVersion();
 				startAnt = false;
 			} else if (arg.equals("-new")) {
-				// new project
+				// create new project
+				antArgs.remove(arg);
 				newProject = newProject(antArgs);
-				antArgs = Arrays.asList("phase:init");
+				
+				// run the init phase on the new project
+				antArgs = Arrays.asList(
+						"phase:init",
+						"-Dbasedir=" + newProject.dir.getAbsolutePath().replace('\\', '/'),
+						"-f",
+						new File(newProject.dir, "build.xml").getAbsolutePath().replace('\\', '/'));
 				break;
 			} else if (arg.equals("-f") || arg.equals("-buildfile") || arg.equals("-file")) {
 				specifiedBuildFile = true;
@@ -197,6 +204,9 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
         msg.append("  -version               print the version information and exit" + lSep);
         msg.append("  -diagnostics           print information that might be helpful to" + lSep);
         msg.append("                         diagnose or report problems." + lSep);
+        msg.append(lSep);
+        msg.append("  -new -<archetype> <groupId>:<artifactId>:<version> -dir:<dirname> -git<:originId> -eclipse<:+var> -intellij" + lSep);
+        msg.append(lSep);
         msg.append("  -color, -c             use ANSI color sequences" + lSep);
         msg.append("  -quiet, -q             be extra quiet" + lSep);
         msg.append("  -verbose, -v           be extra verbose" + lSep);
@@ -252,7 +262,6 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	project.dir = basedir;
     	
     	List<String> apply = new ArrayList<String>();
-    	apply.add(Toolkit.APPLY_CACHE);
     	
     	// parse args
     	if (args.size() > 0) {
@@ -267,6 +276,9 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     				if (args.contains("+var")) {
         				// Eclipse uses variable-relative paths
     					project.eclipse = Eclipse.var;
+					} else if (args.contains("+ext")) {
+        				// Eclipse uses project-relative paths
+    					project.eclipse = Eclipse.ext;
     				} else {
         				// Eclipse uses hard-coded paths to MOXIE_HOME in USER_HOME
     					project.eclipse = Eclipse.user;
@@ -290,6 +302,9 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     						if (args.contains("+var")) {
     	        				// Eclipse uses variable-relative paths
     	    					project.eclipse = Eclipse.var;
+    						} else if (args.contains("+ext")) {
+       	        				// Eclipse uses project-relative paths
+       	    					project.eclipse = Eclipse.ext;
     						} else {
         						// Eclipse uses hard-coded paths to MOXIE_HOME in USER_HOME
         						project.eclipse = Eclipse.user;
@@ -298,6 +313,9 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
    	    					project.idea = IntelliJ.var;
                         }
     				}
+    			} else if (arg.startsWith("-dir:")) {
+    				String dir = arg.substring("-dir:".length()).trim();
+    				project.dir = new File(basedir, dir);
     			} else {
     				projectArgs.add(arg);
     			}
@@ -363,8 +381,8 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     		String s = scopedFolder.substring(0, scopedFolder.indexOf(' ')).trim();
     		Scope scope = Scope.fromString(s);
     		if (scope.isValidSourceScope()) {
-    			String folder = scopedFolder.substring(s.length() + 1).trim();
-        		File file = new File(folder);
+    			String folder = StringUtils.stripQuotes(scopedFolder.substring(s.length() + 1).trim());
+        		File file = new File(project.dir, folder);
         		file.mkdirs();
     		} else {
     			log("Illegal source folder scope: " + s);
@@ -378,6 +396,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 
     	// write build.moxie
     	String maxml = map.toMaxml();
+		moxieFile = new File(project.dir, "build.moxie");
     	FileUtils.writeContent(moxieFile, maxml);
     	
     	// write build.xml
@@ -395,9 +414,9 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     		is.close();
     		
     		String content = prototype;
-    		content = prototype.replace("%MOXIE_VERSION%", Toolkit.getVersion());
-    		content = prototype.replace("%MOXIE_URL%", Toolkit.getMavenUrl());
-    		FileUtils.writeContent(new File(basedir, "build.xml"), content);
+    		content = content.replace("%MOXIE_VERSION%", Toolkit.getVersion());
+    		content = content.replace("%MOXIE_URL%", Toolkit.getMavenUrl());
+    		FileUtils.writeContent(new File(project.dir, "build.xml"), content);
     	} catch (Throwable t) {
     		t.printStackTrace();
     		System.exit(1);
@@ -444,7 +463,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     		sb.append("/.classpath\n");	
     	}
     	FileUtils.writeContent(new File(newProject.dir, ".gitignore"), sb.toString());
-
+    	
     	AddCommand add = git.add();
     	add.addFilepattern("build.xml");
     	add.addFilepattern("build.moxie");

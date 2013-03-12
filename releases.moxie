@@ -12,9 +12,10 @@ r6: {
     fixes:
 	- Fixed repository affinity checking when there are cached solutions with an origin
 	- Fixed quote/double-quote stripping for inline lists
-
+	- Fixed new project creation for Moxie+Ant
     changes:
      - Use WebJars for all js & css dependencies.  This shrinks the full toolkit jar by ~200K.
+	 - Improved Moxie Toolkit registration section of build.xml archetypes
     additions: ~
     dependencyChanges: ~
     contributors: ~
