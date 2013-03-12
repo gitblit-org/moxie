@@ -9,7 +9,9 @@ r6: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+	- Fixed repository affinity checking when there are cached solutions with an origin
+
     changes:
      - Use WebJars for all js & css dependencies.  This shrinks the full toolkit jar by ~200K.
     additions: ~

@@ -285,14 +285,15 @@ public class BuildConfig {
 		for (Repository repository : repositories) {
 			list.add(repository);
 			if (boostedRepository == null) {
-				if (!StringUtils.isEmpty(dep.origin)) {
+				if (repository.hasAffinity(dep)) {
+					// repository affinity based on package and maybe artifact
+					boostedRepository = repository;
+					//System.out.println(repository.name + " has affinity for " + dep.getCoordinates());
+				} else if (!StringUtils.isEmpty(dep.origin)) {
 					// origin preference
 					if (dep.origin.equalsIgnoreCase(repository.name)) {
 						boostedRepository = repository;
 					}
-				} else if (repository.hasAffinity(dep)) {
-					// repository affinity based on package and maybe artifact
-					boostedRepository = repository;
 				}
 			}
 		}
