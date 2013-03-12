@@ -11,6 +11,7 @@ r6: {
     security: ~
     fixes:
 	- Fixed repository affinity checking when there are cached solutions with an origin
+	- Fixed quote/double-quote stripping for inline lists
 
     changes:
      - Use WebJars for all js & css dependencies.  This shrinks the full toolkit jar by ~200K.

@@ -25,6 +25,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.moxie.utils.StringUtils;
+
 /**
  * MaxmlMap is a subclass of LinkedHashMap that forces keys to lowercase.
  */
@@ -91,7 +93,7 @@ public class MaxmlMap extends LinkedHashMap<String, Object> {
 			} else if (o instanceof String) {
 				List<String> strings = new ArrayList<String>();
 				for (String value : o.toString().split(",")) {
-					strings.add(value.trim());
+					strings.add(StringUtils.stripQuotes(value.trim()));
 				}
 				return strings;
 			}
@@ -157,16 +159,16 @@ public class MaxmlMap extends LinkedHashMap<String, Object> {
 		for (String key : keySet()) {
 			Object o = get(key);
 			if (o instanceof MaxmlMap) {
-				sb.append(escapeKey(key)).append(" : {\n");
+				sb.append(escapeKey(key)).append(": {\n");
 				sb.append(((MaxmlMap) o).toMaxml());
 				sb.append("\n}\n");
 			} else if (o instanceof List) {
-				sb.append(escapeKey(key)).append(" :\n");
+				sb.append(escapeKey(key)).append(":\n");
 				for (Object j : ((List<?>) o)) {
 					sb.append("- ").append(toMaxml(j)).append('\n');
 				}
 			} else {
-				sb.append(escapeKey(key)).append(" : ").append(toMaxml(o)).append('\n');
+				sb.append(escapeKey(key)).append(": ").append(toMaxml(o)).append('\n');
 			}
 		}
 		return sb.toString();
