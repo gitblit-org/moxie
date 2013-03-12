@@ -90,7 +90,6 @@
 			<pathelement path="${common.bin.classes}" />
 			<pathelement path="${toolkit.bin.classes}" />
 			<pathelement path="${basedir}/src/core/resources" />
-			<pathelement path="${basedir}/src/pro/resources" />
 			<pathelement path="${basedir}/src/all/resources" />
 			<pathelement path="${maxml.bin.classes}" />
 		</path>
@@ -122,7 +121,7 @@
 		
 		<mx:report scope="compile" destFile = "${project.targetDirectory}/compile_dependencies.txt"/>
 
-		<!-- Moxie-Core -->
+		<!-- Moxie-Toolkit-Core -->
 		<mx:genjar tag="core" classifier="core" excludeClasspathJars="true">
 				
 			<class name="org.moxie.ant.MxGet" />
@@ -137,51 +136,8 @@
 			</resource>
 		</mx:genjar>
 
-		<!-- Moxie-Pro -->
-		<mx:genjar tag="pro" classifier="pro" excludeClasspathJars="true">
-			
-			<!-- core -->
-			<class name="org.moxie.ant.MxGet" />
-			<class name="org.moxie.ant.MxInit" />
-			<class name="org.moxie.ant.MxReport" />
-				
-			<!-- pro -->
-			<class name="org.moxie.ant.ProjectHelper" />
-			<class name="org.moxie.ant.MxClean" />
-			<class name="org.moxie.ant.MxCommit" />
-			<class name="org.moxie.ant.MxCommitId" />
-			<class name="org.moxie.ant.MxDeploy" />
-			<class name="org.moxie.ant.MxExtract" />
-			<class name="org.moxie.ant.MxFtp" />
-			<class name="org.moxie.ant.MxGenJar" />
-			<class name="org.moxie.ant.MxGhPages" />
-			<class name="org.moxie.ant.MxIf" />
-			<class name="org.moxie.ant.MxInstall" />
-			<class name="org.moxie.ant.MxJar" />
-			<class name="org.moxie.ant.MxJavac" />
-			<class name="org.moxie.ant.MxJavadoc" />
-			<class name="org.moxie.ant.MxKeys" />
-			<class name="org.moxie.ant.MxPackage" />
-			<class name="org.moxie.ant.MxRun" />
-			<class name="org.moxie.ant.MxTar" />
-			<class name="org.moxie.ant.MxTest" />
-			<class name="org.moxie.ant.MxThumbs" />
-			<class name="org.moxie.ant.MxVersion" />
-			<class name="org.moxie.ant.MxWar" />
-			<class name="org.moxie.ant.MxWebXml" />
-			<class name="org.moxie.ant.MxZip" />
-
-			<resource>
-				<fileset dir="${basedir}/src/core/resources" />
-				<fileset dir="${basedir}/src/pro/resources" />
-			</resource>
-			<resource prefix="org/moxie">
-				<fileset file="${basedir}/src/pro/config/antlib.xml" />
-			</resource>
-		</mx:genjar>
-
 		
-		<!-- Moxie-All -->
+		<!-- Moxie-Toolkit -->
 		<mx:genjar packageSources="true" excludeClasspathJars="true">
 			
 			<!-- core -->
@@ -189,12 +145,14 @@
 			<class name="org.moxie.ant.MxInit" />
 			<class name="org.moxie.ant.MxReport" />
 			
-			<!-- pro -->
+			<!-- all -->
 			<class name="org.moxie.ant.ProjectHelper" />
+			<class name="org.moxie.ant.Main" />
 			<class name="org.moxie.ant.MxClean" />
 			<class name="org.moxie.ant.MxCommit" />
 			<class name="org.moxie.ant.MxCommitId" />
 			<class name="org.moxie.ant.MxDeploy" />
+			<class name="org.moxie.ant.MxDoc" />
 			<class name="org.moxie.ant.MxExtract" />
 			<class name="org.moxie.ant.MxFtp" />
 			<class name="org.moxie.ant.MxGenJar" />
@@ -215,13 +173,8 @@
 			<class name="org.moxie.ant.MxWebXml" />
 			<class name="org.moxie.ant.MxZip" />
 			
-			<!-- all -->
-			<class name="org.moxie.ant.MxDoc" />
-			<class name="org.moxie.ant.Main" />
-
 			<resource>
 				<fileset dir="${basedir}/src/core/resources" />
-				<fileset dir="${basedir}/src/pro/resources" />
 				<fileset dir="${basedir}/src/all/resources" />
 			</resource>
 			<resource prefix="org/moxie">

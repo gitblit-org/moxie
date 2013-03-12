@@ -73,7 +73,6 @@
 				</page>
 				<menu name="downloads">
 					<link name="moxie toolkit (core)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}-core.jar" />
-					<link name="moxie toolkit (pro)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}-pro.jar" />
 					<link name="moxie toolkit (all)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}.jar" />
 					<link name="moxie toolkit (sources)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}-sources.jar" />
 					<divider />
