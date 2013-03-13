@@ -27,6 +27,8 @@ public class MxPackage extends MxTask {
 	
 	public void execute() {
 		Build build = getBuild();
+		
+		// create jar or war
 		MxJar task = null;
 		if ("war".equals(build.getConfig().getPom().getExtension())) {
 			task = new MxWar();
@@ -36,5 +38,21 @@ public class MxPackage extends MxTask {
 		task.setProject(getProject());
 		task.setPackagesources(true);
 		task.execute();
+		
+		// create javadoc
+		MxJavadoc javadoc = new MxJavadoc();
+		javadoc.setProject(getProject());
+		javadoc.setRedirect(true);
+		javadoc.execute();
+		
+		if ("zip".equals(build.getConfig().getPom().getExtension())) {
+			// create zip of artifacts
+			MxZip zip = new MxZip();
+			zip.setProject(getProject());
+			zip.createArtifact();
+			zip.createArtifact().setClassifier("sources");
+			zip.createArtifact().setClassifier("javadoc");
+			zip.execute();
+		}
 	}
 }
