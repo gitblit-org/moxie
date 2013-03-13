@@ -3,7 +3,6 @@
 <!-- CURRENT RELEASE -->
 <@LogMacro 
 	title="Current Release"
-	logTitle=release.title  
 	log=release 
 	version=project.releaseVersion 
 	date=reference.releaseDate?string("yyyy-MM-dd") 

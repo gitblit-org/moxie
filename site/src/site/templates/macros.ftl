@@ -18,7 +18,7 @@
 	</#if>
 	
 	<#if (log.html!?length > 0)>
-		<p>${log.hmtl}</p>
+		<p>${log.html}</p>
 	</#if>
 	
 	<#if (log.text!?length > 0)>
