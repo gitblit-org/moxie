@@ -249,6 +249,10 @@ public class MxDoc extends MxTask {
 			doc.outputDirectory = build.getConfig().getSiteTargetDirectory();
 		}
 		
+		if (doc.templateDirectory == null) {
+			doc.templateDirectory = new File(build.getConfig().getSiteSourceDirectory(), "templates");
+		}
+		
 		doc.customLessFile = findFile(customLessFile);
 		if (logo != null) {
 			doc.logo = findFile(logo.getFile());
