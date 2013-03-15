@@ -367,17 +367,20 @@ public class FileUtils {
 		}
 		double sz = size;
 		String units;
-		double nsz;		
+		double nsz;
+		String format = "0";
 		if (size >= GIGABYTE) {
 			nsz = sz/GIGABYTE;
 			units = "GB";
+			format = "0.0";
 		} else if (size >= MEGABYTE) {
 			nsz = sz/MEGABYTE;
 			units = "MB";
+			format = "0.0";
 		} else {
 			nsz = sz/KILOBYTE;
 			units = "KB";
 		}
-		return new DecimalFormat("0.0").format(nsz) + " " + units;
+		return new DecimalFormat(format).format(nsz) + " " + units;
 	}
 }

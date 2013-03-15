@@ -6,9 +6,9 @@
   "version": "${artifact.version}",
   "date": "${artifact.date}",
   "files": {
-    "pom": "${artifact.pom}",
-    "package": "${artifact.package}",
-    "sources": "${artifact.sources}",
-    "javadoc": "${artifact.javadoc}"
+    "pom": { "path": "${artifact.pom}" },
+    "package": { "path": "${artifact.package}", "size":"${artifact.packageSize}" },
+    "sources": { "path": "${artifact.sources}", "size":"${artifact.sourcesSize}" },
+    "javadoc": { "path": "${artifact.javadoc}", "size":"${artifact.javadocSize}" }
    }
 }

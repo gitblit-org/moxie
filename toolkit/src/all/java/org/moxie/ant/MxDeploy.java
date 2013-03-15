@@ -108,14 +108,13 @@ public class MxDeploy extends MxRepositoryTask {
 			extractResource(cacheRoot, "maven/favicon.png", "favicon.png", false);
 			
 			if (extracted) {
-				// substitute properties and re-write index
-				File index = new File(cacheRoot, "index.html");
-				String content = FileUtils.readContent(index, "\n");
-				content = getProject().replaceProperties(content);
-				FileUtils.writeContent(index, content);
+				// create JSON repository metadata
+				String template = readResource("maven/repository.json").trim();
+				template = getProject().replaceProperties(template);
+				FileUtils.writeContent(new File(cacheRoot, "repository.json"), template);
 			}
 			
-			// create JSON artifact index
+			// create/update JSON artifact index
 			String template = readResource("maven/artifact.json").trim();
 			StringBuilder sb = new StringBuilder("[\n\n");
 			String index = artifactCache.generatePomIndex(template, ",\n");

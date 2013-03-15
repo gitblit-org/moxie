@@ -1,0 +1,7 @@
+{
+  "name": "${project.name}",
+  "description": "${project.description}",
+  "id": "${project.groupId}",
+  "affinity": "${project.groupId}",
+  "projectUrl": "${project.url}"
+}

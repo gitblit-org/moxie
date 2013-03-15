@@ -110,6 +110,9 @@ public abstract class IMavenCache {
 			artifact = artifact.replace("${artifact.package}", getMavenPath(dep));
 			artifact = artifact.replace("${artifact.sources}", getMavenPath(dep.getSourcesArtifact()));
 			artifact = artifact.replace("${artifact.javadoc}", getMavenPath(dep.getJavadocArtifact()));
+			artifact = artifact.replace("${artifact.packageSize}", getArtifactSize(dep));
+			artifact = artifact.replace("${artifact.sourcesSize}", getArtifactSize(dep.getSourcesArtifact()));
+			artifact = artifact.replace("${artifact.javadocSize}", getArtifactSize(dep.getJavadocArtifact()));
 			sb.append(artifact);
 			sb.append(separator);
 		}
@@ -130,6 +133,14 @@ public abstract class IMavenCache {
 		File file = getArtifact(dep, dep.extension);
 		if (file != null && file.exists()) {
 			return new SimpleDateFormat("yyyy-MM-dd").format(new Date(file.lastModified()));
+		}
+		return "";
+	}
+	
+	private String getArtifactSize(Dependency dep) {
+		File file = getArtifact(dep, dep.extension);
+		if (file != null && file.exists()) {
+			return FileUtils.formatSize(file.length());
 		}
 		return "";
 	}
