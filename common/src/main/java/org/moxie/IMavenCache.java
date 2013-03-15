@@ -29,6 +29,8 @@ public abstract class IMavenCache {
 
 	public abstract File writeMetadata(Dependency dep, String ext, byte[] content);
 	
+	protected abstract Dependency resolveRevision(Dependency dependency);
+	
 	public void purgeSnapshots(Dependency dep, PurgePolicy policy) {
 		if (!dep.isSnapshot()) {
 			return;
@@ -100,6 +102,9 @@ public abstract class IMavenCache {
 			artifact = artifact.replace("${artifact.version}", pom.getVersion());
 			
 			Dependency dep = new Dependency(pom.getCoordinates());
+			dep.extension = pom.getExtension();
+			resolveRevision(dep);
+			
 			artifact = artifact.replace("${artifact.date}", getLastModified(dep));
 			artifact = artifact.replace("${artifact.pom}", getMavenPath(dep.getPomArtifact()));
 			artifact = artifact.replace("${artifact.package}", getMavenPath(dep));
@@ -122,10 +127,9 @@ public abstract class IMavenCache {
 	}
 	
 	private String getLastModified(Dependency dep) {
-		String path = Dependency.getMavenPath(dep, dep.extension, Constants.MAVEN2_PATTERN);
-		File f = new File(getRootFolder(), path);
-		if (f.exists()) {
-			return new SimpleDateFormat("yyyy-MM-dd").format(new Date(f.lastModified()));
+		File file = getArtifact(dep, dep.extension);
+		if (file != null && file.exists()) {
+			return new SimpleDateFormat("yyyy-MM-dd").format(new Date(file.lastModified()));
 		}
 		return "";
 	}

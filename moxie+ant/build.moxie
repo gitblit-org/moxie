@@ -2,6 +2,7 @@ name: Moxie+Ant
 description: 'Moxie+Ant distribution'
 groupId: org.moxie
 artifactId: moxie+ant
+packaging: zip
 parent: ../build.moxie
 properties: {
  groovy.version : 1.8.8

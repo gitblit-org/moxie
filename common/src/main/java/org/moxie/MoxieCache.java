@@ -80,6 +80,7 @@ public class MoxieCache extends IMavenCache {
 		return list;
 	}
 	
+	@Override
 	protected Dependency resolveRevision(Dependency dependency) {
 		if ((dependency.isSnapshot() && StringUtils.isEmpty(dependency.revision))
 				|| dependency.version.equalsIgnoreCase(Constants.RELEASE)

@@ -650,6 +650,7 @@ public class Pom implements Comparable<Pom> {
 		sb.append(StringUtils.toXML("groupId", groupId));
 		sb.append(StringUtils.toXML("artifactId", artifactId));
 		sb.append(StringUtils.toXML("version", version));
+		sb.append(StringUtils.toXML("packaging", packaging));
 		sb.append(StringUtils.toXML("name", name));
 		sb.append(StringUtils.toXML("description", description));
 		String org = StringUtils.toXML("name", organization).trim() + StringUtils.toXML("url", organizationUrl).trim();
