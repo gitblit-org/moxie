@@ -1,0 +1,14 @@
+{
+  "name": "${artifact.name}",
+  "description": "${artifact.description}",
+  "groupId": "${artifact.groupId}",
+  "artifactId": "${artifact.artifactId}",
+  "version": "${artifact.version}",
+  "date": "${artifact.date}",
+  "files": {
+    "pom": "${artifact.pom}",
+    "packaging": "${artifact.package}",
+    "sources": "${artifact.sources}",
+    "javadoc": "${artifact.javadoc}"
+   }
+}

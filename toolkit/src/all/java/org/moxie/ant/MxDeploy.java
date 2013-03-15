@@ -114,6 +114,14 @@ public class MxDeploy extends MxRepositoryTask {
 				content = getProject().replaceProperties(content);
 				FileUtils.writeContent(index, content);
 			}
+			
+			// create JSON artifact index
+			String template = readResource("maven/artifact.json").trim();
+			StringBuilder sb = new StringBuilder("[\n\n");
+			String index = artifactCache.generatePomIndex(template, ",\n");
+			sb.append(index);
+			sb.append("\n]\n");
+			FileUtils.writeContent(new File(cacheRoot, "artifacts.json"), sb.toString());
 		}
 	}
 	

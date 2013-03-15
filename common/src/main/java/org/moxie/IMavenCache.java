@@ -1,7 +1,11 @@
 package org.moxie;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import org.moxie.utils.DeepCopier;
@@ -74,5 +78,81 @@ public abstract class IMavenCache {
 				file.delete();
 			}
 		}
+	}
+	
+	/**
+	 * Generates a POM index or list using the specified template.
+	 *  
+	 * @param pomTemplate
+	 * @param separator separates pom entries
+	 * @return the index/list
+	 */
+	public String generatePomIndex(String pomTemplate, String separator) {
+		List<Pom> poms = readAllPoms();
+		Collections.sort(poms);
+		StringBuilder sb = new StringBuilder();		
+		for (Pom pom : poms) {
+			String artifact = pomTemplate;
+			artifact = artifact.replace("${artifact.name}", pom.getName());
+			artifact = artifact.replace("${artifact.description}", pom.getDescription());
+			artifact = artifact.replace("${artifact.groupId}", pom.getGroupId());
+			artifact = artifact.replace("${artifact.artifactId}", pom.getArtifactId());
+			artifact = artifact.replace("${artifact.version}", pom.getVersion());
+			
+			Dependency dep = new Dependency(pom.getCoordinates());
+			artifact = artifact.replace("${artifact.date}", getLastModified(dep));
+			artifact = artifact.replace("${artifact.pom}", getMavenPath(dep.getPomArtifact()));
+			artifact = artifact.replace("${artifact.package}", getMavenPath(dep));
+			artifact = artifact.replace("${artifact.sources}", getMavenPath(dep.getSourcesArtifact()));
+			artifact = artifact.replace("${artifact.javadoc}", getMavenPath(dep.getJavadocArtifact()));
+			sb.append(artifact);
+			sb.append(separator);
+		}
+		// trim trailing separator
+		sb.setLength(sb.length() - separator.length());
+		return sb.toString();
+	}
+	
+	private String getMavenPath(Dependency dep) {
+		String path = Dependency.getMavenPath(dep, dep.extension, Constants.MAVEN2_PATTERN);
+		if (new File(getRootFolder(), path).exists()) {
+			return path;
+		}
+		return "";
+	}
+	
+	private String getLastModified(Dependency dep) {
+		String path = Dependency.getMavenPath(dep, dep.extension, Constants.MAVEN2_PATTERN);
+		File f = new File(getRootFolder(), path);
+		if (f.exists()) {
+			return new SimpleDateFormat("yyyy-MM-dd").format(new Date(f.lastModified()));
+		}
+		return "";
+	}
+	
+	public List<Pom> readAllPoms() {
+		List<Pom> poms = new ArrayList<Pom>();
+		poms.addAll(readAllPoms(getRootFolder()));
+		return poms;
+	}
+	
+	private List<Pom> readAllPoms(File folder) {
+		List<Pom> poms = new ArrayList<Pom>();
+		for (File file : folder.listFiles()) {
+			if (file.isDirectory()) {
+				// recurse into this directory
+				poms.addAll(readAllPoms(file));
+			} else if (file.getName().endsWith(Constants.POM)) {
+				// read this pom
+				try {
+					Pom pom = PomReader.readPom(this, file);
+					poms.add(pom);
+				} catch (Throwable t) {
+					System.err.println("Failed to read POM " + file);
+					t.printStackTrace(System.err);
+				}
+			}
+		}
+		return poms;
 	}
 }

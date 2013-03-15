@@ -34,7 +34,7 @@ import java.util.regex.Pattern;
 import org.moxie.utils.StringUtils;
 
 
-public class Pom {
+public class Pom implements Comparable<Pom> {
 
 	public String name;
 	public String description;
@@ -774,5 +774,17 @@ public class Pom {
 			list.append(MessageFormat.format("</{0}s>\n", nodename));
 		}
 		return list.toString();
+	}
+
+	@Override
+	public int compareTo(Pom o) {
+		int managementId = getManagementId().compareTo(o.getManagementId());
+		if (managementId == 0) {
+			// same artifact, sort by version
+			ArtifactVersion v1 = new ArtifactVersion(version);
+			ArtifactVersion v2 = new ArtifactVersion(o.version);
+			return v1.compareTo(v2);
+		}
+		return managementId;
 	}
 }
