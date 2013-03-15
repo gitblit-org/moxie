@@ -15,6 +15,12 @@
  */
 package org.moxie.ant;
 
+import java.io.File;
+
+import org.apache.tools.ant.taskdefs.Tar.TarCompressionMethod;
+import org.apache.tools.ant.taskdefs.Tar.TarLongFileMode;
+import org.apache.tools.ant.types.EnumeratedAttribute;
+import org.apache.tools.ant.types.FileSet;
 import org.moxie.Build;
 
 
@@ -44,15 +50,52 @@ public class MxPackage extends MxTask {
 		javadoc.setProject(getProject());
 		javadoc.setRedirect(true);
 		javadoc.execute();
-		
-		if ("zip".equals(build.getConfig().getPom().getExtension())) {
+
+		File license = new File(build.getConfig().getProjectDirectory(), "LICENSE");
+		File notice = new File(build.getConfig().getProjectDirectory(), "NOTICE");
+
+		if ("zip".equals(build.getConfig().getPom().getExtension())
+				|| build.getConfig().getPom().getPackaging().contains("+zip")) {
 			// create zip of artifacts
 			MxZip zip = new MxZip();
 			zip.setProject(getProject());
 			zip.createArtifact();
 			zip.createArtifact().setClassifier("sources");
 			zip.createArtifact().setClassifier("javadoc");
+			if (license.exists()) {
+				FileSet fs = new FileSet();
+				fs.setProject(getProject());
+				fs.setFile(license);
+				zip.addFileset(fs);
+			}
+			if (notice.exists()) {
+				FileSet fs = new FileSet();
+				fs.setProject(getProject());
+				fs.setFile(notice);
+				zip.addFileset(fs);
+			}
 			zip.execute();
+		}
+		
+		if ("tgz".equals(build.getConfig().getPom().getExtension())
+				|| "tar.gz".equals(build.getConfig().getPom().getExtension())
+				|| build.getConfig().getPom().getPackaging().contains("+tgz")
+				|| build.getConfig().getPom().getPackaging().contains("+tar.gz")) {
+			// create tarball of artifacts
+			MxTar tar = new MxTar();
+			tar.setProject(getProject());
+			tar.setLongfile((TarLongFileMode) EnumeratedAttribute.getInstance(TarLongFileMode.class, "gnu"));
+			tar.setCompression((TarCompressionMethod) EnumeratedAttribute.getInstance(TarCompressionMethod.class, "gzip"));
+			tar.createArtifact();
+			tar.createArtifact().setClassifier("sources");
+			tar.createArtifact().setClassifier("javadoc");
+			if (license.exists()) {
+				tar.createTarFileSet().setFile(license);
+			}
+			if (notice.exists()) {
+				tar.createTarFileSet().setFile(notice);
+			}
+			tar.execute();
 		}
 	}
 }

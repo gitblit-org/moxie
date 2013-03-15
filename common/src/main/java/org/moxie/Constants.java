@@ -88,6 +88,10 @@ public class Constants {
 		if (StringUtils.isEmpty(packaging)) {
 			return "jar";
 		}
+		if (packaging.indexOf('+') > -1) {
+			// strip trailing +zip and/or +tgz, etc
+			packaging = packaging.substring(0, packaging.indexOf('+'));
+		}
 		String ext = packagingMap.get(packaging.toLowerCase());
 		if (ext == null) {
 			ext = packaging;

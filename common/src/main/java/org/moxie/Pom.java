@@ -533,6 +533,10 @@ public class Pom implements Comparable<Pom> {
 		return getExtension().equalsIgnoreCase("war");
 	}
 	
+	public String getPackaging() {
+		return packaging;
+	}
+	
 	public String getExtension() {
 		return Constants.getExtension(packaging);
 	}
