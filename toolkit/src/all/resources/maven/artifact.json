@@ -7,7 +7,7 @@
   "date": "${artifact.date}",
   "files": {
     "pom": "${artifact.pom}",
-    "packaging": "${artifact.package}",
+    "package": "${artifact.package}",
     "sources": "${artifact.sources}",
     "javadoc": "${artifact.javadoc}"
    }
