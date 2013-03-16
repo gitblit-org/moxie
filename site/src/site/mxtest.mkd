@@ -1,4 +1,4 @@
-## mx:Test %PRO% %ALL%
+## mx:Test
 
 %BEGINXML%
 <mx:test />

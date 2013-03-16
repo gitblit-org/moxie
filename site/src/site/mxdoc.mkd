@@ -1,4 +1,4 @@
-## mx:Doc %ALL%
+## mx:Doc
 
 Prettify Themes
 

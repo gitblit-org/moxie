@@ -1,4 +1,4 @@
-## mx:Extract %PRO% %ALL%
+## mx:Extract
 
 %BEGINXML%
 <mx:extract property="gb.version" field="VERSION" srcfile="${basedir}/src/com/gitblit/Constants.java" />

@@ -1,4 +1,4 @@
-## mx:Ftp %PRO% %ALL%
+## mx:Ftp
 
 %BEGINXML%
 <mx:ftp />

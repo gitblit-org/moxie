@@ -1,4 +1,4 @@
-## mx:Report %CORE% %PRO% %ALL%
+## mx:Report %CORE%
 
 %BEGINXML%
 <mx:report scope="compile" destfile="${project.target.dir}/dependencies.txt" verbose="true" />

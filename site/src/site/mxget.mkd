@@ -1,4 +1,4 @@
-## mx:Get %CORE% %PRO% %ALL%
+## mx:Get %CORE%
 
 %BEGINXML%
 <mx:get dest="${basedir}/ext" scope="compile">

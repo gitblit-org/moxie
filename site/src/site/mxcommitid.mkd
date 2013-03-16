@@ -1,4 +1,4 @@
-## mx:CommitId %PRO% %ALL%
+## mx:CommitId
 
 %BEGINXML%
 <mx:commitid repositoryFolder="${basedir}" property="gb.version" />

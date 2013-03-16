@@ -1,4 +1,4 @@
-## mx:Jar %PRO% %ALL%
+## mx:Jar
 
 %BEGINXML%
 <mx:jar includeResources="true" packageSources="true" />

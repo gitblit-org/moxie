@@ -17,7 +17,7 @@ releaseDate: 2013-03-08
 # Project urls
 url: 'http://moxie.gitblit.com'
 issuesUrl: 'https://gitblit.github.com/moxie'
-mavenUrl: 'http://moxie.gitblit.com/maven'
+mavenUrl: 'http://gitblit.github.com/moxie/maven'
 
 # Licenses section included for POM generation
 licenses:

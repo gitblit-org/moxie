@@ -1,4 +1,4 @@
-## mx:Tar %PRO% %ALL%
+## mx:Tar
 
 %BEGINXML%
 <mx:tar compression="gzip">

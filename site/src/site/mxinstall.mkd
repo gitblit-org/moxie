@@ -1,4 +1,4 @@
-## mx:Install %PRO% %ALL%
+## mx:Install
 
 %BEGINXML%
 <mx:install basedir="${basedir}/../maven" allowSnapshots="true" />

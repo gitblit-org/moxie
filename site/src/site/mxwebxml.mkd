@@ -1,4 +1,4 @@
-## mx:WebXml %PRO% %ALL%
+## mx:WebXml
 
 %BEGINXML%
 <mx:webxml sourcefile="${project.src.dir}/WEB-INF/web.xml" 

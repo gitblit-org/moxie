@@ -1,4 +1,4 @@
-## mx:Zip %PRO% %ALL%
+## mx:Zip
 
 %BEGINXML%
 <mx:zip destfile="${project.target.dir}/${manager.zipfile}">

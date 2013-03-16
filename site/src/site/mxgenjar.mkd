@@ -1,4 +1,4 @@
-## mx:GenJar %PRO% %ALL%
+## mx:GenJar
 
 %BEGINXML%
 <mx:genjar destfile="moxie-all.jar">

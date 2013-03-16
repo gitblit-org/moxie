@@ -1,4 +1,4 @@
-## mx:Clean %CORE% %PRO% %ALL%
+## mx:Clean %CORE%
 
 %BEGINXML%
 <mx:clean />

@@ -1,4 +1,4 @@
-## mx:If %PRO% %ALL%
+## mx:If
 
 This is a fork of the AntContrib if task.
 

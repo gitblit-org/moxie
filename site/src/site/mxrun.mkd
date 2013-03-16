@@ -1,4 +1,4 @@
-## mx:Run %PRO% %ALL%
+## mx:Run
 
 %BEGINXML%
 <mx:run />

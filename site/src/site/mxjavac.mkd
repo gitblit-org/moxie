@@ -1,4 +1,4 @@
-## mx:Javac %PRO% %ALL%
+## mx:Javac
 
 %BEGINXML%
 <mx:javac />

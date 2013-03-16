@@ -1,4 +1,4 @@
-## mx:Commit %PRO% %ALL%
+## mx:Commit
 
 %BEGINXML%
 <mx:commit repositoryFolder="${basedir}" />

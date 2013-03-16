@@ -72,22 +72,17 @@
 					<template src="releasehistory.ftl" data="${releaselog}" />
 				</page>
 				<menu name="downloads">
-					<link name="moxie toolkit (core)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}-core.jar" />
-					<link name="moxie toolkit (all)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}.jar" />
-					<link name="moxie toolkit (sources)" src="maven/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}-sources.jar" />
+					<link name="moxie toolkit (core)" src="${project.mavenUrl}/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}-core.jar" />
+					<link name="moxie toolkit" src="${project.mavenUrl}/org/moxie/moxie-toolkit/${project.releaseVersion}/moxie-toolkit-${project.releaseVersion}.jar" />
 					<divider />
-					<link name="moxie-proxy" src="maven/org/moxie/moxie-proxy/${project.releaseVersion}/moxie-proxy-${project.releaseVersion}.zip" />
-					<link name="moxie-proxy (sources)" src="maven/org/moxie/moxie-proxy/${project.releaseVersion}/moxie-proxy-${project.releaseVersion}-sources.jar" />
+					<link name="moxie-proxy" src="${project.mavenUrl}/org/moxie/moxie-proxy/${project.releaseVersion}/moxie-proxy-${project.releaseVersion}.zip" />
 					<divider />
-					<link name="moxie+ant (zip)" src="maven/org/moxie/moxie+ant/${project.releaseVersion}/moxie+ant-${project.releaseVersion}.zip" />
-					<link name="moxie+ant (tar.gz)" src="maven/org/moxie/moxie+ant/${project.releaseVersion}/moxie+ant-${project.releaseVersion}.tar.gz" />
-					<divider />
-					<link name="maxml" src="maven/org/moxie/maxml/${project.releaseVersion}/maxml-${project.releaseVersion}.jar" />
-					<link name="maxml-sources" src="maven/org/moxie/maxml/${project.releaseVersion}/maxml-${project.releaseVersion}-sources.jar" />
+					<link name="moxie+ant (zip)" src="${project.mavenUrl}/org/moxie/moxie+ant/${project.releaseVersion}/moxie+ant-${project.releaseVersion}.zip" />
+					<link name="moxie+ant (tar.gz)" src="${project.mavenUrl}/org/moxie/moxie+ant/${project.releaseVersion}/moxie+ant-${project.releaseVersion}.tar.gz" />
 					<divider />
 					<link name="Github Project" src="http://github.com/gitblit/moxie" />
 					<divider />
-					<link name="Maven Repository" src="maven" />
+					<link name="Maven Repository" src="${project.mavenUrl}" />
 				</menu>
 				<divider />
 			</structure>
@@ -100,8 +95,6 @@
 			</page>
 			<references src="references.mkd" />
 			<replace token="%CORE%" value="&lt;span class='label'&gt;core&lt;/span&gt;" />
-			<replace token="%PRO%" value="&lt;span class='label label-success'&gt;pro&lt;/span&gt;" />
-			<replace token="%ALL%" value="&lt;span class='label label-info'&gt;all&lt;/span&gt;" />
 			<nomarkdown startToken="%BEGINMAXML%" endToken="%ENDMAXML%" prettify="true" lang="lang-yaml" />
 			<nomarkdown startToken="%BEGINXML%" endToken="%ENDXML%" prettify="true" lang="lang-xml" />
 			<regex searchPattern="\b(issue)(\s*[#]?|-){0,1}(\d+)\b" replacePattern="&lt;a href='http://code.google.com/p/gitblit/issues/detail?id=$3'&gt;issue $3&lt;/a&gt;" />

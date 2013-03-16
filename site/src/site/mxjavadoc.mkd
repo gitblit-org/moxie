@@ -1,4 +1,4 @@
-## mx:Javadoc %PRO% %ALL%
+## mx:Javadoc
 
 %BEGINXML%
 <mx:javadoc destdir="${project.build.dir}/javadoc" >

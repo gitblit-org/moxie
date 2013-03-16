@@ -1,4 +1,4 @@
-## mx:Thumb %PRO% %ALL%
+## mx:Thumb
 
 %BEGINXML%
 <!-- Generate thumbnails of screenshots -->
