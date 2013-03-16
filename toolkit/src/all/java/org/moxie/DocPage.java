@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 James Moger
+ * Copyright 2013 James Moger
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,24 +19,18 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Link implements Serializable {
+public class DocPage extends DocElement implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	public String name;
 	public String src;
 	public String as;
-	public List<Link> sublinks;	
 	public String content;
 	
-	public Link prevLink;
-	public Link nextLink;
+	public DocPage prevPage;
+	public DocPage nextPage;
 
-	public boolean isLink;
-	public boolean isPage;
-	public boolean isMenu;
-	public boolean isReport;	
-	public boolean isDivider;
 	public boolean showToc;
 	public boolean showHeaderLinks;
 	public boolean isFluidLayout;
@@ -101,36 +95,6 @@ public class Link implements Serializable {
 	public void setFluidlayout(boolean value) {
 		this.isFluidLayout = value;
 	}
-
-	public Link createPage() {
-		Link link = newLink();
-		link.isPage = true;
-		return link;
-	}
-
-	public Link createMenu() {
-		Link link = newLink();
-		link.isMenu = true;
-		return link;
-	}
-	
-	public Link createReport() {
-		Link link = newLink();
-		link.isReport = true;
-		return link;
-	}
-
-	public Link createDivider() {
-		Link link = newLink();
-		link.isDivider = true;
-		return link;
-	}
-
-	public Link createLink() {
-		Link link = newLink();
-		link.isLink = true;
-		return link;
-	}
 	
 	public Template createTemplate() {
 		Template template = new Template();
@@ -141,12 +105,4 @@ public class Link implements Serializable {
 		return template;
 	}
 
-	private Link newLink() {
-		Link link = new Link();
-		if (sublinks == null) {
-			sublinks = new ArrayList<Link>();
-		}
-		sublinks.add(link);
-		return link;
-	}
 }

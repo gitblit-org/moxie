@@ -15,8 +15,9 @@ r6: {
 	- Fixed new project creation for Moxie+Ant
     changes:
      - Use WebJars for all js & css dependencies.  This shrinks the full toolkit jar by ~200K.
-	 - Eliminated the pro toolkit.  This simplifies things to -core and the full toolkit.
-	 - Improved Moxie Toolkit registration section of build.xml archetypes
+     - Eliminated the pro toolkit.  This simplifies things to -core and the full toolkit.
+     - Improved Moxie Toolkit registration section of build.xml archetypes
+     - Split mx:Doc Link class into several model classes to improve Ant tab-completion 
     additions: ~
     dependencyChanges: ~
     contributors: ~

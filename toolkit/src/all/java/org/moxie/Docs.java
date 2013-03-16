@@ -63,21 +63,22 @@ public class Docs {
 	
 	public static void execute(Build build, Doc doc, boolean verbose) {		
 
+		List<DocElement> revisedElements = new ArrayList<DocElement>();
+		
 		// prepare report links
-		for (Link link : doc.structure.sublinks) {
-			if (link.isReport) {
+		for (DocElement element : doc.structure.elements) {
+			if (element instanceof DocReport) {
 				// switch to menu
-				link.isMenu = true;
-				link.isReport = false;
+				DocMenu reportMenu = new DocMenu();
 				
 				// project report
-				Link projectReport = link.createPage();
+				DocPage projectReport = reportMenu.createPage();
 				projectReport.setName("project data");
 				projectReport.setContent(new ProjectReport().report(build));
 				projectReport.setSrc("moxie-project.html");
 				
 				// dependency report
-				Link depReport = link.createPage();
+				DocPage depReport = reportMenu.createPage();
 				depReport.setName("dependencies");
 				depReport.setContent(new DependencyReport().report(build));
 				depReport.setSrc("moxie-dependencies.html");
@@ -89,7 +90,7 @@ public class Docs {
 				boolean hasCoverage = coverageOutput.exists();
 				
 				if (hasTests || hasCoverage) {
-					link.createDivider();
+					reportMenu.createDivider();
 
 					if (hasTests) {
 						// test report
@@ -98,7 +99,7 @@ public class Docs {
 						} catch (IOException e) {
 							build.getConsole().error(e, "failed to copy test report");
 						}
-						Link testReport = link.createPage();
+						DocPage testReport = reportMenu.createPage();
 						testReport.setName("unit tests");
 						testReport.setContent(iframe("tests/index.html"));
 						testReport.setSrc("moxie-tests.html");
@@ -111,14 +112,22 @@ public class Docs {
 						} catch (IOException e) {
 							build.getConsole().error(e, "failed to copy coverage report");
 						}
-						Link coverageReport = link.createPage();
+						DocPage coverageReport = reportMenu.createPage();
 						coverageReport.setName("code coverage");
 						coverageReport.setContent(iframe("coverage/index.html"));
 						coverageReport.setSrc("moxie-coverage.html");
 					}
 				}
+				
+				// add reports menu
+				revisedElements.add(reportMenu);
+			} else {
+				// do not alter
+				revisedElements.add(element);
 			}
 		}
+		
+		doc.structure.elements = revisedElements;
 		
 		if (verbose) {
 			doc.describe(build.getConsole());
@@ -140,18 +149,18 @@ public class Docs {
 		if (StringUtils.isEmpty(projectName) && !StringUtils.isEmpty(doc.name)) {
 			projectName = doc.name;
 		}
-		List<Link> allLinks = new ArrayList<Link>();
-		for (Link link : doc.structure.sublinks) {
-			allLinks.add(link);
-			if (link.sublinks != null) {
-				allLinks.addAll(link.sublinks);
+		List<DocElement> allElements = new ArrayList<DocElement>();
+		for (DocElement element : doc.structure.elements) {
+			allElements.add(element);
+			if (element instanceof DocMenu) {
+				allElements.addAll(((DocMenu) element).elements);
 			}
 		}
 
 		String header = generateHeader(projectName, build.getConfig().getProjectConfig(), doc);
 		String footer = generateFooter(doc);
 
-		if (!doc.structure.sublinks.isEmpty()) {
+		if (!doc.structure.elements.isEmpty()) {
 			build.getConsole().log("Generating Structured Documentation from source files... ");
 		}
 
@@ -163,44 +172,45 @@ public class Docs {
 			doc.references.content = "\n\n" + content; 
 		}
 		
-		for (Link link : allLinks) {
-			if (link.isMenu || link.isDivider || link.isLink) {
+		for (DocElement element : allElements) {
+			if (!(element instanceof DocPage)) {
 				// nothing to generate
 				continue;
 			}
+			DocPage page = (DocPage) element;
 			try {
-				String fileName = getHref(link);
-				if (StringUtils.isEmpty(link.src)) {
+				String fileName = getHref(page);
+				if (StringUtils.isEmpty(page.src)) {
 					// template page
-					build.getConsole().log(1, "{0} => {1}", link.templates.get(0).src, fileName);
+					build.getConsole().log(1, "{0} => {1}", page.templates.get(0).src, fileName);
 				} else {
 					// markdown page
-					build.getConsole().log(1, "{0} => {1}", link.src, fileName);
+					build.getConsole().log(1, "{0} => {1}", page.src, fileName);
 				}
 				String content;
 				List<Section> sections = new ArrayList<Section>();
 				String pager = "";
 
-				if (link.content != null) {
+				if (page.content != null) {
 					// generated content
-					content = link.content;
+					content = page.content;
 					
-					processTemplates(doc, link);
+					processTemplates(doc, page);
 					
 					for (Substitute sub : doc.substitutions) {
-						if (link.processSubstitutions || sub.isTemplate) {
+						if (page.processSubstitutions || sub.isTemplate) {
 							content = content.replace(sub.token, sub.value.toString());
 						}
 					}
 					for (Regex regex : doc.regexes) {
 						content = content.replaceAll(regex.searchPattern, regex.replacePattern);
 					}
-				} else if (link.src.endsWith(".html") || link.src.endsWith(".htm")) {
+				} else if (page.src.endsWith(".html") || page.src.endsWith(".htm")) {
 					// static html content
-					content = FileUtils.readContent(new File(doc.sourceDirectory, link.src), "\n");
+					content = FileUtils.readContent(new File(doc.sourceDirectory, page.src), "\n");
 				} else {
 					// begin markdown
-					String markdownContent = FileUtils.readContent(new File(doc.sourceDirectory, link.src), "\n");
+					String markdownContent = FileUtils.readContent(new File(doc.sourceDirectory, page.src), "\n");
 					
 					// append references, if specified
 					if (!StringUtils.isEmpty(doc.references.content)) {
@@ -288,26 +298,26 @@ public class Docs {
 					}
 
 					// prev/next pager links
-					if (link.showPager) {
+					if (page.showPager) {
 						String prev;
-						if (link.prevLink == null) {
+						if (page.prevPage == null) {
 							prev = "";
 						} else {
-							prev = MessageFormat.format("<li class=\"previous\"><a href=\"{0}\">&larr; {1}</a></li>", getHref(link.prevLink), link.prevLink.name);
+							prev = MessageFormat.format("<li class=\"previous\"><a href=\"{0}\">&larr; {1}</a></li>", getHref(page.prevPage), page.prevPage.name);
 						}
 						String next;
-						if (link.nextLink == null) {
+						if (page.nextPage == null) {
 							next = "";
 						} else {
-							next = MessageFormat.format("<li class=\"next\"><a href=\"{0}\">{1} &rarr;</a></li>", getHref(link.nextLink), link.nextLink.name);
+							next = MessageFormat.format("<li class=\"next\"><a href=\"{0}\">{1} &rarr;</a></li>", getHref(page.nextPage), page.nextPage.name);
 						}
 						String divClass = "";
 						String pagerClass = "";
-						if (!StringUtils.isEmpty(link.pagerLayout)) {
-							if ("right".equals(link.pagerLayout)) {
+						if (!StringUtils.isEmpty(page.pagerLayout)) {
+							if ("right".equals(page.pagerLayout)) {
 								divClass = "class=\"pull-right\"";
 								pagerClass = "class=\"pager\"";
-							} else if ("justified".equals(link.pagerLayout)) {
+							} else if ("justified".equals(page.pagerLayout)) {
 								pagerClass = "class=\"pager\"";
 							}
 						}
@@ -331,7 +341,7 @@ public class Docs {
 							String h = "h" + section.length();
 							String id = "H" + sectionCounter.addAndGet(1);
 							sections.add(new Section(id, name));
-							if (link.showHeaderLinks) {
+							if (page.showHeaderLinks) {
 								sb.append(MessageFormat.format("<{0} class=\"section\" id=''{2}''><a href=\"#{2}\" class=\"sectionlink\"><i class=\"icon-share-alt\"> </i></a>{1}</{0}>\n", h, name, id));
 							} else {
 								sb.append(MessageFormat.format("<{0} id=''{2}''>{1}</{0}>\n", h, name, id));
@@ -355,10 +365,10 @@ public class Docs {
 					}
 					
 					// templates
-					processTemplates(doc, link);
+					processTemplates(doc, page);
 
 					for (Substitute sub : doc.substitutions) {
-						if (link.processSubstitutions || sub.isTemplate) {
+						if (page.processSubstitutions || sub.isTemplate) {
 							content = content.replace(sub.token, sub.value.toString());
 						}
 					}
@@ -380,7 +390,7 @@ public class Docs {
 				}
 				
 				// Create the topbar links for this page
-				String links = createLinks(link, doc.structure.sublinks, false);
+				String links = createLinks(page, doc.structure.elements);
 
 				if (!StringUtils.isEmpty(doc.googlePlusId)) {
 					links += "<li><a href='https://plus.google.com/"
@@ -422,8 +432,8 @@ public class Docs {
 					writer.write("\n<body>");
 				}
 				writer.write(links);
-				if (link.showToc) {
-					if (link.isFluidLayout) {
+				if (page.showToc) {
+					if (page.isFluidLayout) {
 						writer.write("\n<div class='container-fluid'>");
 						writer.write("\n<div class='row-fluid'>");
 					} else {
@@ -443,7 +453,7 @@ public class Docs {
 					writer.write("\n</div>");
 					writer.write("\n<div class='span9'>");
 				} else {
-					if (link.isFluidLayout) {
+					if (page.isFluidLayout) {
 						writer.write("\n<div class='container-fluid'>");
 					} else {
 						writer.write("\n<div class='container'>");
@@ -458,7 +468,7 @@ public class Docs {
 				}
 				
 				if (!manualPagerPlacement) {
-					if (!StringUtils.isEmpty(link.pagerPlacement) && link.pagerPlacement.contains("top")) {
+					if (!StringUtils.isEmpty(page.pagerPlacement) && page.pagerPlacement.contains("top")) {
 						// top pager
 						writer.write(pager);
 					}
@@ -469,7 +479,7 @@ public class Docs {
 				writer.write("\n<!-- End Markdown -->\n");
 								
 				if (!manualPagerPlacement) {
-					if (!StringUtils.isEmpty(link.pagerPlacement) && link.pagerPlacement.contains("bottom")) {
+					if (!StringUtils.isEmpty(page.pagerPlacement) && page.pagerPlacement.contains("bottom")) {
 						// bottom pager
 						writer.write(pager);
 					}
@@ -478,7 +488,7 @@ public class Docs {
 				writer.write("<footer class=\"footer\">");
 				writer.write(footer);
 				writer.write("\n</footer>\n</div>");
-				if (link.showToc) {
+				if (page.showToc) {
 					writer.write("\n</div></div>");
 				}
 				
@@ -494,14 +504,14 @@ public class Docs {
 				writer.write("\n</html>");
 				writer.close();
 			} catch (Throwable t) {
-				build.getConsole().error(t, "Failed to transform " + link.src);
+				build.getConsole().error(t, "Failed to transform " + page.src);
 			}
 		}
 		
 		// process pages which are not part of the normal structure
 		if (!doc.freeformPages.isEmpty()) {
 			build.getConsole().log("Generating content from Freemarker templates...");
-			for (Link page : doc.freeformPages) {
+			for (DocPage page : doc.freeformPages) {
 				try {
 					// template pages
 					String fileName = getHref(page);
@@ -581,43 +591,48 @@ public class Docs {
 		return content;
 	}
 
-	private static String createLinks(Link currentLink, List<Link> links, boolean isMenu) {
+	private static String createLinks(DocElement currentElement, List<DocElement> elements) {
 		String linkPattern = "<li><a href=''{0}''>{1}</a></li>\n";
 		String currentLinkPattern = "<li class=''active''><a href=''{0}''>{1}</a></li>\n";
 
 		StringBuilder sb = new StringBuilder();
-		for (Link link : links) {
-			if (!link.showNavbarLink) {
-				continue;
-			}
-			boolean active = currentLink.equals(link);
-			if (link.sublinks == null) {
-				String href = getHref(link);
-				if (link.isDivider) {
-					if (isMenu) {
-						// menu divider
-						sb.append("<li class='divider'></li>\n");
-					} else {
-						// nav bar divider
-						sb.append("<li class='divider-vertical'></li>\n");
-					}
-				} else if (active) {
+		for (DocElement element : elements) {
+			if (element instanceof DocPage) {
+				DocPage page = (DocPage) element;
+				if (!page.showNavbarLink) {
+					continue;
+				}
+				String href = getHref(page);
+				boolean active = currentElement.equals(page);
+				if (active) {
 					// current page
-					sb.append(MessageFormat.format(currentLinkPattern, href,
-							link.name));
+					sb.append(MessageFormat.format(currentLinkPattern, href, page.name));
 				} else {
 					// page link
-					sb.append(MessageFormat
-							.format(linkPattern, href, link.name));
+					sb.append(MessageFormat.format(linkPattern, href, page.name));
 				}
-			} else {
+			} else if (element instanceof DocLink) {
+				// ext link
+				DocLink link = (DocLink) element;
+				String href = getHref(link);
+				sb.append(MessageFormat.format(linkPattern, href, link.name));
+			} else if (element instanceof DocDivider) {
+				if (currentElement instanceof DocMenu) {
+					// menu divider
+					sb.append("<li class='divider'></li>\n");
+				} else {
+					// nav bar divider
+					sb.append("<li class='divider-vertical'></li>\n");
+				}
+			} else if (element instanceof DocMenu) {
 				// drop down menu
+				DocMenu menu = (DocMenu) element;
 				sb.append("<li class='dropdown'> <!-- Menu -->\n");
 				sb.append(MessageFormat
 						.format("<a class=''dropdown-toggle'' href=''#'' data-toggle=''dropdown''>{0}<b class=''caret''></b></a>\n",
-								link.name));
+								menu.name));
 				sb.append("<ul class='dropdown-menu'>\n");
-				sb.append(createLinks(link, link.sublinks, true));
+				sb.append(createLinks(menu, menu.elements));
 				sb.append("</ul></li> <!-- End Menu -->\n");
 			}
 		}
@@ -625,18 +640,19 @@ public class Docs {
 		return sb.toString();
 	}
 
-	private static String getHref(Link link) {
-		if (link.isLink) {
+	private static String getHref(DocElement element) {
+		if (element instanceof DocLink) {
 			// external link
-			return link.src;
-		} else if (link.isPage) {
+			return ((DocLink) element).src;
+		} else if (element instanceof DocPage) {
 			// page link
-			if (StringUtils.isEmpty(link.as)) {
-				String html = link.src.substring(0, link.src.lastIndexOf('.'))
+			DocPage page = (DocPage) element;
+			if (StringUtils.isEmpty(page.as)) {
+				String html = page.src.substring(0, page.src.lastIndexOf('.'))
 					+ ".html";
 				return html;
 			}
-			return link.as;
+			return page.as;
 		}
 		return null;
 	}
@@ -794,9 +810,9 @@ public class Docs {
 		return sb.toString();
 	}
 	
-	protected static void processTemplates(Doc doc, Link link) throws TemplateException, MaxmlException, IOException {
+	protected static void processTemplates(Doc doc, DocPage page) throws TemplateException, MaxmlException, IOException {
 		// templates
-		if (link.templates != null && !link.templates.isEmpty()) {
+		if (page.templates != null && !page.templates.isEmpty()) {
 			// Freemarker engine
 			Configuration fm = new Configuration();
 			fm.setObjectWrapper(new DefaultObjectWrapper());
@@ -806,7 +822,7 @@ public class Docs {
 				fm.setDirectoryForTemplateLoading(doc.sourceDirectory);
 			}
 			
-			for (Template template : link.templates) {
+			for (Template template : page.templates) {
 				File data = new File(template.data);
 				if (!data.exists()) {
 					data = new File(doc.sourceDirectory, template.data);

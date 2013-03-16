@@ -49,7 +49,7 @@ public class Doc implements Serializable {
 
 	public File ads;
 
-	public Link structure;
+	public DocStructure structure;
 	
 	public References references;
 
@@ -71,7 +71,7 @@ public class Doc implements Serializable {
 
 	public List<Regex> regexes = new ArrayList<Regex>();
 	
-	public List<Link> freeformPages = new ArrayList<Link>();
+	public List<DocPage> freeformPages = new ArrayList<DocPage>();
 	
 	public File logo;
 	
@@ -87,17 +87,19 @@ public class Doc implements Serializable {
 
 	public List<File> getSources() {
 		List<File> files = new ArrayList<File>();
-		files.addAll(getSources(structure.sublinks));
+		files.addAll(getSources(structure.elements));
 		return files;
 	}
 
-	private List<File> getSources(List<Link> links) {
+	private List<File> getSources(List<DocElement> links) {
 		List<File> files = new ArrayList<File>();
-		for (Link link : links) {
-			if (link.sublinks != null) {
-				files.addAll(getSources(link.sublinks));
-			} else if (link.isPage) {
-				files.add(new File(sourceDirectory, link.src));
+		if (links != null) {
+			for (DocElement link : links) {
+				if (link instanceof DocMenu) {
+					files.addAll(getSources(((DocMenu) link).elements));
+				} else if (link instanceof DocPage) {
+					files.add(new File(sourceDirectory, ((DocPage)link).src));
+				}
 			}
 		}
 		return files;
@@ -118,8 +120,8 @@ public class Doc implements Serializable {
 		}
 		console.separator();
 		console.log("structure");
-		for (Link link : structure.sublinks) {
-			describe(console, link);
+		for (DocElement link : structure.elements) {
+			describe(console, 1, link);
 		}
 		console.separator();
 	}
@@ -135,22 +137,22 @@ public class Doc implements Serializable {
 		console.key(StringUtils.leftPad(key, 12, ' '), value);
 	}
 
-	void describe(Console console, Link link) {
-		if (link.isPage || link.isLink) {
-			// page link or external link
-			console.log(1, link.name + (link.isPage ? " = " : " => ") + link.src);
-		} else if (link.isMenu) {
+	void describe(Console console, int level, DocElement element) {
+		if (element instanceof DocPage) {
+			// page link
+			DocPage page = (DocPage) element;
+			console.log(level, page.name + " = " + page.src);
+		} else if (element instanceof DocLink) {
+			// external link
+			DocLink link =(DocLink) element;
+			console.log(level, link.name + " => " + link.src);
+		} else if (element instanceof DocMenu) {
 			// menu
-			console.log(1, link.name);
-			for (Link sublink : link.sublinks) {
-				if (sublink.isDivider) {
-					console.log(2, "--");					
-				} else if (sublink.isPage || sublink.isLink) {
-					console.log(2, sublink.name + (sublink.isPage ? " = " : " => ") + sublink.src);
-				}
-			}
-		} else if (link.isDivider) {
-			console.log(1, "--");
+			DocMenu menu = (DocMenu) element;
+			console.log(level, menu.name);
+			describe(console, level + 1, menu);
+		} else if (element instanceof DocDivider) {
+			console.log(level, "--");
 		}
 	}
 }

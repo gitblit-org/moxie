@@ -32,8 +32,10 @@ import org.apache.tools.ant.types.FileSet;
 import org.moxie.Build;
 import org.moxie.Dependency;
 import org.moxie.Doc;
+import org.moxie.DocMenu;
+import org.moxie.DocPage;
 import org.moxie.Docs;
-import org.moxie.Link;
+import org.moxie.DocElement;
 import org.moxie.Load;
 import org.moxie.Logo;
 import org.moxie.NoMarkdown;
@@ -41,6 +43,7 @@ import org.moxie.Prop;
 import org.moxie.References;
 import org.moxie.Regex;
 import org.moxie.Scope;
+import org.moxie.DocStructure;
 import org.moxie.Substitute;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
@@ -66,10 +69,10 @@ public class MxDoc extends MxTask {
 		setTaskName("mx:doc");
 	}
 
-	public Link createStructure() {
-		Link link = new Link();
-		doc.structure = link;
-		return link;
+	public DocStructure createStructure() {
+		DocStructure struct = new DocStructure();
+		doc.structure = struct;
+		return struct;
 	}
 	
 	public References createReferences() {
@@ -124,9 +127,8 @@ public class MxDoc extends MxTask {
 		return favicon;		
 	}
 
-	public Link createPage() {
-		Link page = new Link();		
-		page.isPage = true;
+	public DocPage createPage() {
+		DocPage page = new DocPage();		
 		doc.freeformPages.add(page);
 		return page;
 	}
@@ -302,44 +304,48 @@ public class MxDoc extends MxTask {
 		extractPrettify(prettify, doc.outputDirectory);
 		
 		// setup prev/next pager links
-		for (Link menuLink : doc.structure.sublinks) {
-			if (menuLink.isMenu && menuLink.showPager) {
-				for (int i = 0, maxIndex = menuLink.sublinks.size() - 1; i <= maxIndex; i++) {
-					Link pageLink = menuLink.sublinks.get(i);
-					if (pageLink.isPage) {							
+		for (DocElement element : doc.structure.elements) {
+			if (element instanceof DocMenu && ((DocMenu)element).showPager) {
+				DocMenu menu = (DocMenu) element;
+				for (int i = 0, maxIndex = menu.elements.size() - 1; i <= maxIndex; i++) {
+					DocElement subElement = menu.elements.get(i);
+					if (subElement instanceof DocPage) {							
 						// link to previous page
-						Link prev = i == 0 ? null : menuLink.sublinks.get(i - 1);
-						if (prev != null && prev.isPage) {
-							pageLink.prevLink = prev;
+						DocPage page = (DocPage) subElement;
+						DocElement prev = i == 0 ? null : menu.elements.get(i - 1);
+						if (prev != null && prev instanceof DocPage) {
+							page.prevPage = (DocPage) prev;
 						}
 
 						// link to next page
-						Link next = i == maxIndex ? null : menuLink.sublinks.get(i + 1);
-						if (next != null && next.isPage) {
-							pageLink.nextLink = next;
+						DocElement next = i == maxIndex ? null : menu.elements.get(i + 1);
+						if (next != null && next instanceof DocPage) {
+							page.nextPage = (DocPage) next;
 						}
 
 						// show pager is dependent on having at least a prev or next
-						pageLink.showPager = pageLink.prevLink != null || pageLink.nextLink != null;
-						pageLink.pagerLayout = menuLink.pagerLayout;
-						pageLink.pagerPlacement = menuLink.pagerPlacement;
+						page.showPager = page.prevPage != null || page.nextPage != null;
+						page.pagerLayout = menu.pagerLayout;
+						page.pagerPlacement = menu.pagerPlacement;
 					}
 				}
 			}
 
 			// pages which are generated from a Freemarker template
-			if (menuLink.isPage) { 
+			if (element instanceof DocPage) { 
 				// process navbar items
-				prepareTemplatePage(menuLink);
-			} else if (menuLink.isMenu) {
+				prepareTemplatePage((DocPage) element);
+			} else if (element instanceof DocMenu) {
 				// process menu items
-				for (Link sublink : menuLink.sublinks) {
-					prepareTemplatePage(sublink);
+				for (DocElement subElement : ((DocMenu)element).elements) {
+					if (subElement instanceof DocPage) {
+						prepareTemplatePage((DocPage) subElement);
+					}
 				}
 			}
 		}
 		
-		for (Link page : doc.freeformPages) {
+		for (DocPage page : doc.freeformPages) {
 			// process out-of-structure template pages
 			prepareTemplatePage(page);
 		}
@@ -529,13 +535,13 @@ public class MxDoc extends MxTask {
 		new File(baseFolder, file).delete();
 	}
 	
-	protected void prepareTemplatePage(Link link) {
+	protected void prepareTemplatePage(DocPage page) {
 		// pages which are generated from a Freemarker template
-		if (link.isPage && StringUtils.isEmpty(link.src) && 
-				link.templates != null && link.templates.size() == 1) {
-			String token = "%-" + link.as + "%";
-			link.templates.get(0).setToken(token);
-			link.content = token;
+		if (StringUtils.isEmpty(page.src) && 
+				page.templates != null && page.templates.size() == 1) {
+			String token = "%-" + page.as + "%";
+			page.templates.get(0).setToken(token);
+			page.content = token;
 		}
 	}
 	
