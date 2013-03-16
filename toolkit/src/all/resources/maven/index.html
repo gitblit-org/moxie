@@ -183,8 +183,6 @@ repositories: 'central', '{{repository.id}}'</pre>
                                         <span class="artifact" ng-show="artifact.files.javadoc.path.length">
                                             <a href="{{artifact.files.javadoc.path}}">javadoc</a> <small>({{artifact.files.javadoc.size}})</small>
                                         </span>
-
-                                        <a href="{{artifact.files.pom.path}}">pom</a>
                                     </p>
                                 </small>
                             </td>
@@ -204,6 +202,7 @@ repositories: 'central', '{{repository.id}}'</pre>
                                             <pre class="prettyprint lang-xml">{{pom}}</pre>
                                         </div>
                                         <div class="modal-footer">
+                                            <a class="btn btn-small" href="{{artifact.files.pom.path}}">Download</a>
                                             <button class="btn btn-small btn-primary cancel" ng-click="close()">Close</button>
                                         </div>
                                     </div>
