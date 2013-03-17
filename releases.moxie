@@ -19,7 +19,8 @@ r6: {
      - Eliminated the pro toolkit.  This simplifies things to -core and the full toolkit.
      - Improved Moxie Toolkit registration section of build.xml archetypes
      - Split mx:Doc Link class into several model classes to improve Ant tab-completion
-     - Improved version range support by integrating Maven's VersionRange and Restriction classes  
+     - Improved version range support by integrating Maven's VersionRange and Restriction classes
+     - Download javadoc artifacts for repository parity with Maven
     additions: ~
     dependencyChanges: ~
     contributors: ~

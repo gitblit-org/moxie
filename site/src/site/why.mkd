@@ -22,8 +22,7 @@ If the following limitations are of concern, then Moxie may not suit your needs.
 1. Moxie employs the Maven 2 transitive dependency resolution mechanism<div class="alert alert-info">Currently, Maven 2.0 only supports using the "nearest definition" which means that it will use the version of the closest dependency to your project in the tree of dependencies. You can always guarantee a version by declaring it explicitly in your project's POM. Note that if two dependency versions are at the same depth in the dependency tree ... the first declaration wins.</div>
 2. Moxie has simplified/limited support for version ranges.  
 When Moxie encounters a version range specification it will always resolve the highest version number possible based on the range specification and the list of versions in *maven-metadata.xml*.  The resolved version identifier is substituted for the version range specification.  From that point the "nearest definition" rule is applied.  Maven version-pinning, like [1.2.3], is not honored.
-3. Moxie does not retrieve *-javadoc.jar* artifacts.
-4. Moxie does not currently deploy artifacts to a remote repository.
+3. Moxie does not currently deploy artifacts to a remote repository.
 
 ## Why not Maven?
 
