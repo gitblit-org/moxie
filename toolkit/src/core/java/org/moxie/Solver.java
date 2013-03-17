@@ -639,7 +639,7 @@ public class Solver {
 		}
 		
 		if (dependency.isMetaVersion()) {
-			// Support SNAPSHOT, RELEASE and LATEST versions
+			// Support VERSION RANGE, SNAPSHOT, RELEASE, and LATEST versions
 			File metadataFile = moxieCache.getMetadata(dependency, Constants.XML);
 			boolean updateRequired = !metadataFile.exists() || isUpdateMetadata();
 			

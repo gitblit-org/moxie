@@ -13,11 +13,13 @@ r6: {
 	- Fixed repository affinity checking when there are cached solutions with an origin
 	- Fixed quote/double-quote stripping for inline lists
 	- Fixed new project creation for Moxie+Ant
+        - Do not use cached metadata checksums when retrieving fresh metadata files
     changes:
      - Use WebJars for all js & css dependencies.  This shrinks the full toolkit jar by ~200K.
      - Eliminated the pro toolkit.  This simplifies things to -core and the full toolkit.
      - Improved Moxie Toolkit registration section of build.xml archetypes
-     - Split mx:Doc Link class into several model classes to improve Ant tab-completion 
+     - Split mx:Doc Link class into several model classes to improve Ant tab-completion
+     - Improved version range support by integrating Maven's VersionRange and Restriction classes  
     additions: ~
     dependencyChanges: ~
     contributors: ~

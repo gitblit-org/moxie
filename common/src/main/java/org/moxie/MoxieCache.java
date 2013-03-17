@@ -80,40 +80,6 @@ public class MoxieCache extends IMavenCache {
 		return list;
 	}
 	
-	@Override
-	protected Dependency resolveRevision(Dependency dependency) {
-		if ((dependency.isSnapshot() && StringUtils.isEmpty(dependency.revision))
-				|| dependency.version.equalsIgnoreCase(Constants.RELEASE)
-				|| dependency.version.equalsIgnoreCase(Constants.LATEST)) {
-			// Support SNAPSHOT, RELEASE and LATEST versions
-			File metadataFile = getMetadata(dependency, Constants.XML);
-			
-			// read SNAPSHOT, LATEST, or RELEASE from metadata
-			if (metadataFile != null && metadataFile.exists()) {
-				Metadata metadata = MetadataReader.readMetadata(metadataFile);
-				String version;
-				String revision;
-				if (Constants.RELEASE.equalsIgnoreCase(dependency.version)) {
-					version = metadata.release;
-					revision = version;
-				} else if (Constants.LATEST.equalsIgnoreCase(dependency.version)) {
-					version = metadata.latest;
-					revision = version;
-				} else {
-					// SNAPSHOT
-					version = dependency.version;
-					revision = metadata.getSnapshotRevision();
-				}
-				
-				dependency.version = version;
-				dependency.revision = revision;
-			}
-		}
-
-		// standard release
-		return dependency;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see org.moxie.IMavenCache#getArtifact(org.moxie.Dependency, java.lang.String)

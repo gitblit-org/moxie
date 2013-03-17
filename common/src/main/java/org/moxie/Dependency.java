@@ -144,7 +144,14 @@ public class Dependency implements Serializable {
 	}
 	
 	public boolean isMetaVersion() {
-		return isSnapshot() || version.equalsIgnoreCase(Constants.RELEASE) || version.equalsIgnoreCase(Constants.LATEST);
+		return isRangedVersion()
+				|| isSnapshot()
+				|| version.equalsIgnoreCase(Constants.RELEASE)
+				|| version.equalsIgnoreCase(Constants.LATEST);
+	}
+	
+	public boolean isRangedVersion() {
+		return version.indexOf('[') > -1 || version.indexOf('(') > -1;
 	}
 
 	public Dependency getPomArtifact() {

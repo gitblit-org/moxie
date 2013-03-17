@@ -213,7 +213,7 @@ public class MoxieProxy extends Application {
 			}
 			File pomFile = poms[0];
 			IMavenCache cache = config.getMavenCache(folder);
-			return PomReader.readPom(cache, pomFile, Requirements.IGNORE_VERSION_RANGES);
+			return PomReader.readPom(cache, pomFile, Requirements.LOOSE);
 		}
 		return null;
 	}

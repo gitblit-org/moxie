@@ -15,6 +15,7 @@
  */
 package org.moxie;
 
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -229,6 +230,26 @@ public class Metadata {
 			}
 		}
 		return lastBuildNumber;
+	}
+	
+	public String resolveRangedVersion(String range) {
+		try {
+			VersionRange vr = VersionRange.createFromVersionSpec(range);
+			// resolve highest version possible from available versions
+			ArtifactVersion version = vr.matchVersion(getVersions());
+			return version.toString();
+		} catch (Exception e) {
+			throw new MoxieException(MessageFormat.format("Failed to resolve {0} because of unsupported version range: {1}", getManagementId(), range), e);
+		}
+	}
+	
+	protected List<ArtifactVersion> getVersions() {
+		List<ArtifactVersion> list = new ArrayList<ArtifactVersion>();
+		for (String version : versions) {
+			list.add(new ArtifactVersion(version));
+		}
+		Collections.sort(list);
+		return list;
 	}
 
 	@Override

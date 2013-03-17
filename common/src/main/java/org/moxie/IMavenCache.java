@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
+import org.moxie.utils.StringUtils;
 
 public abstract class IMavenCache {
 	
@@ -29,7 +30,45 @@ public abstract class IMavenCache {
 
 	public abstract File writeMetadata(Dependency dep, String ext, byte[] content);
 	
-	protected abstract Dependency resolveRevision(Dependency dependency);
+	protected Dependency resolveRevision(Dependency dependency) {
+		if ((dependency.isSnapshot() && StringUtils.isEmpty(dependency.revision))
+				|| dependency.version.equalsIgnoreCase(Constants.RELEASE)
+				|| dependency.version.equalsIgnoreCase(Constants.LATEST)
+				|| dependency.isRangedVersion()) {
+			// Support VERSION RANGE, SNAPSHOT, RELEASE and LATEST versions
+			File metadataFile = getMetadata(dependency, Constants.XML);
+			
+			// read SNAPSHOT, LATEST, or RELEASE from metadata
+			if (metadataFile != null && metadataFile.exists()) {
+				Metadata metadata = MetadataReader.readMetadata(metadataFile);
+				String version;
+				String revision;
+				if (Constants.RELEASE.equalsIgnoreCase(dependency.version)) {
+					// RELEASE
+					version = metadata.release;
+					revision = version;
+				} else if (Constants.LATEST.equalsIgnoreCase(dependency.version)) {
+					// LATEST
+					version = metadata.latest;
+					revision = version;
+				} else if (dependency.isSnapshot()) {
+					// SNAPSHOT
+					version = dependency.version;
+					revision = metadata.getSnapshotRevision();
+				} else {
+					// VERSION RANGE
+					version = metadata.resolveRangedVersion(dependency.version);
+					revision = version;
+				}
+				
+				dependency.version = version;
+				dependency.revision = revision;
+			}
+		}
+
+		// standard release
+		return dependency;
+	}
 	
 	public void purgeSnapshots(Dependency dep, PurgePolicy policy) {
 		if (!dep.isSnapshot()) {

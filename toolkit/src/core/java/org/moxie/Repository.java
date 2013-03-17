@@ -193,15 +193,9 @@ public class Repository {
 		return null;
 	}
 	
-	protected String getMetadataSHA1(Solver solver, Dependency dep) {
+	protected String downloadMetadataSHA1(Solver solver, Dependency dep) {
 		try {
 			String extsha1 = Constants.XML + ".sha1";
-			File hashFile = solver.getMoxieCache().getMetadata(dep, extsha1);
-			if (hashFile.exists()) {
-				// read cached sha1
-				return FileUtils.readContent(hashFile, "\n").trim();
-			}
-
 			URL url = new URL(Dependency.getMavenPath(dep, extsha1, getMetadataUrl(dep)));
 			DownloadData data = download(solver, url);
 			String content = new String(data.content, "UTF-8").trim();
@@ -231,7 +225,7 @@ public class Repository {
 	public File downloadMetadata(Solver solver, Dependency dep) {
 		String expectedSHA1 = "";
 		if (calculateSHA1()) {
-			expectedSHA1 = getMetadataSHA1(solver, dep);
+			expectedSHA1 = downloadMetadataSHA1(solver, dep);
 			if (expectedSHA1 == null) {
 				// there is no SHA1 for this artifact
 				// check for the artifact just-in-case we can download w/o
