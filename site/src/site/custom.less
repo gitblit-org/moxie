@@ -9,13 +9,12 @@
 
 // GLOBAL VALUES
 // --------------------------------------------------
-@purpleDarker:				#200020;
-@purpleDark:				#500050;
-@standardGray:				#ccc;
+@purpleDark:				#4E004E;
+@standardGray:				#eee;
 @yellow:					#ffc40d;
 @white:						#fff;
-@baseFontSize:              13px;
-@baseLineHeight:            18px;
+//@baseFontSize:              13px;
+//@baseLineHeight:            18px;
 
 // Dropdown
 // -------------------------
@@ -23,8 +22,8 @@
 
 // Navbar
 // -------------------------
-@navbarHeight:                    45px;
-@navbarBackground:                @purpleDarker;
+@navbarHeight:                    60px;
+@navbarBackground:                @purpleDark;
 @navbarBackgroundHighlight:       @purpleDark;
 @navbarText:                      @standardGray;
 @navbarLinkColor:                 @standardGray;
@@ -39,15 +38,15 @@
 	}
 	
 	.nav > li > a {
-		padding-top: 13px;
 		padding-left: 10px;
 		padding-right: 10px;
-		@elementHeight: 20px;
+		font-size: @baseFontSize + 1;  
+		text-shadow: 0 1px 0 #000;
 	}
 
 	.brand {
 		@elementHeight: 27px;
-		padding: 10px 14px;
+		padding: 17px 14px;
 	}
 }
 
