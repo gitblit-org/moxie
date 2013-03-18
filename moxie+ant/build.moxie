@@ -9,5 +9,5 @@ properties: {
 }
 dependencyDirectory: ext
 dependencies:
-- provided 'commons-net:commons-net:1.4.0' @jar
-- provided 'org.codehaus.groovy:groovy-all:${groovy.version}'
+- provided 'mx:commons-net' @jar
+#- provided 'org.codehaus.groovy:groovy-all:${groovy.version}'

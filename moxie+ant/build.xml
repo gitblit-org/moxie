@@ -17,10 +17,7 @@
 			<dependency coordinates="javax.mail:mail:1.4" />
 			<dependency coordinates="javax.activation:activation:1.1" />
 			<dependency coordinates="org.apache.ant:ant-compress:1.2 !org.apache.ant:ant" />
-			<dependency coordinates="org.apache.ant:ant-jsch:${ant.version}" />
-			<dependency coordinates="mx:markdownpapers" />
-			<dependency coordinates="mx:jgit" />
-			<dependency coordinates="mx:rhino" />
+			<dependency coordinates="com.jcraft:jsch:0.1.44-1" />
 		</mx:get>
 			
 		<delete dir="${project.targetDirectory}" includes="**/*" quiet="true" failonerror="false"/>
@@ -56,7 +53,7 @@
 		<zip destfile="${project.targetDirectory}/moxie+ant-${project.version}.zip">
 			<zipfileset dir="${project.outputDirectory}/dist/${ant.release}" prefix="moxie-${project.version}" />
 			<zipfileset file="${basedir}/../toolkit/build/target/moxie.jar" prefix="moxie-${project.version}/lib" />
-			<zipfileset dir="ext" prefix="moxie-${project.version}/lib" />
+			<zipfileset dir="ext" prefix="moxie-${project.version}/lib" excludes="src/**/*" />
 		</zip>
 		
 		<!-- create gzip distribution (preserves script execute permissions) -->
@@ -81,6 +78,7 @@
 			<tarfileset dir="ext" prefix="moxie-${project.version}/lib"
 				username="ant" group="ant">
 				<exclude name="ant*"/>
+				<exclude name="src/**/*"/>
 				<include name="*"/>
 			</tarfileset>
 			<tarfileset file="${basedir}/../toolkit/build/target/moxie.jar" prefix="moxie-${project.version}/lib"
