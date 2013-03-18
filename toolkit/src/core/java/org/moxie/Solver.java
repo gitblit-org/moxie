@@ -695,8 +695,14 @@ public class Solver {
 			}
 		}
 		
+		String unresolvedVersion = dependency.getVersion();
+		boolean isRangedVersion = dependency.isRangedVersion();		
 		MoxieData moxiedata = moxieCache.readMoxieData(dependency);
 		File pomFile = moxieCache.getArtifact(dependency, Constants.POM);
+		if (isRangedVersion) {
+			console.notice(1, "{0}:{1} resolved to {2}", dependency.getManagementId(), unresolvedVersion, dependency.getVersion());
+		}
+		
 		if ((!pomFile.exists() || (dependency.isSnapshot() && moxiedata.isRefreshRequired())) && isOnline()) {
 			// download the POM
 			console.debug(1, "locating POM for {0}", dependency.getDetailedCoordinates());
