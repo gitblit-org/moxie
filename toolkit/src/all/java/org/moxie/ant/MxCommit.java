@@ -23,10 +23,8 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.DirSet;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.resources.Union;
-import org.moxie.Build;
 import org.moxie.MoxieException;
 import org.moxie.Toolkit;
-import org.moxie.Toolkit.Key;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.JGitUtils;
 import org.moxie.utils.StringUtils;
@@ -74,8 +72,7 @@ public class MxCommit extends MxGitTask {
 	
 	@Override
 	public void execute() throws BuildException {
-		Build build = (Build) getProject().getReference(Key.build.referenceId());
-		loadDependency(build);
+		loadDependencies();
 		if (message == null || StringUtils.isEmpty(message.getValue())) {
 			throw new MoxieException("The commit must have a message!");
 		}

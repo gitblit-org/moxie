@@ -46,7 +46,7 @@ public class MxGhPages extends MxGitTask {
 	public void execute() throws BuildException {
 		Build build = getBuild();
 		titleClass();
-		loadDependency(build);
+		loadDependencies();
 
 		if (sourceDir == null) {
 			sourceDir = build.getConfig().getSiteTargetDirectory();

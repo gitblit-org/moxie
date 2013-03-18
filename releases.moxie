@@ -21,6 +21,7 @@ r6: {
      - Split mx:Doc Link class into several model classes to improve Ant tab-completion
      - Improved version range support by integrating Maven's VersionRange and Restriction classes
      - Download javadoc artifacts for repository parity with Maven
+	 - Improve dynamic classpath loading
     additions: ~
     dependencyChanges: ~
     contributors: ~

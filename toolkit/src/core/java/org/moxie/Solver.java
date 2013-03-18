@@ -18,9 +18,6 @@ package org.moxie;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -959,12 +956,13 @@ public class Solver {
 	}
 	
 	/**
-	 * Downloads an internal dependency needed for runtime operation of Moxie.
-	 * This dependency is automatically loaded by the classloader.
+	 * Downloads internal dependencies needed for runtime operation of Moxie.
+	 * This methods is often used in conjunction with manipulating the ANT
+	 * runtime classpath.
 	 * 
 	 * @param dependencies
 	 */
-	public void loadDependency(Dependency... dependencies) {		
+	public Collection<Dependency> getRuntimeDependencies(Dependency... dependencies) {		
 		// solve the classpath solution for the Moxie runtime dependencies
 		Pom pom = new Pom();
 		Set<Dependency> retrieved = new HashSet<Dependency>();
@@ -981,24 +979,7 @@ public class Solver {
 		for (Dependency dependency : solution) {
 			retrieveArtifact(dependency);
 		}
-
-		// load dependency onto executing classpath from Moxie cache
-		Class<?>[] PARAMETERS = new Class[] { URL.class };
-		URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-		Class<?> sysclass = URLClassLoader.class;
-		for (Dependency dependency : solution) {
-			File file = moxieCache.getArtifact(dependency, dependency.extension);
-			if (file.exists()) {
-				try {
-					URL u = file.toURI().toURL();
-					Method method = sysclass.getDeclaredMethod("addURL", PARAMETERS);
-					method.setAccessible(true);
-					method.invoke(sysloader, new Object[] { u });
-				} catch (Throwable t) {
-					console.error(t, "Error, could not add {0} to system classloader", file.getPath());					
-				}
-			}
-		}
+		return solution;
 	}
 	
 	/**

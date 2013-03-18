@@ -17,7 +17,6 @@ package org.moxie.ant;
 
 import java.io.File;
 
-import org.moxie.Build;
 import org.moxie.Dependency;
 import org.moxie.utils.JGitUtils;
 
@@ -41,7 +40,7 @@ public class MxGitTask extends MxTask {
 		return repositoryDirectory;
 	}
 	
-	protected void loadDependency(Build build) {
-		build.getSolver().loadDependency(new Dependency("mx:jgit"));
+	protected void loadDependencies() {
+		loadRuntimeDependencies(getBuild(), new Dependency("mx:jgit"));
 	}
 }

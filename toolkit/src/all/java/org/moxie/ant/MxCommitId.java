@@ -18,7 +18,6 @@ package org.moxie.ant;
 import java.io.File;
 
 import org.apache.tools.ant.BuildException;
-import org.moxie.Build;
 import org.moxie.Toolkit.Key;
 import org.moxie.utils.JGitUtils;
 import org.moxie.utils.StringUtils;
@@ -39,8 +38,7 @@ public class MxCommitId extends MxGitTask {
 
 	@Override
 	public void execute() throws BuildException {
-		Build build = (Build) getProject().getReference(Key.build.referenceId());
-		loadDependency(build);
+		loadDependencies();
 
 		File dir = getRepositoryDir();
 		String hashid = JGitUtils.getCommitId(dir);

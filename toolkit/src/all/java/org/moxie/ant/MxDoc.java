@@ -32,10 +32,11 @@ import org.apache.tools.ant.types.FileSet;
 import org.moxie.Build;
 import org.moxie.Dependency;
 import org.moxie.Doc;
+import org.moxie.DocElement;
 import org.moxie.DocMenu;
 import org.moxie.DocPage;
+import org.moxie.DocStructure;
 import org.moxie.Docs;
-import org.moxie.DocElement;
 import org.moxie.Load;
 import org.moxie.Logo;
 import org.moxie.NoMarkdown;
@@ -43,7 +44,6 @@ import org.moxie.Prop;
 import org.moxie.References;
 import org.moxie.Regex;
 import org.moxie.Scope;
-import org.moxie.DocStructure;
 import org.moxie.Substitute;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
@@ -264,8 +264,8 @@ public class MxDoc extends MxTask {
 		}
 		
 		titleClass(build.getPom().name);
-		
-		build.getSolver().loadDependency(
+
+		loadRuntimeDependencies(build, 
 				new Dependency("mx:markdownpapers"),
 				new Dependency("mx:freemarker"));
 
@@ -275,7 +275,7 @@ public class MxDoc extends MxTask {
 		Dependency prettify = new Dependency("mx:prettify");
 		Dependency less = new Dependency("mx:lesscss-engine");
 		
-		build.getSolver().loadDependency(bootstrap, jquery, d3js, prettify, less);
+		loadRuntimeDependencies(build, bootstrap, jquery, d3js, prettify, less);
 
 		if (doc.outputDirectory.exists()) {
 			FileUtils.delete(doc.outputDirectory);
@@ -439,8 +439,8 @@ public class MxDoc extends MxTask {
 		}
 		FileUtils.writeContent(bsLess, content);
 
-		Build build = getBuild();
-		build.getSolver().loadDependency(new Dependency("mx:rhino"));
+		Build build = getBuild();		
+		loadRuntimeDependencies(build, new Dependency("mx:rhino"));
 
 		// compile Bootstrap and custom.less overrides into css
 		try {
