@@ -31,3 +31,4 @@ dependencies:
 - provided 'mx:bootstrap'
 - provided 'mx:prettify'
 - provided 'mx:lesscss-engine'
+- provided 'mx:groovy'

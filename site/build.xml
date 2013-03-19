@@ -41,6 +41,7 @@
 					<page name="mx:GenJar" src="mxgenjar.mkd" />
 					<page name="mx:Get" src="mxget.mkd" />
 					<page name="mx:GhPages" src="mxghpages.mkd" />					
+					<page name="mx:Groovy" src="mxgroovy.mkd" />					
 					<page name="mx:CommitId" src="mxcommitid.mkd" />
 					<page name="mx:Commit" src="mxcommit.mkd" />
 					<page name="mx:If" src="mxif.mkd" />

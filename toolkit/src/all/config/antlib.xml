@@ -14,6 +14,7 @@
 	<taskdef name="ftp" classname="org.moxie.ant.MxFtp" />
 	<taskdef name="genjar" classname="org.moxie.ant.MxGenJar" />
 	<taskdef name="ghpages" classname="org.moxie.ant.MxGhPages" />
+	<taskdef name="groovy" classname="org.moxie.ant.MxGroovy" />
 	<taskdef name="if" classname="org.moxie.ant.MxIf" />
 	<taskdef name="install" classname="org.moxie.ant.MxInstall" />
 	<taskdef name="jar" classname="org.moxie.ant.MxJar" />

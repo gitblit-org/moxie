@@ -157,6 +157,7 @@
 			<class name="org.moxie.ant.MxFtp" />
 			<class name="org.moxie.ant.MxGenJar" />
 			<class name="org.moxie.ant.MxGhPages" />
+			<class name="org.moxie.ant.MxGroovy" />
 			<class name="org.moxie.ant.MxIf" />
 			<class name="org.moxie.ant.MxInstall" />
 			<class name="org.moxie.ant.MxJar" />

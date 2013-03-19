@@ -1,0 +1,8 @@
+## mx:Groovy
+
+%BEGINXML%
+<mx:groovy>
+	println "Hello World from ANT->mx:Groovy->System.out"
+	ant.echo "Hello World from ANT->mx:Groovy->ANT.echo"
+</mx:groovy>
+%ENDXML%

@@ -4,10 +4,6 @@ groupId: org.moxie
 artifactId: moxie+ant
 packaging: zip
 parent: ../build.moxie
-properties: {
- groovy.version : 1.8.8
-}
 dependencyDirectory: ext
 dependencies:
 - provided 'mx:commons-net' @jar
-#- provided 'org.codehaus.groovy:groovy-all:${groovy.version}'
