@@ -31,6 +31,7 @@ developers:
 - {
   id: james
   name: James Moger
+  email: james.moger@gmail.com
   url: 'https://plus.google.com/u/0/116428776452027956920'
   organization: VAS
   organizationUrl: 'http://www.vas.com'

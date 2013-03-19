@@ -2,7 +2,7 @@
 
 Maxml (pronounced *maximal*) looks and feels like very simple [YAML][], but it is not YAML.  Maxml is meant to be a very small and simple subset of YAML with some significant structural changes.
  
-The Maxml binary package is < 20KB with debug symbols.
+The Maxml binary package is ~ 20KB with debug symbols.
 
 ### Why Maxml?
 
@@ -12,7 +12,7 @@ I would have been satisfied with a simple, really small JSON parser.  The closes
 
 I like YAML.  
 I would have been satisfied with a simple, really small YAML parser.  The closest I found was [SnakeYaml][], but that is ~250KB.  
-**Verdict:** Almost as large as the pro toolkit; too large.
+**Verdict:** At half the size of the full toolkit, it is too large.
 
 Because Moxie needs to have a bundled parser for the `build.moxie` project descriptor and I could not find a parser that suited my needs, I wrote a custom YAML-ish parser.
 

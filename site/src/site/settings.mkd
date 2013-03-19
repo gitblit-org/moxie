@@ -26,6 +26,8 @@ only the identified repositories are proxied through this connection
 - { id: moxieProxy, active: false,	protocol: http, host: moxie.somewhere.com, port: 8081, username: proxyuser, password: somepassword, repositories: "central, mavencentral, restlet, codehaus" }
 %ENDMAXML%
 
+---NOMARKDOWN---
+<pre>
 Should the build immediately fail if an artifact can not be immediately
 resolved from the remote repositories or the local cache?
 failFastOnArtifactResolution: true
@@ -110,3 +112,5 @@ emma: add emma_ant dependency for build scope
 		- compile 'emma:emma_ant:2.1.5320'
 	}
 }
+</pre>
+---NOMARKDOWN---

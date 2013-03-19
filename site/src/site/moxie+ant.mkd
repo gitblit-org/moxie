@@ -1,12 +1,12 @@
 ## Moxie+Ant
 
-Moxie+Ant is a distribution of [Ant][] with Moxie-All and it's dependencies pre-bundled.
+Moxie+Ant is a distribution of [Ant][] with Moxie.
 
 This bundle provides a command-line executable (`moxie`) for all platforms supported by [Ant][].  Using the `moxie` command instead of the `ant` command gives you some additional features.
 
 ### Moxie Phases
 
-Moxie+Ant automatically injects several phase targets at runtime which you may use to build your projects.  These are similar to Maven's phases.
+Moxie+Ant automatically injects several phase targets at runtime which you may use to build your projects.  These are similar to Maven's phases, but not nearly as sophisticated.  They are suitable for building simple projects.
 
 <dl class="dl-horizontal">
  <dt>phase:init</dt>
