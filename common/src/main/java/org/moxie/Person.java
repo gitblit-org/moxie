@@ -29,6 +29,11 @@ public class Person {
 	public String organizationUrl;
 	public List<String> roles;
 	
+	@Override
+	public String toString() {
+		return MessageFormat.format("{0} <{1}>", name, email == null ? "" : email);
+	}
+	
 	public String toXML(String nodename) {
 		StringBuilder node = new StringBuilder();
 		node.append(MessageFormat.format("<{0}>\n", nodename));
