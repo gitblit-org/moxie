@@ -107,12 +107,12 @@ public class ArtifactsResource extends BaseResource {
 			// proxy settings
 			RemoteRepository repository = getProxyConfig().getRemoteRepository(getBasePath());			
 			sb.append("proxies:\n");
-			sb.append(MessageFormat.format("- '{'\n    active: true\n    id: moxieProxy\n    protocol: {0}\n    host: {1}\n    port: {2,number,0}\n    username: username\n    password: password\n    proxyHosts: {3}\n'}'", getRootRef().getScheme(), getRootRef().getHostDomain(), getProxyConfig().getProxyPort(), repository.getHost()));
+			sb.append(MessageFormat.format("- '{'\n    active: true\n    id: ''moxieProxy''\n    protocol: ''{0}''\n    host: ''{1}''\n    port: {2,number,0}\n    username: ''username''\n    password: ''password''\n    proxyHosts: ''{3}''\n'}'", getRootRef().getScheme(), getRootRef().getHostDomain(), getProxyConfig().getProxyPort(), repository.getHost()));
 		} else {
 			// repository settings
 			sb.append("registeredRepositories:\n");
-			sb.append(MessageFormat.format(" - { id: '{0}', url: '{1}' }\n", getRepositoryId(), getRepositoryUrl()));
-			sb.append(MessageFormat.format("repositories: 'central, '{0}'\n", getRepositoryId()));			
+			sb.append(MessageFormat.format(" - '{'\n    id: ''{0}''\n    url: ''{1}''\n'   }'\n", getRepositoryId(), getRepositoryUrl()));
+			sb.append(MessageFormat.format("repositories: ''central'', ''{0}''\n", getRepositoryId()));			
 		}
 		return sb.toString();
 	}
