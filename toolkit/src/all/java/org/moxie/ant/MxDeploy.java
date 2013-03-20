@@ -109,13 +109,13 @@ public class MxDeploy extends MxRepositoryTask {
 			
 			if (extracted) {
 				// create JSON repository metadata
-				String template = readResource("maven/repository.json").trim();
+				String template = readResourceAsString("maven/repository.json").trim();
 				template = getProject().replaceProperties(template);
 				FileUtils.writeContent(new File(cacheRoot, "repository.json"), template);
 			}
 			
 			// create/update JSON artifact index
-			String template = readResource("maven/artifact.json").trim();
+			String template = readResourceAsString("maven/artifact.json").trim();
 			StringBuilder sb = new StringBuilder("[\n\n");
 			String index = artifactCache.generatePomIndex(template, ",\n");
 			sb.append(index);
