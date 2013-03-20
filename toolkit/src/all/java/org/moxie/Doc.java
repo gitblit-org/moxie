@@ -55,8 +55,6 @@ public class Doc implements Serializable {
 
 	public List<String> keywords;
 
-	public boolean injectPrettify;
-	
 	public String prettifyTheme;
 	
 	public boolean minify;
@@ -111,7 +109,6 @@ public class Doc implements Serializable {
 		describe(console, Key.outputDirectory, outputDirectory.toString());
 		describe(console, Key.googleAnalyticsId, googleAnalyticsId);
 		describe(console, Key.googlePlusId, googlePlusId);
-		describe(console, "injectPrettify", String.valueOf(injectPrettify));
 		if (header != null && header.exists()) {
 			describe(console, "header", header.toString());
 		}

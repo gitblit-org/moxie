@@ -418,19 +418,13 @@ public class Docs {
 				writer.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\">\n<html>\n<head>\n");
 				writer.write(header);
 
-				if (doc.injectPrettify) {
-					writer.append("\n<script src=\"./prettify/prettify.js\"></script>");
-				}
+				writer.append("\n<script src=\"./prettify/prettify.js\"></script>");
 
 				writer.append("\n<script src=\"./bootstrap/js/jquery.js\"></script>");
 				writer.append("\n<script src=\"./bootstrap/js/bootstrap.min.js\"></script>");
 				
 				writer.write("\n</head>");
-				if (doc.injectPrettify) {
-					writer.write("\n<body onload='prettyPrint()'>");
-				} else {
-					writer.write("\n<body>");
-				}
+				writer.write("\n<body onload='prettyPrint()'>");
 				writer.write(links);
 				if (page.showToc) {
 					if (page.isFluidLayout) {
@@ -691,15 +685,13 @@ public class Docs {
 					+ doc.favicon.getName() + "' />");
 		}
 
-		if (doc.injectPrettify) {
-			if (StringUtils.isEmpty(doc.prettifyTheme)) {
-				// default theme
-				sb.append("\n<link rel=\"stylesheet\" href=\"./prettify/prettify.css\" />");
-			} else {
-				// custom theme
-				sb.append(MessageFormat.format("\n<link rel=\"stylesheet\" href=\"./prettify/{0}\" />", 
-						doc.prettifyTheme + (doc.prettifyTheme.toLowerCase().endsWith(".css") ? "" : ".css")));
-			}
+		if (StringUtils.isEmpty(doc.prettifyTheme)) {
+			// default theme
+			sb.append("\n<link rel=\"stylesheet\" href=\"./prettify/prettify.css\" />");
+		} else {
+			// custom theme
+			sb.append(MessageFormat.format("\n<link rel=\"stylesheet\" href=\"./prettify/{0}\" />", 
+					doc.prettifyTheme + (doc.prettifyTheme.toLowerCase().endsWith(".css") ? "" : ".css")));
 		}
 		
 		if (!StringUtils.isEmpty(doc.rssFeed)) {

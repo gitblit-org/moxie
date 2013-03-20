@@ -157,10 +157,6 @@ public class MxDoc extends MxTask {
 		customLessFile = name;
 	}
 
-	public void setInjectprettify(boolean value) {
-		doc.injectPrettify = value;
-	}
-	
 	public void setPrettifyTheme(String value) {
 		doc.prettifyTheme = value;
 	}
@@ -488,9 +484,6 @@ public class MxDoc extends MxTask {
 	}
 
 	protected void extractPrettify(Dependency dep, File outputFolder) {
-		if (!doc.injectPrettify) {
-			return;
-		}
 		getConsole().debug("injecting GoogleCode Prettify");
 
 		String wj = MessageFormat.format("META-INF/resources/webjars/{0}/{1}/", dep.artifactId, dep.version);

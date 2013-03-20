@@ -17,8 +17,7 @@
 		<property name="releaselog" value="${basedir}/../releases.moxie" />
 		
 		<!-- Build the site documentation -->
-		<mx:doc googlePlusOne="true" injectPrettify="true" prettifyTheme="googlecode" minify="true" 
-			templateDir="${project.siteSourceDirectory}/templates"
+		<mx:doc googlePlusOne="true" prettifyTheme="googlecode" minify="true" 
 			customLess="custom.less" rssFeed="rss.xml" atomFeed="atom.xml">
 			<structure>
 				<menu name="about" pager="true" pagerPlacement="bottom" pagerLayout="justified">
