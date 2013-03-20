@@ -1,5 +1,5 @@
 ## mx:Version
 
-%BEGINXML%
+---XML---
 <mx:version />
-%ENDXML%
+---XML---

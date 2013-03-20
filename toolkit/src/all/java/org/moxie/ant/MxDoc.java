@@ -350,10 +350,15 @@ public class MxDoc extends MxTask {
 			prepareTemplatePage(page);
 		}
 		
-		NoMarkdown nomd = createNomarkdown();
-		nomd.setStarttoken("---NOMARKDOWN---");
-		nomd.setEndtoken("---NOMARKDOWN---");
-		
+		createNomarkdown().configure("---NOMARKDOWN---", false, false, null);
+		createNomarkdown().configure("---CODE---", true, false, null);
+		createNomarkdown().configure("---JAVA---", true, true, "java");
+		createNomarkdown().configure("---JSON---", true, true, "json");
+		createNomarkdown().configure("---CSS---", true, true, "css");
+		createNomarkdown().configure("---XML---", true, true, "xml");
+		createNomarkdown().configure("---YAML---", true, true, "yaml");
+		createNomarkdown().configure("---SQL---", true, true, "sql");
+
 		Docs.execute(build, doc, isVerbose());
 		
 		writeDependenciesAsJson();

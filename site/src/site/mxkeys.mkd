@@ -1,7 +1,7 @@
 ## mx:Keys
 
-%BEGINXML%
+---XML---
 <mx:keys propertiesfile="${project.distrib.dir}/data/gitblit.properties"
 			 	outputclass="com.gitblit.Keys"
 			 	outputfolder="${project.src.dir}" />
-%ENDXML%
+---XML---

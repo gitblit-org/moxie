@@ -1,5 +1,5 @@
 ## mx:CommitId
 
-%BEGINXML%
+---XML---
 <mx:commitid repositoryFolder="${basedir}" property="gb.version" />
-%ENDXML%
+---XML---

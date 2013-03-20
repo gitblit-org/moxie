@@ -51,5 +51,13 @@ public class NoMarkdown {
 	public void setLang(String value) {
 		this.lang = value;
 	}
+	
+	public void configure(String token, boolean escape, boolean prettify, String lang) {
+		this.startToken = token;
+		this.endToken = token;
+		this.escape = escape;
+		this.prettify = prettify;
+		this.lang = lang;
+	}
 
 }

@@ -1,8 +1,8 @@
 ## mx:WebXml
 
-%BEGINXML%
+---XML---
 <mx:webxml sourcefile="${project.src.dir}/WEB-INF/web.xml" 
 		destfile="${webinf}/web.xml"
 		propertiesFile="${project.distrib.dir}/data/gitblit.properties"
 		skip="server.*" />
-%ENDXML%
+---XML---

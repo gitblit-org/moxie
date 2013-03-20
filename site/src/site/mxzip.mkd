@@ -1,6 +1,6 @@
 ## mx:Zip
 
-%BEGINXML%
+---XML---
 <mx:zip destfile="${project.target.dir}/${manager.zipfile}">
 	<fileset dir="${basedir}">
 		<include name="LICENSE" />
@@ -12,4 +12,4 @@
 	<!-- include "manager" tagged dependencies -->
 	<dependencies prefix="ext" tag="manager" />
 </mx:zip>
-%ENDXML%
+---XML---

@@ -62,7 +62,7 @@ Maxml is a key-value serialization format.
 
 #### Strings
 
-%BEGINMAXML%
+---YAML---
 # fall-through string
 myString1: this is a\nstring
 # explicit single-quoted string, leading/trailing quotes are stripped
@@ -92,11 +92,11 @@ note: ''
       an offset text block
       ''
 
-%ENDMAXML%
+---YAML---
 
 #### Numerics
 
-%BEGINMAXML%
+---YAML---
 myInt: 12345
 myLong: 4000000000
 myFloat1: 2.3
@@ -106,11 +106,11 @@ myDouble: 6.0E+56
 myOctal: 010
 # hexadecimals lead with 0x
 myHex: 0x12345
-%ENDMAXML%
+---YAML---
 
 #### Booleans
 
-%BEGINMAXML%
+---YAML---
 # true values
 myBool1: true
 myBool2: yes
@@ -119,27 +119,27 @@ myBool3: on
 myBool4: false
 myBool5: no
 myBool6: off
-%ENDMAXML%
+---YAML---
 
 #### Dates
 
 Dates support second resolution.  When Date objects are deserialized, the msecs value is manually set to 0.
 
-%BEGINMAXML%
+---YAML---
 # Simple Date, local timezone
 myDate1: 2012-02-01
 # Canonical, GMT
 myDate2: 2012-02-01T15:30:45Z
 # ISO8601, timezone-specified
 myDate3: 2012-02-01T15:30:45-0400
-%ENDMAXML%
+---YAML---
 
 #### Miscellaneous
 
-%BEGINMAXML%
+---YAML---
 # null
 myNull: ~
-%ENDMAXML%
+---YAML---
 
 ### Collections
 
@@ -150,18 +150,18 @@ Parsed collections preserve definition order.
 
 Lists may be defined using the following notation where each item in the list is defined on a separate line with a leading dash character.
 
-%BEGINMAXML%
+---YAML---
 # multi-line list
 myList2:
 - src
 - tests
 - extra
-%ENDMAXML%
+---YAML---
 
 Simple lists may also be defined inline as key-value pairs.  
 Inline lists may not have nested collections.
 
-%BEGINMAXML%
+---YAML---
 # inline list
 myList1: [src, tests, extra]
 # a list of inline lists
@@ -174,7 +174,7 @@ myList3:
 # inline list in myList3.  myList4 = [apple, banana, strawberry]
 myList4:
 + &myList3[0]
-%ENDMAXML%
+---YAML---
 
 #### Maps
 *java.util.LinkedHashMap*
@@ -182,7 +182,7 @@ myList4:
 Maps may be defined using the familiar curly brace notation.  
 Indentation is used for readability but is otherwise ignored by the parser. 
 
-%BEGINMAXML%
+---YAML---
 myMap1: {
     field1: test
     field2: {
@@ -194,11 +194,11 @@ myMap1: {
      - tests
      - extra
 }
-%ENDMAXML%
+---YAML---
 
 Simple maps may also be defined inline as key-value pairs.  
 Inline maps may not have nested collections and they may not have strings with commas.
 
-%BEGINMAXML%
+---YAML---
 myMap2: { field1: test, field2: 100, field3: true }
-%ENDMAXML%
+---YAML---

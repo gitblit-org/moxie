@@ -1,5 +1,5 @@
 ## mx:Run
 
-%BEGINXML%
+---XML---
 <mx:run />
-%ENDXML%
+---XML---

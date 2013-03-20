@@ -1,5 +1,5 @@
 ## mx:Init %CORE%
 
-%BEGINXML%
+---XML---
 <mx:init />
-%ENDXML%
+---XML---

@@ -1,8 +1,8 @@
 ## mx:Get %CORE%
 
-%BEGINXML%
+---XML---
 <mx:get dest="${basedir}/ext" scope="compile">
 	<dependency coordinates="javax.mail:mail:1.4" />
 	<dependency coordinates="javax.activation:activation:1.1" />
 </mx:get>
-%ENDXML%
+---XML---

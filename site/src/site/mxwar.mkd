@@ -1,7 +1,7 @@
 ## mx:War
 
-%BEGINXML%
+---XML---
 <mx:war webxml="${basedir}\WEB-INF\web.xml">
 	<dependencies />
 </mx:war>
-%ENDXML%
+---XML---

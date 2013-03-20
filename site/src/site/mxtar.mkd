@@ -1,6 +1,6 @@
 ## mx:Tar
 
-%BEGINXML%
+---XML---
 <mx:tar compression="gzip">
 	<fileset dir="${basedir}">
 		<include name="LICENSE" />
@@ -12,4 +12,4 @@
 	<!-- include "manager" tagged dependencies -->
 	<dependencies prefix="ext" tag="manager" />
 </mx:tar>
-%ENDXML%
+---XML---

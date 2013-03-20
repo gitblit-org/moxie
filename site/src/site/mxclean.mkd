@@ -1,5 +1,5 @@
 ## mx:Clean %CORE%
 
-%BEGINXML%
+---XML---
 <mx:clean />
-%ENDXML%
+---XML---

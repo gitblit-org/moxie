@@ -9,11 +9,11 @@ Like Maven, Moxie supports convention-over-configuration so that the minimal bui
 </div>
 
 <div class="span4">
-%BEGINMAXML%
+---YAML---
 groupId: 'org.example'
 artifactId: 'demo'
 version: '1.2.3-SNAPSHOT'
-%ENDMAXML%
+---YAML---
 
 <i>minimal Moxie project descriptor</i>
 </div></div>
@@ -31,7 +31,7 @@ For more information on the <code>build.moxie</code> descriptor please review th
 </div>
 
 <div class="span6">
-%BEGINMAXML%
+---YAML---
 # string quoting is optional.
 # it is used here to improve syntax highlighting
 name: 'Example 1'
@@ -55,7 +55,7 @@ dependencies:
 - compile 'org.apache.commons:commons-lang3:${clang.version}'
 - test 'junit'
 - build 'jacoco'
-%ENDMAXML%
+---YAML---
 
 <i>a more elaborate Moxie project descriptor</i>
 </div></div>
@@ -67,7 +67,7 @@ dependencies:
 Moxie turbo-charges Ant and allows you to build your artifacts with easier to read build scripts.
 This example script uses Moxie Extension tasks with automatic property defaults based on the <code>build.moxie</code> descriptor.
 <p />
-%BEGINXML%
+---XML---
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="main" xmlns:mx="antlib:org.moxie">
 
@@ -90,7 +90,7 @@ This example script uses Moxie Extension tasks with automatic property defaults 
     </target>
 
 </project>
-%ENDXML%
+---XML---
 
 </div>
 <div class="span4">

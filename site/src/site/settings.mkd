@@ -15,47 +15,57 @@ If you want Moxie proxy settings, copy and edit the following example
 opt-in proxy definition to a new text file: ~/.moxie/settings.moxie
 
 #### example standard network proxy configuration
-%BEGINMAXML%
-- { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }
-%ENDMAXML%
+---YAML---
+- { id: 'myproxy', active: false, protocol: 'http', host: 'proxy.somewhere.com', port:8080, username: 'proxyuser', password: 'somepassword' }
+---YAML---
 
 #### example Moxie Proxy configuration
 only the identified repositories are proxied through this connection
 
-%BEGINMAXML%
-- { id: moxieProxy, active: false,	protocol: http, host: moxie.somewhere.com, port: 8081, username: proxyuser, password: somepassword, repositories: "central, mavencentral, restlet, codehaus" }
-%ENDMAXML%
+---YAML---
+- { id: 'moxieProxy', active: false,	protocol: 'http', host: 'moxie.somewhere.com', port: 8081, username: 'proxyuser', password: 'somepassword', repositories: "central, mavencentral, restlet, codehaus" }
+---YAML---
 
----NOMARKDOWN---
-<pre>
 Should the build immediately fail if an artifact can not be immediately
 resolved from the remote repositories or the local cache?
+---YAML---
 failFastOnArtifactResolution: true
+---YAML---
 
 Default snapshot revision purge policy
 Default minimum count of snapshot revisions to keep
 minimum acceptable value is 1
+---YAML---
 revisionRetentionCount: 1
+---YAML---
 
 if the count of snapshot revisions exceeds the specified retention count,
 then delete all snapshot revisions older than this count of days
+---YAML---
 revisionPurgeAfterDays: 0
+---YAML---
 
 Registered Maven 2 repositories.  This section is used to define id-url
 pairs so that project descriptors can specify an repository id, rather than
 a complete url.  A repository definition can override the default snapshot
 revision purge policy.
+
+---YAML---
 registeredRepositories:
 - { id: central, url: 'http://repo1.maven.org/maven2' }
 - { id: mavencentral, url: 'http://repo1.maven.org/maven2' }
 - { id: restlet, url: 'http://maven.restlet.org', revisionRetentionCount: 1, revisionPurgeAfterDays: 0 }
 - { id: codehaus, url: 'http://repository.codehaus.org' }
+---YAML---
 
 Default repositories for dependency retrieval
-repositories: central
+---YAML---
+repositories: 'central'
+---YAML---
 
 Managed dependencies are used to specify versions of dependencies
 if those versions are not specified in the project's build.moxie.
+---YAML---
 dependencyManagement:
 - 'junit:junit:4.11'
 - 'org.testng:testng:6.8'
@@ -66,9 +76,11 @@ dependencyManagement:
 - 'org.freemarker:freemarker:2.3.19'
 - 'org.mozilla:rhino:1.7R4'
 - 'org.jacoco:org.jacoco.ant:0.6.1.201212231917'
+---YAML---
 
 dependency aliases allow you to specify shorthand notation for a dependency
 which will be resolved at runtime to the full coordinates.
+---YAML---
 dependencyAliases: {
 	junit: 'junit:junit'
 	testng: 'org.testng:testng'
@@ -79,6 +91,7 @@ dependencyAliases: {
 	'mx:markdownpapers' : 'org.tautua.markdownpapers:markdownpapers-core'
 	'mx:rhino' : 'org.mozilla:rhino'
 }
+---YAML---
 
 Dependency overrides are used to redefine the dependencies of released/published
 POMs from other projects.  The most common use case would be to add undeclared
@@ -92,6 +105,7 @@ is prohibited.  You may specify the scopes for which your override applies.  If 
 is specified ALL scopes are assumed.
 
 Be careful when using dependency overrides!
+---YAML---
 dependencyOverrides: {
 
 cobertura: redefine ant as optional for build scope
@@ -112,5 +126,4 @@ emma: add emma_ant dependency for build scope
 		- compile 'emma:emma_ant:2.1.5320'
 	}
 }
-</pre>
----NOMARKDOWN---
+---YAML---

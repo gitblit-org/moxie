@@ -1,5 +1,5 @@
 ## mx:Jar
 
-%BEGINXML%
+---XML---
 <mx:jar includeResources="true" packageSources="true" />
-%ENDXML%
+---XML---

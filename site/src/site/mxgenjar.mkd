@@ -1,6 +1,6 @@
 ## mx:GenJar
 
-%BEGINXML%
+---XML---
 <mx:genjar destfile="moxie-all.jar">
 	<classfilter>
 		<exclude name="org.apache." />
@@ -15,4 +15,4 @@
 		<fileset dir="${moxie.bin}" includes="*.zip" />					
 	</resource>
 </mx:genjar>
-%ENDXML%
+---XML---

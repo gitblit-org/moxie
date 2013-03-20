@@ -1,5 +1,5 @@
 ## mx:Extract
 
-%BEGINXML%
+---XML---
 <mx:extract property="gb.version" field="VERSION" srcfile="${basedir}/src/com/gitblit/Constants.java" />
-%ENDXML%
+---XML---

@@ -1,5 +1,5 @@
 ## mx:Commit
 
-%BEGINXML%
+---XML---
 <mx:commit repositoryFolder="${basedir}" />
-%ENDXML%
+---XML---

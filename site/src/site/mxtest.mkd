@@ -1,5 +1,5 @@
 ## mx:Test
 
-%BEGINXML%
+---XML---
 <mx:test />
-%ENDXML%
+---XML---

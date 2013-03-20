@@ -1,8 +1,12 @@
 ## mx:Groovy
 
-%BEGINXML%
+---XML---
 <mx:groovy>
 	println "Hello World from ANT->mx:Groovy->System.out"
 	ant.echo "Hello World from ANT->mx:Groovy->ANT.echo"
+    println()
+    println "Coordinates: $pom.coordinates"
+    println "Developers: $pom.developers"
+    println "Licenses: $pom.licenses"	
 </mx:groovy>
-%ENDXML%
+---XML---

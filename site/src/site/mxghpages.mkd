@@ -1,5 +1,5 @@
 ## mx:GhPages
 
-%BEGINXML%
+---XML---
 <mx:ghpages repositoryFolder="${basedir}" sourceFolder="${basedir}/site" obliterate="true"/>
-%ENDXML%
+---XML---

@@ -2,6 +2,6 @@
 
 This is a fork of the AntContrib if task.
 
-%BEGINXML%
+---XML---
 <mx:if />
-%ENDXML%
+---XML---

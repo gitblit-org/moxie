@@ -21,7 +21,7 @@ Prettify Themes
 - tomorrow-night-light
 - vibrant-ink
 
-%BEGINXML%
+---XML---
 <mx:doc injectPrettify="true">
 	<structure>
 		<page name="overview" src="index.mkd" />
@@ -54,4 +54,4 @@ Prettify Themes
 		<fileset dir="${basedir}" includes="*.jar" />
 	</resource>	
 </mx:doc>
-%ENDXML%
+---XML---

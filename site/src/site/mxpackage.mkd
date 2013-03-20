@@ -1,5 +1,5 @@
 ## mx:Package
 
-%BEGINXML%
+---XML---
 <mx:package />
-%ENDXML%
+---XML---

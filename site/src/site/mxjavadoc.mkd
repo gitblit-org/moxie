@@ -1,7 +1,7 @@
 ## mx:Javadoc
 
-%BEGINXML%
+---XML---
 <mx:javadoc destdir="${project.build.dir}/javadoc" >
 	<redirector output="${project.build.dir}/javadoc.log" append="false" />
 </mx:javadoc>
-%ENDXML%
+---XML---
