@@ -210,7 +210,7 @@ public class Metadata {
 	}
 	
 	public String getSnapshotRevision() {
-		return snapshots.get(snapshots.size() - 1).getRevision();
+		return snapshots.isEmpty() ? version : snapshots.get(snapshots.size() - 1).getRevision();
 	}
 	
 	public int getLastBuildNumber() {
