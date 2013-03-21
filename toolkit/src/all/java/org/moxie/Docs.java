@@ -39,6 +39,14 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 
+import org.eclipse.mylyn.wikitext.confluence.core.ConfluenceLanguage;
+import org.eclipse.mylyn.wikitext.core.parser.MarkupParser;
+import org.eclipse.mylyn.wikitext.core.parser.builder.HtmlDocumentBuilder;
+import org.eclipse.mylyn.wikitext.core.parser.markup.MarkupLanguage;
+import org.eclipse.mylyn.wikitext.mediawiki.core.MediaWikiLanguage;
+import org.eclipse.mylyn.wikitext.textile.core.TextileLanguage;
+import org.eclipse.mylyn.wikitext.tracwiki.core.TracWikiLanguage;
+import org.eclipse.mylyn.wikitext.twiki.core.TWikiLanguage;
 import org.moxie.maxml.Maxml;
 import org.moxie.maxml.MaxmlException;
 import org.moxie.maxml.MaxmlMap;
@@ -259,10 +267,47 @@ public class Docs {
 									}
 									String hunk = sb.toString();
 
-									// put the nomarkdown hunk in a hashmap and
-									// optionally escape it for html
-									if (nomarkdown.prettify) {
-										// wrap the hunk with a Prettify pre tag
+									if (nomarkdown instanceof WikiText) {
+										// convert this hunk to html from a wiki format
+										StringWriter writer = new StringWriter();
+
+										HtmlDocumentBuilder builder = new HtmlDocumentBuilder(writer);
+										// avoid the <html> and <body> tags
+										builder.setEmitAsDocument(false);
+										
+										WikiText wikitext = (WikiText) nomarkdown;
+										MarkupLanguage lang;
+										switch (wikitext.syntax){
+										case TWIKI:
+											lang = new TWikiLanguage();
+											break;
+										case TEXTILE:
+											lang = new TextileLanguage();
+											break;
+										case TRACWIKI:
+											lang = new TracWikiLanguage();
+											break;
+										case MEDIAWIKI:
+											lang = new MediaWikiLanguage();
+											break;
+										case CONFLUENCE:
+											lang = new ConfluenceLanguage();
+											break;
+										default:
+											throw new MoxieException("Unrecognized wiki syntax!");
+										}
+
+										MarkupParser parser = new MarkupParser(lang);
+										parser.setBuilder(builder);
+										parser.parse(hunk);
+
+										String htmlContent = writer.toString();
+
+										nomarkdownMap.put(nomarkdownKey, htmlContent);
+									} else if (nomarkdown.prettify) {
+										//
+										// Syntax highlighting
+										//
 										StringBuilder ppclass = new StringBuilder();
 										ppclass.append("prettyprint");
 										if (nomarkdown.linenums) {
@@ -278,10 +323,22 @@ public class Docs {
 										code.append("</pre>");
 										nomarkdownMap.put(nomarkdownKey, code.toString());
 									} else if (nomarkdown.escape) {
-										// escape the hunk
-										nomarkdownMap.put(nomarkdownKey, StringUtils.escapeForHtml(hunk, false));
+										//
+										// escape the hunk, optionally wrap with pre
+										//
+										StringBuilder code = new StringBuilder();
+										if (nomarkdown.pre) {
+											code.append("<pre>");	
+										}
+										code.append(StringUtils.escapeForHtml(hunk, false));
+										if (nomarkdown.pre) {
+											code.append("</pre>");	
+										}
+										nomarkdownMap.put(nomarkdownKey, code.toString());
 									} else {
+										//
 										// leave the hunk as-is
+										//
 										nomarkdownMap.put(nomarkdownKey, hunk);
 									}
 

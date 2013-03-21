@@ -48,6 +48,8 @@ import org.moxie.Scope;
 import org.moxie.Substitute;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
+import org.moxie.WikiText.Syntax;
+import org.moxie.WikiText;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.LessUtils;
 import org.moxie.utils.StringUtils;
@@ -102,6 +104,12 @@ public class MxDoc extends MxTask {
 
 	public NoMarkdown createNomarkdown() {
 		NoMarkdown nomd = new NoMarkdown();
+		doc.nomarkdowns.add(nomd);
+		return nomd;
+	}
+	
+	private WikiText createWikiText() {
+		WikiText nomd = new WikiText();
 		doc.nomarkdowns.add(nomd);
 		return nomd;
 	}
@@ -264,6 +272,12 @@ public class MxDoc extends MxTask {
 
 		loadRuntimeDependencies(build, 
 				new Dependency("mx:markdownpapers"),
+				new Dependency("mx:wikitext-core"),
+				new Dependency("mx:wikitext-twiki"),
+				new Dependency("mx:wikitext-textile"),
+				new Dependency("mx:wikitext-tracwiki"),
+				new Dependency("mx:wikitext-mediawiki"),
+				new Dependency("mx:wikitext-confluence"),
 				new Dependency("mx:freemarker"));
 
 		Dependency bootstrap = new Dependency("mx:bootstrap");
@@ -308,14 +322,25 @@ public class MxDoc extends MxTask {
 			prepareTemplatePage(page);
 		}
 		
-		createNomarkdown().configure("---NOMARKDOWN---", false, false, null);
-		createNomarkdown().configure("---CODE---", true, false, null);
-		createNomarkdown().configure("---JAVA---", true, true, "java");
-		createNomarkdown().configure("---JSON---", true, true, "json");
-		createNomarkdown().configure("---CSS---", true, true, "css");
-		createNomarkdown().configure("---XML---", true, true, "xml");
-		createNomarkdown().configure("---YAML---", true, true, "yaml");
-		createNomarkdown().configure("---SQL---", true, true, "sql");
+		// block directives
+		createNomarkdown().configure("---NOMARKDOWN---", false, false);
+		createNomarkdown().configure("---CODE---", true, true);
+		
+		// wikitext transform directives
+		createWikiText().configureSyntax(Syntax.TWIKI);
+		createWikiText().configureSyntax(Syntax.TEXTILE);
+		createWikiText().configureSyntax(Syntax.TRACWIKI);
+		createWikiText().configureSyntax(Syntax.MEDIAWIKI);
+		createWikiText().configureSyntax(Syntax.CONFLUENCE);
+		
+		// language syntax highlighting directives
+		createNomarkdown().configureLanguage("---JAVA---", "java");
+		createNomarkdown().configureLanguage("---JSON---", "json");
+		createNomarkdown().configureLanguage("---CSS---", "css");
+		createNomarkdown().configureLanguage("---XML---", "xml");
+		createNomarkdown().configureLanguage("---YAML---", "yaml");
+		createNomarkdown().configureLanguage("---SQL---", "sql");
+		createNomarkdown().configureLanguage("---WIKI---", "wiki");
 
 		Docs.execute(build, doc, isVerbose());
 		

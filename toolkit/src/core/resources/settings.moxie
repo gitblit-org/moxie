@@ -38,20 +38,25 @@ revisionPurgeAfterDays: 0
 # a complete url.  A repository definition can override the default snapshot
 # revision purge policy.
 registeredRepositories:
-- { id: central, url: 'http://repo1.maven.org/maven2' }
-- { id: mavencentral, url: 'http://repo1.maven.org/maven2' }
-- { id: codehaus, url: 'http://repository.codehaus.org' }
+- { id: 'central', url: 'http://repo1.maven.org/maven2' }
+- { id: 'mavencentral', url: 'http://repo1.maven.org/maven2' }
+- { id: 'codehaus', url: 'http://repository.codehaus.org' }
 - {
-    id: restlet
+    id: 'sonatype-oss'
+    url: 'https://oss.sonatype.org/content/groups/public'
+    revisionRetentionCount: 1
+    revisionPurgeAfterDays: 0
+  }
+- {
+    id: 'restlet'
     url: 'http://maven.restlet.org'
     revisionRetentionCount: 1
     revisionPurgeAfterDays: 0
     # define a groupid affinity for all org.restlet artifacts
     affinity: [ 'org.restlet.' ]
   }
-
 # Default repositories for dependency retrieval
-repositories: central
+repositories: 'central'
 
 # Managed dependencies are used to specify versions of dependencies
 # if those versions are not specified in the project's build.moxie.
@@ -73,6 +78,12 @@ dependencyManagement:
 - 'org.webjars:d3js:2.10.3'
 - 'com.asual.lesscss:lesscss-engine:1.3.3'
 - 'org.codehaus.groovy:groovy-all:1.8.8'
+- 'org.fusesource.wikitext:wikitext-core:1.4'
+- 'org.fusesource.wikitext:twiki-core:1.4'
+- 'org.fusesource.wikitext:textile-core:1.4'
+- 'org.fusesource.wikitext:tracwiki-core:1.4'
+- 'org.fusesource.wikitext:mediawiki-core:1.4'
+- 'org.fusesource.wikitext:confluence-core:1.4'
 
 # dependency aliases allow you to specify shorthand notation for a dependency
 # which will be resolved at runtime to the full coordinates.
@@ -94,6 +105,12 @@ dependencyAliases: {
 	'mx:d3js' : 'org.webjars:d3js'
 	'mx:lesscss-engine' : 'com.asual.lesscss:lesscss-engine'
 	'mx:groovy' : 'org.codehaus.groovy:groovy-all'
+	'mx:wikitext-core' : 'org.fusesource.wikitext:wikitext-core'
+	'mx:wikitext-twiki' : 'org.fusesource.wikitext:twiki-core'
+	'mx:wikitext-textile' : 'org.fusesource.wikitext:textile-core'
+	'mx:wikitext-tracwiki' : 'org.fusesource.wikitext:tracwiki-core'
+	'mx:wikitext-mediawiki' : 'org.fusesource.wikitext:mediawiki-core'
+	'mx:wikitext-confluence' : 'org.fusesource.wikitext:confluence-core'
 }
 
 # Dependency overrides are used to redefine the dependencies of released/published

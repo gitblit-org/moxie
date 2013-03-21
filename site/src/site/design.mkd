@@ -2,11 +2,11 @@
 
 Be just enough.  Be useful.  Don't overreach.  Don't impose.  [Don't Repeat Yourself][DRY].
 
-Moxie is not designed to be Maven.  It is designed to be an Ant enhancement for a Maven repository world.
+Moxie is not designed to be Maven.  It is designed to be an Ant enhancement for a Maven-dominated world.
 
 ### Dependency Management
 
-Moxie does *not* use [Ivy][] or [Maven][] to retrieve artifacts nor to solve transitive dependencies.  It has it's own solution engine written based on the Maven, Ivy, and Gradle documentation.
+Moxie does *not* use [Ivy][] nor [Maven][] to retrieve artifacts or to solve transitive dependencies.  It has it's own solution engine written based on the Maven, Ivy, and Gradle documentation.
 
 Moxie employs a two-pass solver which is executed for each scope (compile, test, etc).
 
@@ -15,7 +15,9 @@ Moxie employs a two-pass solver which is executed for each scope (compile, test,
 
 ### Version Ranges
 
-Version ranges are the ugly duckling of Moxie.  They are only partially supported.  Maven (Aether) has a very sophisticated mechanism for dealing with version ranges which Moxie will never attempt to reproduce.  IMHO version ranges are an unnecessary implementation complexity.  Moxie will resolve the highest version it can by consulting the maven-metadata.xml file when a version range specification is detected.
+Version ranges are the ugly duckling of Moxie.  They are only partially supported.  Maven (Aether) has a very sophisticated mechanism for dealing with version ranges which Moxie will never attempt to reproduce.  IMHO version ranges are an unnecessary implementation complexity.
+
+When confronted with a version range specification, Moxie will resolve the highest version it can by consulting the maven-metadata.xml file.  Moxie does not consult the entire dependency graph during version range resolution.  This is a gross-simplification of the Maven version range feature.
 
 ### Reference links
 

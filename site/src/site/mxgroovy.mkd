@@ -1,9 +1,64 @@
 ## mx:Groovy
 
+### Attributes
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+|-
+! Attribute !! Description !! Required
+|-
+| src
+| File containing Groovy statements.  The directory containing the file is added to the classpath
+| Yes, unless statements enclosed within tags
+|-
+| classpath
+| the classpath to use
+| No
+|-
+| classpathref
+| the classpath to use, given as reference to a PATH defined elsewhere
+| No
+|}
+---X:MEDIAWIKI---
+
+### Nested Elements
+
+### Bindings
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+|-
+! Name !! Description
+|-
+| ant
+| an instance of AntBuilder that knows about the current ANT project
+|-
+| project
+| the current ANT project
+|-
+| pom
+| the current Moxie project object model
+|-
+| properties
+| a Map of ANT properties
+|-
+| target
+| the owning target that invoked this groovy script
+|-
+| task
+| the wrapping task, can access anything needed in <a href="http://www.jajakarta.org/ant/ant-1.6.1/docs/ja/manual/api/org/apache/tools/ant/Task.html" class="external-link">org.apache.tools.ant.Task</a>
+|-
+| args
+| command line arguments, if any
+|}
+---X:MEDIAWIKI---
+
+### Example
+
 ---XML---
 <mx:groovy>
-	println "Hello World from ANT->mx:Groovy->System.out"
-	ant.echo "Hello World from ANT->mx:Groovy->ANT.echo"
+    println "Hello World from ANT->mx:Groovy->System.out"
+    ant.echo "Hello World from ANT->mx:Groovy->ANT.echo"
     println()
     println "Coordinates: $pom.coordinates"
     println "Developers: $pom.developers"

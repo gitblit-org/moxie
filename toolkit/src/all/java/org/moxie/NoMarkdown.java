@@ -22,6 +22,8 @@ public class NoMarkdown {
 
 	boolean escape;
 
+	boolean pre;
+	
 	boolean prettify;
 
 	boolean linenums;
@@ -40,6 +42,10 @@ public class NoMarkdown {
 		this.escape = value;
 	}
 
+	public void setPre(boolean value) {
+		this.pre = true;
+	}
+
 	public void setPrettify(boolean value) {
 		this.prettify = true;
 	}
@@ -52,11 +58,18 @@ public class NoMarkdown {
 		this.lang = value;
 	}
 	
-	public void configure(String token, boolean escape, boolean prettify, String lang) {
+	public void configure(String token, boolean escape, boolean pre) {
 		this.startToken = token;
 		this.endToken = token;
 		this.escape = escape;
-		this.prettify = prettify;
+		this.pre = pre;
+	}
+	
+	public void configureLanguage(String token, String lang) {
+		this.startToken = token;
+		this.endToken = token;
+		this.escape = true;
+		this.prettify = true;
 		this.lang = lang;
 	}
 

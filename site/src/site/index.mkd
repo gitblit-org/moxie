@@ -5,7 +5,7 @@ Moxie is a collection of [Ant][] tasks to turbo-charge your build scripts and fa
 The Moxie binaries and this site are built with Moxie.
 
 <div class="row">
-<div class="span7">
+<div class="span8">
 <pre>
   [mx:init] =========================================================
   [mx:init] ${project.name}  (${project.releaseVersion})
@@ -14,7 +14,7 @@ The Moxie binaries and this site are built with Moxie.
   [mx:init]            name: ${project.name}
   [mx:init]     description: ${project.description}
   [mx:init]         groupId: ${project.groupId}
-  [mx:init]      artifactId: moxie
+  [mx:init]      artifactId: moxie-toolkit
   [mx:init]         version: ${project.releaseVersion}
   [mx:init]    organization: ${project.organization}
   [mx:init]             url: ${project.url}
@@ -23,27 +23,27 @@ The Moxie binaries and this site are built with Moxie.
   [mx:init]    rebuilt Eclipse configuration
   [mx:init]    rebuilt pom.xml
  [mx:javac] =========================================================
- [mx:javac] mx:Javac  (org.moxie:moxie, compile)
+ [mx:javac] mx:Javac  (org.moxie:moxie-toolkit, compile)
  [mx:javac] ---------------------------------------------------------
  [mx:javac] Compiling 41 source files to C:\git\moxie\build\classes
  [mx:javac] Copying 20 files to C:\git\moxie\build\classes
    [mx:jar] =========================================================
-   [mx:jar] mx:Jar  (moxie-${project.releaseVersion})
+   [mx:jar] mx:Jar  (moxie-toolkit-${project.releaseVersion})
    [mx:jar] ---------------------------------------------------------
-   [mx:jar] Building jar: C:\git\moxie\target\moxie-${project.releaseVersion}.jar
+   [mx:jar] Building jar: C:\git\moxie\target\moxie-toolkit-${project.releaseVersion}.jar
    [mx:jar]    500 KB, generated in 460 ms
-   [mx:jar] Building jar: C:\git\moxie\target\moxie-${project.releaseVersion}-sources.jar
+   [mx:jar] Building jar: C:\git\moxie\target\moxie-toolkit-${project.releaseVersion}-sources.jar
    [mx:jar]    148 KB, generated in 80 ms
-[mx:install] =========================================================
-[mx:install] mx:Install  (moxie-${project.releaseVersion})
-[mx:install] ---------------------------------------------------------
-[mx:install] Copying 2 files to C:\Users\James Moger\.moxie\local\${project.groupId}\moxie\${project.releaseVersion}
-[mx:install] generating pom for moxie-${project.releaseVersion}
-[mx:install] calculating checksums for installed artifacts
+[mx:deploy] =========================================================
+[mx:deploy] mx:Deploy  (moxie-toolkit-${project.releaseVersion})
+[mx:deploy] ---------------------------------------------------------
+[mx:deploy] Copying 2 files to C:\git\maven\org\moxie\moxie-toolkit\${project.releaseVersion}
+[mx:deploy] generating pom for moxie-toolkit-${project.releaseVersion}
+[mx:deploy] calculating checksums for installed artifacts
 </pre>
 </div>
 
-<div class="span5" style="margin-top:-10px;">
+<div class="span4" style="margin-top:-10px;">
 <h4>Core Toolkit (200KB)</h4>
 
 The %CORE% toolkit includes the tasks necessary to retrieve & report on Maven-sourced dependencies, to generate Eclipse and IntelliJ IDEA project files, and to setup Ant build properties so you don't have to.

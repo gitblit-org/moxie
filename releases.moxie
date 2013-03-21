@@ -24,6 +24,7 @@ r6: {
 	 - Improve dynamic classpath loading
     additions:
 	 - Added support for submenus in mx:Doc
+	 - Added support for co-mingling wiki syntax with Markdown in mx:Doc documents
     dependencyChanges:
 	 - org.webjars:bootstrap:2.3.1
 	 - org.webjars:jquery:1.9.1
@@ -31,6 +32,12 @@ r6: {
 	 - org.webjars:d3js:2.10.3
 	 - com.asual.lesscss:lesscss-engine:1.3.3
 	 - org.codehaus.groovy:groovy-all:1.8.8	 
+	 - org.fusesource.wikitext:wikitext-core:1.4
+	 - org.fusesource.wikitext:twiki-core:1.4
+	 - org.fusesource.wikitext:textile-core:1.4
+	 - org.fusesource.wikitext:tracwiki-core:1.4
+	 - org.fusesource.wikitext:mediawiki-core:1.4
+	 - org.fusesource.wikitext:confluence-core:1.4
     contributors: ~
 }
 
