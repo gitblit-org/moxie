@@ -1,4 +1,4 @@
-## mx:Clean %CORE%
+## mx:Clean
 
 ---XML---
 <mx:clean />

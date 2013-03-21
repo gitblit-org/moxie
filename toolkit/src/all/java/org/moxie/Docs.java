@@ -153,7 +153,14 @@ public class Docs {
 		for (DocElement element : doc.structure.elements) {
 			allElements.add(element);
 			if (element instanceof DocMenu) {
-				allElements.addAll(((DocMenu) element).elements);
+				for (DocElement subElement : ((DocMenu) element).elements) {
+					if (subElement instanceof DocMenu) {
+						// add all submenu elements
+						allElements.addAll(((DocMenu) subElement).elements);
+					} else {
+						allElements.add(subElement);
+					}
+				}
 			}
 		}
 
@@ -621,13 +628,25 @@ public class Docs {
 			} else if (element instanceof DocMenu) {
 				// drop down menu
 				DocMenu menu = (DocMenu) element;
-				sb.append("<li class='dropdown'> <!-- Menu -->\n");
-				sb.append(MessageFormat
-						.format("<a class=''dropdown-toggle'' href=''#'' data-toggle=''dropdown''>{0}<b class=''caret''></b></a>\n",
-								menu.name));
-				sb.append("<ul class='dropdown-menu'>\n");
-				sb.append(createLinks(menu, menu.elements));
-				sb.append("</ul></li> <!-- End Menu -->\n");
+				if (currentElement instanceof DocMenu) {
+					// menu submenu
+					sb.append("<li class='dropdown-submenu'> <!-- Submenu -->\n");
+					sb.append(MessageFormat
+							.format("<a tabindex=''-1'' href=''#''>{0}</a>\n",
+									menu.name));
+					sb.append("<ul class='dropdown-menu'>\n");
+					sb.append(createLinks(menu, menu.elements));
+					sb.append("</ul></li> <!-- End Submenu -->\n");
+				} else {
+					// navbar menu
+					sb.append("<li class='dropdown'> <!-- Menu -->\n");
+					sb.append(MessageFormat
+							.format("<a class=''dropdown-toggle'' href=''#'' data-toggle=''dropdown''>{0}<b class=''caret''></b></a>\n",
+									menu.name));
+					sb.append("<ul class='dropdown-menu'>\n");
+					sb.append(createLinks(menu, menu.elements));
+					sb.append("</ul></li> <!-- End Menu -->\n");
+				}
 			}
 		}
 		sb.trimToSize();

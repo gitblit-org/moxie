@@ -20,6 +20,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -300,46 +301,7 @@ public class MxDoc extends MxTask {
 		extractPrettify(prettify, doc.outputDirectory);
 		
 		// setup prev/next pager links
-		for (DocElement element : doc.structure.elements) {
-			if (element instanceof DocMenu && ((DocMenu)element).showPager) {
-				DocMenu menu = (DocMenu) element;
-				for (int i = 0, maxIndex = menu.elements.size() - 1; i <= maxIndex; i++) {
-					DocElement subElement = menu.elements.get(i);
-					if (subElement instanceof DocPage) {							
-						// link to previous page
-						DocPage page = (DocPage) subElement;
-						DocElement prev = i == 0 ? null : menu.elements.get(i - 1);
-						if (prev != null && prev instanceof DocPage) {
-							page.prevPage = (DocPage) prev;
-						}
-
-						// link to next page
-						DocElement next = i == maxIndex ? null : menu.elements.get(i + 1);
-						if (next != null && next instanceof DocPage) {
-							page.nextPage = (DocPage) next;
-						}
-
-						// show pager is dependent on having at least a prev or next
-						page.showPager = page.prevPage != null || page.nextPage != null;
-						page.pagerLayout = menu.pagerLayout;
-						page.pagerPlacement = menu.pagerPlacement;
-					}
-				}
-			}
-
-			// pages which are generated from a Freemarker template
-			if (element instanceof DocPage) { 
-				// process navbar items
-				prepareTemplatePage((DocPage) element);
-			} else if (element instanceof DocMenu) {
-				// process menu items
-				for (DocElement subElement : ((DocMenu)element).elements) {
-					if (subElement instanceof DocPage) {
-						prepareTemplatePage((DocPage) subElement);
-					}
-				}
-			}
-		}
+		preparePages(doc.structure.elements);
 		
 		for (DocPage page : doc.freeformPages) {
 			// process out-of-structure template pages
@@ -393,6 +355,49 @@ public class MxDoc extends MxTask {
 		}
 	}
 	
+	protected void preparePages(List<DocElement> elements) {
+		for (DocElement element : elements) {
+			if (element instanceof DocMenu) {
+				DocMenu menu = (DocMenu) element;
+
+				for (int i = 0, maxIndex = menu.elements.size() - 1; i <= maxIndex; i++) {
+					DocElement subElement = menu.elements.get(i);
+					if (subElement instanceof DocPage) {
+						prepareTemplatePage((DocPage) subElement);
+
+						if (menu.showPager) {
+							// link to previous page
+							DocPage page = (DocPage) subElement;
+							DocElement prev = i == 0 ? null : menu.elements.get(i - 1);
+							if (prev != null && prev instanceof DocPage) {
+								page.prevPage = (DocPage) prev;
+							}
+
+							// link to next page
+							DocElement next = i == maxIndex ? null : menu.elements.get(i + 1);
+							if (next != null && next instanceof DocPage) {
+								page.nextPage = (DocPage) next;
+							}
+
+							// show pager is dependent on having at least a prev or next
+							page.showPager = page.prevPage != null || page.nextPage != null;
+							page.pagerLayout = menu.pagerLayout;
+							page.pagerPlacement = menu.pagerPlacement;
+						}
+
+					} else if (subElement instanceof DocMenu) {
+						// process menu/submenu
+						preparePages(Arrays.asList(subElement));
+					}
+				}
+			} else if (element instanceof DocPage) {
+				// pages which are generated from a Freemarker template
+				// process navbar items
+				prepareTemplatePage((DocPage) element);
+			}
+		}
+	}
+
 	protected File findFile(String filename) {
 		if (!StringUtils.isEmpty(filename)) {
 			List<File> dirs = new ArrayList<File>();

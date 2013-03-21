@@ -1,4 +1,4 @@
-## mx:Thumb
+## mx:Thumbs
 
 ---XML---
 <!-- Generate thumbnails of screenshots -->

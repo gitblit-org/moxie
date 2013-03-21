@@ -31,34 +31,41 @@
 					<page name="settings.moxie" src="settings.mkd" headerLinks="true" />
 					<page name="defaults.moxie" src="defaults.mkd" headerLinks="true" />
 				</menu>
-				<menu name="tasks" pager="true" pagerPlacement="bottom" pagerLayout="justified">
-					<page name="mx:Clean" src="mxclean.mkd" />
-					<page name="mx:Deploy" src="mxdeploy.mkd" />
-					<page name="mx:Doc" src="mxdoc.mkd" />
-					<page name="mx:Extract" src="mxextract.mkd" />
-					<page name="mx:Ftp" src="mxftp.mkd" />
-					<page name="mx:GenJar" src="mxgenjar.mkd" />
-					<page name="mx:Get" src="mxget.mkd" />
-					<page name="mx:GhPages" src="mxghpages.mkd" />					
-					<page name="mx:Groovy" src="mxgroovy.mkd" />					
-					<page name="mx:CommitId" src="mxcommitid.mkd" />
-					<page name="mx:Commit" src="mxcommit.mkd" />
-					<page name="mx:If" src="mxif.mkd" />
-					<page name="mx:Install" src="mxinstall.mkd" />
-					<page name="mx:Init" src="mxinit.mkd" />
-					<page name="mx:Jar" src="mxjar.mkd" />
-					<page name="mx:Javac" src="mxjavac.mkd" />
-					<page name="mx:Javadoc" src="mxjavadoc.mkd" />
-					<page name="mx:Keys" src="mxkeys.mkd" />
-					<page name="mx:Report" src="mxreport.mkd" />
-					<page name="mx:Run" src="mxrun.mkd" />
-					<page name="mx:Tar" src="mxtar.mkd" />
-					<page name="mx:Test" src="mxtest.mkd" />
-					<page name="mx:Thumb" src="mxthumb.mkd" />
-					<page name="mx:Version" src="mxversion.mkd" />
-					<page name="mx:War" src="mxwar.mkd" />
-					<page name="mx:WebXml" src="mxwebxml.mkd" />
-					<page name="mx:Zip" src="mxzip.mkd" />
+				<menu name="tasks">
+					<menu name="core tasks">
+						<page name="mx:Init" src="mxinit.mkd" />
+						<page name="mx:Report" src="mxreport.mkd" />
+						<page name="mx:Get" src="mxget.mkd" />
+					</menu>
+					<menu name="all tasks" pager="true" pagerPlacement="bottom" pagerLayout="justified">
+						<page name="mx:Clean" src="mxclean.mkd" />
+						<page name="mx:Deploy" src="mxdeploy.mkd" />
+						<page name="mx:Doc" src="mxdoc.mkd" />
+						<page name="mx:Extract" src="mxextract.mkd" />
+						<page name="mx:Ftp" src="mxftp.mkd" />
+						<page name="mx:GenJar" src="mxgenjar.mkd" />
+						<page name="mx:Get" src="mxget.mkd" />
+						<page name="mx:GhPages" src="mxghpages.mkd" />					
+						<page name="mx:Groovy" src="mxgroovy.mkd" />					
+						<page name="mx:CommitId" src="mxcommitid.mkd" />
+						<page name="mx:Commit" src="mxcommit.mkd" />
+						<page name="mx:If" src="mxif.mkd" />
+						<page name="mx:Init" src="mxinit.mkd" />
+						<page name="mx:Install" src="mxinstall.mkd" />
+						<page name="mx:Jar" src="mxjar.mkd" />
+						<page name="mx:Javac" src="mxjavac.mkd" />
+						<page name="mx:Javadoc" src="mxjavadoc.mkd" />
+						<page name="mx:Keys" src="mxkeys.mkd" />
+						<page name="mx:Report" src="mxreport.mkd" />
+						<page name="mx:Run" src="mxrun.mkd" />
+						<page name="mx:Tar" src="mxtar.mkd" />
+						<page name="mx:Test" src="mxtest.mkd" />
+						<page name="mx:Thumbs" src="mxthumbs.mkd" />
+						<page name="mx:Version" src="mxversion.mkd" />
+						<page name="mx:War" src="mxwar.mkd" />
+						<page name="mx:WebXml" src="mxwebxml.mkd" />
+						<page name="mx:Zip" src="mxzip.mkd" />
+					</menu>
 				</menu>
 				<page name="moxie+ant" src="moxie+ant.mkd" headerLinks="true" />
 				<page name="proxy" src="proxy.mkd" headerLinks="true" />
