@@ -1,6 +1,94 @@
 ## mx:Doc
 
-Prettify Themes
+mx:Doc is Moxie's documentation generation task.  It is based on [Twitter Bootstrap](http://twitter.github.com/bootstrap), [GoogleCode Prettify](http://code.google.com/p/google-code-prettify).
+
+### Directives
+
+Directives are single-line text commands that surround a block of text and apply a rule to that text.  Directives can not be combined nor can they be nested.
+
+Directives are written as:
+
+    ---DIRECTIVE---
+	Here is my text block.
+	---DIRECTIVE---
+
+#### Text Block Directives
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Directive !! Description
+|-
+| NOMARKDOWN
+| Excludes text block from Markdown processing
+|-
+| ESCAPE
+| Escapes < > & and \n characters with their HTML equivalents.
+|-
+| FIXED
+| Escapes < > & and \n characters with their HTML equivalents and wraps the text in a &lt;pre&gt; block.
+|}
+---X:MEDIAWIKI---
+
+#### Prettify Directives
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Directive !! Description
+|-
+| CODE
+| Escapes and wraps the textblock with Prettify
+|-
+| CSS
+| Escapes and wraps the textblock with Prettify using a CSS syntax hint
+|-
+| JAVA
+| Escapes and wraps the textblock with Prettify using a Java syntax hint
+|-
+| JSON
+| Escapes and wraps the textblock with Prettify using a JSON syntax hint
+|-
+| SQL
+| Escapes and wraps the textblock with Prettify using a SQL syntax hint
+|-
+| WIKI
+| Escapes and wraps the textblock with Prettify using a WIKI syntax hint
+|-
+| XML
+| Escapes and wraps the textblock with Prettify using an XML syntax hint
+|-
+| YAML
+| Escapes and wraps the textblock with Prettify using a YAML syntax hint
+|}
+---X:MEDIAWIKI---
+
+#### Wiki Transform Directives
+
+The wiki transform directives will interpret the enclosed text block using the [Eclipse Mylyn WikiText](http://eclipse.org/mylyn) parser for the specified syntax.  This is useful, for example, for table generation since Markdown does not specify a table syntax.
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Directive !! Description
+|-
+| X:TWIKI
+| Interprets the block as [http://twiki.org/cgi-bin/view/TWiki/WikiSyntax TWiki] markup
+|-
+| X:TEXTILE
+| Interprets the block as [http://txstyle.org/article/44/an-overview-of-the-textile-syntax Textile] markup
+|-
+| X:TRACWIKI
+| Interprets the block as [http://trac.edgewall.org/wiki/WikiFormatting TracWiki] markup
+|-
+| X:MEDIAWIKI
+| Interprets the block as [https://www.mediawiki.org/wiki/Help:Formatting MediaWiki] markup
+|-
+| X:CONFLUENCE
+| Interprets the block as Confluence markup
+|}
+---X:MEDIAWIKI---
+
+### Prettify Themes
+
+Many Prettify themes are bundled in Moxie.
 
 - bootstrap
 - desert
@@ -21,8 +109,9 @@ Prettify Themes
 - tomorrow-night-light
 - vibrant-ink
 
+### Complete Example
 ---XML---
-<mx:doc injectPrettify="true">
+<mx:doc>
 	<structure>
 		<page name="overview" src="index.mkd" />
 		<menu name="tasks">

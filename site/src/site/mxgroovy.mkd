@@ -46,7 +46,7 @@
 | the owning target that invoked this groovy script
 |-
 | task
-| the wrapping task, can access anything needed in <a href="http://www.jajakarta.org/ant/ant-1.6.1/docs/ja/manual/api/org/apache/tools/ant/Task.html" class="external-link">org.apache.tools.ant.Task</a>
+| the wrapping task
 |-
 | args
 | command line arguments, if any

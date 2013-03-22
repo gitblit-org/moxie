@@ -1,51 +1,77 @@
-# defaults.moxie
+## defaults.moxie
 
-This file defines the default values for all Moxie projects.
+This file defines the default values for all Moxie projects.  It is usually loaded from the Moxie jar file unless *${user.home}/.moxie/defaults.moxie* is present.  It is not recommended to create your own `defaults.moxie` file, but instead to override these settings in *${user.home}/.moxie/settings.moxie*, which is a child of `defaults.moxie`.
 
-Defines how to use the ${user.home}/.m2/repository folder
+### Maven Cache Strategy
+
+Defines how to use the *${user.home}/.m2/repository* folder.
+
 Options are:
-  IGNORE   (ignore Maven cache entirely)
-  LINK     (use Maven cache artifacts directly, not recommended)
-  COPY     (copy Maven cache artifacts into Moxie's local repository)
+<dl>
+  <dt>IGNORE</dt><dd>ignore Maven cache entirely</dd>
+  <dt>LINK</dt><dd>use Maven cache artifacts directly, not recommended</dd>
+  <dt>COPY</dt><dd>copy Maven cache artifacts into Moxie's local repository</dd>
+</dl>
 ---YAML---
-mavenCacheStrategy: COPY
+mavenCacheStrategy: IGNORE
 ---YAML---
 
-Source directories are verified during initialization.
-Defined directories that do not exist are excluded.
-Defined order is preserved.
+### Source Directories
+
+Source directories are verified during initialization.  Defined directories that do not exist are excluded.  Defined order is preserved. Directories are excluded if they are the parent of an already included directory for the specified scope.
+
 ---YAML---
 sourceDirectories:
 - compile 'src/main/java'
 - compile 'src/main/webapp'
-- compile 'src/main/resources'
+- compile 'src/java'
+- compile 'src'
 - test 'src/test/java'
-- test 'src/test/resources'
+- test 'src/test'
+- test 'tests'
+- test 'test'
 - site 'src/site'
 ---YAML---
 
-Default base directory within the project for compiled classes.
-Consider NOT sharing the output folder with your IDE.
-The default (build) is separate from the Eclipse default (bin).
+### Resource Directories
+
+Resource directories are verified during initialization. Defined directories that do not exist are excluded.  Defined order is preserved.
+---YAML---
+resourceDirectories:
+- compile 'src/main/resources'
+- test 'src/test/resources'
+---YAML---
+
+### Output Directory
+
+Default base directory within the project for compiled classes. Consider NOT sharing the output folder with your IDE. The default (build) is separate from the Eclipse default (bin).
 ---YAML---
 outputDirectory: build
 ---YAML---
 
+### Target Directory
 The base directory within the project for build artifacts.
 ---YAML---
 targetDirectory: build/target
 ---YAML---
 
-Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT
-  always - always check when for newer versions
-  never - never check when for newer versions
-  daily (default) - check on the first run of the day (local time)
-  interval:NNN - check every NNN minutes (default is 60 mins)
+### Update Policy
+
+Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT.
+<dl>
+  <dt>always</dt><dd>always check when for newer versions</dd>
+  <dt>never</dt><dd>never check when for newer versions</dd>
+  <dt>daily</dt><dd>(default) - check on the first run of the day (local time)</dd>
+  <dt>interval:NNN</dt><dd>check every NNN minutes (default is 60 mins)</dd>
+</dl>
 ---YAML---
 updatePolicy: daily
 ---YAML---
 
+### Tasks
+
 Default settings for Moxie tasks.
+
 These attributes are set via reflection using Ant's standard utility classes.
 ---YAML---
 tasks: {

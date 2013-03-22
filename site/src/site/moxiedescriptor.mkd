@@ -5,30 +5,28 @@ The Moxie project descriptor defines the structure, metadata, and dependencies o
 ### Metadata Keys
 <table class="table table-striped table-bordered table-condensed">
 <tbody>
-<tr><th>name</th>            <td>${project.name}</td></tr>
-<tr><th>description</th>     <td>${project.description}</td></tr>
-<tr><th>organization</th>    <td>${project.organization}</td></tr>
-<tr><th>organizationUrl</th> <td>${project.organizationUrl}</td></tr>
-<tr><th>issuesUrl</th>       <td>${project.issuesUrl}</td></tr>
-<tr><th>forumUrl</th>        <td>${project.forumUrl}</td></tr>
-<tr><th>blogUrl</th>         <td>${project.blogUrl}</td></tr>
-<tr><th>socialNetworkUrl</th><td>${project.socialNetworkUrl}</td></tr>
-<tr><th>ciUrl</th>           <td>${project.ciUrl}</td></tr>
-<tr><th>url</th>             <td>${project.url}</td></tr>
-<tr><th>inceptionYear</th>   <td>${project.inceptionYear}</td></tr>
+<tr><th>name</th>            <td></td></tr>
+<tr><th>description</th>     <td></td></tr>
+<tr><th>organization</th>    <td></td></tr>
+<tr><th>organizationUrl</th> <td></td></tr>
+<tr><th>issuesUrl</th>       <td></td></tr>
+<tr><th>forumUrl</th>        <td></td></tr>
+<tr><th>blogUrl</th>         <td></td></tr>
+<tr><th>socialNetworkUrl</th><td></td></tr>
+<tr><th>ciUrl</th>           <td></td></tr>
+<tr><th>url</th>             <td></td></tr>
+<tr><th>inceptionYear</th>   <td></td></tr>
 </tbody>
 </table>
 
 ### Artifact Keys
 <table class="table table-striped table-bordered table-condensed">
 <tbody>
-<tr><th>groupId</th>       <td>${project.groupId}</td></tr>
-<tr><th>artifactId</th>    <td>${project.artifactId}</td></tr>
-<tr><th>version</th>       <td>${project.version}</td></tr>
-<tr><th>buildDate</th>     <td>${project.buildDate}</td></tr>
-<tr><th>buildTimestamp</th><td>${project.buildTimestamp}</td></tr>
-<tr><th>releaseVersion</th><td>${project.releaseVersion}</td></tr>
-<tr><th>releaseDate</th>   <td>${project.releaseDate}</td></tr>
+<tr><th>groupId</th>       <td></td></tr>
+<tr><th>artifactId</th>    <td></td></tr>
+<tr><th>version</th>       <td></td></tr>
+<tr><th>releaseVersion</th><td></td></tr>
+<tr><th>releaseDate</th>   <td></td></tr>
 </tbody>
 </table>
 
@@ -146,23 +144,4 @@ dependencyDirectory
 
 repositories
 
-targetDirectory
-
 parent
-
----YAML---
-tasks: {
-    'mx:jar': {
-	    exclusions: yada
-	}
-    'mx:javac': {
-        compilerArgs: yada
-	}
-    'mx:report': {
-	}
-}
----YAML---
-
-dependencyOverrides
-
-dependencyAliases

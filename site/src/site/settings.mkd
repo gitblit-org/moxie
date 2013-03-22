@@ -1,54 +1,52 @@
 ## settings.moxie
 
+The `settings.moxie` file is used to do define settings that should apply to all builds.  These values override the settings from `defaults.moxie`.
+
 ### Proxies
-Moxie automatically uses all proxy definitions from your local Maven settings
-(~/.m2/settings.xml) and also from your local Moxie settings
-(~/.moxie/settings.moxie).
+Moxie automatically uses all proxy definitions from your local Maven settings (*~/.m2/settings.xml*) and also from your local Moxie settings (*~/.moxie/settings.moxie*).
 
-Unlike Maven, which assumes you will proxy everything and requires
-you to manually exclude hostnames (i.e. opt-out), Moxie allows you
-to specify what repositories will be proxied by a proxy definition
-(i.e. opt-in). If this is undesirable, Moxie also supports Maven-style
-opt-out proxy definitions too. 
+Unlike Maven, which assumes you will proxy everything and requires you to manually exclude hostnames (i.e. opt-out), Moxie allows you to specify what repositories will be proxied by a proxy definition (i.e. opt-in). If this is undesirable, Moxie also supports Maven-style opt-out proxy definitions too. 
 
-If you want Moxie proxy settings, copy and edit the following example
-opt-in proxy definition to a new text file: ~/.moxie/settings.moxie
+If you want to define proxy settings, copy and edit the following example opt-in proxy definition to a new text file: *~/.moxie/settings.moxie*
 
-#### example standard network proxy configuration
+#### Example standard network proxy configuration
+
+All repositories are proxied through this connection.
+
 ---YAML---
 - { id: 'myproxy', active: false, protocol: 'http', host: 'proxy.somewhere.com', port:8080, username: 'proxyuser', password: 'somepassword' }
 ---YAML---
 
-#### example Moxie Proxy configuration
-only the identified repositories are proxied through this connection
+#### Example Moxie Proxy configuration
+
+Only the identified repositories are proxied through this connection.
 
 ---YAML---
 - { id: 'moxieProxy', active: false,	protocol: 'http', host: 'moxie.somewhere.com', port: 8081, username: 'proxyuser', password: 'somepassword', repositories: "central, mavencentral, restlet, codehaus" }
 ---YAML---
 
-Should the build immediately fail if an artifact can not be immediately
-resolved from the remote repositories or the local cache?
+### Fail Fast
+
+Should the build immediately fail if an artifact can not be immediately resolved from the remote repositories or the local cache?
 ---YAML---
 failFastOnArtifactResolution: true
 ---YAML---
 
-Default snapshot revision purge policy
-Default minimum count of snapshot revisions to keep
-minimum acceptable value is 1
+### Default Snapshot Purge Policies
+
+Default minimum count of snapshot revisions to keep.  The minimum acceptable value is 1.
 ---YAML---
 revisionRetentionCount: 1
 ---YAML---
 
-if the count of snapshot revisions exceeds the specified retention count,
-then delete all snapshot revisions older than this count of days
+If the count of snapshot revisions exceeds the specified retention count, then delete all snapshot revisions older than this count of days.
 ---YAML---
 revisionPurgeAfterDays: 0
 ---YAML---
 
-Registered Maven 2 repositories.  This section is used to define id-url
-pairs so that project descriptors can specify an repository id, rather than
-a complete url.  A repository definition can override the default snapshot
-revision purge policy.
+### Registered Repositories &amp; Repositories
+
+This section is used to define id-url pairs so that project descriptors can specify an repository id, rather than a complete url.  A repository definition can override the default snapshot revision purge policy.
 
 ---YAML---
 registeredRepositories:
@@ -58,13 +56,16 @@ registeredRepositories:
 - { id: codehaus, url: 'http://repository.codehaus.org' }
 ---YAML---
 
-Default repositories for dependency retrieval
+After registering a repository with Moxie you must specify which repositories you want to use in your build.  By default MavenCentral is specified.
+
 ---YAML---
 repositories: 'central'
 ---YAML---
 
-Managed dependencies are used to specify versions of dependencies
-if those versions are not specified in the project's build.moxie.
+### Managed Dependencies
+
+Managed dependencies are used to specify versions of dependencies if those versions are not specified in the project's build.moxie.
+
 ---YAML---
 dependencyManagement:
 - 'junit:junit:4.11'
@@ -78,8 +79,10 @@ dependencyManagement:
 - 'org.jacoco:org.jacoco.ant:0.6.1.201212231917'
 ---YAML---
 
-dependency aliases allow you to specify shorthand notation for a dependency
-which will be resolved at runtime to the full coordinates.
+### Dependency Aliases
+
+Dependency aliases allow you to specify shorthand notation for a dependency which will be resolved at runtime to the full coordinates.
+
 ---YAML---
 dependencyAliases: {
 	junit: 'junit:junit'
@@ -93,18 +96,16 @@ dependencyAliases: {
 }
 ---YAML---
 
-Dependency overrides are used to redefine the dependencies of released/published
-POMs from other projects.  The most common use case would be to add undeclared
-dependencies for old POMs or to purposefully exclude dependencies from specific scopes.
+### Dependency Overrides
 
-Moxie uses this feature to simplify specification of "build" scope dependencies so that
-enabling Cobertura, Emma, or TestNG is as easy as adding a single build dependency.
+Dependency overrides are used to redefine the dependencies of released/published POMs from other projects.  The most common use case would be to add undeclared dependencies for old POMs or to purposefully exclude dependencies from specific scopes.
 
-You must declare the full coordinates of the dependency to tweak, property substitution
-is prohibited.  You may specify the scopes for which your override applies.  If no scope
-is specified ALL scopes are assumed.
+Moxie uses this feature to simplify specification of "build" scope dependencies so that enabling Cobertura, Emma, or TestNG is as easy as adding a single build dependency.
 
-Be careful when using dependency overrides!
+You must declare the full coordinates of the dependency to tweak.  Property substitution is prohibited.  You may specify the scopes for which your override applies.  If no scope is specified ALL scopes are assumed.
+
+<p class="text-error">Be very careful when using dependency overrides!</p>
+
 ---YAML---
 dependencyOverrides: {
 

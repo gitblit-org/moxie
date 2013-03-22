@@ -30,7 +30,6 @@ sourceDirectories:
 # Defined order is preserved.
 resourceDirectories:
 - compile 'src/main/resources'
-
 - test 'src/test/resources'
 
 # Default base directory within the project for compiled classes.

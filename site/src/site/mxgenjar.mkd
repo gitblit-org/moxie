@@ -1,5 +1,392 @@
 ## mx:GenJar
 
+mx:GenJar is a fork of the [GenJar](http://http://genjar.sourceforge.net) ANT task by *John W. Kohler* and *Jesse Stockall*.  It has been enhanced with improved error reporting and Moxie integration.
+
+### Synopsis
+
+---ESCAPE---
+Jars a set of classes and resources.
+
+The <genjar> task is designed to make Jar creation as easy as possible. You give it the root classes (i.e. entry points) of your application and it will determine all other class files that need to be included in the jar.
+
+It does this by recursively examining each class file, extracting a list of all classes referenced, eventually arriving at the complete set of classes required to execute the application. These classes are then placed into the target jar file.
+---ESCAPE---
+
+### Attributes
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Attribute !! Description !! Required
+|-
+| jarfile
+| The name of the har file to create
+| At least 1 of jarfile or destdir.
+|-
+| destdir
+| the name of the directory to copy dependencies to
+| At least 1 of jarfile or destdir.
+|}
+---X:MEDIAWIKI---
+
+### Nested Elements
+
+#### &lt;class&gt;
+---ESCAPE---
+Use <class> elements to specify the names of the classes from which <genjar> will begin its class dependency search. Each class is recursively searched for the classes on which it depends. In this way, all classes necessary to execute an application can be automatically included in the jar. (See class filter for a method of preventing certain classes from being placed in the jar.)
+
+This referenced class inclusion works for all classes that are known at compile time. Any classes that are dynamically loaded cannot be located in this fashion and therefore must be explicitly included using a <class> element.
+
+Note: Class names listed in the <class> element are not subject to filtering performed by the class filter.
+
+If the name starts with a File.pathSeparator or the second character is a : then the path is assumed to be absolute. Otherwise the project baseDir attribute is prepended to the name to create the full path to the new jar file. 
+---ESCAPE---
+
+##### Attributes
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Attribute !! Description !! Required
+|-
+| name
+| The fully qualified name of the class include in the jar. (Use the standard Java 'dotted' notation.) 
+| Yes (Unless a fileset is supplied)
+|-
+| bean
+| If set to 'yes', this class' manifest entry will be marked as being a JavaBean (Java-Bean: true). 
+| No
+|}
+---X:MEDIAWIKI---
+
+##### Examples
+
+This example builds a jar containing all classes necessary to run the two specified applications (Main and Test). 
+
+---XML---
+<mx:genjar jarfile="test.jar">
+    <class name="com.killer.app.Main"/>
+    <class name="com.killer.app.Test"/>
+</mx:genjar>
+---XML---
+
+This example builds a jar containing all classes necessary to run all the classes in the `com.company` package.
+---XML---
+<genjar jarfile="test.jar">
+    <class>
+      <fileset dir="${classes.dir}>
+        <include name="com/company/*.class">
+      </fileset>    
+    </class>
+</genjar>
+---XML---
+
+#### &lt;resource&gt;
+
+---ESCAPE---
+Use <resource> elements to specify non-class files to be included in the jar. 
+---ESCAPE---
+
+##### Attributes
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Attribute !! Description !! Required
+|-
+| file
+| Specifies a single file to include in the jar
+| Yes
+|-
+| package
+| A package name that's to replace the default package name of all resources specified in this <resource> element.
+| No
+|}
+---X:MEDIAWIKI---
+
+##### Nested Elements
+
+---ESCAPE---
+A <resource> element may take a standard Ant fileset. In this case, the path given to the jarred files is taken from the <include> parameter. If a package is specified on the resource, then all files included in the fileset will have their paths changed to the package specified.
+---ESCAPE---
+
+##### Examples
+
+This example results in the file icon.png being included in the jar with a path of /images.
+---XML---
+<genjar jarfile="test.jar">
+  <resource file="images/icon.png" />
+</genjar>
+---XML---
+
+This example results in the file icon.png being included in the jar with a path of /com/foo/ka, effectively placing into the com.foo.ka package.
+---XML---
+<genjar jarfile="test.jar">
+  <resource file="images/icon.png" package="com/foo/ka" />
+</genjar>
+---XML---
+
+This example results in all the files in and below the ${build.docs}/api directory being included into the jar. The path used in the jar begins at api.
+---XML---
+<genjar jarfile="test.jar">
+  <resource>
+    <fileset dir="${build.docs}">
+       <include name="api/**/*.*" />
+    </fileset>
+  </resource>
+</genjar>
+---XML---
+
+This example will copy the xcatalog.dtd file from the Xerces jar (in the classpath) into the target jar.
+---XML---
+<genjar jarfile="test.jar">
+  <resource file="org/apache/xerces/readers/xcatalog.dtd" />
+  <classpath>
+    <pathelement location="lib/xerces.jar"/>
+  </classpath>
+</genjar>
+---XML---
+
+#### &lt;library&gt;
+
+---ESCAPE---
+The <library> specifies either a directory tree or a jar file to be included into the generated jar. In either case, the entire content of the referenced library is included in the jar.
+
+In the case of a directory, all files contained within (and below) the named directory will be inserted into the jar with a path name beginning at the named directory. For example, if you specify a library like this <library dir="docs"/> then all files and subdirectories within the docs will be inserted into the jar with their paths beginning at docs.
+
+If you postfix the directory's path with the /* pattern, then the named directory will be stripped from the file paths before insertion into the jar. For example, <library dir="docs/*"/> will insert all the files in and below the docs into the generated jar, but their paths will begin immediately below docs.
+
+When the specified library is a jar, all entries in the jar are copied into the generated jar with the exception of the library jar's manifest file. Along with the library jar's files, any entry attributes are also imported into the generated jar.
+---ESCAPE---
+
+##### Attributes
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Attribute !! Description !! Required
+|-
+| dir
+| A directory containing the library files. All files within this directory tree will be added to the jar, the path used in the jar will start at this name.
+| One of dir or jar
+|-
+| jar
+| A jar to include in the target jar. ALL files in this jar will be copied to the target jar except the manifest file.
+| One of dir or jar
+|}
+---X:MEDIAWIKI---
+
+##### Examples
+
+This example will copy the entire xerces.jar into the generated jar. 
+---XML---
+<library jar="${lib}/xerces.jar"/>
+---XML---
+
+This example will pull all files located in and below the ${lib}/classes directory into the jar. Their jar names will include the path named by the ${lib}/classes.
+---XML---
+<library dir="${lib}/classes" />
+---XML---
+
+This example will insert all files (and directories) below the ${docs} directory into the generated jar. But the path named by ${docs} will be stripped form those files before insertion.
+---XML---
+<library dir="${docs}/*"/>
+---XML---
+
+Assume the following structure and files:
+---FIXED---
+./docs
+./docs/index.html
+./docs/images
+./docs/images/fig1.jpg
+./docs/images/fig2.jpg
+---FIXED---
+
+If you use the library tag this way <library dir="docs"/> then the jar will contain:
+---FIXED---
+docs/index.html
+docs/images/fig1.jpg
+docs/images/fig2.jpg
+---FIXED---
+
+If you were to specify the library this way: <library dir="docs/*"/> then the jar will contain:
+
+---FIXED---
+index.html
+images/fig1.jpg
+images/fig2.jpg
+---FIXED---
+
+<div class="alert alert-info">
+Note that the main attributes (Main-Class, Class-Path) from a library jar are NOT imported into the generated jar. Any package information embedded within the jar is also lost.
+</div>
+
+#### &lt;classfilter&gt;
+
+---ESCAPE---
+Use the <classfilter> element to specify which classes are not to be included in the jar, and as necessary, which classes are to be explicitly included. Any number of <include> and <exclude> elements may be used inside the <classfilter>.
+
+(Note that the traditional Ant includes/includesfile/excludes/excludesfile attributes are not used as they deal with files and GenJar deals with classes.)
+
+The class filtering mechanism operates on patterns. These patterns are class name prefixes, i.e. partial package or class names. If a class' fully qualified name starts with an include/exlcude pattern, then it's considered a match. For example: the class name com.foo.Test matches the pattern com.foo. because the class name starts with the pattern.
+
+When determining if a class should be in the jar, <genjar> first checks the list of include patterns. If the candidate class' name matches an include pattern then the class is included in the jar (explicit inclusion). If the class' name does not match an include pattern but matches an exclude pattern, the class is not included in the jar (explicit exclusion). If the class' name does not match any patterns, then it's included in the jar by default (implicit inclusion).
+
+This algorithm allows the user to select very narrow slices of large package spaces. For example, one can include just the Ant types package into a jar by excluding the entire apache package space and then including specifically the Ant types package:
+---ESCAPE---
+
+This example demonstrates the fact that include patterns override exclude patterns.
+---XML---
+<classfilter>
+  <exclude name="org.apache." />  <!-- exclude the entire apache package space -->
+  <include name="org.apache.tools.ant.types." /> <!-- but include Ant types -->
+</classfilter>
+---XML---
+
+There is a default list of exclude patterns that's compiled into the class filter: 
+
+- java.
+- javax.
+- sun.
+- sunw.
+- com.sun.
+- org.omg.
+
+A site wide list of exclusions may be specified in the resource file site-exclusions. This file is expected to located in the same location (directory/package) as the GenJar class. the site-exclusions file is expected to contain one exclude pattern per line with blank lines being ignored. You may embed comments by prefixing the comment line with '#'.
+
+##### Attributes of &lt;include&gt; and &lt;exclude&gt; Nested Elements
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Attribute !! Description !! Required
+|-
+| name
+| Include/Exclude pattern
+| yes
+|}
+---X:MEDIAWIKI---
+
+##### Examples
+
+This specifies a jar that will contain all classes referenced by com.killer.app.Main except those in any package starting with org.apache or com.ibm. 
+
+---XML---
+<genjar jarfile="test.jar">
+  <class name="com.killer.app.Main"/>
+  <classfilter>
+    <exclude name="org.apache."/>
+    <exclude name="com.ibm."/>
+  </classfilter>
+</genjar>
+---XML---
+
+This specifies a jar that will contain all classes referenced by com.killer.app.Main except those in any package starting with org.apache or com.ibm. All referenced classes from org.apache.ant will be included as an explicit inclusion overrides an exclusion. 
+---XML---
+<genjar jarfile="test.jar">
+  <class name="com.killer.app.Main"/>
+  <classfilter>
+    <include name="org.apache.ant"/>
+    <exclude name="org.apache."/>
+    <exclude name="com.ibm."/>
+  </classfilter>
+</genjar>
+---XML---
+
+#### &lt;classpath&gt;
+
+---ESCAPE---
+The <classpath> element is used to specify search paths to genjar's jar builder. See the Ant documentation for a full discussion on <classpath>. 
+---ESCAPE---
+
+##### Examples
+---XML---
+<genjar jarfile="test.jar">
+  <class name="com.killer.app.Main"/>
+  <classfilter>
+    <exclude name="org.apache."/>
+    <exclude name="com.ibm."/>
+  </classfilter>
+  <classpath>
+    <pathelement location="build/classes"/>
+  </classpath>
+</genjar>
+---XML---
+
+#### &lt;manifest&gt;
+---ESCAPE---
+The <manifest> element controls how the jar manifest is initially constructed and what main attributes are placed into the manifest. (For more information on Jar Manifests, see this.)
+
+The <manifest> element allows the developer to specify a template manifest file that will form the base for the manifest placed into the jar. Additionally, main and per-entry attributes may be specified. And control over the default per-entry attributes may be asserted.
+
+To specify a template manifest file, use the template attribute on the <manifest> element. All attributes (main and per-entry) will be included in the manifest written to the jar. Note that any duplicate attributes generated by GenJar will overwrite those in the template manifest. Example:
+---ESCAPE---
+---XML---
+<manifest template="default.mft">
+....
+</manifest>
+---XML---
+---ESCAPE---
+Normally GenJar will generate a set of per-entry attributes for every file included in the jar. These attributes include the full path to the original resource, the last modified date of that resource and the size of that resource. This information is included in the manifest to aid in tracking down problems like: "Do I have the right version of that library file?" and "Where did that class file come from? Is it the old one?" These automatic per-entry attributes may be disabled by specifying generateEntryAttributes='no' in the <manifest> element. At least two attributes are generated for each entry placed in the jar:
+---ESCAPE---
+<dl>
+	<dt>Content-Location</dt>
+    <dd>This attribute is set to the absolute path to the source file or archive (jar/zip).</dd>
+
+	<dt>Last-Modified</dt>
+    <dd>This attribute is set to the last modification time of the source file (file/jar/zip) or the modification time from the source jar (if the source is in fact a jar).</dd>
+	
+	<dt>others</dt>
+    <dd>If the jar entry is taken from a jar, then the source's entry-attributes are imported into the new jar.</dd>
+</dl>
+
+##### &lt;manifest&gt; Attributes
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Attribute !! Description !! Required
+|-
+| template
+| path to template file
+| no
+|-
+| generateEntryAttributes
+| prohibits generation of per-entry attributes (see text)
+| no
+|}
+---X:MEDIAWIKI---
+
+##### &lt;attribute&gt; Attributes
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Attribute !! Description !! Required
+|-
+| name
+| the attribute's name
+| yes
+|-
+| value
+| the attribute's value
+| yes
+|-
+| entry
+| the entry name to which this attribute belongs. If not supplied (or equal to 'main'), then the attribute is a Main-Entry.
+| no
+|}
+---X:MEDIAWIKI---
+
+##### Example
+
+---XML---
+<manifest>
+  <attribute name="Specification-Title"    value="Killer App" />
+  <attribute name="Specification-Version"  value="2.0" />
+  <attribute name="Specification-Vendor"   value="Foo Bar Inc." />
+  <attribute name="Implementation-Title"   value="KA"  />
+  <attribute name="Implementation-Version" value="1.3.7" />
+  <attribute entry="com/foobar/ka/main.class"
+             name="Icon-Large"
+             value="large-icon.png" />
+<manifest>
+---XML---
+
+### Complete Example
 ---XML---
 <mx:genjar destfile="moxie-all.jar">
 	<classfilter>

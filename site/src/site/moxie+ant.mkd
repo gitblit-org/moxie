@@ -33,9 +33,9 @@ Moxie+Ant automatically injects several phase targets at runtime which you may u
 
 Moxie+Ant has very primitive project creation support.  This is a work-in-progress.
 
----CODE---
+---FIXED---
 moxie -new -<archetype> <groupId>:<artifactId>:<version> -dir:<dirname> -git<:originId> -eclipse<:+var> -intellij
----CODE---
+---FIXED---
 
 #### Archetypes
 
