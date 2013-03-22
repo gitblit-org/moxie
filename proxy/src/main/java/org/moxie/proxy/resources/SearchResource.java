@@ -48,6 +48,9 @@ public class SearchResource extends BaseResource {
 		if (StringUtils.isEmpty(query)) {
 			results = new ArrayList<SearchResult>();
 		} else {
+			if (query.indexOf(":") == -1 && query.indexOf(' ') == -1) {
+				query = "artifactid:*" + query + "* OR groupid:*" + query + "*";
+			}
 			results = getApplication().search(query, page, count);
 		}
 		
