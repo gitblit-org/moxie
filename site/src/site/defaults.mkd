@@ -1,19 +1,13 @@
 ## defaults.moxie
 
-This file defines the default values for all Moxie projects.  It is usually loaded from the Moxie jar file unless *${user.home}/.moxie/defaults.moxie* is present.  It is not recommended to create your own `defaults.moxie` file, but instead to override these settings in *${user.home}/.moxie/settings.moxie*, which is a child of `defaults.moxie`.
+This file defines the default values for all Moxie projects.  It is usually loaded from the Moxie jar file unless *${user.home}/.moxie/defaults.moxie* is present.
 
-### Maven Cache Strategy
+### Repositories
 
-Defines how to use the *${user.home}/.m2/repository* folder.
+The repositories settings defines the list of registeredRepositories from whcih to source artifacts.  By default, only MavenCentral is specified, however Moxie ships with several other registeredRepositories including sonatype-oss, codehaus, & restlet.
 
-Options are:
-<dl>
-  <dt>IGNORE</dt><dd>ignore Maven cache entirely</dd>
-  <dt>LINK</dt><dd>use Maven cache artifacts directly, not recommended</dd>
-  <dt>COPY</dt><dd>copy Maven cache artifacts into Moxie's local repository</dd>
-</dl>
 ---YAML---
-mavenCacheStrategy: IGNORE
+repositories: 'central'
 ---YAML---
 
 ### Source Directories
@@ -66,6 +60,39 @@ Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT.
 </dl>
 ---YAML---
 updatePolicy: daily
+---YAML---
+
+### Fail Fast
+
+Should the build immediately fail if an artifact can not be immediately resolved from the remote repositories or the local cache?
+---YAML---
+failFastOnArtifactResolution: true
+---YAML---
+
+### Default Snapshot Purge Policies
+
+Default minimum count of snapshot revisions to keep.  The minimum acceptable value is 1.
+---YAML---
+revisionRetentionCount: 1
+---YAML---
+
+If the count of snapshot revisions exceeds the specified retention count, then delete all snapshot revisions older than this count of days.
+---YAML---
+revisionPurgeAfterDays: 0
+---YAML---
+
+### Maven Cache Strategy
+
+Defines how to use the *${user.home}/.m2/repository* folder.
+
+Options are:
+<dl>
+  <dt>IGNORE</dt><dd>ignore Maven cache entirely</dd>
+  <dt>LINK</dt><dd>use Maven cache artifacts directly, not recommended</dd>
+  <dt>COPY</dt><dd>copy Maven cache artifacts into Moxie's local repository</dd>
+</dl>
+---YAML---
+mavenCacheStrategy: IGNORE
 ---YAML---
 
 ### Tasks

@@ -11,28 +11,6 @@ proxies:
 # only the identified repositories are proxied through this connection
 - { id: moxieProxy, active: false,	protocol: http, host: moxie.somewhere.com, port: 8081, username: proxyuser, password: somepassword, repositories: "central, mavencentral, restlet, codehaus" }
 
-# Setting to control simultaneous artifact retrieval
-#
-# This uses a fixed thread pool of the number of procesors and an executor service.
-# POMs are not downloaded in parallel because they are parsed and recursively
-# traversed for declared dependencies.  This setting affects retrieval of jars
-# and other binary artifacts.
-parallelDownloads: true
-
-# Should the build immediately fail if an artifact can not be immediately
-# resolved from the remote repositories or the local cache?
-failFastOnArtifactResolution: true
-
-# Default snapshot revision purge policy
-#
-# Default minimum count of snapshot revisions to keep
-# minimum acceptable value is 1
-revisionRetentionCount: 1
-
-# if the count of snapshot revisions exceeds the specified retention count,
-# then delete all snapshot revisions older than this count of days
-revisionPurgeAfterDays: 0
-
 # Registered Maven 2 repositories.  This section is used to define id-url
 # pairs so that project descriptors can specify an repository id, rather than
 # a complete url.  A repository definition can override the default snapshot

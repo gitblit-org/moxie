@@ -60,6 +60,12 @@ apply: eclipse, pom, cache
 
 <hr/>
 
+dependencyDirectory
+
+repositories
+
+parent
+
 ### Source Directories
 
 <div class="row">
@@ -106,13 +112,14 @@ properties: {
 
 <div class="row">
 <div class="span8">
-Example
+Managed dependencies are used to specify versions of dependencies if those versions are not specified in the project's build.moxie.
 </div>
 
 <div class="span4">
 ---YAML---
 dependencyManagement:
 - 'org.apache.ant:ant:1.8.3'
+- 'junit:junit:4.11'
 ---YAML---
 
 </div>
@@ -140,8 +147,54 @@ dependencies:
 </div>
 </div>
 
-dependencyDirectory
+## Advanced Settings
 
-repositories
+### Dependency Aliases
 
-parent
+Dependency aliases allow you to specify shorthand notation for a dependency which will be resolved at runtime to the full coordinates.
+
+---YAML---
+dependencyAliases: {
+	junit: 'junit:junit'
+	testng: 'org.testng:testng'
+	cobertura: 'net.sourceforge.cobertura:cobertura'
+	emma: 'emma:emma'
+	jacoco: 'org.jacoco:org.jacoco.ant'
+	'mx:jgit' : 'org.eclipse.jgit:org.eclipse.jgit'
+	'mx:markdownpapers' : 'org.tautua.markdownpapers:markdownpapers-core'
+	'mx:rhino' : 'org.mozilla:rhino'
+}
+---YAML---
+
+### Dependency Overrides
+
+Dependency overrides are used to redefine the dependencies of released/published POMs from other projects.  The most common use case would be to add undeclared dependencies for old POMs or to purposefully exclude dependencies from specific scopes.
+
+Moxie uses this feature to simplify specification of "build" scope dependencies so that enabling Cobertura, Emma, or TestNG is as easy as adding a single build dependency.
+
+You must declare the full coordinates of the dependency to tweak.  Property substitution is prohibited.  You may specify the scopes for which your override applies.  If no scope is specified ALL scopes are assumed.
+
+<p class="text-error">Be very careful when using dependency overrides!</p>
+
+---YAML---
+dependencyOverrides: {
+
+cobertura: redefine ant as optional for build scope
+	'net.sourceforge.cobertura:cobertura:1.9.4.1' : {
+		scope: build
+		dependencies:
+		- compile 'oro:oro:2.0.8'
+		- compile 'asm:asm:3.0'
+		- compile 'asm:asm-tree:3.0'
+		- compile 'log4j:log4j:1.2.9'
+		- compile 'org.apache.ant:ant:1.7.0' optional
+	}
+
+emma: add emma_ant dependency for build scope
+    'emma:emma:2.1.5320' : {
+		scope: build
+		dependencies:
+		- compile 'emma:emma_ant:2.1.5320'
+	}
+}
+---YAML---
