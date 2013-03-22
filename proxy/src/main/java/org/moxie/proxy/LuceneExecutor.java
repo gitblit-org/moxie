@@ -62,6 +62,7 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.moxie.IMavenCache;
+import org.moxie.MoxieCache;
 import org.moxie.Pom;
 import org.moxie.PomReader;
 import org.moxie.RemoteRepository;
@@ -315,12 +316,13 @@ public class LuceneExecutor implements Runnable {
 			return result;
 		}
 		try {
-			IMavenCache cache = config.getMavenCache(repository);
-			Collection<File> files = cache.getFiles("." + org.moxie.Constants.POM);
+			MoxieCache moxieCache = config.getMoxieCache();
+			IMavenCache repositoryCache = config.getMavenCache(repository);
+			Collection<File> files = repositoryCache.getFiles("." + org.moxie.Constants.POM);
 			IndexWriter writer = getIndexWriter(repository);
 
 			for (File pomFile : files) {
-				Pom pom = PomReader.readPom(cache, pomFile);
+				Pom pom = PomReader.readPom(moxieCache, pomFile);
 				String date = DateTools.timeToString(pomFile.lastModified(), Resolution.MINUTE);
 
 				Document doc = new Document();

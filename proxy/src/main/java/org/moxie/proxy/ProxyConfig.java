@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import org.moxie.Dependency;
 import org.moxie.IMavenCache;
 import org.moxie.MavenCache;
+import org.moxie.MoxieCache;
 import org.moxie.Proxy;
 import org.moxie.RemoteRepository;
 import org.moxie.maxml.Maxml;
@@ -70,6 +71,8 @@ public class ProxyConfig {
 	private List<Proxy> proxies;
 	private List<Redirect> redirects;
 	private List<AllowDeny> allowDeny;	
+	
+	private MoxieCache moxieCache;
 
 	public ProxyConfig() {
 		shutdownPort = 8079;
@@ -375,6 +378,13 @@ public class ProxyConfig {
 			}
 		}
 		return null;
+	}
+	
+	public MoxieCache getMoxieCache() {
+		if (moxieCache == null) {
+			moxieCache = new MoxieCache(moxieRoot);
+		}
+		return moxieCache;
 	}
 	
 	public IMavenCache getMavenCache(File file) {
