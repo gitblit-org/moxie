@@ -32,7 +32,7 @@ public class DocPage extends DocElement implements Serializable {
 	public DocPage nextPage;
 
 	public boolean showToc;
-	public boolean showHeaderLinks;
+	public boolean showHeaderLinks = true;
 	public boolean isFluidLayout;
 	
 	public boolean showPager;
