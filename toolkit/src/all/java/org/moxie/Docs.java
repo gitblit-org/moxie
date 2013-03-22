@@ -330,7 +330,11 @@ public class Docs {
 										if (nomarkdown.pre) {
 											code.append("<pre>");	
 										}
-										code.append(StringUtils.escapeForHtml(hunk, false));
+										String val = StringUtils.escapeForHtml(hunk, false);
+										if (!nomarkdown.pre) {
+											val = StringUtils.breakLinesForHtml(val);
+										}
+										code.append(val);
 										if (nomarkdown.pre) {
 											code.append("</pre>");	
 										}

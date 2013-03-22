@@ -324,7 +324,8 @@ public class MxDoc extends MxTask {
 		
 		// block directives
 		createNomarkdown().configure("---NOMARKDOWN---", false, false);
-		createNomarkdown().configure("---CODE---", true, true);
+		createNomarkdown().configure("---ESCAPE---", true, false);
+		createNomarkdown().configure("---FIXED---", true, true);
 		
 		// wikitext transform directives
 		createWikiText().configureSyntax(Syntax.TWIKI);
@@ -334,13 +335,14 @@ public class MxDoc extends MxTask {
 		createWikiText().configureSyntax(Syntax.CONFLUENCE);
 		
 		// language syntax highlighting directives
-		createNomarkdown().configureLanguage("---JAVA---", "java");
-		createNomarkdown().configureLanguage("---JSON---", "json");
-		createNomarkdown().configureLanguage("---CSS---", "css");
-		createNomarkdown().configureLanguage("---XML---", "xml");
-		createNomarkdown().configureLanguage("---YAML---", "yaml");
-		createNomarkdown().configureLanguage("---SQL---", "sql");
-		createNomarkdown().configureLanguage("---WIKI---", "wiki");
+		createNomarkdown().configureLanguage("---CODE---", null);
+		createNomarkdown().configureLanguage("---CSS---", "lang-css");
+		createNomarkdown().configureLanguage("---JAVA---", "lang-java");
+		createNomarkdown().configureLanguage("---JSON---", "lang-json");
+		createNomarkdown().configureLanguage("---SQL---", "lang-sql");
+		createNomarkdown().configureLanguage("---WIKI---", "lang-wiki");
+		createNomarkdown().configureLanguage("---XML---", "lang-xml");
+		createNomarkdown().configureLanguage("---YAML---", "lang-yaml");
 
 		Docs.execute(build, doc, isVerbose());
 		
