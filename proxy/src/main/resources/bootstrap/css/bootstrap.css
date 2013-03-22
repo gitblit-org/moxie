@@ -13,4 +13,4 @@
  * Licensed under the Apache License v2.0
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- */.navbar .nav{margin:0}.navbar .nav>li>a{padding-left:10px;padding-right:10px;font-size:15px;text-shadow:0 1px 0 #000}.navbar .brand{padding:17px 14px}h3 small{font-size:17px}body{padding-top:75px}footer{margin-top:25px;padding:15px 0 16px;border-top:1px solid #e5e5e5}
+ */.navbar .nav{margin:0}.navbar .nav li>a{padding-left:10px;padding-right:10px;font-size:15px;text-shadow:0 1px 0 #000}.navbar .nav li>a:hover{text-shadow:0 0 1em white}.navbar .nav .active>a,.navbar .nav .active>a:hover,.navbar .nav .active>a:focus{box-shadow:none;text-decoration:underline}.navbar .nav ul.dropdown-menu>li>a{text-shadow:none}.navbar .brand{padding:17px 14px}h3 small{font-size:17px}body{padding-top:75px}footer{margin-top:25px;padding:15px 0 16px;border-top:1px solid #e5e5e5}
