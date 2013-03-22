@@ -396,6 +396,8 @@ public class LuceneExecutor implements Runnable {
 
 			writer.commit();
 			resetIndexSearcher(repository);
+			
+			config.resetRepositorySize(repository);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Exception while indexing " + pomFile, e);
 		}

@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -67,6 +68,7 @@ public class ProxyConfig {
 	private List<String> localRepositories;
 	private List<RemoteRepository> remoteRepositories;
 	private Map<String, RemoteRepository> remoteRepositoryLookup;
+	private Map<String, String> repositorySizeCache;
 
 	private List<Proxy> proxies;
 	private List<Redirect> redirects;
@@ -87,6 +89,7 @@ public class ProxyConfig {
 		localRepositories = Collections.emptyList();
 		remoteRepositories = Collections.emptyList();
 		remoteRepositoryLookup = new HashMap<String, RemoteRepository>();
+		repositorySizeCache = new ConcurrentHashMap<String, String>();
 		atomCount = 50;
 		searchCount = 50;
 		keystorePassword = "";
@@ -441,6 +444,21 @@ public class ProxyConfig {
 
 	public Collection<RemoteRepository> getRemoteRepositories() {
 		return remoteRepositories;
+	}
+	
+	public String getRepositorySize(String repository) {
+		if (!repositorySizeCache.containsKey(repository)) {
+			IMavenCache cache = getMavenCache(repository);
+			File folder = cache.getRootFolder();
+			long size = FileUtils.folderSize(folder);
+			String value = FileUtils.formatSize(size);
+			repositorySizeCache.put(repository, value);
+		}
+		return repositorySizeCache.get(repository);
+	}
+	
+	public void resetRepositorySize(String repository) {
+		repositorySizeCache.remove(repository);
 	}
 
 	public List<Redirect> getRedirects() {

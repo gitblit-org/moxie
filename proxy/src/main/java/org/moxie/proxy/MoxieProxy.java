@@ -260,6 +260,10 @@ public class MoxieProxy extends Application {
 		return list.size();
 	}
 	
+	public String getRepositorySize(String repository) {
+		return config.getRepositorySize(repository);
+	}
+	
 	List<String> getAccessibleRepositories() {
 		// TODO filter repositories by login
 		List<String> list = new ArrayList<String>();

@@ -45,23 +45,32 @@ public class RootResource extends BaseResource {
 		// local repositories
 		if (getProxyConfig().getLocalRepositories().size() > 0) {
 			sb.append(StringUtils.toXML("h3", getTranslation().getString("mp.localRepositories")));
-			sb.append("<ul class=\"unstyled\">\n");
-			String pattern = "<li>{0} ({1})</li>\n";
+			sb.append("<dl>\n");
+			String pattern = "<dt>{0} ({1})</dt><dd>{2} {3}</dd>\n";
 			for (String repository : getProxyConfig().getLocalRepositories()) {				
-				sb.append(MessageFormat.format(pattern, repository, getApplication().getArtifactCount(repository)));
+				sb.append(MessageFormat.format(pattern, 
+						repository, 
+						getApplication().getRepositorySize(repository),
+						getApplication().getArtifactCount(repository),
+						getTranslation().getString("mp.artifacts")));
 			}
-			sb.append("</ul>\n");
+			sb.append("</dl>\n");
 		}
 		
 		// proxied/remote repositories
 		if (getProxyConfig().getRemoteRepositories().size() > 0) {
 			sb.append(StringUtils.toXML("h3", getTranslation().getString("mp.remoteRepositories")));
-			sb.append("<ul class=\"unstyled\">\n");
-			String pattern = "<li>{0} ({1}) => {2}</li>\n";
+			sb.append("<dl>\n");
+			String pattern = "<dt>{0} ({1})</dt><dd>{2} {3} <em>{4}</em></dd>\n";
 			for (RemoteRepository repository : getProxyConfig().getRemoteRepositories()) {
-				sb.append(MessageFormat.format(pattern, repository.id, getApplication().getArtifactCount(repository.id), repository.url));
+				sb.append(MessageFormat.format(pattern, 
+						repository.id, 
+						getApplication().getRepositorySize(repository.id),
+						getApplication().getArtifactCount(repository.id),
+						getTranslation().getString("mp.artifactsFrom"),
+						repository.url));
 			}
-			sb.append("</ul>\n");
+			sb.append("</dl>\n");
 		}
 		
 		// redirect rules
