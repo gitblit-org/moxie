@@ -29,10 +29,6 @@ public class Toolkit {
 
     public static final String APPLY_POM = "pom";
 	
-	public static final String APPLY_COLOR = "color";
-	
-	public static final String APPLY_DEBUG = "debug";
-	
 	public static final String APPLY_CACHE = "cache";
 	
 	public static final String DEFAULT_EXCLUDES = "**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
