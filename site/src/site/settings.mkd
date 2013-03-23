@@ -3,18 +3,27 @@
 The `settings.moxie` file is used to do register Maven 2-compatible artifact repositories that should be available to all builds and to define proxy servers that should be used when communicating with the artifact repositories.
 
 ### Proxies
-Moxie automatically uses all proxy definitions from your local Maven settings (*~/.m2/settings.xml*) and also from your local Moxie settings (*~/.moxie/settings.moxie*).
+Moxie automatically uses all proxy definitions <u>from your <b>local Maven settings</b></u> (*~/.m2/settings.xml*).  Moxie also supports proxy definitions in it's own <b>local Moxie settings</b> (*~/.moxie/settings.moxie*).
 
-Unlike Maven, which assumes you will proxy everything and requires you to manually exclude hostnames (i.e. opt-out), Moxie allows you to specify what repositories will be proxied by a proxy definition (i.e. opt-in). If this is undesirable, Moxie also supports Maven-style opt-out proxy definitions too. 
+Unlike Maven, which assumes you will proxy everything and requires you to manually exclude hostnames (i.e. *opt-out*), Moxie supports *opt-in* proxy definitions which allows you to specify what repositories will be proxied by a proxy definition. If this is undesirable, Moxie also supports Maven-style *opt-out* proxy definitions too. 
 
-If you want to define proxy settings, copy and edit the following example opt-in proxy definition to a new text file: *~/.moxie/settings.moxie*
+If you want to define proxy settings, copy and edit one of the following example proxy definitions to a new text file: *~/.moxie/settings.moxie*
 
 #### Example standard network proxy configuration
 
 All repositories are proxied through this connection.
 
 ---YAML---
-- { id: 'myproxy', active: false, protocol: 'http', host: 'proxy.somewhere.com', port:8080, username: 'proxyuser', password: 'somepassword' }
+proxies:
+- {
+    id: 'myproxy'
+    active: true
+    protocol: 'http'
+    host: 'proxy.somewhere.com'
+    port:8080
+    username: 'proxyuser'
+    password: 'somepassword'
+  }
 ---YAML---
 
 #### Example Moxie Proxy configuration
@@ -22,7 +31,17 @@ All repositories are proxied through this connection.
 Only the identified repositories are proxied through this connection.
 
 ---YAML---
-- { id: 'moxieProxy', active: false,	protocol: 'http', host: 'moxie.somewhere.com', port: 8081, username: 'proxyuser', password: 'somepassword', repositories: "central, mavencentral, restlet, codehaus" }
+proxies:
+- {
+    id: 'moxieProxy'
+    active: true
+    protocol: 'http'
+    host: 'moxie.somewhere.com'
+    port: 8081
+    username: 'proxyuser'
+    password: 'somepassword'
+    repositories: "central, mavencentral, restlet, codehaus, sonatype-oss"
+  }
 ---YAML---
 
 ### Registered Repositories
@@ -35,4 +54,10 @@ registeredRepositories:
 - { id: mavencentral, url: 'http://repo1.maven.org/maven2' }
 - { id: restlet, url: 'http://maven.restlet.org', revisionRetentionCount: 1, revisionPurgeAfterDays: 0 }
 - { id: codehaus, url: 'http://repository.codehaus.org' }
+- {
+    id: 'sonatype-oss'
+    url: 'https://oss.sonatype.org/content/groups/public'
+    revisionRetentionCount: 1
+    revisionPurgeAfterDays: 0
+  }
 ---YAML---

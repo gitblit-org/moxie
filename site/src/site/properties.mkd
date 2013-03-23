@@ -2,7 +2,16 @@
 
 These properties and references are available to Ant after executing the `mx:init` task.
 
-### Metadata Keys
+### Project Artifact Properties
+<table class="table table-striped table-bordered table-condensed">
+<tbody>
+<tr><th>groupId</th>       <td>${project.groupId}</td></tr>
+<tr><th>artifactId</th>    <td>${project.artifactId}</td></tr>
+<tr><th>version</th>       <td>${project.version}</td></tr>
+</tbody>
+</table>
+
+### Project Metadata Properties
 <table class="table table-striped table-bordered table-condensed">
 <tbody>
 <tr><th>name</th>            <td>${project.name}</td></tr>
@@ -18,22 +27,13 @@ These properties and references are available to Ant after executing the `mx:ini
 <tr><th>ciUrl</th>           <td>${project.ciUrl}</td></tr>
 <tr><th>url</th>             <td>${project.url}</td></tr>
 <tr><th>inceptionYear</th>   <td>${project.inceptionYear}</td></tr>
+<tr><th>releaseVersion</th>  <td>${project.releaseVersion}</td></tr>
+<tr><th>releaseDate</th>     <td>${project.releaseDate}</td></tr>
+<tr><th>mainclass</th>       <td>${project.mainclass}</td></tr>
 </tbody>
 </table>
 
-### Artifact Keys
-<table class="table table-striped table-bordered table-condensed">
-<tbody>
-<tr><th>groupId</th>       <td>${project.groupId}</td></tr>
-<tr><th>artifactId</th>    <td>${project.artifactId}</td></tr>
-<tr><th>version</th>       <td>${project.version}</td></tr>
-<tr><th>releaseVersion</th><td>${project.releaseVersion}</td></tr>
-<tr><th>releaseDate</th>   <td>${project.releaseDate}</td></tr>
-<tr><th>mainclass</th>     <td>${project.mainclass}</td></tr>
-</tbody>
-</table>
-
-### Transient Properties
+### Build Transient Properties
 <table class="table table-striped table-bordered table-condensed">
 <tbody>
 <tr><th>buildDate</th>     <td>${project.buildDate}</td></tr>
@@ -41,7 +41,7 @@ These properties and references are available to Ant after executing the `mx:ini
 </tbody>
 </table>
 
-### Directory Properties
+### Build Directory Properties
 <table class="table table-striped table-bordered table-condensed">
 <tbody>
 <tr><th>outputDirectory</th>         <td>${project.outputDirectory}</td></tr>
@@ -56,7 +56,7 @@ These properties and references are available to Ant after executing the `mx:ini
 </table>
 
 
-### Path Properties
+### Build Path Properties
 <table class="table table-striped table-bordered table-condensed">
 <tbody>
 <tr><th>compileSourcePath</th>        <td>${project.compileSourcePath}</td></tr>
@@ -68,9 +68,9 @@ These properties and references are available to Ant after executing the `mx:ini
 </tbody>
 </table>
 
-### Path References
+### Build Path References
 
-<p class="text-warning">Not available in all Ant versions</p>
+<p class="text-warning">May only work properly if Moxie is directly included on the Ant classpath.</p>
 
 <table class="table table-striped table-bordered table-condensed">
 <tbody>

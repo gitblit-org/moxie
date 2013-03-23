@@ -2,7 +2,18 @@
 
 The Moxie project descriptor defines the structure, metadata, and dependencies of your project.  It is the heart of Moxie and is used by all Moxie Extension tasks.
 
-### Metadata Keys
+### Project Artifact Data
+---X:MEDIAWIKI---
+{| class="table table-striped table-bordered table-condensed"
+| groupId
+|-
+| artifactId
+|-
+| version
+|}
+---X:MEDIAWIKI---
+
+### Project Metadata
 ---X:MEDIAWIKI---
 {| class="table table-striped table-bordered table-condensed"
 | name
@@ -37,23 +48,15 @@ The Moxie project descriptor defines the structure, metadata, and dependencies o
 |-
 | inceptionYear
 | year the project was founded
+|-
+| releaseVersion
+| current stable release
+|-
+| releaseDate
+| current stable release date
 |}
 ---X:MEDIAWIKI---
 
-### Artifact Keys
----X:MEDIAWIKI---
-{| class="table table-striped table-bordered table-condensed"
-| groupId
-|-
-| artifactId
-|-
-| version
-|-
-| releaseVersion
-|-
-| releaseDate
-|}
----X:MEDIAWIKI---
 
 <hr/>
 
