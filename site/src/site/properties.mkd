@@ -1,5 +1,7 @@
 ## Ant Properties &amp; References
 
+These properties and references are available to Ant after executing the `mx:init` task.
+
 ### Metadata Keys
 <table class="table table-striped table-bordered table-condensed">
 <tbody>
@@ -11,6 +13,8 @@
 <tr><th>forumUrl</th>        <td>${project.forumUrl}</td></tr>
 <tr><th>blogUrl</th>         <td>${project.blogUrl}</td></tr>
 <tr><th>socialNetworkUrl</th><td>${project.socialNetworkUrl}</td></tr>
+<tr><th>mavenUrl</th>        <td>${project.mavenUrl}</td></tr>
+<tr><th>scmUrl</th>          <td>${project.scmUrl}</td></tr>
 <tr><th>ciUrl</th>           <td>${project.ciUrl}</td></tr>
 <tr><th>url</th>             <td>${project.url}</td></tr>
 <tr><th>inceptionYear</th>   <td>${project.inceptionYear}</td></tr>
@@ -25,6 +29,7 @@
 <tr><th>version</th>       <td>${project.version}</td></tr>
 <tr><th>releaseVersion</th><td>${project.releaseVersion}</td></tr>
 <tr><th>releaseDate</th>   <td>${project.releaseDate}</td></tr>
+<tr><th>mainclass</th>     <td>${project.mainclass}</td></tr>
 </tbody>
 </table>
 
@@ -33,5 +38,47 @@
 <tbody>
 <tr><th>buildDate</th>     <td>${project.buildDate}</td></tr>
 <tr><th>buildTimestamp</th><td>${project.buildTimestamp}</td></tr>
+</tbody>
+</table>
+
+### Directory Properties
+<table class="table table-striped table-bordered table-condensed">
+<tbody>
+<tr><th>outputDirectory</th>         <td>${project.outputDirectory}</td></tr>
+<tr><th>compileOutputDirectory</th>  <td>${project.compileOutputDirectory}</td></tr>
+<tr><th>testOutputDirectory</th>     <td>${project.testOutputDirectory}</td></tr>
+<tr><th>targetDirectory</th>         <td>${project.targetDirectory}</td></tr>
+<tr><th>reportTargetDirectory</th>   <td>${project.reportTargetDirectory}</td></tr>
+<tr><th>javadocTargetDirectory</th>  <td>${project.javadocTargetDirectory}</td></tr>
+<tr><th>siteSourceDirectory</th>     <td>${project.siteSourceDirectory}</td></tr>
+<tr><th>siteTargetDirectory</th>     <td>${project.siteTargetDirectory}</td></tr>
+</tbody>
+</table>
+
+
+### Path Properties
+<table class="table table-striped table-bordered table-condensed">
+<tbody>
+<tr><th>compileSourcePath</th>        <td>${project.compileSourcePath}</td></tr>
+<tr><th>testSourcePath</th>           <td>${project.testSourcePath}</td></tr>
+<tr><th>compileClasspath</th>         <td>${project.compileClasspath}</td></tr>
+<tr><th>runtimeClasspath</th>         <td>${project.runtimeClasspath}</td></tr>
+<tr><th>testClasspath</th>            <td>${project.testClasspath}</td></tr>
+<tr><th>buildClasspath</th>           <td>${project.buildClasspath}</td></tr>
+</tbody>
+</table>
+
+### Path References
+
+<p class="text-warning">Not available in all Ant versions</p>
+
+<table class="table table-striped table-bordered table-condensed">
+<tbody>
+<tr><th>compileSourcePath</th>        <td>${reference.compileSourcePath}</td></tr>
+<tr><th>testSourcePath</th>           <td>${reference.testSourcePath}</td></tr>
+<tr><th>compileClasspath</th>         <td>${reference.compileClasspath}</td></tr>
+<tr><th>runtimeClasspath</th>         <td>${reference.runtimeClasspath}</td></tr>
+<tr><th>testClasspath</th>            <td>${reference.testClasspath}</td></tr>
+<tr><th>buildClasspath</th>           <td>${reference.buildClasspath}</td></tr>
 </tbody>
 </table>

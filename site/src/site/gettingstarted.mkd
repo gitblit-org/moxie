@@ -63,7 +63,7 @@ dependencies:
 ## Ant build.xml
 
 <div class="row">
-<div class="span8">
+<div class="span9">
 Moxie turbo-charges Ant and allows you to build your artifacts with easier to read build scripts.
 This example script uses Moxie Extension tasks with automatic property defaults based on the <code>build.moxie</code> descriptor.
 <p />
@@ -77,7 +77,7 @@ This example script uses Moxie Extension tasks with automatic property defaults 
     </taskdef>
 
     <target name="main">
-        <!-- Setup Ant build properties and resolve & retrieve Maven dependencies -->
+        <!-- Setup Ant build properties, resolve, & retrieve dependencies -->
         <mx:init />
         <!-- Compile your project -->
         <mx:javac />
@@ -93,5 +93,5 @@ This example script uses Moxie Extension tasks with automatic property defaults 
 ---XML---
 
 </div>
-<div class="span4">
+<div class="span3">
 </div></div>

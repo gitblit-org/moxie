@@ -3,86 +3,177 @@
 The Moxie project descriptor defines the structure, metadata, and dependencies of your project.  It is the heart of Moxie and is used by all Moxie Extension tasks.
 
 ### Metadata Keys
-<table class="table table-striped table-bordered table-condensed">
-<tbody>
-<tr><th>name</th>            <td></td></tr>
-<tr><th>description</th>     <td></td></tr>
-<tr><th>organization</th>    <td></td></tr>
-<tr><th>organizationUrl</th> <td></td></tr>
-<tr><th>issuesUrl</th>       <td></td></tr>
-<tr><th>forumUrl</th>        <td></td></tr>
-<tr><th>blogUrl</th>         <td></td></tr>
-<tr><th>socialNetworkUrl</th><td></td></tr>
-<tr><th>ciUrl</th>           <td></td></tr>
-<tr><th>url</th>             <td></td></tr>
-<tr><th>inceptionYear</th>   <td></td></tr>
-</tbody>
-</table>
+---X:MEDIAWIKI---
+{| class="table table-striped table-bordered table-condensed"
+| name
+| Name of the project
+|-
+| description
+| description of the project
+|-
+| organization
+| organization sponsoring development of the project
+|-
+| organizationUrl
+| url of the organization sponsoring the project
+|-
+| issuesUrl
+| url of the issue tracker for the project
+|-
+| forumUrl
+| url of the forum or discussion group for the project
+|-
+| blogUrl
+| url of the blog for the project
+|-
+| socialNetworkUrl
+| url of the social network profile for the project
+|-
+| ciUrl
+| url of the continuous integration server for the project
+|-
+| url
+| url of the project web site
+|-
+| inceptionYear
+| year the project was founded
+|}
+---X:MEDIAWIKI---
 
 ### Artifact Keys
-<table class="table table-striped table-bordered table-condensed">
-<tbody>
-<tr><th>groupId</th>       <td></td></tr>
-<tr><th>artifactId</th>    <td></td></tr>
-<tr><th>version</th>       <td></td></tr>
-<tr><th>releaseVersion</th><td></td></tr>
-<tr><th>releaseDate</th>   <td></td></tr>
-</tbody>
-</table>
+---X:MEDIAWIKI---
+{| class="table table-striped table-bordered table-condensed"
+| groupId
+|-
+| artifactId
+|-
+| version
+|-
+| releaseVersion
+|-
+| releaseDate
+|}
+---X:MEDIAWIKI---
 
 <hr/>
 
 ### Apply
 <div class="row">
-<div class="span8">
-special behaviors for your build script
+<div class="span7">
+Apply is used to define extra project features.
 <dl>
- <dt>eclipse</dt>
- <dd>creates Eclipse .project and .classpath files</dd>
  <dt>pom</dt>
- <dd>creates and maintains a Maven pom.xml file</dd>
- <dt>cache</dt>
- <dd>build and caches a transitive dependency solution for re-use to accelerate builds (does not apply to SNAPSHOTs)</dd>
- <dt>debug</dt>
- <dd>enable Moxie's debug logging</dd>
- <dt>color</dt>
- <dd>console logging will use ansi color escape sequences</dd>
+ <dd>creates a Maven pom.xml file</dd>
+ <dt>eclipse</dt>
+ <dd>creates and maintains Eclipse .project and .classpath files</dd>
+ <dt>intellij</dt>
+ <dd>creates and maintains IntelliJ IDEA .iml files</dd>
 </dl>
 </div>
 
-<div class="span4">
+<div class="span5">
 ---YAML---
-apply: eclipse, pom, cache
+apply: eclipse, intellij, pom
 ---YAML---
-
 </div>
 </div>
 
 <hr/>
 
-dependencyDirectory
+### Parent
 
-repositories
+<div class="row">
+<div class="span7">
+In a mutl-module project setup, a module may inherit settings from a parent build.moxie descriptor by specifying it's relative location.
+</div>
 
-parent
+<div class="span5">
+---YAML---
+parent: ../build.moxie 
+---YAML---
+</div>
+</div>
+
+<hr/>
+
+### Registered Repositories
+
+This section is used to define id-url pairs so that project descriptors can specify an repository id, rather than a complete url.  A repository definition can also specify a custom snapshot revision purge policy.
+
+---YAML---
+registeredRepositories:
+- { id: central, url: 'http://repo1.maven.org/maven2' }
+- { id: mavencentral, url: 'http://repo1.maven.org/maven2' }
+- { id: restlet, url: 'http://maven.restlet.org', revisionRetentionCount: 1, revisionPurgeAfterDays: 0 }
+- { id: codehaus, url: 'http://repository.codehaus.org' }
+---YAML---
+
+<hr/>
+
+### Repositories
+
+<div class="row">
+<div class="span7">
+The repositories settings defines the list of registeredRepositories from whcih to source artifacts.  By default, only MavenCentral is specified, however Moxie ships with several other registeredRepositories including sonatype-oss, codehaus, & restlet.
+</div>
+
+<div class="span5">
+---YAML---
+repositories: 'central'
+---YAML---
+</div>
+</div>
+
+<hr/>
 
 ### Source Directories
 
 <div class="row">
-<div class="span8">
-Example
+<div class="span7">
+Source directories define where to find your source code.  Each source folder must specify a scope.
+<p> </p>
+Valid scopes are:
+<dl>
+	<dt>compile</dt><dd></dd>
+	<dt>test</dt><dd></dd>
+	<dt>site</dt><dd></dd>
+</dl>
 </div>
 
-<div class="span4">
+<div class="span5">
 ---YAML---
 sourceDirectories: 
 - compile 'src/main/core'
 - compile 'src/main/pro'
 - compile 'src/main/all'
-- compile 'src/main/resources'
 - { scope: 'test', dir: 'src/test/java' }
 ---YAML---
+</div>
+</div>
 
+<hr/>
+
+### Resource Directories
+
+<div class="row">
+<div class="span7">
+Resource directories define where to find your resource files (images, css, etc).  Each resource directory must specify a scope.
+<br/>
+Valid scopes are:
+<dl>
+	<dt>compile</dt><dd></dd>
+	<dt>test</dt><dd></dd>
+	<dt>site</dt><dd></dd>
+</dl>
+</div>
+
+<div class="span5">
+---YAML---
+resourceDirectories: 
+- compile 'src/main/resources'
+- test 'src/test/resources'
+- site 'src/site/resources'
+---YAML---
 </div>
 </div>
 
@@ -91,18 +182,16 @@ sourceDirectories:
 ### Properties
 
 <div class="row">
-<div class="span8">
-used in dependency management and dependencies
-exported as ant properties
+<div class="span7">
+Properties can bs used in the dependency management and dependencies section.  They are also exported to Ant as Ant properties.
 </div>
 
-<div class="span4">
+<div class="span5">
 ---YAML---
 properties: {
   jgit.version : 1.3.0.201202151440-r
 }
 ---YAML---
-
 </div>
 </div>
 
@@ -111,17 +200,16 @@ properties: {
 ### Dependency Management
 
 <div class="row">
-<div class="span8">
-Managed dependencies are used to specify versions of dependencies if those versions are not specified in the project's build.moxie.
+<div class="span7">
+Managed dependencies are used to specify versions of dependencies if those versions are not specified in the `dependencies` list.
 </div>
 
-<div class="span4">
+<div class="span5">
 ---YAML---
 dependencyManagement:
 - 'org.apache.ant:ant:1.8.3'
 - 'junit:junit:4.11'
 ---YAML---
-
 </div>
 </div>
 
@@ -130,24 +218,87 @@ dependencyManagement:
 ### Dependencies
 
 <div class="row">
-<div class="span8">
-Example
+<div class="span7">
+Dependencies can be defined using Gradle-style coordinates.
 
-scopes, @ext, excludes
+    groupId:artifactId:version
+
+Each dependency must also have an assigned scope.
+<br/>
+Valid scopes are:
+
+<dl>
+	<dt>compile</dt><dd></dd>
+	<dt>provided</dt><dd></dd>
+	<dt>runtime</dt><dd></dd>
+	<dt>test</dt><dd></dd>
+	<dt>system</dt><dd></dd>
+	<dt>build</dt><dd></dd>
+</dl>
 </div>
 
-<div class="span4">
+<div class="span5">
 ---YAML---
 dependencies:
 - compile 'org.apache.ant:ant'
-- compile 'org.apache.commons-lang3:3.1'
 - test 'junit'
 ---YAML---
+</div>
+</div>
 
+#### Exclusions
+
+Sometimes it is desirable to specify exclusions from a dependency's graph.  There are two ways to exclude dependencies.
+
+<div class="row">
+<div class="span7">
+##### @ext
+
+The `@ext` syntax will exclude all dependencies of a dependencies.  To use this syntax you must specify the extension of the artifact to retrieve.
+</div>
+
+<div class="span5">
+---YAML---
+- compile 'org.apache.ant:ant.1.8.4' @jar
+---YAML---
 </div>
 </div>
+
+<div class="row">
+<div class="span7">
+##### Discrete Exclusions
+
+You may also specify exclusions by <code>groupId</code> and <code>groupId:artifactId</code>.
+</div>
+
+<div class="span5">
+---YAML---
+- compile 'org.apache.ant:ant.1.8.4' !commons-logging
+---YAML---
+</div>
+</div>
+
+<hr/>
+
+### dependencyDirectory
+
+<div class="row">
+<div class="span7">
+You may optionally specify a project-relative directory to copy dependencies to.  If you decide to do this AND you are generating Eclipse or IntelliJ IDEA project files, your project files will reference these relatively located jar files.
+</div>
+
+<div class="span5">
+---YAML---
+dependencyDirectory: ext
+---YAML---
+</div>
+</div>
+
+<hr/>
 
 ## Advanced Settings
+
+These settings can be used to manipulate released artifact POMs and/or to enable clever dependency tricks.  Both of these features are used internally by Moxie.
 
 ### Dependency Aliases
 
@@ -179,22 +330,22 @@ You must declare the full coordinates of the dependency to tweak.  Property subs
 ---YAML---
 dependencyOverrides: {
 
-cobertura: redefine ant as optional for build scope
-	'net.sourceforge.cobertura:cobertura:1.9.4.1' : {
-		scope: build
-		dependencies:
-		- compile 'oro:oro:2.0.8'
-		- compile 'asm:asm:3.0'
-		- compile 'asm:asm-tree:3.0'
-		- compile 'log4j:log4j:1.2.9'
-		- compile 'org.apache.ant:ant:1.7.0' optional
-	}
+    # cobertura: redefine ant as optional for build scope
+    'net.sourceforge.cobertura:cobertura:1.9.4.1' : {
+        scope: build
+        dependencies:
+        - compile 'oro:oro:2.0.8'
+        - compile 'asm:asm:3.0'
+        - compile 'asm:asm-tree:3.0'
+        - compile 'log4j:log4j:1.2.9'
+        - compile 'org.apache.ant:ant:1.7.0' optional
+    }
 
-emma: add emma_ant dependency for build scope
+    # emma: add emma_ant dependency for build scope
     'emma:emma:2.1.5320' : {
-		scope: build
-		dependencies:
-		- compile 'emma:emma_ant:2.1.5320'
-	}
+        scope: build
+        dependencies:
+        - compile 'emma:emma_ant:2.1.5320'
+    }
 }
 ---YAML---

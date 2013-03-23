@@ -4,16 +4,28 @@ This file defines the default values for all Moxie projects.  It is usually load
 
 ### Repositories
 
+<div class="row">
+<div class="span7">
 The repositories settings defines the list of registeredRepositories from whcih to source artifacts.  By default, only MavenCentral is specified, however Moxie ships with several other registeredRepositories including sonatype-oss, codehaus, & restlet.
+</div>
 
+<div class="span5">
 ---YAML---
 repositories: 'central'
 ---YAML---
+</div>
+</div>
+
+<hr />
 
 ### Source Directories
 
+<div class="row">
+<div class="span7">
 Source directories are verified during initialization.  Defined directories that do not exist are excluded.  Defined order is preserved. Directories are excluded if they are the parent of an already included directory for the specified scope.
+</div>
 
+<div class="span5">
 ---YAML---
 sourceDirectories:
 - compile 'src/main/java'
@@ -26,31 +38,64 @@ sourceDirectories:
 - test 'test'
 - site 'src/site'
 ---YAML---
+</div>
+</div>
+
+<hr />
 
 ### Resource Directories
 
+<div class="row">
+<div class="span7">
 Resource directories are verified during initialization. Defined directories that do not exist are excluded.  Defined order is preserved.
+</div>
+
+<div class="span5">
 ---YAML---
 resourceDirectories:
 - compile 'src/main/resources'
 - test 'src/test/resources'
 ---YAML---
+</div>
+</div>
+
+<hr />
 
 ### Output Directory
-
+<div class="row">
+<div class="span7">
 Default base directory within the project for compiled classes. Consider NOT sharing the output folder with your IDE. The default (build) is separate from the Eclipse default (bin).
+</div>
+
+<div class="span5">
 ---YAML---
 outputDirectory: build
 ---YAML---
+</div>
+</div>
+
+<hr />
 
 ### Target Directory
+
+<div class="row">
+<div class="span7">
 The base directory within the project for build artifacts.
+</div>
+
+<div class="span5">
 ---YAML---
 targetDirectory: build/target
 ---YAML---
+</div>
+</div>
+
+<hr />
 
 ### Update Policy
 
+<div class="row">
+<div class="span7">
 Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT.
 <dl>
   <dt>always</dt><dd>always check when for newer versions</dd>
@@ -58,42 +103,83 @@ Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT.
   <dt>daily</dt><dd>(default) - check on the first run of the day (local time)</dd>
   <dt>interval:NNN</dt><dd>check every NNN minutes (default is 60 mins)</dd>
 </dl>
+</div>
+
+<div class="span5">
 ---YAML---
 updatePolicy: daily
 ---YAML---
+</div>
+</div>
+
+<hr />
 
 ### Fail Fast
 
+<div class="row">
+<div class="span7">
 Should the build immediately fail if an artifact can not be immediately resolved from the remote repositories or the local cache?
+</div>
+
+<div class="span5">
 ---YAML---
 failFastOnArtifactResolution: true
 ---YAML---
+</div>
+</div>
 
-### Default Snapshot Purge Policies
+<hr />
 
+### Snapshot Purge Policies
+
+<div class="row">
+<div class="span7">
 Default minimum count of snapshot revisions to keep.  The minimum acceptable value is 1.
+</div>
+
+<div class="span5">
 ---YAML---
 revisionRetentionCount: 1
 ---YAML---
+</div>
+</div>
 
+<div class="row">
+<div class="span7">
 If the count of snapshot revisions exceeds the specified retention count, then delete all snapshot revisions older than this count of days.
+</div>
+
+<div class="span5">
 ---YAML---
 revisionPurgeAfterDays: 0
 ---YAML---
+</div>
+</div>
+
+<hr />
 
 ### Maven Cache Strategy
 
-Defines how to use the *${user.home}/.m2/repository* folder.
-
+<div class="row">
+<div class="span7">
+Defines how to use the <em>${user.home}/.m2/repository</em> folder.
+<br />
 Options are:
 <dl>
   <dt>IGNORE</dt><dd>ignore Maven cache entirely</dd>
   <dt>LINK</dt><dd>use Maven cache artifacts directly, not recommended</dd>
   <dt>COPY</dt><dd>copy Maven cache artifacts into Moxie's local repository</dd>
 </dl>
+</div>
+
+<div class="span5">
 ---YAML---
 mavenCacheStrategy: IGNORE
 ---YAML---
+</div>
+</div>
+
+<hr />
 
 ### Tasks
 
@@ -102,83 +188,83 @@ Default settings for Moxie tasks.
 These attributes are set via reflection using Ant's standard utility classes.
 ---YAML---
 tasks: {
-	# mx:Javac compiler attributes
-	# These defaults may be overriden in your build.moxie file.
-	'mx:javac' : {
-		clean: true
-		compileLinkedProjects: true
-		copyResources: true
-		compiler: modern
-		debug: true
-		debugLevel: vars,lines,source
-		fork: false
-		failOnError: true
-		includeAntRuntime: true
-		encoding: 'UTF-8'
-		excludes: '**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags'
-	}
+    # mx:Javac compiler attributes
+    # These defaults may be overriden in your build.moxie file.
+    'mx:javac' : {
+        clean: true
+        compileLinkedProjects: true
+        copyResources: true
+        compiler: modern
+        debug: true
+        debugLevel: vars,lines,source
+        fork: false
+        failOnError: true
+        includeAntRuntime: true
+        encoding: 'UTF-8'
+        excludes: '**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags'
+    }
 
-	# mx:Jar attributes
-	# These defaults may be overriden in your build.moxie file.
-	'mx:jar' : {
-		excludePomFiles: false
-		excludes: '**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags'
-	}
+    # mx:Jar attributes
+    # These defaults may be overriden in your build.moxie file.
+    'mx:jar' : {
+        excludePomFiles: false
+        excludes: '**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags'
+    }
 
-	# mx:GenJar attributes
-	# These defaults may be overriden in your build.moxie file.
-	'mx:genjar' : {
-		excludePomFiles: false
-		excludes: '**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags'
-	}
+    # mx:GenJar attributes
+    # These defaults may be overriden in your build.moxie file.
+    'mx:genjar' : {
+        excludePomFiles: false
+        excludes: '**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags'
+    }
 	
-	# mx:Test attributes
-	# These defaults may be overriden in your build.moxie file.
-	'mx:test' : {
-		include: '**/*Test.class'
-		encoding: 'UTF-8'
-		failureProperty: 'unit.test.failed'
-		failOnError: false
-	}
+    # mx:Test attributes
+    # These defaults may be overriden in your build.moxie file.
+    'mx:test' : {
+        include: '**/*Test.class'
+        encoding: 'UTF-8'
+        failureProperty: 'unit.test.failed'
+        failOnError: false
+    }
+	 
+    # testng attributes
+    # These defaults may be overriden in your build.moxie file.
+    'testng' : {
+        mode: mixed
+        useDefaultListeners: true
+        suiteName: 'Moxie+Ant Suite'
+    }
 	
-	# testng attributes
-	# These defaults may be overriden in your build.moxie file.
-	'testng' : {
-		mode: mixed
-		useDefaultListeners: true
-		suiteName: 'Moxie+Ant Suite'
-	}
+    # junit test attributes
+    # These defaults may be overriden in your build.moxie file.
+    'junit' : {
+        fork: yes
+        forkMode: once
+        printSummary: yes
+        showOutput: no
+    }
 	
-	# junit test attributes
-	# These defaults may be overriden in your build.moxie file.
-	'junit' : {
-		fork: yes
-		forkMode: once
-		printSummary: yes
-		showOutput: no
-	}
-	
-	# junit report attributes
-	# These defaults may be overriden in your build.moxie file.
-	'junitreport' : {
-		format: frames
-	}
+    # junit report attributes
+    # These defaults may be overriden in your build.moxie file.
+    'junitreport' : {
+        format: frames
+    }
 
-	# emma instrumentation attributes
-	# These defaults may be overriden in your build.moxie file.
-	'emma' : {
-		merge: true		
-	}
+    # emma instrumentation attributes
+    # These defaults may be overriden in your build.moxie file.
+    'emma' : {
+        merge: true		
+    }
 
-	# emma report attributes
-	# These defaults may be overriden in your build.moxie file.
-	'emmareport' : {
-	}
+    # emma report attributes
+    # These defaults may be overriden in your build.moxie file.
+    'emmareport' : {
+    }
 	
-	# cobertura report attributes
-	# These defaults may be overriden in your build.moxie file.
-	'cobertura' : {
-		format: html
-	}
+    # cobertura report attributes
+    # These defaults may be overriden in your build.moxie file.
+    'cobertura' : {
+        format: html
+    }
 }
 ---YAML---
