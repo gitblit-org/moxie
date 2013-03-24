@@ -1,0 +1,55 @@
+## Tips and Tricks
+
+
+### Colored Output
+
+Moxie supports ANSI color output during builds.  Color output can be activated either by setting the `MX_COLOR` enviroment variable or by specifying a command-line parameter.
+
+    ant -Dmx.color=true mytarget
+    moxie -color mytarget
+
+#### Windows
+
+By default, Windows Command Prompt does not support ANSI color but with a little help from [ansicon](https://github.com/adoxa/ansicon), a nifty little tool, you can make Windows Command Prompt (and Console2, etc) support ANSI escape sequences.
+
+### Verbose Output
+
+Moxie supports verbose output during builds.
+
+    ant -Dmx.verbose=true mytarget
+    moxie -verbose mytarget
+
+### Debug Output
+
+Moxie supports debug output during builds.
+
+    ant -Dmx.debug=true mytarget
+    moxie -debug mytarget
+
+### Working Offline
+
+Moxie supports disabling automatic network retrieval.
+
+    ant -Dmx.online=false mytarget
+    moxie -offline mytarget
+
+### Disabling Checksum Verification
+
+Moxie supports disabling SHA1 checksum verification.
+
+    ant -Dmx.enforceChecksums=false mytarget
+    moxie -ignoreCheckums mytarget
+
+### Forcing Metadata Updates
+
+Moxie supports forcing metadata updates.
+
+    ant -Dmx.updateMetadata=true mytarget
+    moxie -updateMetadata mytarget
+
+### Relocating the Moxie Root Directory
+
+By default, your Moxie root directory is *~/.moxie*.  This can be changed by setting the `MX_ROOT` environment variable or by passing a command-line parameter.
+
+    ant -Dmx.root=/path/to/dir mytarget
+    moxie -Dmx.root=/path/to/dir mytarget

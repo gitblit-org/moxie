@@ -31,6 +31,7 @@
 					<page name="settings.moxie" src="settings.mkd" />
 					<page name="defaults.moxie" src="defaults.mkd" />
 					<page name="Ant Properties" src="properties.mkd" processSubstitutions="false" />
+					<page name="tips &amp; tricks" src="tipsandtricks.mkd" />
 				</menu>
 				<menu name="tasks">
 					<menu name="core tasks">

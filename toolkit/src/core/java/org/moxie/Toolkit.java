@@ -51,7 +51,7 @@ public class Toolkit {
 	
 	public static final String MOXIE_DEFAULTS = "defaults.moxie";
 	
-	public static final String MOXIE_HOME = "MOXIE_HOME";
+	public static final String MOXIE_ROOT = "MX_ROOT";
 	
 	public static final int MAX_REVISIONS = 100;
 	

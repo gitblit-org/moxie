@@ -108,6 +108,18 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
 		if (antArgs.contains("-verbose") || antArgs.contains("-v")) {
 			System.setProperty(Toolkit.MX_VERBOSE, "true");
 		}
+		if (antArgs.contains("-updateMetadata")) {
+			antArgs.remove("-updateMetadata");
+			System.setProperty(Toolkit.MX_UPDATEMETADATA, "true");
+		}
+		if (antArgs.contains("-ignoreChecksums")) {
+			antArgs.remove("-ignoreChecksums");
+			System.setProperty(Toolkit.MX_ENFORCECHECKSUMS, "false");
+		}
+		if (antArgs.contains("-offline")) {
+			antArgs.remove("-offline");
+			System.setProperty(Toolkit.MX_ONLINE, "false");
+		}
 
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];
@@ -207,6 +219,9 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
         msg.append(lSep);
         msg.append("  -new -<archetype> <groupId>:<artifactId>:<version> -dir:<dirname> -git<:originId> -eclipse<:+var> -intellij" + lSep);
         msg.append(lSep);
+        msg.append("  -offline               do not contact any remote repositories" + lSep);
+        msg.append("  -ignoreChecksums       disable SHA1 checksum verification" + lSep);
+        msg.append("  -updateMetadata        force metadata updates" + lSep);
         msg.append("  -color, -c             use ANSI color sequences" + lSep);
         msg.append("  -quiet, -q             be extra quiet" + lSep);
         msg.append("  -verbose, -v           be extra verbose" + lSep);

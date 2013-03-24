@@ -57,6 +57,34 @@ The Moxie project descriptor defines the structure, metadata, and dependencies o
 |}
 ---X:MEDIAWIKI---
 
+<hr/>
+
+### Packaging
+<div class="row">
+<div class="span7">
+Packaging defines the target binary output of the project.  This field defaults to <em>jar</em>, if not manually specified.  The value here mostly has relevance for the <code>mx:package</code> task.
+<h4>Valid Packaging Types</h4>
+<dl>
+ <dt>pom</dt><dd></dd>
+ <dt>jar</dt><dd>generates a jar file for the project</dd>
+ <dt>war</dt><dd>generates a webapp war file for the project</dd>
+ <dt>zip</dt><dd>generates a zip file of the jar, sources, and javadoc for the project</dd>
+ <dt>tgz</dt><dd>generates a tar.gz of the jar, sources, and javadoc for the project</dd>
+ <dt>tar.gz</dt><dd>generates a tar.gz of the jar, sources, and javadoc for the project</dd>
+</dl>
+
+You may also append <em>+format</em> to the packaging to create secondary packaging for your project.
+
+</div>
+
+<div class="span5">
+---YAML---
+packaging: jar
+packaging: jar+zip
+packaging: jar+zip+tgz
+---YAML---
+</div>
+</div>
 
 <hr/>
 
@@ -81,6 +109,24 @@ apply: eclipse, intellij, pom
 </div>
 </div>
 
+#### Apply: eclipse
+<div class="row">
+<div class="span7">
+The Eclipse apply function supports a few switches to control Eclipse .project and .classpath file generation.
+<dl>
+ <dt>var</dt>
+ <dd>Creates .classpath using the <em>MX_ROOT</em> workspace variable.  This allows you to version-control .classpath but does require the user to define an <em>MX_ROOT</em> workspace variable pointing to <em>~/.moxie</em> or wherever they would like to establish their Moxie root.</dd>
+ <dt>groovy</dt>
+ <dd>Adds the Groovy plugin reference to .classpath and the Groovy Nature to .project.</dd>
+</dl>
+</div>
+<div class="span5">
+---YAML---
+apply: 'eclipse:+var+groovy'
+---YAML---
+</div>
+</div>
+
 <hr/>
 
 ### Parent
@@ -99,16 +145,75 @@ parent: ../build.moxie
 
 <hr/>
 
+### Licenses
+
+You can specify the project licenses in the *licenses* setting.  This setting is currently only used during POM generation.
+
+---YAML---
+licenses:
+- {
+    name: 'Apache ASL v2.0'
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  }
+---YAML---
+
+<hr/>
+
+### Developers
+
+You can specify the project developers in the *developers* setting.  This setting is currently only used during POM generation.
+
+---YAML---
+developers:
+- {
+  id: james
+  name: 'James Moger'
+  url: 'https://plus.google.com/u/0/116428776452027956920'
+  organization: 'James Moger'
+  organizationUrl: 'http://www.jamesmoger.com'
+  roles: developer
+  }
+---YAML---
+
+<hr/>
+
+### SCM
+
+You can specify the project SCM information in the *scm* setting.  This setting is currently only used during POM generation.
+
+---YAML---
+scm: {
+  connection: 'scm:git:git://github.com/gitblit/moxie.git'
+  developerConnection: 'scm:git:https://github.com/gitblit/moxie.git'
+  url: 'http://gitblit.github.com/moxie'
+  tag: HEAD
+  }
+---YAML---
+
+<hr/>
+
 ### Registered Repositories
 
-This section is used to define id-url pairs so that project descriptors can specify an repository id, rather than a complete url.  A repository definition can also specify a custom snapshot revision purge policy.
+This section is used to define remote artifact repositories.  A repository definition can also specify a custom snapshot revision purge policy and/or a list of artifact affinities.
+
+#### Affinities
+
+If a repository specifies one or more affinities and a dependency matches one of those affinities, that repository will be used first during dependency or metadata resolution of that artifact.  This allows you to control the efficiency of the resolution process by boosting the importance of a specific repository.
+
+In the following example, the *Restlet* repository has an affinity for all artifacts belonging to the *org.restlet* groupId.  During resolution, the Restlet repository is checked first for all *org.restlet*.
 
 ---YAML---
 registeredRepositories:
 - { id: central, url: 'http://repo1.maven.org/maven2' }
 - { id: mavencentral, url: 'http://repo1.maven.org/maven2' }
-- { id: restlet, url: 'http://maven.restlet.org', revisionRetentionCount: 1, revisionPurgeAfterDays: 0 }
 - { id: codehaus, url: 'http://repository.codehaus.org' }
+- { 
+    id: restlet
+    url: 'http://maven.restlet.org'
+    revisionRetentionCount: 1
+    revisionPurgeAfterDays: 0
+    affinity: [ 'org.restlet' ]
+  }
 ---YAML---
 
 <hr/>
@@ -129,59 +234,6 @@ repositories: 'central'
 
 <hr/>
 
-### Source Directories
-
-<div class="row">
-<div class="span7">
-Source directories define where to find your source code.  Each source folder must specify a scope.
-<p> </p>
-Valid scopes are:
-<dl>
-	<dt>compile</dt><dd></dd>
-	<dt>test</dt><dd></dd>
-	<dt>site</dt><dd></dd>
-</dl>
-</div>
-
-<div class="span5">
----YAML---
-sourceDirectories: 
-- compile 'src/main/core'
-- compile 'src/main/pro'
-- compile 'src/main/all'
-- { scope: 'test', dir: 'src/test/java' }
----YAML---
-</div>
-</div>
-
-<hr/>
-
-### Resource Directories
-
-<div class="row">
-<div class="span7">
-Resource directories define where to find your resource files (images, css, etc).  Each resource directory must specify a scope.
-<br/>
-Valid scopes are:
-<dl>
-	<dt>compile</dt><dd></dd>
-	<dt>test</dt><dd></dd>
-	<dt>site</dt><dd></dd>
-</dl>
-</div>
-
-<div class="span5">
----YAML---
-resourceDirectories: 
-- compile 'src/main/resources'
-- test 'src/test/resources'
-- site 'src/site/resources'
----YAML---
-</div>
-</div>
-
-<hr/>
-
 ### Modules
 
 <div class="row">
@@ -191,7 +243,7 @@ If the project has valid source directories, then the modules section is used to
 <p> </p>
 The projects are assumed to be located relative to the current project.  You may use an Ant or enviromental property as part of the module reference.
 <p> </p>
-All referenced modules must have a <code>build.moxie</code> unless manually specified with the @file syntax.
+All referenced modules must have a <code>build.moxie</code> descriptor unless a different descriptor is manually specified with the @file syntax.
 <p> </p>
 <b>Parent Project</b><br/>
 If the project has no source directories then the modules section is used only for IDE settings generation.
@@ -209,11 +261,77 @@ modules:
 
 <hr/>
 
+### Source Directories
+
+<div class="row">
+<div class="span7">
+Source directories define where to find your source code.  Each source folder must specify a scope.
+<p> </p>
+<h4>Valid Scopes</h4>
+<dl>
+	<dt>compile</dt><dd></dd>
+	<dt>test</dt><dd></dd>
+	<dt>site</dt><dd></dd>
+</dl>
+Dependencies, source directories, and resource directories may also be tagged as belonging to a group by using the <i>:tag</i> syntax.  Several <code>mx</code> tasks support these tagged subsets.
+
+<div class="alert alert-info">
+<b>Note:</b> Moxie only supports a single <em>site</em> scoped source directory.
+</div>
+</div>
+
+<div class="span5">
+---YAML---
+sourceDirectories: 
+- compile 'src/main/core' :mytag
+- compile 'src/main/pro'
+- compile 'src/main/all'
+- compile 'src/client/java' :mytag
+- { scope: 'test', dir: 'src/test/java' }
+---YAML---
+</div>
+</div>
+
+<hr/>
+
+### Resource Directories
+
+<div class="row">
+<div class="span7">
+Resource directories define where to find your resource files (images, css, etc).  Each resource directory must specify a scope.
+<br/>
+<h4>Valid Scopes</h4>
+<dl>
+	<dt>compile</dt><dd></dd>
+	<dt>test</dt><dd></dd>
+	<dt>site</dt><dd></dd>
+</dl>
+Dependencies, source directories, and resource directories may also be tagged as belonging to a group by using the <i>:tag</i> syntax.  Several <code>mx</code> tasks support these tagged subsets.
+
+<div class="alert alert-info">
+<b>Note:</b> Moxie only supports a single <em>site</em> scoped resource directory.
+</div>
+
+</div>
+
+<div class="span5">
+---YAML---
+resourceDirectories: 
+- compile 'src/main/resources'
+- compile 'src/client/resources' :mytag
+- test 'src/test/resources'
+- site 'src/site/resources'
+---YAML---
+</div>
+</div>
+
+<hr/>
+
 ### Properties
 
 <div class="row">
 <div class="span7">
-Properties can bs used in the dependency management and dependencies section.  They are also exported to Ant as Ant properties.
+Properties can be used in the <em>dependencyManagement</em> and <em>dependencies</em> section.  They are also exported to Ant as properties.
 </div>
 
 <div class="span5">
@@ -231,7 +349,7 @@ properties: {
 
 <div class="row">
 <div class="span7">
-Managed dependencies are used to specify versions of dependencies if those versions are not specified in the `dependencies` list.
+Managed dependencies are used to specify versions of dependencies if those versions are not specified in the <em>dependencies</em> list.
 </div>
 
 <div class="span5">
@@ -255,22 +373,24 @@ Dependencies can be defined using Gradle-style coordinates.
 
 Each dependency must also have an assigned scope.
 <br/>
-Valid scopes are:
-
+<h4>Valid Scopes</h4>
 <dl>
-	<dt>compile</dt><dd></dd>
-	<dt>provided</dt><dd></dd>
-	<dt>runtime</dt><dd></dd>
-	<dt>test</dt><dd></dd>
-	<dt>system</dt><dd></dd>
-	<dt>build</dt><dd></dd>
+	<dt>compile</dt><dd>added to the compile classpath</dd>
+	<dt>provided</dt><dd>added to the compile classpath but not distributed with project</dd>
+	<dt>runtime</dt><dd>added to the runtime classpath</dd>
+	<dt>test</dt><dd>added to the test classpath</dd>
+	<dt>system</dt><dd>added to all classpaths</dd>
+	<dt>build</dt><dd>added to Moxie's runtime classpath</dd>
 </dl>
+
+Dependencies, source directories, and resource directories may also be tagged as belonging to a group by using the <i>:tag</i> syntax.  Several <code>mx</code> tasks support these tagged subsets.
 </div>
 
 <div class="span5">
 ---YAML---
 dependencies:
 - compile 'org.apache.ant:ant'
+- compile 'com.acme:widget:1.2.3' :mytag
 - test 'junit'
 ---YAML---
 </div>
@@ -284,7 +404,7 @@ Sometimes it is desirable to specify exclusions from a dependency's graph.  Ther
 <div class="span7">
 ##### @ext
 
-The `@ext` syntax will exclude all dependencies of a dependencies.  To use this syntax you must specify the extension of the artifact to retrieve.
+The `@ext` syntax will exclude all dependencies of a dependency.  To use this syntax you must specify the extension of the artifact to retrieve.
 </div>
 
 <div class="span5">
@@ -327,22 +447,17 @@ dependencyDirectory: ext
 
 ### Dependency Name Pattern
 
-<div class="row">
-<div class="span7">
 When you are using the <code>dependencyDirectory</code> setting you may also control the destination name of the project-relative artifacts.</div>
 
-<div class="span5">
 ---YAML---
 dependencyNamePattern: [artifactId]-[version](-[classifier]).[ext]
 ---YAML---
-</div>
-</div>
 
 <hr/>
 
 ## Advanced Settings
 
-These settings can be used to manipulate released artifact POMs and/or to enable clever dependency tricks.  Both of these features are used internally by Moxie.
+These settings can be used to manipulate released POMs and/or to enable clever dependency tricks.  Both of these features are used internally by Moxie.
 
 ### Dependency Aliases
 

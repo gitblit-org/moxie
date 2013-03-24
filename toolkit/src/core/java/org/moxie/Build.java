@@ -226,8 +226,8 @@ public class Build {
 				String srcPath;
 				if ("var".equals(kind)) {
 					// relative to MOXIE_HOME
-					jarPath = Toolkit.MOXIE_HOME + "/" + FileUtils.getRelativePath(config.getMoxieRoot(), jar);
-					srcPath = Toolkit.MOXIE_HOME + "/" + FileUtils.getRelativePath(config.getMoxieRoot(), srcJar);
+					jarPath = Toolkit.MOXIE_ROOT + "/" + FileUtils.getRelativePath(config.getMoxieRoot(), jar);
+					srcPath = Toolkit.MOXIE_ROOT + "/" + FileUtils.getRelativePath(config.getMoxieRoot(), srcJar);
 				} else {
 					// filesystem path
 					if (extRelative) {
@@ -597,8 +597,8 @@ public class Build {
 
                 if (variableRelative) {
                     // relative to MOXIE_HOME
-                    jarPath = format("jar://$" + Toolkit.MOXIE_HOME + "$/{0}!/", FileUtils.getRelativePath(config.getMoxieRoot(), jar));
-                    srcPath = format("jar://$" + Toolkit.MOXIE_HOME + "$/{0}!/", FileUtils.getRelativePath(config.getMoxieRoot(), srcJar));
+                    jarPath = format("jar://$" + Toolkit.MOXIE_ROOT + "$/{0}!/", FileUtils.getRelativePath(config.getMoxieRoot(), jar));
+                    srcPath = format("jar://$" + Toolkit.MOXIE_ROOT + "$/{0}!/", FileUtils.getRelativePath(config.getMoxieRoot(), srcJar));
                 } else {
                     // filesystem path
                     if (extRelative) {
