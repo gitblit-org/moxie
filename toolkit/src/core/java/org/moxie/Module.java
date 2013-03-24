@@ -15,6 +15,8 @@
  */
 package org.moxie;
 
+import org.moxie.utils.StringUtils;
+
 
 public class Module implements Comparable<Module> {
 
@@ -26,11 +28,11 @@ public class Module implements Comparable<Module> {
 	public Module(String def) {
 		if (def.indexOf('@') > -1) {
 			// specifies descriptor
-			this.folder = def.substring(0, def.lastIndexOf('@'));
+			this.folder = StringUtils.stripQuotes(def.substring(0, def.lastIndexOf('@')).trim());
 			this.descriptor = def.substring(def.lastIndexOf('@') + 1);
 		} else {
 			// default descriptor
-			this.folder = def;
+			this.folder = StringUtils.stripQuotes(def.trim());
 			this.descriptor = "build.moxie";
 		}
 		this.script = "build.xml";
