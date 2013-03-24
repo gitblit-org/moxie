@@ -1,6 +1,6 @@
 ## settings.moxie
 
-The `settings.moxie` file is used to do register Maven 2-compatible artifact repositories that should be available to all builds and to define proxy servers that should be used when communicating with the artifact repositories.
+The `settings.moxie` file is used to control Moxie's behavior across all builds.
 
 ### Proxies
 Moxie automatically uses all proxy definitions <u>from your <b>local Maven settings</b></u> (*~/.m2/settings.xml*).  Moxie also supports proxy definitions in it's own <b>local Moxie settings</b> (*~/.moxie/settings.moxie*).
@@ -44,6 +44,8 @@ proxies:
   }
 ---YAML---
 
+<hr />
+
 ### Registered Repositories
 
 This section is used to define id-url pairs so that project descriptors can specify an repository id, rather than a complete url.  A repository definition can also specify a custom snapshot revision purge policy.
@@ -61,3 +63,107 @@ registeredRepositories:
     revisionPurgeAfterDays: 0
   }
 ---YAML---
+
+<hr />
+
+### Parallel Artifact Downloads
+<div class="row">
+<div class="span7">
+Moxie can download multiple artifacts concurrently.  It does this using a fixed thread pool equal to the number of processors in the system.  POM retrieval does not use this parallelization feature.  POM retrieval is single-threaded because Moxie must walk up and down the dependency graph making parallelization non-trivial since it is possible to resolve the same POM between different threads.
+</div>
+
+<div class="span5">
+---YAML---
+parallelDownloads: true
+---YAML---
+</div>
+</div>
+
+<hr />
+
+### Fail Fast
+
+<div class="row">
+<div class="span7">
+Should the build immediately fail if an artifact can not be immediately resolved from the remote repositories or the local cache?
+</div>
+
+<div class="span5">
+---YAML---
+failFastOnArtifactResolution: true
+---YAML---
+</div>
+</div>
+
+<hr />
+
+### Metadata Update Policy
+
+<div class="row">
+<div class="span7">
+Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT.
+<dl>
+  <dt>always</dt><dd>always check when for newer versions</dd>
+  <dt>never</dt><dd>never check when for newer versions</dd>
+  <dt>daily</dt><dd>(default) - check on the first run of the day (local time)</dd>
+  <dt>interval:NNN</dt><dd>check every NNN minutes (default is 60 mins)</dd>
+</dl>
+</div>
+
+<div class="span5">
+---YAML---
+updatePolicy: daily
+---YAML---
+</div>
+</div>
+
+<hr />
+
+### Snapshot Purge Policies
+
+<div class="row">
+<div class="span7">
+Default minimum count of snapshot revisions to keep.  The minimum acceptable value is 1.
+</div>
+
+<div class="span5">
+---YAML---
+revisionRetentionCount: 1
+---YAML---
+</div>
+</div>
+
+<div class="row">
+<div class="span7">
+If the count of snapshot revisions exceeds the specified retention count, then delete all snapshot revisions older than this count of days.
+</div>
+
+<div class="span5">
+---YAML---
+revisionPurgeAfterDays: 0
+---YAML---
+</div>
+</div>
+
+<hr />
+
+### Maven Cache Strategy
+
+<div class="row">
+<div class="span7">
+Defines how to use the <em>${user.home}/.m2/repository</em> folder.
+<br />
+Options are:
+<dl>
+  <dt>IGNORE</dt><dd>ignore Maven cache entirely</dd>
+  <dt>LINK</dt><dd>use Maven cache artifacts directly, not recommended</dd>
+  <dt>COPY</dt><dd>copy Maven cache artifacts into Moxie's local repository</dd>
+</dl>
+</div>
+
+<div class="span5">
+---YAML---
+mavenCacheStrategy: IGNORE
+---YAML---
+</div>
+</div>

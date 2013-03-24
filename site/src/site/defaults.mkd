@@ -55,6 +55,7 @@ Resource directories are verified during initialization. Defined directories tha
 resourceDirectories:
 - compile 'src/main/resources'
 - test 'src/test/resources'
+- site 'src/site/resources'
 ---YAML---
 </div>
 </div>
@@ -64,7 +65,7 @@ resourceDirectories:
 ### Output Directory
 <div class="row">
 <div class="span7">
-Default base directory within the project for compiled classes. Consider NOT sharing the output folder with your IDE. The default (build) is separate from the Eclipse default (bin).
+Default working directory for the build.
 </div>
 
 <div class="span5">
@@ -86,95 +87,6 @@ The base directory within the project for build artifacts.
 <div class="span5">
 ---YAML---
 targetDirectory: build/target
----YAML---
-</div>
-</div>
-
-<hr />
-
-### Update Policy
-
-<div class="row">
-<div class="span7">
-Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT.
-<dl>
-  <dt>always</dt><dd>always check when for newer versions</dd>
-  <dt>never</dt><dd>never check when for newer versions</dd>
-  <dt>daily</dt><dd>(default) - check on the first run of the day (local time)</dd>
-  <dt>interval:NNN</dt><dd>check every NNN minutes (default is 60 mins)</dd>
-</dl>
-</div>
-
-<div class="span5">
----YAML---
-updatePolicy: daily
----YAML---
-</div>
-</div>
-
-<hr />
-
-### Fail Fast
-
-<div class="row">
-<div class="span7">
-Should the build immediately fail if an artifact can not be immediately resolved from the remote repositories or the local cache?
-</div>
-
-<div class="span5">
----YAML---
-failFastOnArtifactResolution: true
----YAML---
-</div>
-</div>
-
-<hr />
-
-### Snapshot Purge Policies
-
-<div class="row">
-<div class="span7">
-Default minimum count of snapshot revisions to keep.  The minimum acceptable value is 1.
-</div>
-
-<div class="span5">
----YAML---
-revisionRetentionCount: 1
----YAML---
-</div>
-</div>
-
-<div class="row">
-<div class="span7">
-If the count of snapshot revisions exceeds the specified retention count, then delete all snapshot revisions older than this count of days.
-</div>
-
-<div class="span5">
----YAML---
-revisionPurgeAfterDays: 0
----YAML---
-</div>
-</div>
-
-<hr />
-
-### Maven Cache Strategy
-
-<div class="row">
-<div class="span7">
-Defines how to use the <em>${user.home}/.m2/repository</em> folder.
-<br />
-Options are:
-<dl>
-  <dt>IGNORE</dt><dd>ignore Maven cache entirely</dd>
-  <dt>LINK</dt><dd>use Maven cache artifacts directly, not recommended</dd>
-  <dt>COPY</dt><dd>copy Maven cache artifacts into Moxie's local repository</dd>
-</dl>
-</div>
-
-<div class="span5">
----YAML---
-mavenCacheStrategy: IGNORE
 ---YAML---
 </div>
 </div>

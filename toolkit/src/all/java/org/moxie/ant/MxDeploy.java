@@ -61,7 +61,7 @@ public class MxDeploy extends MxRepositoryTask {
 		PurgePolicy policy;
 		if (baseDir == null) {
 			// deploy to local repository
-			policy = getBuild().getConfig().getProjectConfig().getPurgePolicy();
+			policy = getBuild().getConfig().getPurgePolicy();
 		} else {
 			// deploy to specified repository
 			policy = new PurgePolicy();

@@ -123,15 +123,24 @@ public class BuildConfig {
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
 	}
-	
+
+	public boolean isParallelDownloads() {
+		return toolkitConfig.parallelDownloads;
+	}
+
 	public boolean isFailFastOnArtifactResolution() {
-		return projectConfig.failFastOnArtifactResolution;
+		return toolkitConfig.failFastOnArtifactResolution;
+	}
+	
+	public UpdatePolicy getUpdatePolicy() {
+		return toolkitConfig.updatePolicy;
+	}
+	
+	public PurgePolicy getPurgePolicy() {
+		return toolkitConfig.getPurgePolicy();
 	}
 	
 	public MavenCacheStrategy getMavenCacheStrategy() {
-		if (projectConfig.mavenCacheStrategy != null) {
-			return projectConfig.mavenCacheStrategy;
-		}
 		if (toolkitConfig.mavenCacheStrategy != null) {
 			return toolkitConfig.mavenCacheStrategy;
 		}

@@ -36,6 +36,42 @@ registeredRepositories:
 # Default repositories for dependency retrieval
 repositories: 'central'
 
+# Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT
+#   always - always check when for newer versions
+#   never - never check when for newer versions
+#   daily (default) - check on the first run of the day (local time)
+#   interval:NNN - check every NNN minutes (default is 60 mins)
+updatePolicy: daily
+
+# Setting to control simultaneous artifact retrieval
+#
+# This uses a fixed thread pool of the number of procesors and an executor service.
+# POMs are not downloaded in parallel because they are parsed and recursively
+# traversed for declared dependencies.  This setting affects retrieval of jars
+# and other binary artifacts.
+parallelDownloads: true
+
+# Should the build immediately fail if an artifact can not be immediately
+# resolved from the remote repositories or the local cache?
+failFastOnArtifactResolution: true
+
+# Default snapshot revision purge policy
+#
+# Default minimum count of snapshot revisions to keep
+# minimum acceptable value is 1
+revisionRetentionCount: 1
+
+# if the count of snapshot revisions exceeds the specified retention count,
+# then delete all snapshot revisions older than this count of days
+revisionPurgeAfterDays: 0
+
+# Defines how to use the ${user.home}/.m2/repository folder
+# Options are:
+#   IGNORE   (ignore Maven cache entirely)
+#   LINK     (use Maven cache artifacts directly, not recommended)
+#   COPY     (copy Maven cache artifacts into Moxie's local repository)
+mavenCacheStrategy: IGNORE
+
 # Managed dependencies are used to specify versions of dependencies
 # if those versions are not specified in the project's build.moxie.
 dependencyManagement:

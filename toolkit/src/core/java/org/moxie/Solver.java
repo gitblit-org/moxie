@@ -231,7 +231,7 @@ public class Solver {
 				}
 			}
 			
-			if (config.getProjectConfig().parallelDownloads) {
+			if (config.isParallelDownloads()) {
 				// download artifacts in parallel
 				Parallel.WaitFor(retrieved, new Parallel.Operation<Dependency>() {
 					public void perform(Dependency dep) {
@@ -419,7 +419,7 @@ public class Solver {
 					}
 				};
 				
-				if (config.getProjectConfig().parallelDownloads) {
+				if (config.isParallelDownloads()) {
 					// Download artifacts in parallel
 					Parallel.WaitFor(solution, worker);
 				} else {
@@ -641,7 +641,7 @@ public class Solver {
 			boolean updateRequired = !metadataFile.exists() || isUpdateMetadata();
 			
 			if (!updateRequired) {
-				UpdatePolicy policy = config.getProjectConfig().updatePolicy;
+				UpdatePolicy policy = config.getUpdatePolicy();
 				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
 				// we have metadata, check update policy
 				if (UpdatePolicy.daily.equals(policy)) {
