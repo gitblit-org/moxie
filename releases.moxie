@@ -25,6 +25,8 @@ r6: {
     additions:
 	 - Added support for submenus in mx:Doc
 	 - Added support for co-mingling wiki syntax with Markdown in mx:Doc documents
+     - Added connectTimeout and readTimeout settings for repositories
+     - Added username and password settings for repositories
     dependencyChanges:
 	 - org.webjars:bootstrap:2.3.1
 	 - org.webjars:jquery:1.9.1

@@ -456,6 +456,10 @@ public class ToolkitConfig implements Serializable {
 					for (String value : repoMap.getStrings("affinity", new ArrayList<String>())) {
 						repo.affinity.add(value.toLowerCase());
 					}
+					repo.connectTimeout = repoMap.getInt(Key.connectTimeout.name(), repo.connectTimeout);
+					repo.readTimeout = repoMap.getInt(Key.readTimeout.name(), repo.readTimeout);
+					repo.username = repoMap.getString(Key.username.name(), null);
+					repo.password = repoMap.getString(Key.password.name(), null);
 					remotes.add(repo);
 				}
 			}

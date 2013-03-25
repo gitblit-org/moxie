@@ -30,6 +30,10 @@ public class RemoteRepository implements Serializable {
 	public final PurgePolicy purgePolicy;
 	public final boolean allowSnapshots;
 	public final Set<String> affinity;
+	public int connectTimeout;
+	public int readTimeout;
+	public String username;
+	public String password;
 
 	public RemoteRepository(String id, String url, boolean allowSnapshots) {
 		this.id = id;
@@ -37,6 +41,9 @@ public class RemoteRepository implements Serializable {
 		this.allowSnapshots = allowSnapshots;
 		this.purgePolicy = new PurgePolicy();
 		affinity = new LinkedHashSet<String>();
+		// timeout defaults of Maven 3.0.4
+		this.connectTimeout = 20;
+		this.readTimeout = 12800;
 	}
 
 	public String getHost() {

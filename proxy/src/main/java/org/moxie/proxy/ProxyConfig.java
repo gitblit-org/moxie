@@ -178,6 +178,10 @@ public class ProxyConfig {
 				String url = repoMap.getString("url", null);
 				boolean allowSnapshots = repoMap.getBoolean("allowSnapshots", false);
 				RemoteRepository repo = new RemoteRepository(id, url, allowSnapshots);
+				repo.connectTimeout = repoMap.getInt("connectTimeout", repo.connectTimeout);
+				repo.readTimeout = repoMap.getInt("readTimeout", repo.readTimeout);
+				repo.username = repoMap.getString("username", null);
+				repo.password = repoMap.getString("password", null);
 				remotes.add(repo);
 			}
 		}

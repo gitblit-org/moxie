@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.moxie.utils.Base64;
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
@@ -44,12 +45,20 @@ public class Repository {
 	boolean allowSnapshots;
 	PurgePolicy purgePolicy;
 	final Set<String> affinity;
+	int connectTimeout;
+	int readTimeout;
+	String username;
+	String password;
 	
 	public Repository(RemoteRepository definition) {
 		this(definition.id, definition.url);
 		this.allowSnapshots = definition.allowSnapshots;
 		this.purgePolicy = definition.purgePolicy;
 		this.affinity.addAll(definition.affinity);
+		this.connectTimeout = definition.connectTimeout;
+		this.readTimeout = definition.readTimeout;
+		this.username = definition.username;
+		this.password = definition.password;
 	}
 
 	public Repository(String name, String mavenUrl) {
@@ -64,6 +73,9 @@ public class Repository {
 		this.snapshotPattern = snapshotPattern;
 		this.purgePolicy = new PurgePolicy();
 		this.affinity = new LinkedHashSet<String>();
+		// timeout defaults of Maven 3.0.4
+		this.connectTimeout = 20;
+		this.readTimeout = 1800;
 	}
 
 	@Override
@@ -181,14 +193,17 @@ public class Repository {
 			return hashCode;
 		} catch (FileNotFoundException t) {
 			// this repository does not have the requested artifact
+		} catch (ConnectException t) {
+			// this repository does not have the requested artifact
+			solver.getConsole().error("Connection error retrieving SHA1 for \"{0}\": {1}", dep.getDetailedCoordinates(), t.getMessage());
 		} catch (IOException t) {
 			if (t.getMessage().contains("400") || t.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				solver.getConsole().error(t, "Error retrieving SHA1 for {0}", dep);
+				solver.getConsole().error(t, "Error retrieving SHA1 for {0}", dep.getDetailedCoordinates());
 			}
 		} catch (Throwable t) {
-			solver.getConsole().error(t, "Error retrieving SHA1 for {0}", dep);
+			solver.getConsole().error(t, "Error retrieving SHA1 for {0}", dep.getDetailedCoordinates());
 		}
 		return null;
 	}
@@ -384,11 +399,14 @@ public class Repository {
 			solver.getConsole().error(m);
 		} catch (FileNotFoundException e) {
 			// this repository does not have the requested artifact
-			solver.getConsole().debug(2, "{0} not found @ {1} repository", dep.getCoordinates(), name);
+			solver.getConsole().debug(2, "{0} not found @ {1} repository", dep.getDetailedCoordinates(), name);
+		} catch (ConnectException t) {
+			// this repository does not have the requested artifact
+			solver.getConsole().error("Connection error retrieving \"{0}\": {1}", dep.getDetailedCoordinates(), t.getMessage());
 		} catch (IOException e) {
 			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
 				// disregard bad request and not found responses
-				solver.getConsole().debug(2, "{0} not found @ {1} repository", dep.getCoordinates(), name);
+				solver.getConsole().debug(2, "{0} not found @ {1} repository", dep.getDetailedCoordinates(), name);
 			} else {
 				java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, repositoryUrl);
 				if (java.net.Proxy.Type.DIRECT == proxy.type()) {
@@ -412,6 +430,16 @@ public class Repository {
 			String auth = solver.getBuildConfig().getProxyAuthorization(name, repositoryUrl);
 			conn.setRequestProperty("Proxy-Authorization", auth);
 		}
+		
+		if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
+			// set basic authentication header
+			String auth = Base64.encodeBytes((username + ":" + password).getBytes());
+			conn.setRequestProperty("Authorization", "Basic " + auth);			
+		}
+		
+		// configure timeouts
+		conn.setConnectTimeout(connectTimeout*1000);
+		conn.setReadTimeout(readTimeout*1000);
 
 		// try to get the server-specified last-modified date of this artifact
 		lastModified = conn.getHeaderFieldDate("Last-Modified", lastModified);
