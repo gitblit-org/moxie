@@ -897,6 +897,7 @@ public class ToolkitConfig implements Serializable {
 
 		dependencyDirectory = parent.dependencyDirectory;
 		sourceDirectories = parent.sourceDirectories;
+		resourceDirectories = parent.resourceDirectories;
 		outputDirectory = parent.outputDirectory;
 		targetDirectory = parent.targetDirectory;
 		apply = parent.apply;

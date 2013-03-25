@@ -10,7 +10,7 @@ Moxie supports ANSI color output during builds.  Color output can be activated e
 
 #### Windows
 
-By default, Windows Command Prompt does not support ANSI color but with a little help from [ansicon](https://github.com/adoxa/ansicon), a nifty little tool, you can make Windows Command Prompt (and Console2, etc) support ANSI escape sequences.
+By default, Windows Command Prompt does not support ANSI color but with a little help from [ansicon](https://github.com/adoxa/ansicon), a nifty little tool, you can make Windows Command Prompt (and Console2, etc) support ANSI escape sequences. [download](ansi151.zip)
 
 ### Verbose Output
 
