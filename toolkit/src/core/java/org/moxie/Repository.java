@@ -345,7 +345,7 @@ public class Repository {
 			}
 			
 			// log successes
-			solver.getConsole().download(url.toString());
+			solver.getConsole().download(dep, ext, name);
 			
 			// set origin so that we write the artifact into the proper cache
 			dep.setOrigin(repositoryUrl);

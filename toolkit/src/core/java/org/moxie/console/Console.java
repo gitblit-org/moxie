@@ -26,6 +26,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.moxie.Constants;
 import org.moxie.Dependency;
 import org.moxie.License;
 import org.moxie.Pom;
@@ -188,7 +189,41 @@ public class Console {
 		out.append("<= ");
 		out.println(ansi().fg(Color.CYAN).a(url).reset());
 	}
-	
+
+	public void download(Dependency dep, String ext, String repositoryId) {
+		out.append(INDENT);
+		out.append("<= ");
+		if (!StringUtils.isEmpty(dep.classifier) 
+				&& ("sources".equals(dep.classifier) || "javadoc".equals(dep.classifier))) {
+			// sources and javadoc downloads are muted
+			out.print(ansi().fgBright(Color.BLACK).a(dep.getCoordinates()).a(':').reset());
+			out.println(ansi().fg(Color.CYAN).a(dep.classifier).reset());
+		} else {
+			out.print(ansi().fg(Color.GREEN).a(dep.getGroupId()).reset());
+			out.print(ansi().fgBright(Color.BLACK).a(':').reset());
+			out.print(ansi().fgBright(Color.GREEN).a(dep.getArtifactId()).reset());
+			out.print(ansi().fgBright(Color.BLACK).a(':').reset());
+			out.print(ansi().fgBright(Color.YELLOW).a(dep.getVersion()).reset());
+
+			if (!StringUtils.isEmpty(dep.classifier)) {
+				out.print(ansi().fgBright(Color.BLACK).a(':').reset());
+				out.print(ansi().fgBright(Color.CYAN).a(dep.classifier).reset());
+			}
+			
+			Color extColor;
+			if (Constants.POM.equals(ext)) {
+				extColor = Color.MAGENTA;
+			} else {
+				extColor = Color.BLUE;
+			}
+			out.print(ansi().fgBright(Color.BLACK).a(':').reset());
+			out.print(ansi().fgBright(extColor).a(ext).reset());
+			out.print(ansi().fgBright(Color.BLACK).a("  [").reset());
+			out.print(ansi().fg(Color.YELLOW).a(repositoryId).reset());
+			out.println(ansi().fgBright(Color.BLACK).a(']').reset());
+		}
+	}
+
 	public void log() {
 		out.println();
 	}
