@@ -196,18 +196,15 @@ public class Console {
 		if (!StringUtils.isEmpty(dep.classifier) 
 				&& ("sources".equals(dep.classifier) || "javadoc".equals(dep.classifier))) {
 			// sources and javadoc downloads are muted
-			out.print(ansi().fgBright(Color.BLACK).a(dep.getCoordinates()).a(':').reset());
+			out.print(ansi().bold().fg(Color.BLACK).a(dep.getCoordinates()).a(':').reset());
 			out.println(ansi().fg(Color.CYAN).a(dep.classifier).reset());
 		} else {
-			out.print(ansi().fg(Color.GREEN).a(dep.getGroupId()).reset());
-			out.print(ansi().fgBright(Color.BLACK).a(':').reset());
-			out.print(ansi().fgBright(Color.GREEN).a(dep.getArtifactId()).reset());
-			out.print(ansi().fgBright(Color.BLACK).a(':').reset());
-			out.print(ansi().fgBright(Color.YELLOW).a(dep.getVersion()).reset());
+			Ansi ansi = ansi().fg(Color.GREEN).a(dep.getGroupId()).reset();
+			ansi.bold().fg(Color.BLACK).a(':').fg(Color.GREEN).a(dep.getArtifactId());
+			ansi.fg(Color.BLACK).a(':').fg(Color.YELLOW).a(dep.getVersion());
 
 			if (!StringUtils.isEmpty(dep.classifier)) {
-				out.print(ansi().fgBright(Color.BLACK).a(':').reset());
-				out.print(ansi().fgBright(Color.CYAN).a(dep.classifier).reset());
+				ansi.fg(Color.BLACK).a(':').fg(Color.CYAN).a(dep.classifier);
 			}
 			
 			Color extColor;
@@ -216,11 +213,16 @@ public class Console {
 			} else {
 				extColor = Color.BLUE;
 			}
-			out.print(ansi().fgBright(Color.BLACK).a(':').reset());
-			out.print(ansi().fgBright(extColor).a(ext).reset());
-			out.print(ansi().fgBright(Color.BLACK).a("  [").reset());
-			out.print(ansi().fg(Color.YELLOW).a(repositoryId).reset());
-			out.println(ansi().fgBright(Color.BLACK).a(']').reset());
+			ansi.fg(Color.BLACK).a(':').fg(extColor).a(ext);
+			// 19 is leading task, indent, and <=
+			int delta = 80 - dep.getDetailedCoordinates().length() - 19;
+			if (delta > 0) {
+				String gap = StringUtils.createBlank(delta);
+				ansi.a(gap);
+			}
+			ansi.fg(Color.BLACK).a('[').boldOff().fg(Color.CYAN).a(repositoryId);
+			ansi.bold().fg(Color.BLACK).a(']').reset();
+			out.println(ansi);
 		}
 	}
 
