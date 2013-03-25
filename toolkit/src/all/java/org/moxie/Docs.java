@@ -267,7 +267,10 @@ public class Docs {
 									}
 									String hunk = sb.toString();
 
-									if (nomarkdown instanceof WikiText) {
+									if (nomarkdown instanceof ExcludeText) {
+										// exclude this hunk from the output html
+										nomarkdownMap.put(nomarkdownKey, "");
+									} else if (nomarkdown instanceof WikiText) {
 										// convert this hunk to html from a wiki format
 										StringWriter writer = new StringWriter();
 

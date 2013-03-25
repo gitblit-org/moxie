@@ -38,6 +38,7 @@ import org.moxie.DocMenu;
 import org.moxie.DocPage;
 import org.moxie.DocStructure;
 import org.moxie.Docs;
+import org.moxie.ExcludeText;
 import org.moxie.Load;
 import org.moxie.Logo;
 import org.moxie.NoMarkdown;
@@ -48,8 +49,8 @@ import org.moxie.Scope;
 import org.moxie.Substitute;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
-import org.moxie.WikiText.Syntax;
 import org.moxie.WikiText;
+import org.moxie.WikiText.Syntax;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.LessUtils;
 import org.moxie.utils.StringUtils;
@@ -326,6 +327,7 @@ public class MxDoc extends MxTask {
 		createNomarkdown().configure("---NOMARKDOWN---", false, false);
 		createNomarkdown().configure("---ESCAPE---", true, false);
 		createNomarkdown().configure("---FIXED---", true, true);
+		doc.nomarkdowns.add(new ExcludeText("---EXCLUDE---"));
 		
 		// wikitext transform directives
 		createWikiText().configureSyntax(Syntax.TWIKI);

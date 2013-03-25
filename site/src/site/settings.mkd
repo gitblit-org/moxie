@@ -66,6 +66,7 @@ registeredRepositories:
 
 <hr />
 
+---EXCLUDE---
 ### Parallel Artifact Downloads
 <div class="row">
 <div class="span7">
@@ -74,12 +75,13 @@ Moxie can download multiple artifacts concurrently.  It does this using a fixed 
 
 <div class="span5">
 ---YAML---
-parallelDownloads: true
+parallelDownloads: false
 ---YAML---
 </div>
 </div>
 
 <hr />
+---EXCLUDE---
 
 ### Fail Fast
 

@@ -44,12 +44,13 @@ repositories: 'central'
 updatePolicy: daily
 
 # Setting to control simultaneous artifact retrieval
+# EXPERIMENTAL
 #
 # This uses a fixed thread pool of the number of procesors and an executor service.
 # POMs are not downloaded in parallel because they are parsed and recursively
 # traversed for declared dependencies.  This setting affects retrieval of jars
 # and other binary artifacts.
-parallelDownloads: true
+parallelDownloads: false
 
 # Should the build immediately fail if an artifact can not be immediately
 # resolved from the remote repositories or the local cache?
