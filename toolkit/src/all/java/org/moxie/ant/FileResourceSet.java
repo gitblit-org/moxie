@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.apache.tools.ant.types.AbstractFileSet;
+import org.apache.tools.ant.types.Resource;
 import org.apache.tools.ant.types.ResourceCollection;
 import org.apache.tools.ant.types.resources.FileResource;
 
@@ -33,7 +34,7 @@ public class FileResourceSet extends AbstractFileSet implements ResourceCollecti
 		this.resources = new ArrayList<FileResource>(resources);
 	}
 	
-	public Iterator<FileResource> iterator() {
+	public Iterator<Resource> iterator() {
 		return new ResolvedFileIterator();
 	}
 	
@@ -41,7 +42,7 @@ public class FileResourceSet extends AbstractFileSet implements ResourceCollecti
 		return resources.size();
 	}
 	
-	class ResolvedFileIterator implements Iterator<FileResource> {
+	class ResolvedFileIterator implements Iterator<Resource> {
 	    private int pos = 0;
 
 	    public ResolvedFileIterator() {

@@ -22,6 +22,7 @@ r6: {
      - Improved version range support by integrating Maven's VersionRange and Restriction classes
      - Download javadoc artifacts for repository parity with Maven
 	 - Improve dynamic classpath loading
+     - Adjustments to work on both Ant 1.8.x and 1.9.x
     additions:
 	 - Added support for submenus in mx:Doc
 	 - Added support for co-mingling wiki syntax with Markdown in mx:Doc documents
@@ -40,6 +41,7 @@ r6: {
 	 - org.fusesource.wikitext:tracwiki-core:1.4
 	 - org.fusesource.wikitext:mediawiki-core:1.4
 	 - org.fusesource.wikitext:confluence-core:1.4
+     - org.apache.ant:ant:1.9.0
     contributors: ~
 }
 

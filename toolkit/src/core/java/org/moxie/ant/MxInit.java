@@ -18,6 +18,7 @@ package org.moxie.ant;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -73,12 +74,14 @@ public class MxInit extends MxTask {
             getProject().setProperty("env." + entry.getKey(), entry.getValue());
         }
 		
-		// push all mx properties from ant into system 
-		Map<String,String> antProperties = getProject().getProperties();
-		for (Map.Entry<String, String> entry : antProperties.entrySet()) {
+		// push all mx properties from ant into system
+        // create properties map - this is written to work on Ant 1.8 and 1.9
+		Map<String, String> antProperties = new HashMap<String, String>();
+		for (Map.Entry<String, Object> entry : (Iterable<Map.Entry<String, Object>>) getProject().getProperties().entrySet()) {
 			if (entry.getKey().startsWith("mx.")) {
-				System.setProperty(entry.getKey(), entry.getValue());
+				System.setProperty(entry.getKey(), entry.getValue().toString());
 			}
+			antProperties.put(entry.getKey(), entry.getValue().toString());
 		}
 		
 		try {
