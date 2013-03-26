@@ -46,11 +46,23 @@
 <ul class='dropdown-menu'>
 <li><a href='gettingstarted.html'>getting started</a></li>
 <li><a href='moxiedescriptor.html'>build.moxie</a></li>
-<li><a href='settings.html'>settings.moxie</a></li>
 <li><a href='defaults.html'>defaults.moxie</a></li>
+<li><a href='settings.html'>settings.moxie</a></li>
+<li><a href='tipsandtricks.html'>tips & tricks</a></li>
+<li><a href='properties.html'>ant property reference</a></li>
 </ul></li> <!-- End Menu -->
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>core tasks</a>
+<ul class='dropdown-menu'>
+<li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxreport.html'>mx:Report</a></li>
+<li><a href='mxget.html'>mx:Get</a></li>
+</ul></li> <!-- End Submenu -->
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>all tasks</a>
 <ul class='dropdown-menu'>
 <li><a href='mxclean.html'>mx:Clean</a></li>
 <li><a href='mxdeploy.html'>mx:Deploy</a></li>
@@ -60,11 +72,12 @@
 <li><a href='mxgenjar.html'>mx:GenJar</a></li>
 <li><a href='mxget.html'>mx:Get</a></li>
 <li><a href='mxghpages.html'>mx:GhPages</a></li>
+<li><a href='mxgroovy.html'>mx:Groovy</a></li>
 <li><a href='mxcommitid.html'>mx:CommitId</a></li>
 <li><a href='mxcommit.html'>mx:Commit</a></li>
 <li><a href='mxif.html'>mx:If</a></li>
-<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxjar.html'>mx:Jar</a></li>
 <li><a href='mxjavac.html'>mx:Javac</a></li>
 <li><a href='mxjavadoc.html'>mx:Javadoc</a></li>
@@ -73,11 +86,12 @@
 <li><a href='mxrun.html'>mx:Run</a></li>
 <li><a href='mxtar.html'>mx:Tar</a></li>
 <li><a href='mxtest.html'>mx:Test</a></li>
-<li><a href='mxthumb.html'>mx:Thumb</a></li>
+<li><a href='mxthumbs.html'>mx:Thumbs</a></li>
 <li><a href='mxversion.html'>mx:Version</a></li>
 <li><a href='mxwar.html'>mx:War</a></li>
 <li><a href='mxwebxml.html'>mx:WebXml</a></li>
 <li><a href='mxzip.html'>mx:Zip</a></li>
+</ul></li> <!-- End Submenu -->
 </ul></li> <!-- End Menu -->
 <li><a href='moxie+ant.html'>moxie+ant</a></li>
 <li><a href='proxy.html'>proxy</a></li>
@@ -86,23 +100,17 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-pro.jar'>moxie toolkit (pro)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2.jar'>moxie toolkit (all)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-sources.jar'>moxie toolkit (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2.zip'>moxie-proxy</a></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2-sources.jar'>moxie-proxy (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-proxy/0.7.0/moxie-proxy-0.7.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.zip'>moxie+ant (zip)</a></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.tar.gz'>moxie+ant (tar.gz)</a></li>
-<li class='divider'></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2.jar'>maxml</a></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2-sources.jar'>maxml-sources</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
-<li><a href='maven'>Maven Repository</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://moxie.gitblit.com'></g:plusone></div></li>
@@ -115,31 +123,56 @@
 <!-- Begin Markdown -->
 
 <!-- CURRENT RELEASE -->
-	<h3 id="0.6.2" class="section"><a href="#0.6.2" class="sectionlink"><i class="icon-share-alt"> </i></a>Current Release (0.6.2) <small>this is the current stable release</small></h3>
+	<h3 id="0.7.0" class="section"><a href="#0.7.0" class="sectionlink"><i class="icon-share-alt"> </i></a>Current Release (0.7.0) <small>this is the current stable release</small></h3>
 	<table class="table">
 		<tbody>
 			<tr>
-				<td style="background-color:inherit;width:100px">2013-03-08</td>
-				<td style="background-color:inherit;">		<p class="lead">Moxie Build Toolkit 0.6.2 released</p>		
-	
+				<td style="background-color:inherit;width:100px">2013-03-25</td>
+				<td style="background-color:inherit;">	
 	
 
 
    	<h4>fixes</h4>
 	<ul>
-		<li>fixed mx:Doc nomarkdown processing which dropped the next line after a nomarkdown block</li>
+		<li>Fixed repository affinity checking when there are cached solutions with an origin</li>
+		<li>Fixed quote/double-quote stripping for inline lists</li>
+		<li>Fixed new project creation for Moxie+Ant</li>
+		<li>Do not use cached metadata checksums when retrieving fresh metadata files</li>
 	</ul>
    	<h4>changes</h4>
 	<ul>
-		<li>add scope attribute to mx:Run to allow running classes with test classpath</li>
-		<li>add redirect attribute to mx:Javadoc as a short alternative to specifying a complete redirector</li>
-		<li>add ${project.javadocTargetDirectory} to Ant properties</li>
-		<li>automatically create javadoc jar file in mx:Javadoc</li>
-		<li>automatically copy site resource directories in mx:Doc</li>
-		<li>support and bundle prettify themes</li>
-		<li>support redirect boolean attribute on mx:Javadoc</li>
-		<li>support scope attribute on mx:Run to allow running classes on test classpath, for example</li>
-		<li>support ---NOMARKDOWN--- tag to start and end a block</li>
+		<li>Use WebJars for all js &amp; css dependencies.  This shrinks the full toolkit jar by ~200K.</li>
+		<li>Eliminated the pro toolkit.  This simplifies things to -core and the full toolkit.</li>
+		<li>Improved Moxie Toolkit registration section of build.xml archetypes</li>
+		<li>Split mx:Doc Link class into several model classes to improve Ant tab-completion</li>
+		<li>Improved version range support by integrating Maven's VersionRange and Restriction classes</li>
+		<li>Download javadoc artifacts for repository parity with Maven</li>
+		<li>Improve dynamic classpath loading</li>
+		<li>Adjustments to work on both Ant 1.8.x and 1.9.x</li>
+	</ul>
+   	<h4>additions</h4>
+	<ul>
+		<li>Added support for submenus in mx:Doc</li>
+		<li>Added support for co-mingling wiki syntax with Markdown in mx:Doc documents</li>
+		<li>Added connectTimeout and readTimeout settings for repositories</li>
+		<li>Added username and password settings for repositories</li>
+	</ul>
+   	<h4>dependency changes</h4>
+	<ul>
+		<li>org.webjars:bootstrap:2.3.1</li>
+		<li>org.webjars:jquery:1.9.1</li>
+		<li>org.webjars:prettify:1-Jun-2011</li>
+		<li>org.webjars:d3js:2.10.3</li>
+		<li>com.asual.lesscss:lesscss-engine:1.3.3</li>
+		<li>org.codehaus.groovy:groovy-all:1.8.8</li>
+		<li>org.fusesource.wikitext:wikitext-core:1.4</li>
+		<li>org.fusesource.wikitext:twiki-core:1.4</li>
+		<li>org.fusesource.wikitext:textile-core:1.4</li>
+		<li>org.fusesource.wikitext:tracwiki-core:1.4</li>
+		<li>org.fusesource.wikitext:mediawiki-core:1.4</li>
+		<li>org.fusesource.wikitext:confluence-core:1.4</li>
+		<li>org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r</li>
+		<li>org.apache.ant:ant:1.9.0</li>
 	</ul>
 </td>
 			</tr>
@@ -155,7 +188,7 @@
 </div>
 
 <!-- End Markdown -->
-<footer class="footer"><p class="pull-right">generated 2013-03-08</p>
+<footer class="footer"><p class="pull-right">generated 2013-03-25</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

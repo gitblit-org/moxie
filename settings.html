@@ -46,11 +46,23 @@
 <ul class='dropdown-menu'>
 <li><a href='gettingstarted.html'>getting started</a></li>
 <li><a href='moxiedescriptor.html'>build.moxie</a></li>
-<li><a href='settings.html'>settings.moxie</a></li>
 <li><a href='defaults.html'>defaults.moxie</a></li>
+<li><a href='settings.html'>settings.moxie</a></li>
+<li><a href='tipsandtricks.html'>tips & tricks</a></li>
+<li><a href='properties.html'>ant property reference</a></li>
 </ul></li> <!-- End Menu -->
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>core tasks</a>
+<ul class='dropdown-menu'>
+<li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxreport.html'>mx:Report</a></li>
+<li><a href='mxget.html'>mx:Get</a></li>
+</ul></li> <!-- End Submenu -->
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>all tasks</a>
 <ul class='dropdown-menu'>
 <li><a href='mxclean.html'>mx:Clean</a></li>
 <li><a href='mxdeploy.html'>mx:Deploy</a></li>
@@ -60,11 +72,12 @@
 <li><a href='mxgenjar.html'>mx:GenJar</a></li>
 <li><a href='mxget.html'>mx:Get</a></li>
 <li><a href='mxghpages.html'>mx:GhPages</a></li>
+<li><a href='mxgroovy.html'>mx:Groovy</a></li>
 <li><a href='mxcommitid.html'>mx:CommitId</a></li>
 <li><a href='mxcommit.html'>mx:Commit</a></li>
 <li><a href='mxif.html'>mx:If</a></li>
-<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxjar.html'>mx:Jar</a></li>
 <li><a href='mxjavac.html'>mx:Javac</a></li>
 <li><a href='mxjavadoc.html'>mx:Javadoc</a></li>
@@ -73,11 +86,12 @@
 <li><a href='mxrun.html'>mx:Run</a></li>
 <li><a href='mxtar.html'>mx:Tar</a></li>
 <li><a href='mxtest.html'>mx:Test</a></li>
-<li><a href='mxthumb.html'>mx:Thumb</a></li>
+<li><a href='mxthumbs.html'>mx:Thumbs</a></li>
 <li><a href='mxversion.html'>mx:Version</a></li>
 <li><a href='mxwar.html'>mx:War</a></li>
 <li><a href='mxwebxml.html'>mx:WebXml</a></li>
 <li><a href='mxzip.html'>mx:Zip</a></li>
+</ul></li> <!-- End Submenu -->
 </ul></li> <!-- End Menu -->
 <li><a href='moxie+ant.html'>moxie+ant</a></li>
 <li><a href='proxy.html'>proxy</a></li>
@@ -86,23 +100,17 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-pro.jar'>moxie toolkit (pro)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2.jar'>moxie toolkit (all)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-sources.jar'>moxie toolkit (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2.zip'>moxie-proxy</a></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2-sources.jar'>moxie-proxy (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-proxy/0.7.0/moxie-proxy-0.7.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.zip'>moxie+ant (zip)</a></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.tar.gz'>moxie+ant (tar.gz)</a></li>
-<li class='divider'></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2.jar'>maxml</a></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2-sources.jar'>maxml-sources</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
-<li><a href='maven'>Maven Repository</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://moxie.gitblit.com'></g:plusone></div></li>
@@ -114,118 +122,169 @@
 <div class='container'>
 <!-- Begin Markdown -->
 <h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>settings.moxie</h2>
+<p>The <code>settings.moxie</code> file is used to control Moxie's behavior across all builds.</p>
+
 <h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Proxies</h3>
-<p>Moxie automatically uses all proxy definitions from your local Maven settings
-(~/.m2/settings.xml) and also from your local Moxie settings
-(~/.moxie/settings.moxie).</p>
+<p>Moxie automatically uses all proxy definitions <u>from your <b>local Maven settings</b></u> (<em>~/.m2/settings.xml</em>).  Moxie also supports proxy definitions in it's own <b>local Moxie settings</b> (<em>~/.moxie/settings.moxie</em>).</p>
 
-<p>Unlike Maven, which assumes you will proxy everything and requires
-you to manually exclude hostnames (i.e. opt-out), Moxie allows you
-to specify what repositories will be proxied by a proxy definition
-(i.e. opt-in). If this is undesirable, Moxie also supports Maven-style
-opt-out proxy definitions too. </p>
+<p>Unlike Maven, which assumes you will proxy everything and requires you to manually exclude hostnames (i.e. <em>opt-out</em>), Moxie supports <em>opt-in</em> proxy definitions which allows you to specify what repositories will be proxied by a proxy definition. If this is undesirable, Moxie also supports Maven-style <em>opt-out</em> proxy definitions too. </p>
 
-<p>If you want Moxie proxy settings, copy and edit the following example
-opt-in proxy definition to a new text file: ~/.moxie/settings.moxie</p>
+<p>If you want to define proxy settings, copy and edit one of the following example proxy definitions to a new text file: <em>~/.moxie/settings.moxie</em></p>
 
-<h4 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>example standard network proxy configuration</h4>
-<p><pre class='prettyprint lang-yaml'>
-- { id: myproxy, active: false, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }
-</pre></p>
-
-<h4 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>example Moxie Proxy configuration</h4>
-<p>only the identified repositories are proxied through this connection</p>
+<h4 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Example standard network proxy configuration</h4>
+<p>All repositories are proxied through this connection.</p>
 
 <p><pre class='prettyprint lang-yaml'>
-- { id: moxieProxy, active: false,	protocol: http, host: moxie.somewhere.com, port: 8081, username: proxyuser, password: somepassword, repositories: &quot;central, mavencentral, restlet, codehaus&quot; }
+proxies:
+- {
+    id: 'myproxy'
+    active: true
+    protocol: 'http'
+    host: 'proxy.somewhere.com'
+    port: 8080
+    username: 'proxyuser'
+    password: 'somepassword'
+  }
 </pre></p>
 
-<p>Should the build immediately fail if an artifact can not be immediately
-resolved from the remote repositories or the local cache?
-failFastOnArtifactResolution: true</p>
+<h4 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Example Moxie Proxy configuration</h4>
+<p>Only the identified repositories are proxied through this connection.</p>
 
-<p>Default snapshot revision purge policy
-Default minimum count of snapshot revisions to keep
-minimum acceptable value is 1
-revisionRetentionCount: 1</p>
+<p><pre class='prettyprint lang-yaml'>
+proxies:
+- {
+    id: 'moxieProxy'
+    active: true
+    protocol: 'http'
+    host: 'moxie.somewhere.com'
+    port: 8081
+    username: 'proxyuser'
+    password: 'somepassword'
+    repositories: &quot;central, mavencentral, restlet, codehaus, sonatype-oss&quot;
+  }
+</pre></p>
 
-<p>if the count of snapshot revisions exceeds the specified retention count,
-then delete all snapshot revisions older than this count of days
-revisionPurgeAfterDays: 0</p>
+<hr/>
+<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Registered Repositories</h3>
+<p>This section is used to define remote artifact repositories.  Currently only http/https repositories are supported.</p>
 
-<p>Registered Maven 2 repositories.  This section is used to define id-url
-pairs so that project descriptors can specify an repository id, rather than
-a complete url.  A repository definition can override the default snapshot
-revision purge policy.
+<p>The default <em>connectTimeout</em> is 20 seconds.<br/>
+The default <em>readTimeout</em> is 1800 seconds (30 mins).</p>
+
+<p><pre class='prettyprint lang-yaml'>
 registeredRepositories:
-- { id: central, url: 'http://repo1.maven.org/maven2' }
-- { id: mavencentral, url: 'http://repo1.maven.org/maven2' }
-- { id: restlet, url: 'http://maven.restlet.org', revisionRetentionCount: 1, revisionPurgeAfterDays: 0 }
-- { id: codehaus, url: 'http://repository.codehaus.org' }</p>
+- { id: 'central', url: 'http://repo1.maven.org/maven2' }
+- { id: 'mavencentral', url: 'http://repo1.maven.org/maven2' }
+- { id: 'codehaus', url: 'http://repository.codehaus.org' }
+- {
+    id: 'sonatype-oss'
+    url: 'https://oss.sonatype.org/content/groups/public'
+    # Snapshot Purge Policy
+    revisionRetentionCount: 1
+    revisionPurgeAfterDays: 0
+  }
+- {
+    id: 'restlet'
+    url: 'http://maven.restlet.org'
+    # Snapshot Purge Policy
+    revisionRetentionCount: 1
+    revisionPurgeAfterDays: 0
+    # Artifact affinities
+    affinity: [ 'org.restlet' ]
+    # seconds to wait till connected
+    connectTimeout: 20
+    # seconds to wait on read
+    readTimeout: 1800
+    # authentication credentials
+    username: 'someuser'
+    password: 'mypassword'
+  }
+</pre></p>
 
-<p>Default repositories for dependency retrieval
-repositories: central</p>
+<hr/>
+<p></p>
 
-<p>Managed dependencies are used to specify versions of dependencies
-if those versions are not specified in the project's build.moxie.
-dependencyManagement:
-- 'junit:junit:4.11'
-- 'org.testng:testng:6.8'
-- 'net.sourceforge.cobertura:cobertura:1.9.4.1'
-- 'emma:emma:2.1.5320'
-- 'org.eclipse.jgit:org.eclipse.jgit:2.2.0.201212191850-r'
-- 'org.tautua.markdownpapers:markdownpapers-core:1.3.2'
-- 'org.freemarker:freemarker:2.3.19'
-- 'org.mozilla:rhino:1.7R4'
-- 'org.jacoco:org.jacoco.ant:0.6.1.201212231917'</p>
+<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Fail Fast</h3>
+<div class="row">
+<div class="span7">
+Should the build immediately fail if an artifact can not be immediately resolved from the remote repositories or the local cache?
+</div>
 
-<p>dependency aliases allow you to specify shorthand notation for a dependency
-which will be resolved at runtime to the full coordinates.
-dependencyAliases: {
-junit: 'junit:junit'
-testng: 'org.testng:testng'
-cobertura: 'net.sourceforge.cobertura:cobertura'
-emma: 'emma:emma'
-jacoco: 'org.jacoco:org.jacoco.ant'
-'mx:jgit' : 'org.eclipse.jgit:org.eclipse.jgit'
-'mx:markdownpapers' : 'org.tautua.markdownpapers:markdownpapers-core'
-'mx:rhino' : 'org.mozilla:rhino'
-}</p>
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+failFastOnArtifactResolution: true
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Metadata Update Policy</h3>
+<div class="row">
+<div class="span7">
+Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT.
+<dl>
+  <dt>always</dt><dd>always check when for newer versions</dd>
+  <dt>never</dt><dd>never check when for newer versions</dd>
+  <dt>daily</dt><dd>(default) - check on the first run of the day (local time)</dd>
+  <dt>interval:NNN</dt><dd>check every NNN minutes (default is 60 mins)</dd>
+</dl>
+</div>
 
-<p>Dependency overrides are used to redefine the dependencies of released/published
-POMs from other projects.  The most common use case would be to add undeclared
-dependencies for old POMs or to purposefully exclude dependencies from specific scopes.</p>
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+updatePolicy: 'daily'
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H8"><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Snapshot Purge Policy</h3>
+<div class="row">
+<div class="span7">
+Default minimum count of snapshot revisions to keep.<br/>
+The minimum acceptable value is 1.<br/>
+The maximum acceptable value is is 100.
+</div>
 
-<p>Moxie uses this feature to simplify specification of &quot;build&quot; scope dependencies so that
-enabling Cobertura, Emma, or TestNG is as easy as adding a single build dependency.</p>
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+revisionRetentionCount: 1
+</pre>
+</div>
+</div>
+<hr/>
+<div class="row">
+<div class="span7">
+If the count of snapshot revisions exceeds the specified retention count, then delete all snapshot revisions older than this count of days.<br/>
+The maximum acceptable value is 1000.
+</div>
 
-<p>You must declare the full coordinates of the dependency to tweak, property substitution
-is prohibited.  You may specify the scopes for which your override applies.  If no scope
-is specified ALL scopes are assumed.</p>
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+revisionPurgeAfterDays: 0
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H9"><a href="#H9" class="sectionlink"><i class="icon-share-alt"> </i></a>Maven Cache Strategy</h3>
+<div class="row">
+<div class="span7">
+Defines how to use the <em>${user.home}/.m2/repository</em> folder.
+<br/>
+Options are:
+<dl>
+  <dt>IGNORE</dt><dd>ignore Maven cache entirely</dd>
+  <dt>LINK</dt><dd>use Maven cache artifacts directly, not recommended</dd>
+  <dt>COPY</dt><dd>copy Maven cache artifacts into Moxie's local repository</dd>
+</dl>
+</div>
 
-<p>Be careful when using dependency overrides!
-dependencyOverrides: {</p>
-
-<p>cobertura: redefine ant as optional for build scope
-'net.sourceforge.cobertura:cobertura:1.9.4.1' : {
-scope: build
-dependencies:
-- compile 'oro:oro:2.0.8'
-- compile 'asm:asm:3.0'
-- compile 'asm:asm-tree:3.0'
-- compile 'log4j:log4j:1.2.9'
-- compile 'org.apache.ant:ant:1.7.0' optional
-}</p>
-
-<p>emma: add emma_ant dependency for build scope
-'emma:emma:2.1.5320' : {
-scope: build
-dependencies:
-- compile 'emma:emma_ant:2.1.5320'
-}
-}
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+mavenCacheStrategy: 'IGNORE'
+</pre>
+</div>
+</div>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="moxiedescriptor.html">&larr; build.moxie</a></li> <li class="next"><a href="defaults.html">defaults.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-08</p>
+<div ><ul class="pager"><li class="previous"><a href="defaults.html">&larr; defaults.moxie</a></li> <li class="next"><a href="tipsandtricks.html">tips & tricks &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-25</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

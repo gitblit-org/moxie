@@ -46,11 +46,23 @@
 <ul class='dropdown-menu'>
 <li><a href='gettingstarted.html'>getting started</a></li>
 <li><a href='moxiedescriptor.html'>build.moxie</a></li>
-<li><a href='settings.html'>settings.moxie</a></li>
 <li><a href='defaults.html'>defaults.moxie</a></li>
+<li><a href='settings.html'>settings.moxie</a></li>
+<li><a href='tipsandtricks.html'>tips & tricks</a></li>
+<li><a href='properties.html'>ant property reference</a></li>
 </ul></li> <!-- End Menu -->
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>core tasks</a>
+<ul class='dropdown-menu'>
+<li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxreport.html'>mx:Report</a></li>
+<li><a href='mxget.html'>mx:Get</a></li>
+</ul></li> <!-- End Submenu -->
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>all tasks</a>
 <ul class='dropdown-menu'>
 <li><a href='mxclean.html'>mx:Clean</a></li>
 <li><a href='mxdeploy.html'>mx:Deploy</a></li>
@@ -60,11 +72,12 @@
 <li><a href='mxgenjar.html'>mx:GenJar</a></li>
 <li><a href='mxget.html'>mx:Get</a></li>
 <li><a href='mxghpages.html'>mx:GhPages</a></li>
+<li><a href='mxgroovy.html'>mx:Groovy</a></li>
 <li><a href='mxcommitid.html'>mx:CommitId</a></li>
 <li><a href='mxcommit.html'>mx:Commit</a></li>
 <li><a href='mxif.html'>mx:If</a></li>
-<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxjar.html'>mx:Jar</a></li>
 <li><a href='mxjavac.html'>mx:Javac</a></li>
 <li><a href='mxjavadoc.html'>mx:Javadoc</a></li>
@@ -73,11 +86,12 @@
 <li><a href='mxrun.html'>mx:Run</a></li>
 <li><a href='mxtar.html'>mx:Tar</a></li>
 <li><a href='mxtest.html'>mx:Test</a></li>
-<li><a href='mxthumb.html'>mx:Thumb</a></li>
+<li><a href='mxthumbs.html'>mx:Thumbs</a></li>
 <li><a href='mxversion.html'>mx:Version</a></li>
 <li><a href='mxwar.html'>mx:War</a></li>
 <li><a href='mxwebxml.html'>mx:WebXml</a></li>
 <li><a href='mxzip.html'>mx:Zip</a></li>
+</ul></li> <!-- End Submenu -->
 </ul></li> <!-- End Menu -->
 <li><a href='moxie+ant.html'>moxie+ant</a></li>
 <li><a href='proxy.html'>proxy</a></li>
@@ -86,23 +100,17 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-pro.jar'>moxie toolkit (pro)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2.jar'>moxie toolkit (all)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-sources.jar'>moxie toolkit (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2.zip'>moxie-proxy</a></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2-sources.jar'>moxie-proxy (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-proxy/0.7.0/moxie-proxy-0.7.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.zip'>moxie+ant (zip)</a></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.tar.gz'>moxie+ant (tar.gz)</a></li>
-<li class='divider'></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2.jar'>maxml</a></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2-sources.jar'>maxml-sources</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
-<li><a href='maven'>Maven Repository</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://moxie.gitblit.com'></g:plusone></div></li>
@@ -113,127 +121,174 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h1 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>defaults.moxie</h1>
-<p>This file defines the default values for all Moxie projects.</p>
+<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>defaults.moxie</h2>
+<p>This file defines the default values for all Moxie projects.  It is usually loaded from the Moxie jar file unless <em>${user.home}/.moxie/defaults.moxie</em> is present.</p>
 
-<p>Defines how to use the ${user.home}/.m2/repository folder
-Options are:
-IGNORE   (ignore Maven cache entirely)
-LINK     (use Maven cache artifacts directly, not recommended)
-COPY     (copy Maven cache artifacts into Moxie's local repository)
-mavenCacheStrategy: COPY</p>
+<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Repositories</h3>
+<div class="row">
+<div class="span7">
+The repositories settings defines the list of registeredRepositories from whcih to source artifacts.  By default, only MavenCentral is specified, however Moxie ships with several other registeredRepositories including sonatype-oss, codehaus, & restlet.
+</div>
 
-<p>Source directories are verified during initialization.
-Defined directories that do not exist are excluded.
-Defined order is preserved.
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+repositories: 'central'
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Source Directories</h3>
+<div class="row">
+<div class="span7">
+Source directories are verified during initialization.  Defined directories that do not exist are excluded.  Defined order is preserved. Directories are excluded if they are the parent of an already included directory for the specified scope.
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
 sourceDirectories:
 - compile 'src/main/java'
 - compile 'src/main/webapp'
-- compile 'src/main/resources'
+- compile 'src/java'
+- compile 'src'
 - test 'src/test/java'
+- test 'src/test'
+- test 'tests'
+- test 'test'
+- site 'src/site'
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Resource Directories</h3>
+<div class="row">
+<div class="span7">
+Resource directories are verified during initialization. Defined directories that do not exist are excluded.  Defined order is preserved.
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+resourceDirectories:
+- compile 'src/main/resources'
 - test 'src/test/resources'
-- site 'src/site'</p>
+- site 'src/site/resources'
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Output Directory</h3>
+<div class="row">
+<div class="span7">
+Default working directory for the build.
+</div>
 
-<p>Default base directory within the project for compiled classes.
-Consider NOT sharing the output folder with your IDE.
-The default (build) is separate from the Eclipse default (bin).
-outputDirectory: build</p>
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+outputDirectory: 'build'
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Target Directory</h3>
+<div class="row">
+<div class="span7">
+The base directory within the project for build artifacts.
+</div>
 
-<p>The base directory within the project for build artifacts.
-targetDirectory: build/target</p>
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+targetDirectory: 'build/target'
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Tasks</h3>
+<p>Default settings for Moxie tasks.</p>
 
-<p>Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT
-always - always check when for newer versions
-never - never check when for newer versions
-daily (default) - check on the first run of the day (local time)
-interval:NNN - check every NNN minutes (default is 60 mins)
-updatePolicy: daily</p>
-
-<p>Default settings for Moxie tasks.
-These attributes are set via reflection using Ant's standard utility classes.
+<p>These attributes are set via reflection using Ant's standard utility classes.
+<pre class='prettyprint lang-yaml'>
 tasks: {
-mx:Javac compiler attributes
-These defaults may be overriden in your build.moxie file.
-'mx:javac' : {
-clean: true
-compileLinkedProjects: true
-copyResources: true
-compiler: modern
-debug: true
-debugLevel: vars,lines,source
-fork: false
-failOnError: true
-includeAntRuntime: true
-encoding: UTF-8
-excludes: <strong>/</strong>.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
-}</p>
+    # mx:Javac compiler attributes
+    # These defaults may be overriden in your build.moxie file.
+    'mx:javac' : {
+        clean: true
+        compileLinkedProjects: true
+        copyResources: true
+        compiler: modern
+        debug: true
+        debugLevel: vars,lines,source
+        fork: false
+        failOnError: true
+        includeAntRuntime: true
+        encoding: 'UTF-8'
+        excludes: '**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags'
+    }
 
-<pre><code>mx:Jar attributes
-These defaults may be overriden in your build.moxie file.
-'mx:jar' : {
-    excludePomFiles: false
-    excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
+    # mx:Jar attributes
+    # These defaults may be overriden in your build.moxie file.
+    'mx:jar' : {
+        excludePomFiles: false
+        excludes: '**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags'
+    }
+
+    # mx:GenJar attributes
+    # These defaults may be overriden in your build.moxie file.
+    'mx:genjar' : {
+        excludePomFiles: false
+        excludes: '**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags'
+    }
+	
+    # mx:Test attributes
+    # These defaults may be overriden in your build.moxie file.
+    'mx:test' : {
+        include: '**/*Test.class'
+        encoding: 'UTF-8'
+        failureProperty: 'unit.test.failed'
+        failOnError: false
+    }
+	 
+    # testng attributes
+    # These defaults may be overriden in your build.moxie file.
+    'testng' : {
+        mode: mixed
+        useDefaultListeners: true
+        suiteName: 'Moxie+Ant Suite'
+    }
+	
+    # junit test attributes
+    # These defaults may be overriden in your build.moxie file.
+    'junit' : {
+        fork: yes
+        forkMode: once
+        printSummary: yes
+        showOutput: no
+    }
+	
+    # junit report attributes
+    # These defaults may be overriden in your build.moxie file.
+    'junitreport' : {
+        format: frames
+    }
+
+    # emma instrumentation attributes
+    # These defaults may be overriden in your build.moxie file.
+    'emma' : {
+        merge: true		
+    }
+
+    # emma report attributes
+    # These defaults may be overriden in your build.moxie file.
+    'emmareport' : {
+    }
+	
+    # cobertura report attributes
+    # These defaults may be overriden in your build.moxie file.
+    'cobertura' : {
+        format: html
+    }
 }
-
-mx:GenJar attributes
-These defaults may be overriden in your build.moxie file.
-'mx:genjar' : {
-    excludePomFiles: false
-    excludes: **/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags
-}
-
-mx:Test attributes
-These defaults may be overriden in your build.moxie file.
-'mx:test' : {
-    include: **/*Test.class
-    encoding: UTF-8
-    failureProperty: unit.test.failed
-    failOnError: false
-}
-
-testng attributes
-These defaults may be overriden in your build.moxie file.
-'testng' : {
-    mode: mixed
-    useDefaultListeners: true
-    suiteName: Moxie+Ant Suite
-}
-
-junit test attributes
-These defaults may be overriden in your build.moxie file.
-'junit' : {
-    fork: yes
-    forkMode: once
-    printSummary: yes
-    showOutput: no
-}
-
-junit report attributes
-These defaults may be overriden in your build.moxie file.
-'junitreport' : {
-    format: frames
-}
-
-emma instrumentation attributes
-These defaults may be overriden in your build.moxie file.
-'emma' : {
-    merge: true        
-}
-
-emma report attributes
-These defaults may be overriden in your build.moxie file.
-'emmareport' : {
-}
-
-cobertura report attributes
-These defaults may be overriden in your build.moxie file.
-'cobertura' : {
-    format: html
-}</code></pre>
-
-<p>}
+</pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="settings.html">&larr; settings.moxie</a></li> </ul></div><footer class="footer"><p class="pull-right">generated 2013-03-08</p>
+<div ><ul class="pager"><li class="previous"><a href="moxiedescriptor.html">&larr; build.moxie</a></li> <li class="next"><a href="settings.html">settings.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-25</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

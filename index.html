@@ -46,11 +46,23 @@
 <ul class='dropdown-menu'>
 <li><a href='gettingstarted.html'>getting started</a></li>
 <li><a href='moxiedescriptor.html'>build.moxie</a></li>
-<li><a href='settings.html'>settings.moxie</a></li>
 <li><a href='defaults.html'>defaults.moxie</a></li>
+<li><a href='settings.html'>settings.moxie</a></li>
+<li><a href='tipsandtricks.html'>tips & tricks</a></li>
+<li><a href='properties.html'>ant property reference</a></li>
 </ul></li> <!-- End Menu -->
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>core tasks</a>
+<ul class='dropdown-menu'>
+<li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxreport.html'>mx:Report</a></li>
+<li><a href='mxget.html'>mx:Get</a></li>
+</ul></li> <!-- End Submenu -->
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>all tasks</a>
 <ul class='dropdown-menu'>
 <li><a href='mxclean.html'>mx:Clean</a></li>
 <li><a href='mxdeploy.html'>mx:Deploy</a></li>
@@ -60,11 +72,12 @@
 <li><a href='mxgenjar.html'>mx:GenJar</a></li>
 <li><a href='mxget.html'>mx:Get</a></li>
 <li><a href='mxghpages.html'>mx:GhPages</a></li>
+<li><a href='mxgroovy.html'>mx:Groovy</a></li>
 <li><a href='mxcommitid.html'>mx:CommitId</a></li>
 <li><a href='mxcommit.html'>mx:Commit</a></li>
 <li><a href='mxif.html'>mx:If</a></li>
-<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxjar.html'>mx:Jar</a></li>
 <li><a href='mxjavac.html'>mx:Javac</a></li>
 <li><a href='mxjavadoc.html'>mx:Javadoc</a></li>
@@ -73,11 +86,12 @@
 <li><a href='mxrun.html'>mx:Run</a></li>
 <li><a href='mxtar.html'>mx:Tar</a></li>
 <li><a href='mxtest.html'>mx:Test</a></li>
-<li><a href='mxthumb.html'>mx:Thumb</a></li>
+<li><a href='mxthumbs.html'>mx:Thumbs</a></li>
 <li><a href='mxversion.html'>mx:Version</a></li>
 <li><a href='mxwar.html'>mx:War</a></li>
 <li><a href='mxwebxml.html'>mx:WebXml</a></li>
 <li><a href='mxzip.html'>mx:Zip</a></li>
+</ul></li> <!-- End Submenu -->
 </ul></li> <!-- End Menu -->
 <li><a href='moxie+ant.html'>moxie+ant</a></li>
 <li><a href='proxy.html'>proxy</a></li>
@@ -86,23 +100,17 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-pro.jar'>moxie toolkit (pro)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2.jar'>moxie toolkit (all)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-sources.jar'>moxie toolkit (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2.zip'>moxie-proxy</a></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2-sources.jar'>moxie-proxy (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-proxy/0.7.0/moxie-proxy-0.7.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.zip'>moxie+ant (zip)</a></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.tar.gz'>moxie+ant (tar.gz)</a></li>
-<li class='divider'></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2.jar'>maxml</a></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2-sources.jar'>maxml-sources</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
-<li><a href='maven'>Maven Repository</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://moxie.gitblit.com'></g:plusone></div></li>
@@ -113,23 +121,23 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 id="H1">Java Build Toolkit for Ant</h2>
+<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Java Build Toolkit for Ant</h2>
 <p>Moxie is a collection of <a href="http://ant.apache.org" title="Apache Ant">Ant</a> tasks to turbo-charge your build scripts and facilitate building Java projects.  It's purpose is to bring some of the convenience of <a href="http://maven.apache.org" title="Apache Maven">Maven</a> and <a href="http://www.gradle.org" title="Gradle">Gradle</a> to Ant.</p>
 
 <p>The Moxie binaries and this site are built with Moxie.</p>
 
 <div class="row">
-<div class="span7">
+<div class="span8">
 <pre>
   [mx:init] =========================================================
-  [mx:init] Moxie  (0.6.2)
+  [mx:init] Moxie  (0.7.0)
   [mx:init] ---------------------------------------------------------
   [mx:init] project metadata
   [mx:init]            name: Moxie
   [mx:init]     description: Moxie Java Build Toolkit for Ant
   [mx:init]         groupId: org.moxie
-  [mx:init]      artifactId: moxie
-  [mx:init]         version: 0.6.2
+  [mx:init]      artifactId: moxie-toolkit
+  [mx:init]         version: 0.7.0
   [mx:init]    organization: James Moger
   [mx:init]             url: http://moxie.gitblit.com
   [mx:init] ---------------------------------------------------------
@@ -137,47 +145,40 @@
   [mx:init]    rebuilt Eclipse configuration
   [mx:init]    rebuilt pom.xml
  [mx:javac] =========================================================
- [mx:javac] mx:Javac  (org.moxie:moxie, compile)
+ [mx:javac] mx:Javac  (org.moxie:moxie-toolkit, compile)
  [mx:javac] ---------------------------------------------------------
  [mx:javac] Compiling 41 source files to C:\git\moxie\build\classes
  [mx:javac] Copying 20 files to C:\git\moxie\build\classes
    [mx:jar] =========================================================
-   [mx:jar] mx:Jar  (moxie-0.6.2)
+   [mx:jar] mx:Jar  (moxie-toolkit-0.7.0)
    [mx:jar] ---------------------------------------------------------
-   [mx:jar] Building jar: C:\git\moxie\target\moxie-0.6.2.jar
-   [mx:jar]    550 KB, generated in 460 ms
-   [mx:jar] Building jar: C:\git\moxie\target\moxie-0.6.2-sources.jar
+   [mx:jar] Building jar: C:\git\moxie\target\moxie-toolkit-0.7.0.jar
+   [mx:jar]    500 KB, generated in 460 ms
+   [mx:jar] Building jar: C:\git\moxie\target\moxie-toolkit-0.7.0-sources.jar
    [mx:jar]    148 KB, generated in 80 ms
-[mx:install] =========================================================
-[mx:install] mx:Install  (moxie-0.6.2)
-[mx:install] ---------------------------------------------------------
-[mx:install] Copying 2 files to C:\Users\James Moger\.moxie\local\org.moxie\moxie\0.6.2
-[mx:install] generating pom for moxie-0.6.2
-[mx:install] calculating checksums for installed artifacts
+[mx:deploy] =========================================================
+[mx:deploy] mx:Deploy  (moxie-toolkit-0.7.0)
+[mx:deploy] ---------------------------------------------------------
+[mx:deploy] Copying 2 files to C:\git\maven\org\moxie\moxie-toolkit\0.7.0
+[mx:deploy] generating pom for moxie-toolkit-0.7.0
+[mx:deploy] calculating checksums for installed artifacts
 </pre>
 </div>
 
-<div class="span5" style="margin-top:-10px;">
-<h4>Core Package (200KB)</h4>
+<div class="span4" style="margin-top:-10px;">
+<h4>Core Toolkit (200KB)</h4>
 
-The <span class='label'>core</span> package includes the tasks necessary to retrieve & report on Maven-sourced dependencies, to generate Eclipse and IntelliJ IDEA project files, and to setup Ant build properties so you don't have to.
-
-<br/><br/>
-<h4>Pro Package (400KB)</h4>
-
-The <span class='label label-success'>pro</span> package builds on the <b>core</b> package by adding Moxie Extension (<code>mx:</code>) tasks of standard Ant tasks.  These tasks use defaults derived from your <code>build.moxie</code> descriptor to compile your sources, execute your unit tests, and package your compiled code.
+The <span class='label'>core</span> toolkit includes the tasks necessary to retrieve & report on Maven-sourced dependencies, to generate Eclipse and IntelliJ IDEA project files, and to setup Ant build properties so you don't have to.
 
 <br/><br/>
-<h4>All Package (650KB)</h4>
+<h4>Complete Toolkit (500KB)</h4>
 
-The <span class='label label-info'>all</span> package includes the <b>pro</b> package plus <code>mx:doc</code>, the Moxie site/document-generation tool.
-<br/><br/>
-<code>mx:doc</code> generates a project site or project documentation from Markdown source files and styles your output with Twitter Bootstrap.
+The complete toolkit includes the <b>core</b> toolkit plus Moxie Extension (<code>mx:</code>) tasks of standard Ant tasks.  These tasks use defaults derived from your <code>build.moxie</code> descriptor to compile your sources, execute your unit tests, and package your compiled code.
 
 <br/><br/>
 <h4>Moxie+Ant (15MB)</h4>
 
-Moxie+Ant is a bundled distribution of Moxie and Ant.
+Moxie+Ant is a bundled distribution of the Moxie Build Toolkit and Ant.
 
 <br/><br/>
 <h4>Moxie Proxy (7MB)</h4>
@@ -192,7 +193,7 @@ Moxie is distributed under the Apache Software License, version 2.0.
 </div>
 </div>
 <!-- End Markdown -->
-<div ><ul class="pager"> <li class="next"><a href="why.html">why?! &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-08</p>
+<div ><ul class="pager"> <li class="next"><a href="why.html">why?! &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-25</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

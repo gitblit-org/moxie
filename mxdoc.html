@@ -46,11 +46,23 @@
 <ul class='dropdown-menu'>
 <li><a href='gettingstarted.html'>getting started</a></li>
 <li><a href='moxiedescriptor.html'>build.moxie</a></li>
-<li><a href='settings.html'>settings.moxie</a></li>
 <li><a href='defaults.html'>defaults.moxie</a></li>
+<li><a href='settings.html'>settings.moxie</a></li>
+<li><a href='tipsandtricks.html'>tips & tricks</a></li>
+<li><a href='properties.html'>ant property reference</a></li>
 </ul></li> <!-- End Menu -->
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>core tasks</a>
+<ul class='dropdown-menu'>
+<li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxreport.html'>mx:Report</a></li>
+<li><a href='mxget.html'>mx:Get</a></li>
+</ul></li> <!-- End Submenu -->
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>all tasks</a>
 <ul class='dropdown-menu'>
 <li><a href='mxclean.html'>mx:Clean</a></li>
 <li><a href='mxdeploy.html'>mx:Deploy</a></li>
@@ -60,11 +72,12 @@
 <li><a href='mxgenjar.html'>mx:GenJar</a></li>
 <li><a href='mxget.html'>mx:Get</a></li>
 <li><a href='mxghpages.html'>mx:GhPages</a></li>
+<li><a href='mxgroovy.html'>mx:Groovy</a></li>
 <li><a href='mxcommitid.html'>mx:CommitId</a></li>
 <li><a href='mxcommit.html'>mx:Commit</a></li>
 <li><a href='mxif.html'>mx:If</a></li>
-<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxjar.html'>mx:Jar</a></li>
 <li><a href='mxjavac.html'>mx:Javac</a></li>
 <li><a href='mxjavadoc.html'>mx:Javadoc</a></li>
@@ -73,11 +86,12 @@
 <li><a href='mxrun.html'>mx:Run</a></li>
 <li><a href='mxtar.html'>mx:Tar</a></li>
 <li><a href='mxtest.html'>mx:Test</a></li>
-<li><a href='mxthumb.html'>mx:Thumb</a></li>
+<li><a href='mxthumbs.html'>mx:Thumbs</a></li>
 <li><a href='mxversion.html'>mx:Version</a></li>
 <li><a href='mxwar.html'>mx:War</a></li>
 <li><a href='mxwebxml.html'>mx:WebXml</a></li>
 <li><a href='mxzip.html'>mx:Zip</a></li>
+</ul></li> <!-- End Submenu -->
 </ul></li> <!-- End Menu -->
 <li><a href='moxie+ant.html'>moxie+ant</a></li>
 <li><a href='proxy.html'>proxy</a></li>
@@ -86,23 +100,17 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-pro.jar'>moxie toolkit (pro)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2.jar'>moxie toolkit (all)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-sources.jar'>moxie toolkit (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2.zip'>moxie-proxy</a></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2-sources.jar'>moxie-proxy (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-proxy/0.7.0/moxie-proxy-0.7.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.zip'>moxie+ant (zip)</a></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.tar.gz'>moxie+ant (tar.gz)</a></li>
-<li class='divider'></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2.jar'>maxml</a></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2-sources.jar'>maxml-sources</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
-<li><a href='maven'>Maven Repository</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://moxie.gitblit.com'></g:plusone></div></li>
@@ -113,8 +121,32 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 id="H1">mx:Doc <span class='label label-info'>all</span></h2>
-<p>Prettify Themes</p>
+<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:Doc</h2>
+<p>mx:Doc is Moxie's documentation generation task.  It is based on <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>, <a href="http://code.google.com/p/google-code-prettify">GoogleCode Prettify</a>.</p>
+
+<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Directives</h3>
+<p>Directives are single-line text commands that surround a block of text and apply a rule to that text.  Directives can not be combined nor can they be nested.</p>
+
+<p>Directives are written as:</p>
+
+<pre><code>---DIRECTIVE---
+Here is my text block.
+---DIRECTIVE---
+</code></pre>
+
+<h4 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Text Block Directives</h4>
+<p><table class="table table-bordered"><tr><th>Directive</th><th>Description</th></tr><tr><td>NOMARKDOWN</td><td>Excludes text block from Markdown processing</td></tr><tr><td>ESCAPE</td><td>Escapes &lt; > &amp; and \n characters with their HTML equivalents.</td></tr><tr><td>FIXED</td><td>Escapes &lt; > &amp; and \n characters with their HTML equivalents and wraps the text in a &lt;pre&gt; block.</td></tr></table></p>
+
+<h4 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Prettify Directives</h4>
+<p><table class="table table-bordered"><tr><th>Directive</th><th>Description</th></tr><tr><td>CODE</td><td>Escapes and wraps the textblock with Prettify</td></tr><tr><td>CSS</td><td>Escapes and wraps the textblock with Prettify using a CSS syntax hint</td></tr><tr><td>JAVA</td><td>Escapes and wraps the textblock with Prettify using a Java syntax hint</td></tr><tr><td>JSON</td><td>Escapes and wraps the textblock with Prettify using a JSON syntax hint</td></tr><tr><td>SQL</td><td>Escapes and wraps the textblock with Prettify using a SQL syntax hint</td></tr><tr><td>WIKI</td><td>Escapes and wraps the textblock with Prettify using a WIKI syntax hint</td></tr><tr><td>XML</td><td>Escapes and wraps the textblock with Prettify using an XML syntax hint</td></tr><tr><td>YAML</td><td>Escapes and wraps the textblock with Prettify using a YAML syntax hint</td></tr></table></p>
+
+<h4 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Wiki Transform Directives</h4>
+<p>The wiki transform directives will interpret the enclosed text block using the <a href="http://eclipse.org/mylyn">Eclipse Mylyn WikiText</a> parser for the specified syntax.  This is useful, for example, for table generation since Markdown does not specify a table syntax.</p>
+
+<p><table class="table table-bordered"><tr><th>Directive</th><th>Description</th></tr><tr><td>X:TWIKI</td><td>Interprets the block as <a href="http://twiki.org/cgi-bin/view/TWiki/WikiSyntax">TWiki</a> markup</td></tr><tr><td>X:TEXTILE</td><td>Interprets the block as <a href="http://txstyle.org/article/44/an-overview-of-the-textile-syntax">Textile</a> markup</td></tr><tr><td>X:TRACWIKI</td><td>Interprets the block as <a href="http://trac.edgewall.org/wiki/WikiFormatting">TracWiki</a> markup</td></tr><tr><td>X:MEDIAWIKI</td><td>Interprets the block as <a href="https://www.mediawiki.org/wiki/Help:Formatting">MediaWiki</a> markup</td></tr><tr><td>X:CONFLUENCE</td><td>Interprets the block as Confluence markup</td></tr></table></p>
+
+<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Prettify Themes</h3>
+<p>Many Prettify themes are bundled in Moxie.</p>
 
 <ul>
 <li>bootstrap</li>
@@ -137,8 +169,9 @@
 <li>vibrant-ink</li>
 </ul>
 
+<h3 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Complete Example</h3>
 <p><pre class='prettyprint lang-xml'>
-&lt;mx:doc injectPrettify=&quot;true&quot;&gt;
+&lt;mx:doc&gt;
 	&lt;structure&gt;
 		&lt;page name=&quot;overview&quot; src=&quot;index.mkd&quot; /&gt;
 		&lt;menu name=&quot;tasks&quot;&gt;
@@ -172,7 +205,7 @@
 &lt;/mx:doc&gt;
 </pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="mxdeploy.html">&larr; mx:Deploy</a></li> <li class="next"><a href="mxextract.html">mx:Extract &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-08</p>
+<div ><ul class="pager"><li class="previous"><a href="mxdeploy.html">&larr; mx:Deploy</a></li> <li class="next"><a href="mxextract.html">mx:Extract &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-25</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

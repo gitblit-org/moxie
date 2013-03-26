@@ -46,11 +46,23 @@
 <ul class='dropdown-menu'>
 <li><a href='gettingstarted.html'>getting started</a></li>
 <li><a href='moxiedescriptor.html'>build.moxie</a></li>
-<li><a href='settings.html'>settings.moxie</a></li>
 <li><a href='defaults.html'>defaults.moxie</a></li>
+<li><a href='settings.html'>settings.moxie</a></li>
+<li><a href='tipsandtricks.html'>tips & tricks</a></li>
+<li><a href='properties.html'>ant property reference</a></li>
 </ul></li> <!-- End Menu -->
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>core tasks</a>
+<ul class='dropdown-menu'>
+<li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxreport.html'>mx:Report</a></li>
+<li><a href='mxget.html'>mx:Get</a></li>
+</ul></li> <!-- End Submenu -->
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>all tasks</a>
 <ul class='dropdown-menu'>
 <li><a href='mxclean.html'>mx:Clean</a></li>
 <li><a href='mxdeploy.html'>mx:Deploy</a></li>
@@ -60,11 +72,12 @@
 <li><a href='mxgenjar.html'>mx:GenJar</a></li>
 <li><a href='mxget.html'>mx:Get</a></li>
 <li><a href='mxghpages.html'>mx:GhPages</a></li>
+<li><a href='mxgroovy.html'>mx:Groovy</a></li>
 <li><a href='mxcommitid.html'>mx:CommitId</a></li>
 <li><a href='mxcommit.html'>mx:Commit</a></li>
 <li><a href='mxif.html'>mx:If</a></li>
-<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxjar.html'>mx:Jar</a></li>
 <li><a href='mxjavac.html'>mx:Javac</a></li>
 <li><a href='mxjavadoc.html'>mx:Javadoc</a></li>
@@ -73,11 +86,12 @@
 <li><a href='mxrun.html'>mx:Run</a></li>
 <li><a href='mxtar.html'>mx:Tar</a></li>
 <li><a href='mxtest.html'>mx:Test</a></li>
-<li><a href='mxthumb.html'>mx:Thumb</a></li>
+<li><a href='mxthumbs.html'>mx:Thumbs</a></li>
 <li><a href='mxversion.html'>mx:Version</a></li>
 <li><a href='mxwar.html'>mx:War</a></li>
 <li><a href='mxwebxml.html'>mx:WebXml</a></li>
 <li><a href='mxzip.html'>mx:Zip</a></li>
+</ul></li> <!-- End Submenu -->
 </ul></li> <!-- End Menu -->
 <li><a href='moxie+ant.html'>moxie+ant</a></li>
 <li><a href='proxy.html'>proxy</a></li>
@@ -86,23 +100,17 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-pro.jar'>moxie toolkit (pro)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2.jar'>moxie toolkit (all)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-sources.jar'>moxie toolkit (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2.zip'>moxie-proxy</a></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2-sources.jar'>moxie-proxy (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-proxy/0.7.0/moxie-proxy-0.7.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.zip'>moxie+ant (zip)</a></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.tar.gz'>moxie+ant (tar.gz)</a></li>
-<li class='divider'></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2.jar'>maxml</a></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2-sources.jar'>maxml-sources</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
-<li><a href='maven'>Maven Repository</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://moxie.gitblit.com'></g:plusone></div></li>
@@ -113,14 +121,49 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 id="H1">mx:If <span class='label label-success'>pro</span> <span class='label label-info'>all</span></h2>
-<p>This is a fork of the AntContrib if task.</p>
+<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:If</h2>
+<p>This is a fork of the <a href="http://ant-contrib.sourceforge.net">Ant-Contrib</a> if task.</p>
 
+<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Synopsis</h3>
+<p>Perform some tasks based on whether a given condition holds true or not.</p>
+
+<p>This task is heavily based on the Condition framework that can be found in Ant 1.4 and later, therefore it cannot be used inconjunction with versions of Ant prior to 1.4. Due to numeruos bugs in Ant 1.4(.1) that affect this task, we recommend to use Ant 1.5 or later.</p>
+
+<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Nested Elements</h3>
+<p>This task doesn't have any attributes, the condition to test is specified by a nested element - see the documentation of your &lt;condition&gt; task (see the [online documentation](http://ant.apache.org/manual/CoreTasks/condition.html) for example) for a complete list of nested elements.<br/><br/>Just like the &lt;condition&gt; task, only a single condition can be specified - you combine them using &lt;and&gt; or &lt;or&gt; conditions.<br/><br/>In addition to the condition, you can specify three different child elements, &lt;elseif&gt;, &lt;then&gt; and &lt;else&gt;. All three subelements are optional. Both &lt;then&gt; and &lt;else&gt; must not be used more than once inside the if task. Both are containers for Ant tasks, just like Ant's &lt;parallel&gt; and &lt;sequential&gt; tasks - in fact they are implemented using the same class as Ant's &lt;sequential&gt; task.<br/><br/>The &lt;elseif&gt; behaves exactly like an &lt;if&gt; except that it cannot contain the &lt;else&gt; element inside of it. You may specify as may of these as you like, and the order they are specified is the order they are evaluated in. If the condition on the &lt;if&gt; is false, then the first &lt;elseif&gt; who's conditional evaluates to true will be executed. The &lt;else&gt; will be executed only if the &lt;if&gt; and all &lt;elseif&gt; conditions are false. <br/></p>
+
+<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h3>
 <p><pre class='prettyprint lang-xml'>
-&lt;mx:if /&gt;
+&lt;mx:if&gt;
+ &lt;equals arg1=&quot;${foo}&quot; arg2=&quot;bar&quot; /&gt;
+ &lt;then&gt;
+   &lt;echo message=&quot;The value of property foo is bar&quot; /&gt;
+ &lt;/then&gt;
+ &lt;else&gt;
+   &lt;echo message=&quot;The value of property foo is not bar&quot; /&gt;
+ &lt;/else&gt;
+&lt;/mx:if&gt;
+
+&lt;mx:if&gt;
+ &lt;equals arg1=&quot;${foo}&quot; arg2=&quot;bar&quot; /&gt;
+ &lt;then&gt;
+   &lt;echo message=&quot;The value of property foo is 'bar'&quot; /&gt;
+ &lt;/then&gt;
+
+ &lt;elseif&gt;
+  &lt;equals arg1=&quot;${foo}&quot; arg2=&quot;foo&quot; /&gt;
+  &lt;then&gt;
+   &lt;echo message=&quot;The value of property foo is 'foo'&quot; /&gt;
+  &lt;/then&gt;
+ &lt;/elseif&gt;
+
+ &lt;else&gt;
+   &lt;echo message=&quot;The value of property foo is not 'foo' or 'bar'&quot; /&gt;
+ &lt;/else&gt;
+&lt;/mx:if&gt;
 </pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="mxcommit.html">&larr; mx:Commit</a></li> <li class="next"><a href="mxinstall.html">mx:Install &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-08</p>
+<div ><ul class="pager"><li class="previous"><a href="mxcommit.html">&larr; mx:Commit</a></li> <li class="next"><a href="mxinit.html">mx:Init &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-25</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

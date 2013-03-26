@@ -46,11 +46,23 @@
 <ul class='dropdown-menu'>
 <li><a href='gettingstarted.html'>getting started</a></li>
 <li><a href='moxiedescriptor.html'>build.moxie</a></li>
-<li><a href='settings.html'>settings.moxie</a></li>
 <li><a href='defaults.html'>defaults.moxie</a></li>
+<li><a href='settings.html'>settings.moxie</a></li>
+<li><a href='tipsandtricks.html'>tips & tricks</a></li>
+<li><a href='properties.html'>ant property reference</a></li>
 </ul></li> <!-- End Menu -->
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>tasks<b class='caret'></b></a>
+<ul class='dropdown-menu'>
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>core tasks</a>
+<ul class='dropdown-menu'>
+<li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxreport.html'>mx:Report</a></li>
+<li><a href='mxget.html'>mx:Get</a></li>
+</ul></li> <!-- End Submenu -->
+<li class='dropdown-submenu'> <!-- Submenu -->
+<a tabindex='-1' href='#'>all tasks</a>
 <ul class='dropdown-menu'>
 <li><a href='mxclean.html'>mx:Clean</a></li>
 <li><a href='mxdeploy.html'>mx:Deploy</a></li>
@@ -60,11 +72,12 @@
 <li><a href='mxgenjar.html'>mx:GenJar</a></li>
 <li><a href='mxget.html'>mx:Get</a></li>
 <li><a href='mxghpages.html'>mx:GhPages</a></li>
+<li><a href='mxgroovy.html'>mx:Groovy</a></li>
 <li><a href='mxcommitid.html'>mx:CommitId</a></li>
 <li><a href='mxcommit.html'>mx:Commit</a></li>
 <li><a href='mxif.html'>mx:If</a></li>
-<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxinit.html'>mx:Init</a></li>
+<li><a href='mxinstall.html'>mx:Install</a></li>
 <li><a href='mxjar.html'>mx:Jar</a></li>
 <li><a href='mxjavac.html'>mx:Javac</a></li>
 <li><a href='mxjavadoc.html'>mx:Javadoc</a></li>
@@ -73,11 +86,12 @@
 <li><a href='mxrun.html'>mx:Run</a></li>
 <li><a href='mxtar.html'>mx:Tar</a></li>
 <li><a href='mxtest.html'>mx:Test</a></li>
-<li><a href='mxthumb.html'>mx:Thumb</a></li>
+<li><a href='mxthumbs.html'>mx:Thumbs</a></li>
 <li><a href='mxversion.html'>mx:Version</a></li>
 <li><a href='mxwar.html'>mx:War</a></li>
 <li><a href='mxwebxml.html'>mx:WebXml</a></li>
 <li><a href='mxzip.html'>mx:Zip</a></li>
+</ul></li> <!-- End Submenu -->
 </ul></li> <!-- End Menu -->
 <li><a href='moxie+ant.html'>moxie+ant</a></li>
 <li><a href='proxy.html'>proxy</a></li>
@@ -86,23 +100,17 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-pro.jar'>moxie toolkit (pro)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2.jar'>moxie toolkit (all)</a></li>
-<li><a href='maven/org/moxie/moxie-toolkit/0.6.2/moxie-toolkit-0.6.2-sources.jar'>moxie toolkit (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2.zip'>moxie-proxy</a></li>
-<li><a href='maven/org/moxie/moxie-proxy/0.6.2/moxie-proxy-0.6.2-sources.jar'>moxie-proxy (sources)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-proxy/0.7.0/moxie-proxy-0.7.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.zip'>moxie+ant (zip)</a></li>
-<li><a href='maven/org/moxie/moxie+ant/0.6.2/moxie+ant-0.6.2.tar.gz'>moxie+ant (tar.gz)</a></li>
-<li class='divider'></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2.jar'>maxml</a></li>
-<li><a href='maven/org/moxie/maxml/0.6.2/maxml-0.6.2-sources.jar'>maxml-sources</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
-<li><a href='maven'>Maven Repository</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://moxie.gitblit.com'></g:plusone></div></li>
@@ -116,148 +124,447 @@
 <h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Moxie Project Descriptor</h2>
 <p>The Moxie project descriptor defines the structure, metadata, and dependencies of your project.  It is the heart of Moxie and is used by all Moxie Extension tasks.</p>
 
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Metadata Keys</h3>
-<table class="table table-striped table-bordered table-condensed">
-<tbody>
-<tr><th>name</th>            <td>${project.name}</td></tr>
-<tr><th>description</th>     <td>${project.description}</td></tr>
-<tr><th>organization</th>    <td>${project.organization}</td></tr>
-<tr><th>organizationUrl</th> <td>${project.organizationUrl}</td></tr>
-<tr><th>issuesUrl</th>       <td>${project.issuesUrl}</td></tr>
-<tr><th>forumUrl</th>        <td>${project.forumUrl}</td></tr>
-<tr><th>blogUrl</th>         <td>${project.blogUrl}</td></tr>
-<tr><th>socialNetworkUrl</th><td>${project.socialNetworkUrl}</td></tr>
-<tr><th>ciUrl</th>           <td>${project.ciUrl}</td></tr>
-<tr><th>url</th>             <td>${project.url}</td></tr>
-<tr><th>inceptionYear</th>   <td>${project.inceptionYear}</td></tr>
-</tbody>
-</table>
-<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Artifact Keys</h3>
-<table class="table table-striped table-bordered table-condensed">
-<tbody>
-<tr><th>groupId</th>       <td>${project.groupId}</td></tr>
-<tr><th>artifactId</th>    <td>${project.artifactId}</td></tr>
-<tr><th>version</th>       <td>${project.version}</td></tr>
-<tr><th>buildDate</th>     <td>${project.buildDate}</td></tr>
-<tr><th>buildTimestamp</th><td>${project.buildTimestamp}</td></tr>
-<tr><th>releaseVersion</th><td>${project.releaseVersion}</td></tr>
-<tr><th>releaseDate</th>   <td>${project.releaseDate}</td></tr>
-</tbody>
-</table>
+<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Project Artifact Data</h3>
+<p><table class="table table-striped table-bordered table-condensed"><tr><td>groupId</td></tr><tr><td>artifactId</td></tr><tr><td>version</td></tr></table></p>
+
+<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Project Metadata</h3>
+<p><table class="table table-striped table-bordered table-condensed"><tr><td>name</td><td>Name of the project</td></tr><tr><td>description</td><td>description of the project</td></tr><tr><td>organization</td><td>organization sponsoring development of the project</td></tr><tr><td>organizationUrl</td><td>url of the organization sponsoring the project</td></tr><tr><td>issuesUrl</td><td>url of the issue tracker for the project</td></tr><tr><td>forumUrl</td><td>url of the forum or discussion group for the project</td></tr><tr><td>blogUrl</td><td>url of the blog for the project</td></tr><tr><td>socialNetworkUrl</td><td>url of the social network profile for the project</td></tr><tr><td>ciUrl</td><td>url of the continuous integration server for the project</td></tr><tr><td>url</td><td>url of the project web site</td></tr><tr><td>inceptionYear</td><td>year the project was founded</td></tr><tr><td>releaseVersion</td><td>current stable release</td></tr><tr><td>releaseDate</td><td>current stable release date</td></tr></table></p>
+
 <hr/>
-<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Apply</h3>
+<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Packaging</h3>
 <div class="row">
-<div class="span8">
-special behaviors for your build script
+<div class="span7">
+Packaging defines the target binary output of the project.  This field defaults to <em>jar</em>, if not manually specified.  The value here mostly has relevance for the <code>mx:package</code> task.
+<h4>Valid Packaging Types</h4>
 <dl>
- <dt>eclipse</dt>
- <dd>creates Eclipse .project and .classpath files</dd>
+ <dt>pom</dt><dd/>
+ <dt>jar</dt><dd>generates a jar file for the project</dd>
+ <dt>war</dt><dd>generates a webapp war file for the project</dd>
+ <dt>zip</dt><dd>generates a zip file of the jar, sources, and javadoc for the project</dd>
+ <dt>tgz</dt><dd>generates a tar.gz of the jar, sources, and javadoc for the project</dd>
+ <dt>tar.gz</dt><dd>generates a tar.gz of the jar, sources, and javadoc for the project</dd>
+</dl>
+
+You may also append <em>+format</em> to the packaging to create secondary packaging for your project.
+
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+packaging: jar
+packaging: jar+zip
+packaging: jar+zip+tgz
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Apply</h3>
+<div class="row">
+<div class="span7">
+Apply is used to define extra project features.
+<dl>
  <dt>pom</dt>
- <dd>creates and maintains a Maven pom.xml file</dd>
- <dt>cache</dt>
- <dd>build and caches a transitive dependency solution for re-use to accelerate builds (does not apply to SNAPSHOTs)</dd>
- <dt>debug</dt>
- <dd>enable Moxie's debug logging</dd>
- <dt>color</dt>
- <dd>console logging will use ansi color escape sequences</dd>
+ <dd>creates a Maven pom.xml file</dd>
+ <dt>eclipse</dt>
+ <dd>creates and maintains Eclipse .project and .classpath files</dd>
+ <dt>intellij</dt>
+ <dd>creates and maintains IntelliJ IDEA .iml files</dd>
 </dl>
 </div>
 
-<div class="span4">
+<div class="span5">
 <pre class='prettyprint lang-yaml'>
-apply: eclipse, pom, cache
+apply: eclipse, intellij, pom
 </pre>
-
+</div>
+</div>
+<h4 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Apply: eclipse</h4>
+<div class="row">
+<div class="span7">
+The Eclipse apply function supports a few switches to control Eclipse .project and .classpath file generation.
+<dl>
+ <dt>var</dt>
+ <dd>Creates .classpath using the <em>MX_ROOT</em> workspace variable.  This allows you to version-control .classpath but does require the user to define an <em>MX_ROOT</em> workspace variable pointing to <em>~/.moxie</em> or wherever they would like to establish their Moxie root.</dd>
+ <dt>groovy</dt>
+ <dd>Adds the Groovy plugin reference to .classpath and the Groovy Nature to .project.</dd>
+</dl>
+</div>
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+apply: 'eclipse:+var+groovy'
+</pre>
 </div>
 </div>
 <hr/>
-<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Source Directories</h3>
+<h3 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Parent</h3>
 <div class="row">
-<div class="span8">
-Example
+<div class="span7">
+In a mutl-module project setup, a module may inherit settings from a parent build.moxie descriptor by specifying it's relative location.
 </div>
 
-<div class="span4">
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+parent: ../build.moxie 
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H8"><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Licenses</h3>
+<p>You can specify the project licenses in the <em>licenses</em> setting.  This setting is currently only used during POM generation.</p>
+
+<p><pre class='prettyprint lang-yaml'>
+licenses:
+- {
+    name: 'Apache ASL v2.0'
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+  }
+</pre></p>
+
+<hr/>
+<h3 class="section" id="H9"><a href="#H9" class="sectionlink"><i class="icon-share-alt"> </i></a>Developers</h3>
+<p>You can specify the project developers in the <em>developers</em> setting.  This setting is currently only used during POM generation.</p>
+
+<p><pre class='prettyprint lang-yaml'>
+developers:
+- {
+  id: james
+  name: 'James Moger'
+  url: 'https://plus.google.com/u/0/116428776452027956920'
+  organization: 'James Moger'
+  organizationUrl: 'http://www.jamesmoger.com'
+  roles: developer
+  }
+</pre></p>
+
+<hr/>
+<h3 class="section" id="H10"><a href="#H10" class="sectionlink"><i class="icon-share-alt"> </i></a>SCM</h3>
+<p>You can specify the project SCM information in the <em>scm</em> setting.  This setting is currently only used during POM generation.</p>
+
+<p><pre class='prettyprint lang-yaml'>
+scm: {
+  connection: 'scm:git:git://github.com/gitblit/moxie.git'
+  developerConnection: 'scm:git:https://github.com/gitblit/moxie.git'
+  url: 'http://gitblit.github.com/moxie'
+  tag: HEAD
+  }
+</pre></p>
+
+<hr/>
+<h3 class="section" id="H11"><a href="#H11" class="sectionlink"><i class="icon-share-alt"> </i></a>Registered Repositories</h3>
+<p>This section is used to define remote artifact repositories.  Currently only http/https repositories are supported.</p>
+
+<p>The default <em>connectTimeout</em> is 20 seconds.<br/>
+The default <em>readTimeout</em> is 1800 seconds (30 mins).</p>
+
+<h4 class="section" id="H12"><a href="#H12" class="sectionlink"><i class="icon-share-alt"> </i></a>Affinities</h4>
+<p>If a repository specifies one or more affinities and a dependency matches one of those affinities, that repository will be used first during dependency or metadata resolution of that artifact.  This allows you to control the efficiency of the resolution process by boosting the importance of a specific repository.</p>
+
+<p>In the following example, the <em>Restlet</em> repository has an affinity for all artifacts belonging to the <em>org.restlet</em> groupId.  During resolution, the Restlet repository is checked first for all <em>org.restlet</em>.</p>
+
+<p><pre class='prettyprint lang-yaml'>
+registeredRepositories:
+- { id: 'central', url: 'http://repo1.maven.org/maven2' }
+- { id: 'mavencentral', url: 'http://repo1.maven.org/maven2' }
+- { id: 'codehaus', url: 'http://repository.codehaus.org' }
+- {
+    id: 'sonatype-oss'
+    url: 'https://oss.sonatype.org/content/groups/public'
+    # Snapshot Purge Policy
+    revisionRetentionCount: 1
+    revisionPurgeAfterDays: 0
+  }
+- { 
+    id: 'restlet'
+    url: 'http://maven.restlet.org'
+    # Snapshot Purge Policy
+    revisionRetentionCount: 1
+    revisionPurgeAfterDays: 0
+    # Artifact affinitities
+    affinity: [ 'org.restlet' ]
+    # seconds to wait till connected
+    connectTimeout: 20
+    # seconds to wait on read
+    readTimeout: 1800
+    # authentication credentials
+    username: 'someuser'
+    password: 'mypassword'
+  }
+</pre></p>
+
+<hr/>
+<h3 class="section" id="H13"><a href="#H13" class="sectionlink"><i class="icon-share-alt"> </i></a>Repositories</h3>
+<div class="row">
+<div class="span7">
+The repositories settings defines the list of registeredRepositories from which to source artifacts.  By default, only MavenCentral is specified, however Moxie ships with several other registeredRepositories including sonatype-oss, codehaus, & restlet.
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+repositories: 'central'
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H14"><a href="#H14" class="sectionlink"><i class="icon-share-alt"> </i></a>Modules</h3>
+<div class="row">
+<div class="span7">
+<b>Standard Project</b><br/>
+If the project has valid source directories, then the modules section is used to define referenced source projects.  The source directories from these referenced projects are included on the sourcepath of the current project.  Likewise, the dependencies of those referenced projects are included on the compile classpath of the current project.
+<p> </p>
+The projects are assumed to be located relative to the current project.  You may use an Ant or enviromental property as part of the module reference.
+<p> </p>
+All referenced modules must have a <code>build.moxie</code> descriptor unless a different descriptor is manually specified with the @file syntax.
+<p> </p>
+<b>Parent Project</b><br/>
+If the project has no source directories then the modules section is used only for IDE settings generation.
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+modules: 
+- 'project1'
+- 'project2'
+- '${myprojects}/project3' @build2.moxie
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H15"><a href="#H15" class="sectionlink"><i class="icon-share-alt"> </i></a>Source Directories</h3>
+<div class="row">
+<div class="span7">
+Source directories define where to find your source code.  Each source folder must specify a scope.
+<p> </p>
+<h4>Valid Scopes</h4>
+<dl>
+	<dt>compile</dt><dd/>
+	<dt>test</dt><dd/>
+	<dt>site</dt><dd/>
+</dl>
+Dependencies, source directories, and resource directories may also be tagged as belonging to a group by using the <i>:tag</i> syntax.  Several <code>mx</code> tasks support these tagged subsets.
+
+<div class="alert alert-info">
+<b>Note:</b> Moxie only supports a single <em>site</em> scoped source directory.
+</div>
+</div>
+
+<div class="span5">
 <pre class='prettyprint lang-yaml'>
 sourceDirectories: 
-- compile 'src/main/core'
+- compile 'src/main/core' :mytag
 - compile 'src/main/pro'
 - compile 'src/main/all'
-- compile 'src/main/resources'
+- compile 'src/client/java' :mytag
 - { scope: 'test', dir: 'src/test/java' }
 </pre>
-
 </div>
 </div>
 <hr/>
-<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Properties</h3>
+<h3 class="section" id="H16"><a href="#H16" class="sectionlink"><i class="icon-share-alt"> </i></a>Resource Directories</h3>
 <div class="row">
-<div class="span8">
-used in dependency management and dependencies
-exported as ant properties
+<div class="span7">
+Resource directories define where to find your resource files (images, css, etc).  Each resource directory must specify a scope.
+<br/>
+<h4>Valid Scopes</h4>
+<dl>
+	<dt>compile</dt><dd/>
+	<dt>test</dt><dd/>
+	<dt>site</dt><dd/>
+</dl>
+Dependencies, source directories, and resource directories may also be tagged as belonging to a group by using the <i>:tag</i> syntax.  Several <code>mx</code> tasks support these tagged subsets.
+
+<div class="alert alert-info">
+<b>Note:</b> Moxie only supports a single <em>site</em> scoped resource directory.
 </div>
 
-<div class="span4">
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+resourceDirectories: 
+- compile 'src/main/resources'
+- compile 'src/client/resources' :mytag
+- test 'src/test/resources'
+- site 'src/site/resources'
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H17"><a href="#H17" class="sectionlink"><i class="icon-share-alt"> </i></a>Properties</h3>
+<div class="row">
+<div class="span7">
+Properties can be used in the <em>dependencyManagement</em> and <em>dependencies</em> section.  They are also exported to Ant as properties.
+</div>
+
+<div class="span5">
 <pre class='prettyprint lang-yaml'>
 properties: {
   jgit.version : 1.3.0.201202151440-r
 }
 </pre>
-
 </div>
 </div>
 <hr/>
-<h3 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Management</h3>
+<h3 class="section" id="H18"><a href="#H18" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Management</h3>
 <div class="row">
-<div class="span8">
-Example
+<div class="span7">
+Managed dependencies are used to specify versions of dependencies if those versions are not specified in the <em>dependencies</em> list.
 </div>
 
-<div class="span4">
+<div class="span5">
 <pre class='prettyprint lang-yaml'>
 dependencyManagement:
 - 'org.apache.ant:ant:1.8.3'
+- 'junit:junit:4.11'
 </pre>
-
 </div>
 </div>
 <hr/>
-<h3 class="section" id="H8"><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependencies</h3>
+<h3 class="section" id="H19"><a href="#H19" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependencies</h3>
 <div class="row">
-<div class="span8">
-Example
+<div class="span7">
+Dependencies can be defined using Gradle-style coordinates.
 
-scopes, @ext, excludes
+    groupId:artifactId:version
+
+Each dependency must also have an assigned scope.
+<br/>
+<h4>Valid Scopes</h4>
+<dl>
+	<dt>compile</dt><dd>added to the compile classpath</dd>
+	<dt>provided</dt><dd>added to the compile classpath but not distributed with project</dd>
+	<dt>runtime</dt><dd>added to the runtime classpath</dd>
+	<dt>test</dt><dd>added to the test classpath</dd>
+	<dt>system</dt><dd>added to all classpaths</dd>
+	<dt>build</dt><dd>added to Moxie's runtime classpath</dd>
+</dl>
+
+Dependencies, source directories, and resource directories may also be tagged as belonging to a group by using the <i>:tag</i> syntax.  Several <code>mx</code> tasks support these tagged subsets.
 </div>
 
-<div class="span4">
+<div class="span5">
 <pre class='prettyprint lang-yaml'>
 dependencies:
 - compile 'org.apache.ant:ant'
-- compile 'org.apache.commons-lang3:3.1'
+- compile 'com.acme:widget:1.2.3' :mytag
 - test 'junit'
 </pre>
+</div>
+</div>
+<h4 class="section" id="H20"><a href="#H20" class="sectionlink"><i class="icon-share-alt"> </i></a>Classifiers</h4>
+<div class="row">
+<div class="span7">
 
+Moxie supports resolution by classifier by appending the classifier to the standard artifact coordinates.
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+- compile 'org.apache.ant:ant.1.8.4:jdk14'
+</pre>
 </div>
 </div>
-<p>dependencyDirectory
-repositories
-targetDirectory
-parent
-tasks: {
-'mx:jar': {
-exclusions: yada
+<h4 class="section" id="H21"><a href="#H21" class="sectionlink"><i class="icon-share-alt"> </i></a>Exclusions</h4>
+<p>Sometimes it is desirable to specify exclusions from a dependency's graph.  There are two ways to exclude dependencies.</p>
+
+<div class="row">
+<div class="span7">
+<h5 class="section" id="H22"><a href="#H22" class="sectionlink"><i class="icon-share-alt"> </i></a>@ext</h5>
+
+The `@ext` syntax will exclude all dependencies of a dependency.  To use this syntax you must specify the extension of the artifact to retrieve.
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+- compile 'org.apache.ant:ant.1.8.4' @jar
+</pre>
+</div>
+</div>
+<div class="row">
+<div class="span7">
+<h5 class="section" id="H23"><a href="#H23" class="sectionlink"><i class="icon-share-alt"> </i></a>Discrete Exclusions</h5>
+
+You may also specify exclusions by <code>groupId</code> and <code>groupId:artifactId</code>.
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+- compile 'org.apache.ant:ant.1.8.4' !commons-logging
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H24"><a href="#H24" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Directory</h3>
+<div class="row">
+<div class="span7">
+You may optionally specify a project-relative directory to copy dependencies to.  If you decide to do this AND you are generating Eclipse or IntelliJ IDEA project files, your project files will reference these relatively located jar files.
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+dependencyDirectory: ext
+</pre>
+</div>
+</div>
+<hr/>
+<h3 class="section" id="H25"><a href="#H25" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Name Pattern</h3>
+<p>When you are using the <code>dependencyDirectory</code> setting you may also control the destination name of the project-relative artifacts.&lt;/div&gt;</p>
+
+<p><pre class='prettyprint lang-yaml'>
+dependencyNamePattern: [artifactId]-[version](-[classifier]).[ext]
+</pre></p>
+
+<hr/>
+<h2 class="section" id="H26"><a href="#H26" class="sectionlink"><i class="icon-share-alt"> </i></a>Advanced Settings</h2>
+<p>These settings can be used to manipulate released POMs and/or to enable clever dependency tricks.  Both of these features are used internally by Moxie.</p>
+
+<h3 class="section" id="H27"><a href="#H27" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Aliases</h3>
+<p>Dependency aliases allow you to specify shorthand notation for a dependency which will be resolved at runtime to the full coordinates.</p>
+
+<p><pre class='prettyprint lang-yaml'>
+dependencyAliases: {
+	junit: 'junit:junit'
+	testng: 'org.testng:testng'
+	cobertura: 'net.sourceforge.cobertura:cobertura'
+	emma: 'emma:emma'
+	jacoco: 'org.jacoco:org.jacoco.ant'
+	'mx:jgit' : 'org.eclipse.jgit:org.eclipse.jgit'
+	'mx:markdownpapers' : 'org.tautua.markdownpapers:markdownpapers-core'
+	'mx:rhino' : 'org.mozilla:rhino'
 }
-'mx:javac': {
-compilerArgs: yada
+</pre></p>
+
+<h3 class="section" id="H28"><a href="#H28" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Overrides</h3>
+<p>Dependency overrides are used to redefine the dependencies of released/published POMs from other projects.  The most common use case would be to add undeclared dependencies for old POMs or to purposefully exclude dependencies from specific scopes.</p>
+
+<p>Moxie uses this feature to simplify specification of &quot;build&quot; scope dependencies so that enabling Cobertura, Emma, or TestNG is as easy as adding a single build dependency.</p>
+
+<p>You must declare the full coordinates of the dependency to tweak.  Property substitution is prohibited.  You may specify the scopes for which your override applies.  If no scope is specified ALL scopes are assumed.</p>
+
+<p class="text-error">Be very careful when using dependency overrides!</p>
+<p><pre class='prettyprint lang-yaml'>
+dependencyOverrides: {
+
+    # cobertura: redefine ant as optional for build scope
+    'net.sourceforge.cobertura:cobertura:1.9.4.1' : {
+        scope: build
+        dependencies:
+        - compile 'oro:oro:2.0.8'
+        - compile 'asm:asm:3.0'
+        - compile 'asm:asm-tree:3.0'
+        - compile 'log4j:log4j:1.2.9'
+        - compile 'org.apache.ant:ant:1.7.0' optional
+    }
+
+    # emma: add emma_ant dependency for build scope
+    'emma:emma:2.1.5320' : {
+        scope: build
+        dependencies:
+        - compile 'emma:emma_ant:2.1.5320'
+    }
 }
-'mx:report': {
-}
-}
-dependencyOverrides
-dependencyAliases
+</pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="gettingstarted.html">&larr; getting started</a></li> <li class="next"><a href="settings.html">settings.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-08</p>
+<div ><ul class="pager"><li class="previous"><a href="gettingstarted.html">&larr; getting started</a></li> <li class="next"><a href="defaults.html">defaults.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-25</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>
