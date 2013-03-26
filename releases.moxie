@@ -11,6 +11,7 @@ r7: {
     security: ~
     fixes:
 	- Wrap exception handler around individual pom reindexing
+	- Cleanup less folder in mx:Doc
     changes: ~
     additions: ~
     dependencyChanges: ~

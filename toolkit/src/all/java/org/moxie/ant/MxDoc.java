@@ -497,7 +497,7 @@ public class MxDoc extends MxTask {
 		}
 		
 		// remove less folder
-		FileUtils.delete(new File(outputFolder, "less"));
+		FileUtils.delete(new File(outputFolder, "bootstrap/less"));
 	}
 
 	protected void extractJQuery(Dependency dep, File outputFolder) {
