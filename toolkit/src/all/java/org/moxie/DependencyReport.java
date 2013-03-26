@@ -77,7 +77,7 @@ public class DependencyReport implements MoxieReport {
 					sb.append(format("<td>{0}</td><td>{1}</td><td></td><td>{2}</td>", depPom.getCoordinates(), size, dep.tags));
 				} else {
 					// Maven artifact
-					String mvnrepository = format("http://mvnrepository.com/artifact/{0}/{1}/{2}", depPom.groupId, depPom.artifactId, depPom.version);
+					String mvnrepository = format("http://search.maven.org/#artifactdetails|{0}|{1}|{2}|pom", depPom.groupId, depPom.artifactId, depPom.version);
 					String mvnLink = format(aPattern, depPom.getCoordinates(), mvnrepository);
 					String siteLink = "";
 					if (!StringUtils.isEmpty(depPom.url)) {

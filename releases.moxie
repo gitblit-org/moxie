@@ -13,7 +13,8 @@ r7: {
 	- Wrap exception handler around individual pom reindexing
 	- Cleanup less folder in mx:Doc
 	- Replace tabs with spaces in proxy pom view
-    changes: ~
+    changes:
+	- Use search.maven.org instead of mvnrepository.com in dependency report
     additions: ~
     dependencyChanges: ~
     contributors: ~
