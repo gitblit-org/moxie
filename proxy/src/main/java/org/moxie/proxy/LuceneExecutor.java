@@ -322,25 +322,28 @@ public class LuceneExecutor implements Runnable {
 			IndexWriter writer = getIndexWriter(repository);
 
 			for (File pomFile : files) {
-				Pom pom = PomReader.readPom(moxieCache, pomFile);
-				String date = DateTools.timeToString(pomFile.lastModified(), Resolution.MINUTE);
+				try {
+					Pom pom = PomReader.readPom(moxieCache, pomFile);
+					String date = DateTools.timeToString(pomFile.lastModified(), Resolution.MINUTE);
 
-				Document doc = new Document();
-				doc.add(new Field(FIELD_PACKAGING, pom.packaging, Store.YES, Index.NOT_ANALYZED_NO_NORMS));
-				doc.add(new Field(FIELD_GROUPID, pom.groupId, Store.YES, Index.ANALYZED));
-				doc.add(new Field(FIELD_ARTIFACTID, pom.artifactId, Store.YES, Index.ANALYZED));
-				doc.add(new Field(FIELD_VERSION, pom.version, Store.YES, Index.ANALYZED));
-				if (!StringUtils.isEmpty(pom.name)) {
-					doc.add(new Field(FIELD_NAME, pom.name, Store.YES, Index.ANALYZED));
+					Document doc = new Document();
+					doc.add(new Field(FIELD_PACKAGING, pom.packaging, Store.YES, Index.NOT_ANALYZED_NO_NORMS));
+					doc.add(new Field(FIELD_GROUPID, pom.groupId, Store.YES, Index.ANALYZED));
+					doc.add(new Field(FIELD_ARTIFACTID, pom.artifactId, Store.YES, Index.ANALYZED));
+					doc.add(new Field(FIELD_VERSION, pom.version, Store.YES, Index.ANALYZED));
+					if (!StringUtils.isEmpty(pom.name)) {
+						doc.add(new Field(FIELD_NAME, pom.name, Store.YES, Index.ANALYZED));
+					}
+					if (!StringUtils.isEmpty(pom.description)) {
+						doc.add(new Field(FIELD_DESCRIPTION, pom.description, Store.YES, Index.ANALYZED));
+					}
+					doc.add(new Field(FIELD_DATE, date, Store.YES, Index.ANALYZED));
+
+					// add the pom to the index
+					writer.addDocument(doc);
+				} catch (Exception e) {
+					logger.log(Level.SEVERE, MessageFormat.format("Exception while reindexing {0} in {1}",pomFile, repository), e);
 				}
-				if (!StringUtils.isEmpty(pom.description)) {
-					doc.add(new Field(FIELD_DESCRIPTION, pom.description, Store.YES, Index.ANALYZED));
-				}
-				doc.add(new Field(FIELD_DATE, date, Store.YES, Index.ANALYZED));
-
-				// add the pom to the index
-				writer.addDocument(doc);
-
 				result.artifactCount++;
 			}
 
