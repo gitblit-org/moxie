@@ -314,7 +314,7 @@ public class ArtifactsResource extends BaseResource {
 			if (isText(file)) {
 				// display file content
 				String content = FileUtils.readContent(file, "\n").trim();
-				String html = StringUtils.escapeForHtml(content, false);
+				String html = StringUtils.escapeForHtml(content, true);
 				map.put("content", html);
 				return toHtml(map, "artifact.html");
 			}

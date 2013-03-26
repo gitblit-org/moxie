@@ -12,6 +12,7 @@ r7: {
     fixes:
 	- Wrap exception handler around individual pom reindexing
 	- Cleanup less folder in mx:Doc
+	- Replace tabs with spaces in proxy pom view
     changes: ~
     additions: ~
     dependencyChanges: ~
