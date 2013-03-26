@@ -27,10 +27,10 @@ resourceDirectories:
 - site 'src/site/resources'
 
 # Default working directory for the build.
-outputDirectory: build
+outputDirectory: 'build'
 
 # The base directory within the project for build artifacts.
-targetDirectory: build/target
+targetDirectory: 'build/target'
 
 # Default settings for Moxie tasks.
 # These attributes are set via reflection using Ant's standard utility classes.

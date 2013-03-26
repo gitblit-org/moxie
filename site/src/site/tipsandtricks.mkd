@@ -49,7 +49,7 @@ Moxie supports forcing metadata updates.
 
 ### Relocating the Moxie Root Directory
 
-By default, your Moxie root directory is *~/.moxie*.  This can be changed by setting the `MX_ROOT` environment variable or by passing a command-line parameter.
+By default, your Moxie root directory is *~/.moxie*.  This can be changed by passing a command-line parameter.
 
     ant -Dmx.root=/path/to/dir mytarget
     moxie -Dmx.root=/path/to/dir mytarget

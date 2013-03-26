@@ -60,6 +60,7 @@ localRepositories:
 remoteRepositories:
 - { id: central, url: "http://repo1.maven.org/maven2" }
 - {	id: restlet, url: "http://maven.restlet.org" }
+- {	id: sonatype-oss , url: "http://oss.sonatype.org/content/groups/public" }
 
 # Enable the Restlet access log
 accessLog: false

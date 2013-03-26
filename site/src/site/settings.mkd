@@ -20,7 +20,7 @@ proxies:
     active: true
     protocol: 'http'
     host: 'proxy.somewhere.com'
-    port:8080
+    port: 8080
     username: 'proxyuser'
     password: 'somepassword'
   }
@@ -48,19 +48,38 @@ proxies:
 
 ### Registered Repositories
 
-This section is used to define id-url pairs so that project descriptors can specify an repository id, rather than a complete url.  A repository definition can also specify a custom snapshot revision purge policy.
+This section is used to define remote artifact repositories.  Currently only http/https repositories are supported.
+
+The default *connectTimeout* is 20 seconds.  
+The default *readTimeout* is 1800 seconds (30 mins).
 
 ---YAML---
 registeredRepositories:
-- { id: central, url: 'http://repo1.maven.org/maven2' }
-- { id: mavencentral, url: 'http://repo1.maven.org/maven2' }
-- { id: restlet, url: 'http://maven.restlet.org', revisionRetentionCount: 1, revisionPurgeAfterDays: 0 }
-- { id: codehaus, url: 'http://repository.codehaus.org' }
+- { id: 'central', url: 'http://repo1.maven.org/maven2' }
+- { id: 'mavencentral', url: 'http://repo1.maven.org/maven2' }
+- { id: 'codehaus', url: 'http://repository.codehaus.org' }
 - {
     id: 'sonatype-oss'
     url: 'https://oss.sonatype.org/content/groups/public'
+    # Snapshot Purge Policy
     revisionRetentionCount: 1
     revisionPurgeAfterDays: 0
+  }
+- {
+    id: 'restlet'
+    url: 'http://maven.restlet.org'
+    # Snapshot Purge Policy
+    revisionRetentionCount: 1
+    revisionPurgeAfterDays: 0
+    # Artifact affinities
+    affinity: [ 'org.restlet' ]
+    # seconds to wait till connected
+    connectTimeout: 20
+    # seconds to wait on read
+    readTimeout: 1800
+    # authentication credentials
+    username: 'someuser'
+    password: 'mypassword'
   }
 ---YAML---
 
@@ -114,18 +133,20 @@ Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT.
 
 <div class="span5">
 ---YAML---
-updatePolicy: daily
+updatePolicy: 'daily'
 ---YAML---
 </div>
 </div>
 
 <hr />
 
-### Snapshot Purge Policies
+### Snapshot Purge Policy
 
 <div class="row">
 <div class="span7">
-Default minimum count of snapshot revisions to keep.  The minimum acceptable value is 1.
+Default minimum count of snapshot revisions to keep.<br/>
+The minimum acceptable value is 1.<br/>
+The maximum acceptable value is is 100.
 </div>
 
 <div class="span5">
@@ -135,9 +156,12 @@ revisionRetentionCount: 1
 </div>
 </div>
 
+<hr />
+
 <div class="row">
 <div class="span7">
-If the count of snapshot revisions exceeds the specified retention count, then delete all snapshot revisions older than this count of days.
+If the count of snapshot revisions exceeds the specified retention count, then delete all snapshot revisions older than this count of days.<br/>
+The maximum acceptable value is 1000.
 </div>
 
 <div class="span5">
@@ -165,7 +189,7 @@ Options are:
 
 <div class="span5">
 ---YAML---
-mavenCacheStrategy: IGNORE
+mavenCacheStrategy: 'IGNORE'
 ---YAML---
 </div>
 </div>

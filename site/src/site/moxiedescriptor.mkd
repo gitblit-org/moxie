@@ -194,7 +194,10 @@ scm: {
 
 ### Registered Repositories
 
-This section is used to define remote artifact repositories.  A repository definition can also specify a custom snapshot revision purge policy and/or a list of artifact affinities.
+This section is used to define remote artifact repositories.  Currently only http/https repositories are supported.
+
+The default *connectTimeout* is 20 seconds.  
+The default *readTimeout* is 1800 seconds (30 mins).
 
 #### Affinities
 
@@ -204,15 +207,31 @@ In the following example, the *Restlet* repository has an affinity for all artif
 
 ---YAML---
 registeredRepositories:
-- { id: central, url: 'http://repo1.maven.org/maven2' }
-- { id: mavencentral, url: 'http://repo1.maven.org/maven2' }
-- { id: codehaus, url: 'http://repository.codehaus.org' }
-- { 
-    id: restlet
-    url: 'http://maven.restlet.org'
+- { id: 'central', url: 'http://repo1.maven.org/maven2' }
+- { id: 'mavencentral', url: 'http://repo1.maven.org/maven2' }
+- { id: 'codehaus', url: 'http://repository.codehaus.org' }
+- {
+    id: 'sonatype-oss'
+    url: 'https://oss.sonatype.org/content/groups/public'
+    # Snapshot Purge Policy
     revisionRetentionCount: 1
     revisionPurgeAfterDays: 0
+  }
+- { 
+    id: 'restlet'
+    url: 'http://maven.restlet.org'
+    # Snapshot Purge Policy
+    revisionRetentionCount: 1
+    revisionPurgeAfterDays: 0
+    # Artifact affinitities
     affinity: [ 'org.restlet' ]
+    # seconds to wait till connected
+    connectTimeout: 20
+    # seconds to wait on read
+    readTimeout: 1800
+    # authentication credentials
+    username: 'someuser'
+    password: 'mypassword'
   }
 ---YAML---
 
@@ -222,7 +241,7 @@ registeredRepositories:
 
 <div class="row">
 <div class="span7">
-The repositories settings defines the list of registeredRepositories from whcih to source artifacts.  By default, only MavenCentral is specified, however Moxie ships with several other registeredRepositories including sonatype-oss, codehaus, & restlet.
+The repositories settings defines the list of registeredRepositories from which to source artifacts.  By default, only MavenCentral is specified, however Moxie ships with several other registeredRepositories including sonatype-oss, codehaus, & restlet.
 </div>
 
 <div class="span5">
@@ -392,6 +411,21 @@ dependencies:
 - compile 'org.apache.ant:ant'
 - compile 'com.acme:widget:1.2.3' :mytag
 - test 'junit'
+---YAML---
+</div>
+</div>
+
+#### Classifiers
+
+<div class="row">
+<div class="span7">
+
+Moxie supports resolution by classifier by appending the classifier to the standard artifact coordinates.
+</div>
+
+<div class="span5">
+---YAML---
+- compile 'org.apache.ant:ant.1.8.4:jdk14'
 ---YAML---
 </div>
 </div>

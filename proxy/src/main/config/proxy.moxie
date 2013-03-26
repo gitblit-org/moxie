@@ -50,7 +50,7 @@ rootFolder: moxie
 # Local artifact repositories relative to rootFolder
 #
 # RESTART REQUIRED
-localRepositories :
+localRepositories:
 - releases
 - snapshots
 
@@ -58,8 +58,9 @@ localRepositories :
 #
 # RESTART REQUIRED
 remoteRepositories:
-- { id: central, url: "http://repo1.maven.org/maven2" }
-- {	id: restlet, url: "http://maven.restlet.org" }
+- { id: 'central', url: "http://repo1.maven.org/maven2" }
+- {	id: 'restlet', url: "http://maven.restlet.org" }
+- {	id: 'sonatype-oss' , url: "http://oss.sonatype.org/content/groups/public" }
 
 # Enable the Restlet access log
 accessLog: false
@@ -69,4 +70,12 @@ dateFormat: MMM dd, yyyy
 
 # Configure your network proxy
 proxies:
-- { active: false, id: myproxy, protocol: http, host: "proxy.somewhere.com", port:8080, username: "proxyuser", password: "somepassword" }
+- {
+    active: false
+    id: 'myproxy'
+    protocol: 'http'
+    host: 'proxy.somewhere.com'
+    port: 8080
+    username: 'proxyuser'
+    password: 'somepassword'
+   }

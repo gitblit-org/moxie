@@ -70,7 +70,7 @@ Default working directory for the build.
 
 <div class="span5">
 ---YAML---
-outputDirectory: build
+outputDirectory: 'build'
 ---YAML---
 </div>
 </div>
@@ -86,7 +86,7 @@ The base directory within the project for build artifacts.
 
 <div class="span5">
 ---YAML---
-targetDirectory: build/target
+targetDirectory: 'build/target'
 ---YAML---
 </div>
 </div>
