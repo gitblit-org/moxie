@@ -17,7 +17,6 @@
 			<dependency coordinates="javax.mail:mail:1.4" />
 			<dependency coordinates="javax.activation:activation:1.1" />
 			<dependency coordinates="org.apache.ant:ant-compress:1.2 !org.apache.ant:ant" />
-			<dependency coordinates="com.jcraft:jsch:0.1.44-1" />
 		</mx:get>
 			
 		<delete dir="${project.targetDirectory}" includes="**/*" quiet="true" failonerror="false"/>

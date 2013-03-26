@@ -7,3 +7,4 @@ parent: ../build.moxie
 dependencyDirectory: ext
 dependencies:
 - provided 'mx:commons-net' @jar
+- provided 'mx:jgit
