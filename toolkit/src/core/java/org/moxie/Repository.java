@@ -50,6 +50,7 @@ public class Repository {
 	int readTimeout;
 	String username;
 	String password;
+	int checksumRetryWaitPeriod = 500;
 	
 	public Repository(RemoteRepository definition) {
 		this(definition.id, definition.url);
@@ -110,7 +111,11 @@ public class Repository {
 					solver.getConsole().warn(line);
 				}
 				if (solver.isFailOnChecksumError()) {
-					solver.getConsole().warn(MessageFormat.format("specify \"-D{0}=false\" when running Ant to disable checksum verification.", Toolkit.MX_ENFORCECHECKSUMS));
+					if (data.url.toString().contains(".xml.sha1")) {
+						solver.getConsole().warn(MessageFormat.format("Checksum file may have been cached for performance by the repository server or by a proxy server.\nspecify \"-D{0}=false\" to disable checksum verification\nOR\nspecify \"-D{1}=true\" to force a metadata refresh.", Toolkit.MX_ENFORCECHECKSUMS, Toolkit.MX_UPDATEMETADATA));
+					} else {
+						solver.getConsole().warn(MessageFormat.format("Checksum file may have been cached for performance by the repository server or by a proxy server.\nspecify \"-D{0}=false\" to disable checksum verification.", Toolkit.MX_ENFORCECHECKSUMS));
+					}
 					throw new MoxieException(message);
 				}
 			}
@@ -260,7 +265,21 @@ public class Repository {
 			URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl(dep)));
 			solver.getConsole().download(url.toString());
 			DownloadData data = download(solver, url);
-			verifySHA1(solver, expectedSHA1, data);
+			try {
+				verifySHA1(solver, expectedSHA1, data);
+			} catch (MoxieException verification) {
+				// if SHA1 verificaton fails the first time
+				// wait a little bit and then repeat because it is possible
+				// the repository server, or a proxy in between, has cached
+				// the file and we have received a stale checksum.
+				try {
+					Thread.sleep(checksumRetryWaitPeriod);
+				} catch (InterruptedException i) {				
+				}
+				
+				expectedSHA1 = downloadMetadataSHA1(solver, dep);
+				verifySHA1(solver, expectedSHA1, data);
+			}
 			
 			Metadata oldMetadata;
 			File file = solver.getMoxieCache().getMetadata(dep, Constants.XML);
@@ -353,11 +372,25 @@ public class Repository {
 			DownloadData data = download(solver, url);
 			try {
 				verifySHA1(solver, expectedSHA1, data);
-			} catch (MoxieException e) {
-				// checksum verification failed
-				// delete all artifacts for this dependency
-				solver.getMoxieCache().purgeArtifacts(dep.getPomArtifact(), false);
-				throw e;
+			} catch (MoxieException verification) {
+				// if SHA1 verificaton fails the first time
+				// wait a little bit and then repeat because it is possible
+				// the repository server, or a proxy in between, has cached
+				// the file and we have received a stale checksum.
+				try {
+					Thread.sleep(checksumRetryWaitPeriod);
+				} catch (InterruptedException i) {				
+				}
+
+				try {
+					expectedSHA1 = getSHA1(solver, dep, ext);
+					verifySHA1(solver, expectedSHA1, data);
+				} catch (MoxieException e) {
+					// checksum verification failed
+					// delete all artifacts for this dependency
+					solver.getMoxieCache().purgeArtifacts(dep.getPomArtifact(), false);
+					throw e;
+				}
 			}
 			
 			// log successes
