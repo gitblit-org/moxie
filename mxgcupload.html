@@ -122,15 +122,25 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:Thumbs</h2>
+<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:GCUpload</h2>
+<p>mx:GCUpload is a fork of <a href="https://code.google.com/p/ant-googlecode">ant-googlecode</a> by Jonathan Fuerth.</p>
+
+<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes</h3>
+<p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>username</td><td>Google user name to authenticate as (this is just the username part; don't include the @gmail.com part)</td><td>Yes</td></tr><tr><td>password</td><td>Coogle Code password (not the same as the gmail password). </td><td>Yes</td></tr><tr><td>projectname</td><td>Google Code project name to upload to. </td><td>Yes</td></tr><tr><td>filename</td><td>The local path of the file to upload. </td><td>Yes</td></tr><tr><td>targetfilename</td><td>The file name that this file will be given on Google Code. </td><td>Yes</td></tr><tr><td>summary</td><td>Summary of the upload. </td><td>No</td></tr><tr><td>verbose</td><td>If set to true, this task will print debugging information to System.out as it progresses through its job </td><td>No, default false</td></tr><tr><td>labels</td><td>The labels that the download should have, separated by commas. Extra whitespace before and after each label name will not be considered part of the label name. </td><td>No</td></tr></table></p>
+
+<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Example</h3>
 <p><pre class='prettyprint lang-xml'>
-&lt;!-- Generate thumbnails of screenshots --&gt;
-&lt;mx:thumbs input=&quot;png&quot; output=&quot;png&quot; maximumDimension=&quot;250&quot; 
-	sourceFolder=&quot;${project.docs.dir}/screenshots&quot;
-	destFolder=&quot;${project.site.dir}/thumbs&quot; /&gt;
+&lt;mx:gcupload 
+        username=&quot;googleuser&quot; 
+        password=&quot;secretpassword&quot; 
+        projectname=&quot;myproject&quot; 
+        filename=&quot;path/file.name&quot; 
+        targetfilename=&quot;version_0_file.name&quot;
+        summary=&quot;Version 0 of myproject&quot;
+        labels=&quot;Featured, Type-Package, OpSys-All&quot; /&gt;
 </pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="mxtest.html">&larr; mx:Test</a></li> <li class="next"><a href="mxversion.html">mx:Version &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-27</p>
+<div ><ul class="pager"><li class="previous"><a href="mxftp.html">&larr; mx:Ftp</a></li> <li class="next"><a href="mxgenjar.html">mx:GenJar &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-03-27</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

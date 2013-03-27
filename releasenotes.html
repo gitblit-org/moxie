@@ -69,6 +69,7 @@
 <li><a href='mxdoc.html'>mx:Doc</a></li>
 <li><a href='mxextract.html'>mx:Extract</a></li>
 <li><a href='mxftp.html'>mx:Ftp</a></li>
+<li><a href='mxgcupload.html'>mx:GCUpload</a></li>
 <li><a href='mxgenjar.html'>mx:GenJar</a></li>
 <li><a href='mxget.html'>mx:Get</a></li>
 <li><a href='mxghpages.html'>mx:GhPages</a></li>
@@ -100,13 +101,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.0/moxie-toolkit-0.7.0.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.1/moxie-toolkit-0.7.1-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.1/moxie-toolkit-0.7.1.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-proxy/0.7.0/moxie-proxy-0.7.0.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-proxy/0.7.1/moxie-proxy-0.7.1.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.0/moxie+ant-0.7.0.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.1/moxie+ant-0.7.1.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.1/moxie+ant-0.7.1.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -123,68 +124,11 @@
 <!-- Begin Markdown -->
 
 <!-- CURRENT RELEASE -->
-	<h3 id="0.7.0" class="section"><a href="#0.7.0" class="sectionlink"><i class="icon-share-alt"> </i></a>Current Release (0.7.0) <small>this is the current stable release</small></h3>
+	<h3 id="0.7.1" class="section"><a href="#0.7.1" class="sectionlink"><i class="icon-share-alt"> </i></a>Current Release (0.7.1) <small>this is the current stable release</small></h3>
 	<table class="table">
 		<tbody>
 			<tr>
-				<td style="background-color:inherit;width:100px">2013-03-25</td>
-				<td style="background-color:inherit;">	
-	
-
-
-   	<h4>fixes</h4>
-	<ul>
-		<li>Fixed repository affinity checking when there are cached solutions with an origin</li>
-		<li>Fixed quote/double-quote stripping for inline lists</li>
-		<li>Fixed new project creation for Moxie+Ant</li>
-		<li>Do not use cached metadata checksums when retrieving fresh metadata files</li>
-	</ul>
-   	<h4>changes</h4>
-	<ul>
-		<li>Use WebJars for all js &amp; css dependencies.  This shrinks the full toolkit jar by ~200K.</li>
-		<li>Eliminated the pro toolkit.  This simplifies things to -core and the full toolkit.</li>
-		<li>Improved Moxie Toolkit registration section of build.xml archetypes</li>
-		<li>Split mx:Doc Link class into several model classes to improve Ant tab-completion</li>
-		<li>Improved version range support by integrating Maven's VersionRange and Restriction classes</li>
-		<li>Download javadoc artifacts for repository parity with Maven</li>
-		<li>Improve dynamic classpath loading</li>
-		<li>Adjustments to work on both Ant 1.8.x and 1.9.x</li>
-	</ul>
-   	<h4>additions</h4>
-	<ul>
-		<li>Added support for submenus in mx:Doc</li>
-		<li>Added support for co-mingling wiki syntax with Markdown in mx:Doc documents</li>
-		<li>Added connectTimeout and readTimeout settings for repositories</li>
-		<li>Added username and password settings for repositories</li>
-	</ul>
-   	<h4>dependency changes</h4>
-	<ul>
-		<li>org.webjars:bootstrap:2.3.1</li>
-		<li>org.webjars:jquery:1.9.1</li>
-		<li>org.webjars:prettify:1-Jun-2011</li>
-		<li>org.webjars:d3js:2.10.3</li>
-		<li>com.asual.lesscss:lesscss-engine:1.3.3</li>
-		<li>org.codehaus.groovy:groovy-all:1.8.8</li>
-		<li>org.fusesource.wikitext:wikitext-core:1.4</li>
-		<li>org.fusesource.wikitext:twiki-core:1.4</li>
-		<li>org.fusesource.wikitext:textile-core:1.4</li>
-		<li>org.fusesource.wikitext:tracwiki-core:1.4</li>
-		<li>org.fusesource.wikitext:mediawiki-core:1.4</li>
-		<li>org.fusesource.wikitext:confluence-core:1.4</li>
-		<li>org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r</li>
-		<li>org.apache.ant:ant:1.9.0</li>
-	</ul>
-</td>
-			</tr>
-		</tbody>
-	</table>
-
-<!-- NEXT RELEASE -->
-	<h3 id="0.8.0-SNAPSHOT" class="section"><a href="#0.8.0-SNAPSHOT" class="sectionlink"><i class="icon-share-alt"> </i></a>Next Release (0.8.0-SNAPSHOT) <small>these changes are queued for an upcoming release</small></h3>
-	<table class="table">
-		<tbody>
-			<tr>
-				<td style="background-color:inherit;width:100px">PENDING</td>
+				<td style="background-color:inherit;width:100px">2013-03-27</td>
 				<td style="background-color:inherit;">	
 	
 
@@ -198,11 +142,19 @@
    	<h4>changes</h4>
 	<ul>
 		<li>Use search.maven.org instead of mvnrepository.com in dependency report</li>
+		<li>Added checksum retrieval retry on first verification error just in case the repository server, or a proxy server, is caching the checksum file.  This caching behavior has been observed with Sonatype Nexus.</li>
+		<li>Improved recommendations on metadata checksum verification failures</li>
+	</ul>
+   	<h4>additions</h4>
+	<ul>
+		<li>Added mx:GCUpload task, forked from ant-googlecode</li>
 	</ul>
 </td>
 			</tr>
 		</tbody>
 	</table>
+
+<!-- NEXT RELEASE -->
 
 <div>
 	<ul class="pager">
@@ -211,7 +163,7 @@
 </div>
 
 <!-- End Markdown -->
-<footer class="footer"><p class="pull-right">generated 2013-03-26</p>
+<footer class="footer"><p class="pull-right">generated 2013-03-27</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>
