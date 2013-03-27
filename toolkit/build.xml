@@ -155,6 +155,7 @@
 			<class name="org.moxie.ant.MxDoc" />
 			<class name="org.moxie.ant.MxExtract" />
 			<class name="org.moxie.ant.MxFtp" />
+			<class name="org.moxie.ant.MxGCUpload" />
 			<class name="org.moxie.ant.MxGenJar" />
 			<class name="org.moxie.ant.MxGhPages" />
 			<class name="org.moxie.ant.MxGroovy" />

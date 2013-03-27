@@ -1,0 +1,54 @@
+## mx:GCUpload
+
+mx:GCUpload is a fork of [ant-googlecode](https://code.google.com/p/ant-googlecode) by Jonathan Fuerth.
+
+### Attributes
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+! Attribute !! Description !! Required
+|-
+| username
+| Google user name to authenticate as (this is just the username part; don't include the @gmail.com part)
+| Yes
+|-
+| password
+| Coogle Code password (not the same as the gmail password). 
+| Yes
+|-
+| projectname
+| Google Code project name to upload to. 
+| Yes
+|-
+| filename
+| The local path of the file to upload. 
+| Yes
+|-
+| targetfilename
+| The file name that this file will be given on Google Code. 
+| Yes
+|-
+| summary
+| Summary of the upload. 
+| No
+|-
+| verbose
+| If set to true, this task will print debugging information to System.out as it progresses through its job 
+| No, default false
+|-
+| labels
+| The labels that the download should have, separated by commas. Extra whitespace before and after each label name will not be considered part of the label name. 
+| No
+|}
+---X:MEDIAWIKI---
+
+### Example
+---XML---
+<mx:gcupload 
+        username="googleuser" 
+        password="secretpassword" 
+        projectname="myproject" 
+        filename="path/file.name" 
+        targetfilename="version_0_file.name"
+        summary="Version 0 of myproject"
+        labels="Featured, Type-Package, OpSys-All" />
+---XML---

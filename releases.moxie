@@ -17,7 +17,8 @@ r7: {
 	- Use search.maven.org instead of mvnrepository.com in dependency report
 	- Added checksum retrieval retry on first verification error just in case the repository server, or a proxy server, is caching the checksum file.  This caching behavior has been observed with Sonatype Nexus.
     - Improved recommendations on metadata checksum verification failures
-    additions: ~
+    additions:
+	- Added mx:GCUpload task, forked from ant-googlecode
     dependencyChanges: ~
     contributors: ~
 }

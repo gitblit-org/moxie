@@ -12,6 +12,7 @@
 	<taskdef name="deploy" classname="org.moxie.ant.MxDeploy" />
 	<taskdef name="extract" classname="org.moxie.ant.MxExtract" />
 	<taskdef name="ftp" classname="org.moxie.ant.MxFtp" />
+	<taskdef name="gcupload" classname="org.moxie.ant.MxGCUpload" />
 	<taskdef name="genjar" classname="org.moxie.ant.MxGenJar" />
 	<taskdef name="ghpages" classname="org.moxie.ant.MxGhPages" />
 	<taskdef name="groovy" classname="org.moxie.ant.MxGroovy" />
