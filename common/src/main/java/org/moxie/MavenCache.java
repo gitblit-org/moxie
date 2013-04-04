@@ -62,6 +62,9 @@ public class MavenCache extends IMavenCache {
 	 */
 	@Override
 	public File getArtifact(Dependency dep, String ext) {
+		if (dep instanceof SystemDependency) {
+			return new File(((SystemDependency) dep).path);
+		}
 		resolveRevision(dep);
 		String path = Dependency.getMavenPath(dep,  ext, Constants.MAVEN2_PATTERN);
 		return new File(root, path);

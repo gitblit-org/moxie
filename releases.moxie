@@ -9,7 +9,8 @@ r8: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+    - Fixed system scope dependencies
     changes: ~
     additions: ~
     dependencyChanges: ~

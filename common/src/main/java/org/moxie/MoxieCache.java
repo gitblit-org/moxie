@@ -86,6 +86,9 @@ public class MoxieCache extends IMavenCache {
 	 */
 	@Override
 	public File getArtifact(Dependency dep, String ext) {
+		if (dep instanceof SystemDependency) {
+			return new File(((SystemDependency) dep).path);
+		}
 		File baseFolder = localReleasesRoot;
 		// clone the original dep object for special checks below
 		Dependency original = DeepCopier.copy(dep);

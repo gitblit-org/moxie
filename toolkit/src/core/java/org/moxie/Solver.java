@@ -412,7 +412,7 @@ public class Solver {
 									throw new MoxieException(MessageFormat.format("Failed to resolve {0}", dependency.getCoordinates()));
 								}
 							}
-							if (!Scope.build.equals(scope)) {
+							if (!Scope.build.equals(scope) && !Scope.system.equals(scope)) {
 								copyArtifact(dependency, artifactFile);
 							}
 						}
@@ -476,6 +476,9 @@ public class Solver {
 	
 	private List<Dependency> solve(Scope scope, Dependency dependency) {
 		List<Dependency> resolved = new ArrayList<Dependency>();
+		if (dependency instanceof SystemDependency) {
+			return resolved;
+		}
 		if (!dependency.resolveDependencies) {
 			return resolved;
 		}
@@ -779,6 +782,10 @@ public class Solver {
 	 * @return
 	 */
 	private File retrieveArtifact(Dependency dependency) {
+		if (dependency instanceof SystemDependency) {
+			String path = ((SystemDependency) dependency).path;
+			return new File(path);
+		}
 		if (Constants.POM.equals(dependency.extension)) {
 			// POM dependencies do not have other artifacts
 			if (dependency.isSnapshot()) {

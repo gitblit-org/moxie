@@ -32,6 +32,11 @@ public class SystemDependency extends Dependency {
 	}
 
 	@Override
+	public boolean isSnapshot() {
+		return false;
+	}
+
+	@Override
 	public String getMediationId() {
 		return path;
 	}
