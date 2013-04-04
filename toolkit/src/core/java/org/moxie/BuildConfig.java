@@ -57,15 +57,8 @@ public class BuildConfig {
 		}
 		
 		// allow specifying Moxie root folder
-		File root = new File(System.getProperty("user.home") + "/.moxie");
-		if (System.getProperty(Toolkit.MX_ROOT) != null) {
-			String value = System.getProperty(Toolkit.MX_ROOT);
-			if (!StringUtils.isEmpty(value)) {
-				root = new File(value);
-			}
-		}
-		root.mkdirs();
-		this.moxieRoot = root;
+		this.moxieRoot = Toolkit.getMxRoot();
+		this.moxieRoot.mkdirs();
 		
 		this.toolkitConfig = new ToolkitConfig(new File(moxieRoot, Toolkit.MOXIE_SETTINGS), projectDirectory, Toolkit.MOXIE_SETTINGS);
 		this.projectConfig = new ToolkitConfig(configFile, projectDirectory, Toolkit.MOXIE_DEFAULTS);

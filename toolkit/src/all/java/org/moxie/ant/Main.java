@@ -541,14 +541,7 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	String url = newProject.gitOrigin;
     	String repo = newProject.gitOrigin.substring(url.indexOf("://") + 3);
     	
-		File root = new File(System.getProperty("user.home") + "/.moxie");
-		if (System.getProperty(Toolkit.MX_ROOT) != null) {
-			String value = System.getProperty(Toolkit.MX_ROOT);
-			if (!StringUtils.isEmpty(value)) {
-				root = new File(value);
-			}
-		}
-		
+		File root = Toolkit.getMxRoot();
     	File gitAliases = new File(root, "git.moxie");
     	if (gitAliases.exists()) {
     		try {

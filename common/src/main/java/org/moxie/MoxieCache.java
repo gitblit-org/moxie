@@ -40,10 +40,6 @@ public class MoxieCache extends IMavenCache {
 	final IMavenCache dotM2Cache;
 	MavenCacheStrategy m2Strategy;
 
-	public MoxieCache() {
-		this(new File(System.getProperty("user.home") + "/.moxie"));
-	}
-	
 	public MoxieCache(File moxieRoot) {
 		this.moxieRoot = moxieRoot;
 		this.moxiedataRoot = new File(moxieRoot, "data");
@@ -55,7 +51,7 @@ public class MoxieCache extends IMavenCache {
 		
 		this.dotM2Cache = new MavenCache(new File(System.getProperty("user.home") + "/.m2/repository"));
 		
-		// intial folder creation
+		// initial folder creation
 		moxieRoot.mkdirs();
 		moxiedataRoot.mkdirs();
 		localRoot.mkdirs();

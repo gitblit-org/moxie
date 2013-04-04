@@ -15,9 +15,12 @@
  */
 package org.moxie;
 
+import java.io.File;
 import java.net.URL;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+
+import org.moxie.utils.StringUtils;
 
 public class Toolkit {
 	
@@ -84,6 +87,17 @@ public class Toolkit {
 			return "reference." + name().replace('_', '.');
 		}
 
+	}
+	
+	public static File getMxRoot() {
+		File root = new File(System.getProperty("user.home"), ".moxie");
+		if (System.getProperty(Toolkit.MX_ROOT) != null) {
+			String value = System.getProperty(Toolkit.MX_ROOT);
+			if (!StringUtils.isEmpty(value)) {
+				root = new File(value);
+			}
+		}
+		return root;
 	}
 	
 	public static String getVersion() {

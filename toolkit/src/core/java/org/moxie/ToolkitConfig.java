@@ -190,7 +190,7 @@ public class ToolkitConfig implements Serializable {
 			// build.moxie inheritance
 			File parentConfig = readFile(map, Key.parent, null);
 			if (parentConfig == null) {
-				File defaultFile = new File(System.getProperty("user.home") + "/.moxie/" + defaultResource);
+				File defaultFile = new File(Toolkit.getMxRoot(), defaultResource);
 				if (this.file == null || this.file.equals(defaultFile) || !defaultFile.exists()) {
 					// Moxie-shipped default resource
 					ToolkitConfig parent = new ToolkitConfig("/" + defaultResource);
