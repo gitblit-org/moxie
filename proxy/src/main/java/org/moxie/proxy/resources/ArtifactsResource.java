@@ -235,15 +235,18 @@ public class ArtifactsResource extends BaseResource {
 		List<ListItem> list = new ArrayList<ListItem>();
 		String pattern = getProxyConfig().getDateFormat();
 		SimpleDateFormat df = new SimpleDateFormat(pattern);
-		for (File file : folder.listFiles()) {
-			String relativePath= StringUtils.getRelativePath(rootPath, file.getAbsolutePath());
-			ListItem item = new ListItem(file.getName(), relativePath, file.isFile() && !isText(file));
-			item.isDirectory = file.isDirectory();
-			if (file.isFile()) {
-				item.size = FileUtils.formatSize(file.length());
-				item.date = df.format(new Date(file.lastModified()));
+		File [] files = folder.listFiles();
+		if (files != null) {
+			for (File file : files) {
+				String relativePath= StringUtils.getRelativePath(rootPath, file.getAbsolutePath());
+				ListItem item = new ListItem(file.getName(), relativePath, file.isFile() && !isText(file));
+				item.isDirectory = file.isDirectory();
+				if (file.isFile()) {
+					item.size = FileUtils.formatSize(file.length());
+					item.date = df.format(new Date(file.lastModified()));
+				}
+				list.add(item);
 			}
-			list.add(item);
 		}
 		Collections.sort(list);
 		return list;

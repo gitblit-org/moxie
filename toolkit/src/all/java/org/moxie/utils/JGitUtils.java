@@ -334,15 +334,19 @@ public class JGitUtils {
 	}
 
 	private static List<File> listFiles(File folder) {
-		List<File> files = new ArrayList<File>();
-		for (File file : folder.listFiles()) {
+		List<File> list = new ArrayList<File>();
+		File [] files = folder.listFiles();
+		if (files == null) {
+			return list;
+		}
+		for (File file : files) {
 			if (file.isDirectory()) {
-				files.addAll(listFiles(file));
+				list.addAll(listFiles(file));
 			} else {
-				files.add(file);
+				list.add(file);
 			}
 		}
-		return files;
+		return list;
 	}
 	
 	public static String commitFiles(File dir, List<String> files, String message, 

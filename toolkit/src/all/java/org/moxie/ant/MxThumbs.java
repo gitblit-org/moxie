@@ -100,42 +100,44 @@ public class MxThumbs extends MxTask {
 				return name.toLowerCase().endsWith("." + input);
 			}
 		});
-
-		build.getConsole().log("Generating {0} {1}", sourceFiles.length, sourceFiles.length == 1 ? "thumbnail" : "thumbnails");
-		for (File sourceFile : sourceFiles) {
-			String name = sourceFile.getName();
-			name = name.substring(0, name.lastIndexOf('.') + 1) + output;
-			File destinationFile = new File(destinationDirectory, name);
-			try {
-				Dimension sz = getImageDimensions(sourceFile);
-				int w = 0;
-				int h = 0;
-				if (sz.width > maxDimension) {
-					// Scale to Width
-					w = maxDimension;
-					float f = maxDimension;
-					// normalize height
-					h = (int) ((f / sz.width) * sz.height);
-				} else if (sz.height > maxDimension) {
-					// Scale to Height
-					h = maxDimension;
-					float f = maxDimension;
-					// normalize width
-					w = (int) ((f / sz.height) * sz.width);
+		
+		if (sourceFiles != null) {
+			build.getConsole().log("Generating {0} {1}", sourceFiles.length, sourceFiles.length == 1 ? "thumbnail" : "thumbnails");
+			for (File sourceFile : sourceFiles) {
+				String name = sourceFile.getName();
+				name = name.substring(0, name.lastIndexOf('.') + 1) + output;
+				File destinationFile = new File(destinationDirectory, name);
+				try {
+					Dimension sz = getImageDimensions(sourceFile);
+					int w = 0;
+					int h = 0;
+					if (sz.width > maxDimension) {
+						// Scale to Width
+						w = maxDimension;
+						float f = maxDimension;
+						// normalize height
+						h = (int) ((f / sz.width) * sz.height);
+					} else if (sz.height > maxDimension) {
+						// Scale to Height
+						h = maxDimension;
+						float f = maxDimension;
+						// normalize width
+						w = (int) ((f / sz.height) * sz.width);
+					}
+					build.getConsole().debug(1, "thumbnail for {0} as ({1,number,#}, {2,number,#})",
+							sourceFile.getName(), w, h);
+					BufferedImage image = ImageIO.read(sourceFile);
+					Image scaledImage = image.getScaledInstance(w, h, BufferedImage.SCALE_SMOOTH);
+					BufferedImage destImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+					destImage.createGraphics().drawImage(scaledImage, 0, 0, null);
+					FileOutputStream fos = new FileOutputStream(destinationFile);
+					ImageIO.write(destImage, output, fos);
+					fos.flush();
+					fos.getFD().sync();
+					fos.close();
+				} catch (Throwable t) {
+					build.getConsole().error(t, "failed to generate thumbnail for {0}", sourceFile);
 				}
-				build.getConsole().debug(1, "thumbnail for {0} as ({1,number,#}, {2,number,#})",
-						sourceFile.getName(), w, h);
-				BufferedImage image = ImageIO.read(sourceFile);
-				Image scaledImage = image.getScaledInstance(w, h, BufferedImage.SCALE_SMOOTH);
-				BufferedImage destImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
-				destImage.createGraphics().drawImage(scaledImage, 0, 0, null);
-				FileOutputStream fos = new FileOutputStream(destinationFile);
-				ImageIO.write(destImage, output, fos);
-				fos.flush();
-				fos.getFD().sync();
-				fos.close();
-			} catch (Throwable t) {
-				build.getConsole().error(t, "failed to generate thumbnail for {0}", sourceFile);
 			}
 		}
 	}

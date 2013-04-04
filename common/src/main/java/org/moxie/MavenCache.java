@@ -46,15 +46,19 @@ public class MavenCache extends IMavenCache {
 	}
 	
 	private List<File> getFiles(File folder, String extension) {
-		List<File> files = new ArrayList<File>();
-		for (File file : folder.listFiles()) {
+		List<File> matches = new ArrayList<File>();
+		File [] files = folder.listFiles();
+		if (files == null) {
+			return matches;
+		}
+		for (File file : files) {
 			if (file.isDirectory()) {
-				files.addAll(getFiles(file, extension));
+				matches.addAll(getFiles(file, extension));
 			} else if (file.getName().endsWith(extension)) {
-				files.add(file);
+				matches.add(file);
 			}
 		}
-		return files;
+		return matches;
 	}
 	
 	/* (non-Javadoc)

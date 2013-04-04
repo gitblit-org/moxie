@@ -190,11 +190,14 @@ public class FileUtils {
 			return directory.length();
 		}
 		long length = 0;
-		for (File file : directory.listFiles()) {
-			if (file.isFile()) {
-				length += file.length();
-			} else {
-				length += folderSize(file);
+		File [] files = directory.listFiles();
+		if (files != null) {
+			for (File file : files) {
+				if (file.isFile()) {
+					length += file.length();
+				} else {
+					length += folderSize(file);
+				}
 			}
 		}
 		return length;
@@ -212,6 +215,9 @@ public class FileUtils {
 	public static void copy(File destinationFolder, File... filesOrFolders)
 			throws FileNotFoundException, IOException {
 		destinationFolder.mkdirs();
+		if (filesOrFolders == null) {
+			return;
+		}
 		for (File file : filesOrFolders) {
 			if (file.isDirectory()) {
 				copy(new File(destinationFolder, file.getName()),
@@ -288,11 +294,14 @@ public class FileUtils {
 	public static boolean delete(File fileOrFolder) {
 		boolean success = false;
 		if (fileOrFolder.isDirectory()) {
-			for (File file : fileOrFolder.listFiles()) {
-				if (file.isDirectory()) {
-					success |= delete(file);
-				} else {
-					success |= file.delete();
+			File [] files = fileOrFolder.listFiles();
+			if (files != null) {
+				for (File file : files) {
+					if (file.isDirectory()) {
+						success |= delete(file);
+					} else {
+						success |= file.delete();
+					}
 				}
 			}
 		}

@@ -11,6 +11,7 @@ r8: {
     security: ~
     fixes:
     - Fixed system scope dependencies
+    - Fixed NPEs due to direct use of File.listFiles()
     changes: ~
     additions: ~
     dependencyChanges: ~

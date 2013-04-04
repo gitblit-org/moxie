@@ -331,14 +331,16 @@ public class MxGroovy extends Java {
 			throw new IllegalStateException("GROOVY_HOME incorrectly defined. No embeddable directory found in: " + groovyHome);
 		}
 		final File[] files = jarDir.listFiles();
-		for (File file : files) {
-			try {
-				getConsole().debug("Adding jar to classpath: " + file.getCanonicalPath());
-			} catch (IOException e) {
-				// ignore
+		if (files != null) {
+			for (File file : files) {
+				try {
+					getConsole().debug("Adding jar to classpath: " + file.getCanonicalPath());
+				} catch (IOException e) {
+					// ignore
+				}
+				path = createClasspath();
+				path.setLocation(file);
 			}
-			path = createClasspath();
-			path.setLocation(file);
 		}
     }
 

@@ -112,8 +112,11 @@ public abstract class IMavenCache {
 			System.out.println("   ! skipping non existent folder " + folder);
 			return;
 		}
-		
-		for (File file : folder.listFiles()) {
+		File [] files = folder.listFiles();
+		if (files == null) {
+			return;
+		}
+		for (File file : files) {
 			if (file.isFile() && file.getName().contains(identifier)) {
 				System.out.println("   - " + file.getName());
 				file.delete();
@@ -192,7 +195,11 @@ public abstract class IMavenCache {
 	
 	private List<Pom> readAllPoms(File folder) {
 		List<Pom> poms = new ArrayList<Pom>();
-		for (File file : folder.listFiles()) {
+		File [] files = folder.listFiles();
+		if (files == null) {
+			return poms;
+		}
+		for (File file : files) {
 			if (file.isDirectory()) {
 				// recurse into this directory
 				poms.addAll(readAllPoms(file));

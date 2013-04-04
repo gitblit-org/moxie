@@ -192,7 +192,11 @@ public class MoxieCache extends IMavenCache {
 	
 	// Check the downloaded atifacts for the requested artifact
 	protected File findDownloadedArtifact(String path) {
-		for (File repository : remoteRoot.listFiles()) {
+		File [] files = remoteRoot.listFiles();
+		if (files == null) {
+			return null;
+		}
+		for (File repository : files) {
 			if (repository.isDirectory()) {
 				File file = new File(repository, path);
 				if (file.exists()) {

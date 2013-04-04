@@ -283,8 +283,11 @@ public class LibrarySpec extends DataType implements JarSpec {
 		if (!root.isDirectory()) {
 			throw new IllegalStateException("resolveDir:root is not a dir!");
 		}
-
-		for (File file: root.listFiles()) {
+		File [] files = root.listFiles();
+		if (files == null) {
+			return;
+		}
+		for (File file: files) {
 			if (file.isDirectory()) {
 				resolveDir(file);
 				continue;
