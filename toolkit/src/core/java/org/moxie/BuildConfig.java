@@ -117,7 +117,15 @@ public class BuildConfig {
 	}
 
 	public boolean isVerbose() {
-		return verbose;
+		String mxVerbose = System.getenv("MX_VERBOSE");
+		mxVerbose = System.getProperty(Toolkit.MX_VERBOSE, mxVerbose);
+		if (StringUtils.isEmpty(mxVerbose)) {
+			// unspecified
+			return verbose;
+		} else {
+			// use system property to determine verbose
+			return Boolean.parseBoolean(mxVerbose);
+		}
 	}
 	
 	public void setVerbose(boolean verbose) {

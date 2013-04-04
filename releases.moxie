@@ -12,6 +12,7 @@ r8: {
     fixes:
     - Fixed system scope dependencies
     - Fixed NPEs due to direct use of File.listFiles()
+    - Fixed mx.verbose property regression
     changes: ~
     additions: ~
     dependencyChanges: ~

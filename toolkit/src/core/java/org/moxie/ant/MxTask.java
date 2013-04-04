@@ -35,7 +35,6 @@ import org.moxie.Build;
 import org.moxie.Dependency;
 import org.moxie.MoxieException;
 import org.moxie.Scope;
-import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
 import org.moxie.console.Console;
 import org.moxie.utils.FileUtils;
@@ -61,16 +60,11 @@ public abstract class MxTask extends Task {
 
 	public boolean isVerbose() {
 		if (verbose == null) {
-			String mxvb = System.getProperty(Toolkit.MX_VERBOSE);
-			if (StringUtils.isEmpty(mxvb)) {
-				Build build = getBuild();
-				if (build == null) {
-					return false;
-				} else {
-					return build.getConfig().isVerbose();
-				}
+			Build build = getBuild();
+			if (build == null) {
+				verbose = false;
 			} else {
-				verbose = Boolean.parseBoolean(mxvb);
+				verbose = build.getConfig().isVerbose();
 			}
 		}
 		return verbose;
