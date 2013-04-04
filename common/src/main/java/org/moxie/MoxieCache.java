@@ -56,6 +56,9 @@ public class MoxieCache extends IMavenCache {
 		this.dotM2Cache = new MavenCache(new File(System.getProperty("user.home") + "/.m2/repository"));
 		
 		// intial folder creation
+		moxieRoot.mkdirs();
+		moxiedataRoot.mkdirs();
+		localRoot.mkdirs();
 		remoteRoot.mkdirs();
 		localReleasesRoot.mkdirs();
 		localSnapshotsRoot.mkdirs();
@@ -219,7 +222,7 @@ public class MoxieCache extends IMavenCache {
 		resolveRevision(copy);		
 		String path = Dependency.getMavenPath(copy, "moxie", Constants.MAVEN2_PATTERN);
 		
-		// create a teamp file instance so we can get artifact parent folder
+		// create a temp file instance so we can get artifact parent folder
 		File moxieFile = new File(moxiedataRoot, path);
 		
 		// metadata.moxie
