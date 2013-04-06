@@ -61,12 +61,13 @@ public class MxJar extends Jar {
 	String includes;
 	String excludes;
 	boolean packageSources;
+	String resourceFolderPrefix;
 
 	String tag;
 	String classifier;
-	private boolean configured;	
+	private boolean configured;
 	Boolean showtitle;
-	
+
 	public MxJar() {
 		super();
 		setTaskName("mx:jar");
@@ -131,7 +132,11 @@ public class MxJar extends Jar {
 	public void setIncludes(String includes) {
 		this.includes = includes;
 	}
-	
+
+	public void setResourceFolderPrefix(String resourceFolderPrefix) {
+		this.resourceFolderPrefix = resourceFolderPrefix;
+	}
+
 	public String getExcludes() {
 		return excludes;
 	}
@@ -304,7 +309,10 @@ public class MxJar extends Jar {
 			if (includeResources) {
 				// add linked module resources
 				for (File resDir : module.getConfig().getResourceDirectories(Scope.compile)) {
-					FileSet resSet = new FileSet();
+					ZipFileSet resSet = new ZipFileSet();
+					if (!StringUtils.isEmpty(resourceFolderPrefix)) {
+					    resSet.setPrefix(resourceFolderPrefix);
+					}
 					resSet.setProject(getProject());
 					resSet.setDir(resDir);
 					resSet.setExcludes(Toolkit.DEFAULT_EXCLUDES);
@@ -316,7 +324,10 @@ public class MxJar extends Jar {
 		// resource directories
 		if (includeResources) {
 			for (File dir : build.getConfig().getResourceDirectories(Scope.compile, tag)) {
-				FileSet set = new FileSet();
+				ZipFileSet set = new ZipFileSet();
+				if (!StringUtils.isEmpty(resourceFolderPrefix)) {
+				    set.setPrefix(resourceFolderPrefix);
+				}
 				set.setProject(getProject());
 				set.setDir(dir);
 				set.setExcludes(Toolkit.DEFAULT_EXCLUDES);
