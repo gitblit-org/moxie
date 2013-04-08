@@ -14,9 +14,11 @@ r8: {
     - Fixed NPEs due to direct use of File.listFiles()
     - Fixed mx.verbose property regression
     changes: ~
-    additions: ~
+    additions:
+    - Support resource prefix for mx:Jar and mx:GenJar
     dependencyChanges: ~
-    contributors: ~
+    contributors:
+    - David Ostrovsky
 }
 
 #
