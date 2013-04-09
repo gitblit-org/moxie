@@ -68,12 +68,20 @@ public class ArtifactsResource extends BaseResource {
 	}
 	
 	String getRepositoryUrl() {
+		if (isRemoteRepository()) {
+			RemoteRepository repository = getProxyConfig().getRemoteRepository(getBasePath());
+			return repository.url;
+		}
 		String repository = getBasePath();
 		return getRootRef() + "/m2/" + repository;
 	}
 	
+	String getProxyScheme() {
+		return "http";
+	}
+	
 	String getProxyUrl() {
-		return getRootRef().getScheme() + "://" + getRootRef().getHostDomain() + ":" + getProxyConfig().getProxyPort();
+		return getProxyScheme() + "://" + getRootRef().getHostDomain() + ":" + getProxyConfig().getProxyPort();
 	}
 	
 	String getRepositoryNote(Pom pom) {
@@ -107,7 +115,7 @@ public class ArtifactsResource extends BaseResource {
 			// proxy settings
 			RemoteRepository repository = getProxyConfig().getRemoteRepository(getBasePath());			
 			sb.append("proxies:\n");
-			sb.append(MessageFormat.format("- '{'\n    active: true\n    id: ''moxieProxy''\n    protocol: ''{0}''\n    host: ''{1}''\n    port: {2,number,0}\n    username: ''username''\n    password: ''password''\n    proxyHosts: ''{3}''\n'}'", getRootRef().getScheme(), getRootRef().getHostDomain(), getProxyConfig().getProxyPort(), repository.getHost()));
+			sb.append(MessageFormat.format("- '{'\n    active: true\n    id: ''moxieProxy''\n    protocol: ''{0}''\n    host: ''{1}''\n    port: {2,number,0}\n    username: ''username''\n    password: ''password''\n    proxyHosts: ''{3}''\n'}'", getProxyScheme(), getRootRef().getHostDomain(), getProxyConfig().getProxyPort(), repository.getHost()));
 		} else {
 			// repository settings
 			sb.append("registeredRepositories:\n");
@@ -133,7 +141,7 @@ public class ArtifactsResource extends BaseResource {
 			sb.append("<proxy>\n");
 			sb.append(StringUtils.toXML("id", "moxieProxy"));
 			sb.append(StringUtils.toXML("active", "true"));
-			sb.append(StringUtils.toXML("protocol", getRootRef().getScheme()));
+			sb.append(StringUtils.toXML("protocol", getProxyScheme()));
 			sb.append(StringUtils.toXML("host", getRootRef().getHostDomain()));
 			sb.append(StringUtils.toXML("port", "" + getProxyConfig().getProxyPort()));
 			sb.append(StringUtils.toXML("username", "username"));
