@@ -65,7 +65,8 @@
 		<property name="dollar" value="$"/>
 		<copy file="release.template" tofile="${recipe}">
 			<filterset begintoken="${dollar}{" endtoken="}">
-				<filter token="project.version" value="${project.version}" />	
+				<filter token="project.version" value="${project.version}" />
+				<filter token="project.commitId" value="${project.commitId}" />
 			</filterset>
 		</copy>
 
