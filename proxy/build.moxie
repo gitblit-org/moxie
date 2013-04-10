@@ -15,7 +15,7 @@ resourceDirectories:
 - test 'src/test/resources'
 repositories: central, restlet
 properties: {
-  restlet.version : 2.1.1
+  restlet.version : 2.1.2
   bouncycastle.version : 1.47
 }
 dependencies:
