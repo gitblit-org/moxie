@@ -52,6 +52,8 @@ public class Maxml {
 				}
 			}
 			return x;
+		} catch (MaxmlException e) {
+			throw e;
 		} catch (Exception t) {
 			throw new MaxmlException(t);
 		}
@@ -69,6 +71,8 @@ public class Maxml {
 		try {
 			MaxmlParser parser = new MaxmlParser();
 			return parser.parse(new BufferedReader(new StringReader(content)));
+		} catch (MaxmlException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new MaxmlException(e);
 		}
@@ -88,6 +92,8 @@ public class Maxml {
 			MaxmlParser parser = new MaxmlParser();
 			return parser.parse(new BufferedReader(new InputStreamReader(is,
 					"UTF-8")));
+		} catch (MaxmlException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new MaxmlException(e);
 		}
@@ -107,8 +113,10 @@ public class Maxml {
 		try {
 			is = new FileInputStream(file);
 			return parse(is);
+		} catch (MaxmlException e) {
+			throw new MaxmlException(file.getAbsolutePath(), e);
 		} catch (Exception e) {
-			throw new MaxmlException(e);
+			throw new MaxmlException(file.getAbsolutePath(), e);
 		} finally {
 			try {
 				if (is != null) {
