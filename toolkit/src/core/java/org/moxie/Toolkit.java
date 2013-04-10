@@ -100,8 +100,18 @@ public class Toolkit {
 		return root;
 	}
 	
-	public static void setMxRoot(File dir) {
-		System.setProperty(Toolkit.MX_ROOT, dir.getAbsolutePath());
+	/**
+	 * Only sets MX_ROOT if it is not already set by a command-line parameter.
+	 * 
+	 * @param dir
+	 * @return true if MX_ROOT was set
+	 */
+	public static boolean setMxRoot(File dir) {
+		if (System.getProperty(Toolkit.MX_ROOT) == null) {
+			System.setProperty(Toolkit.MX_ROOT, dir.getAbsolutePath());
+			return true;
+		}
+		return false;
 	}
 	
 	public static String getVersion() {
