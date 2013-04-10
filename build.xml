@@ -39,13 +39,35 @@
 		<!-- release -->
 		<property name="dryrun" value="false" />
 		<mx:version stage="release" dryrun="${dryrun}" />		
-		<!-- commit build.moxie & releases.moxie (automatic) and maven artifacts -->
+		<!-- commit build.moxie & releases.moxie (automatic) -->
 		<mx:commit showtitle="no">
 		    <message>Prepare ${project.version} release</message>
 			<tag name="v${project.version}">
 				<message>${project.name} ${project.version} release</message>
 			</tag>
 		</mx:commit>
+
+		<!-- create the release process script -->
+		<mx:if>
+			<os family="windows" />
+			<then>
+				<!-- Windows PowerShell script        -->
+				<!-- set-executionpolicy remotesigned -->
+				<property name="recipe" value="release_${project.version}.ps1" />
+			</then>
+			<else>
+				<!-- Bash script -->
+				<property name="recipe" value="release_${project.version}.sh" />
+			</else>
+		</mx:if>
+		<delete file="${recipe}" failonerror="false" quiet="true" verbose="false" />
+		<!-- Work-around for lack of proper ant property substitution in copy -->
+		<property name="dollar" value="$"/>
+		<copy file="release.template" tofile="${recipe}">
+			<filterset begintoken="${dollar}{" endtoken="}">
+				<filter token="project.version" value="${project.version}" />	
+			</filterset>
+		</copy>
 
 		<!-- next cycle -->
 		<mx:version stage="snapshot" incrementNumber="minor" dryrun="${dryrun}" />

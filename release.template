@@ -1,0 +1,68 @@
+#!/bin/bash
+#
+# Moxie release script
+#
+
+# go back one commit to RELEASE commit
+echo Checking out ${project.version} RELEASE commit
+git checkout HEAD~1
+
+# submodules operate on a detached HEAD so we first checkout and pull master
+echo Preparing Maven submodule
+cd maven
+git checkout master
+git pull
+cd ..
+
+# build RELEASE artifacts, this will deploy artifacts into maven folder
+echo Building ${project.version} RELEASE artifacts
+ant
+
+# commit all generated artifacts and metadata in submodule
+echo Committing Maven submodule ${project.version} RELEASE artifacts
+cd  maven
+git add .
+git commit -m "${project.version} artifacts"
+cd ..
+
+# Update master branch Maven submodule repository reference
+echo Updating master for Maven submodule ${project.version} RELEASE artifacts
+git checkout master
+git add maven
+git commit -m "updated Maven submodule repository to ${project.version}"
+
+# Update gh-pages branch Maven submodule repository reference
+echo Updating gh-pages for Maven submodule ${project.version} RELEASE artifacts
+git checkout gh-pages
+git add maven
+git commit -m "updated Maven submodule repository to ${project.version}"
+
+# return to release commit
+echo Checking out ${project.version} RELEASE commit
+git checkout master~2
+
+# ftp upload artifacts to hosting provider
+#ant uploadArtifacts
+
+# build site, update gh-pages, and ftp upload site to hosting provider
+echo Building ${project.version} website
+cd site
+ant updateGhpages uploadSite
+cd ..
+
+# return to project master
+echo Checking out master
+git checkout master
+
+# push Maven submodule to origin
+echo Pushing Maven submodule
+cd maven
+git push origin master
+cd ..
+
+# push project branches
+echo Pushing master and gh-pages
+git push origin master gh-pages
+
+# update the Maven submodule reference
+git submodule update

@@ -5,7 +5,7 @@ name: Moxie Build Toolkit
 description: 'tools to faciltate building Java projects'
 groupId: org.moxie
 artifactId: moxie-parent
-version: 0.8.0-SNAPSHOT
+version: 0.7.2-SNAPSHOT
 organization: James Moger 
 organizationUrl: 'https://plus.google.com/u/0/116428776452027956920'
 inceptionYear: 2012
@@ -17,7 +17,7 @@ releaseDate: 2013-03-27
 # Project urls
 url: 'http://moxie.gitblit.com'
 issuesUrl: 'https://gitblit.github.com/moxie'
-mavenUrl: 'http://gitblit.github.com/moxie/maven'
+mavenUrl: 'http://gitblit.github.io/moxie/maven'
 
 # Licenses section included for POM generation
 licenses:
