@@ -108,10 +108,10 @@ cd ..
 # push project branches
 echo ""
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-echo "Pushing master and gh-pages"
+echo "Pushing master, gh-pages, and tag ${project.tag}"
 echo "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 echo ""
-git push origin master gh-pages
+git push origin master gh-pages tag ${project.tag}
 
 # update the Maven submodule reference
 git submodule update
