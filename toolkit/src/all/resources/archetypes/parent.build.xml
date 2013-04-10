@@ -17,7 +17,8 @@
 	<property name="moxie.url" value="%MOXIE_URL%" />
 	<property name="moxie.jar" value="toolkit-${moxie.version}.jar" />
 	<property name="moxie.dir" value="${user.home}/.moxie" />
-		
+
+	<mkdir dir="${moxie.dir}" />		
 	<get src="${moxie.url}/org/moxie/toolkit/${moxie.version}/${moxie.jar}"
 		dest="${moxie.dir}" skipexisting="true" verbose="true" />
 

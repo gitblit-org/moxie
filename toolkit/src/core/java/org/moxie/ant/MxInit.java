@@ -45,6 +45,8 @@ public class MxInit extends MxTask {
 
 	private File basedir;
 	
+	private File mxroot;
+	
 	public MxInit() {
 		super();
 		setTaskName("mx:init");
@@ -58,6 +60,10 @@ public class MxInit extends MxTask {
 		this.basedir = dir;
 	}
 
+	public void setMxroot(File dir) {
+		this.mxroot = dir;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -66,6 +72,11 @@ public class MxInit extends MxTask {
 		if (build != null) {
 			// already initialized
 			return;
+		}
+		
+		if (mxroot != null && !mxroot.toString().startsWith("${")) {
+			// MX_ROOT set by attribute
+			Toolkit.setMxRoot(mxroot);
 		}
 
 		// load all environment variables into env property

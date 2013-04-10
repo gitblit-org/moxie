@@ -100,6 +100,10 @@ public class Toolkit {
 		return root;
 	}
 	
+	public static void setMxRoot(File dir) {
+		System.setProperty(Toolkit.MX_ROOT, dir.getAbsolutePath());
+	}
+	
 	public static String getVersion() {
 		String v = Toolkit.class.getPackage().getImplementationVersion();
 		if (v == null) {

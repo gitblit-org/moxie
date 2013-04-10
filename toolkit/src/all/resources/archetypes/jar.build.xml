@@ -18,7 +18,7 @@
 	<property name="moxie.jar" value="toolkit-${moxie.version}.jar" />
 	<property name="moxie.dir" value="${user.home}/.moxie" />
 	
-	<mkdir dir="${moxie.dir" />
+	<mkdir dir="${moxie.dir}" />
 	<get src="${moxie.url}/org/moxie/toolkit/${moxie.version}/${moxie.jar}"
 		dest="${moxie.dir}" skipexisting="true" verbose="true" />
 
@@ -31,7 +31,7 @@
 	<target name="main" description="Prepares, compiles, tests, and packages your project">
 		
 		<!-- Setup Ant build properties and resolve & retrieve Maven dependencies -->
-		<mx:init />
+		<mx:init mxroot="${moxie.dir}" />
 		
 		<!-- Compile your project -->
 		<mx:javac />

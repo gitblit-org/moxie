@@ -11,7 +11,8 @@ r9: {
     security: ~
     fixes: ~
     changes: ~
-    additions: ~
+    additions:
+	- mx:init now supports an mxroot attribute
     dependencyChanges: ~
     contributors: ~
 }

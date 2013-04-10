@@ -48,7 +48,7 @@ dependencies:
     <target name="main" description="Prepares, compiles, tests, and packages your project">
 		
         <!-- Setup Ant build properties and resolve & retrieve Maven dependencies -->
-        <mx:init />
+        <mx:init mxroot="${moxie.dir}" />
 		
         <!-- Compile your project -->
         <mx:javac />
