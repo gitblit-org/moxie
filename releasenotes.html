@@ -48,6 +48,7 @@
 <li><a href='moxiedescriptor.html'>build.moxie</a></li>
 <li><a href='defaults.html'>defaults.moxie</a></li>
 <li><a href='settings.html'>settings.moxie</a></li>
+<li><a href='samples.html'>sample files</a></li>
 <li><a href='tipsandtricks.html'>tips & tricks</a></li>
 <li><a href='properties.html'>ant property reference</a></li>
 </ul></li> <!-- End Menu -->
@@ -101,17 +102,17 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.1/moxie-toolkit-0.7.1-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-toolkit/0.7.1/moxie-toolkit-0.7.1.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.2/moxie-toolkit-0.7.2-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.2/moxie-toolkit-0.7.2.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie-proxy/0.7.1/moxie-proxy-0.7.1.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.7.2/moxie-proxy-0.7.2.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.1/moxie+ant-0.7.1.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.com/moxie/maven/org/moxie/moxie+ant/0.7.1/moxie+ant-0.7.1.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.2/moxie+ant-0.7.2.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.2/moxie+ant-0.7.2.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.com/moxie/maven'>Maven Repository</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://moxie.gitblit.com'></g:plusone></div></li>
@@ -124,30 +125,28 @@
 <!-- Begin Markdown -->
 
 <!-- CURRENT RELEASE -->
-	<h3 id="0.7.1" class="section"><a href="#0.7.1" class="sectionlink"><i class="icon-share-alt"> </i></a>Current Release (0.7.1) <small>this is the current stable release</small></h3>
+	<h3 id="0.7.2" class="section"><a href="#0.7.2" class="sectionlink"><i class="icon-share-alt"> </i></a>Current Release (0.7.2) <small>this is the current stable release</small></h3>
 	<table class="table">
 		<tbody>
 			<tr>
-				<td style="background-color:inherit;width:100px">2013-03-27</td>
+				<td style="background-color:inherit;width:100px">2013-04-10</td>
 				<td style="background-color:inherit;">	
 	
 
 
    	<h4>fixes</h4>
 	<ul>
-		<li>Wrap exception handler around individual pom reindexing</li>
-		<li>Cleanup less folder in mx:Doc</li>
-		<li>Replace tabs with spaces in proxy pom view</li>
-	</ul>
-   	<h4>changes</h4>
-	<ul>
-		<li>Use search.maven.org instead of mvnrepository.com in dependency report</li>
-		<li>Added checksum retrieval retry on first verification error just in case the repository server, or a proxy server, is caching the checksum file.  This caching behavior has been observed with Sonatype Nexus.</li>
-		<li>Improved recommendations on metadata checksum verification failures</li>
+		<li>Fixed system scope dependencies</li>
+		<li>Fixed NPEs due to direct use of File.listFiles()</li>
+		<li>Fixed mx.verbose property regression</li>
 	</ul>
    	<h4>additions</h4>
 	<ul>
-		<li>Added mx:GCUpload task, forked from ant-googlecode</li>
+		<li>Support resource prefix for mx:Jar and mx:GenJar</li>
+	</ul>
+   	<h4>contributors</h4>
+	<ul>
+		<li>David Ostrovsky</li>
 	</ul>
 </td>
 			</tr>
@@ -163,7 +162,7 @@
 </div>
 
 <!-- End Markdown -->
-<footer class="footer"><p class="pull-right">generated 2013-03-27</p>
+<footer class="footer"><p class="pull-right">generated 2013-04-10</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

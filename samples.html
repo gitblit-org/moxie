@@ -123,86 +123,75 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Tips and Tricks</h2>
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Colored Output</h3>
-<p>Moxie supports ANSI color output during builds.  Color output can be activated either by setting the <code>MX_COLOR</code> enviroment variable or by specifying a command-line parameter.</p>
+<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Sample Files</h2>
+<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>build.moxie</h3>
+<p><pre class='prettyprint lang-yaml'>
+name: 'My Project'
+description: &quot;My Project's description&quot;
+groupId: 'org.example'
+artifactId: 'demo'
+version: '1.2.3-SNAPSHOT'
+organization: 'Example Writers'
+url: 'http://demo.example.org'
+apply: 'eclipse', 'intellij', 'pom'
+sourceDirectories:
+- compile 'src/main/java'
+- test 'src/test/java'
+resourceDirectories:
+- compile 'src/main/resources'
+- test 'src/test/resources'
+dependencies:
+- test 'junit'
+- build 'jacoco'
+</pre></p>
 
-<pre><code>ant -Dmx.color=true mytarget
-moxie -color mytarget
-</code></pre>
+<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>build.xml</h3>
+<p><pre class='prettyprint lang-xml'>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project default=&quot;main&quot; xmlns:mx=&quot;antlib:org.moxie&quot;&gt;
 
-<h4 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Windows</h4>
-<p>By default, Windows Command Prompt does not support ANSI color but with a little help from <a href="https://github.com/adoxa/ansicon">ansicon</a> (<a href="ansi151.zip">download</a>), a nifty little tool, you can make Windows Command Prompt (and Console2, etc) support ANSI escape sequences.</p>
+    &lt;!--
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        Retrieve Moxie Toolkit
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    --&gt;
+    &lt;property name=&quot;moxie.version&quot; value=&quot;0.7.2&quot; /&gt;
+    &lt;property name=&quot;moxie.url&quot; value=&quot;http://gitblit.github.io/moxie/maven&quot; /&gt;
+    &lt;property name=&quot;moxie.jar&quot; value=&quot;toolkit-${moxie.version}.jar&quot; /&gt;
+    &lt;property name=&quot;moxie.dir&quot; value=&quot;${user.home}/.moxie&quot; /&gt;
+	
+    &lt;mkdir dir=&quot;${moxie.dir}&quot; /&gt;
+    &lt;get src=&quot;${moxie.url}/org/moxie/toolkit/${moxie.version}/${moxie.jar}&quot;
+        dest=&quot;${moxie.dir}&quot; skipexisting=&quot;true&quot; verbose=&quot;true&quot; /&gt;
 
-<h4 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>A Nice Palette</h4>
-<p>This is the palette I use in Console 2, Gnome-Terminal, and iTerm (<a href="moxie.itermcolors">download</a>).</p>
+    &lt;taskdef uri=&quot;antlib:org.moxie&quot;&gt;
+        &lt;classpath location=&quot;${moxie.dir}/${moxie.jar}&quot; /&gt;
+    &lt;/taskdef&gt;
 
-<table style="font-size:0.8em;font-family:monospace">
-<tr>
-<td class="span2" style="background-color:#2e3436;color:white">#2e3436<br/>rgb(46, 52, 54)</td>
-<td class="span2" style="background-color:#cb0000;color:white">#cb0000<br/>rgb(204, 0, 0)</td>
-<td class="span2" style="background-color:#4d9905;color:white">#4d9905<br/>rgb(78, 154, 6)</td>
-<td class="span2" style="background-color:#c39f00;color:white">#c39f00<br/>rgb(196, 160, 0)</td>
-<td class="span2" style="background-color:#3364a3;color:white">#3364a3<br/>rgb(52, 101, 164)</td>
-<td class="span2" style="background-color:#744f7a;color:white">#744f7a<br/>rgb(117, 80, 123)</td>
-<td class="span2" style="background-color:#059799;color:white">#059799<br/>rgb(6, 152, 154)</td>
-<td class="span2" style="background-color:#d2d6ce;color:#2e3436">#d2d6ce<br/>rgb(211, 215, 207)</td>
-</tr>
-<tr>
-<td class="span1" style="background-color:#545652;color:white">#545652<br/>rgb(85,87,83)</td>
-<td class="span1" style="background-color:#ee2828;color:white">#ee2828<br/>rgb(239, 41, 41)</td>
-<td class="span1" style="background-color:#89e133;color:#2e3436">#89e133<br/>rgb(138, 226, 52)</td>
-<td class="span1" style="background-color:#fbe84e;color:#2e3436">#fbe84e<br/>rgb(252, 233, 79)</td>
-<td class="span1" style="background-color:#719ece;color:white">#719ece<br/>rgb(114, 159, 207)</td>
-<td class="span1" style="background-color:#ac7ea7;color:white">#ac7ea7<br/>rgb(173, 127, 168)</td>
-<td class="span1" style="background-color:#33e1e1;color:#2e3436">#33e1e1<br/>rgb(52, 226, 226)</td>
-<td class="span1" style="background-color:#ededeb;color:#2e3436">#ededeb<br/>rgb(238, 238, 236)</td>
-</tr>
-</table>
-<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Verbose Output</h3>
-<p>Moxie supports verbose output during builds.</p>
+    &lt;!-- Main Target --&gt;
+    &lt;target name=&quot;main&quot; description=&quot;Prepares, compiles, tests, and packages your project&quot;&gt;
+		
+        &lt;!-- Setup Ant build properties and resolve &amp; retrieve Maven dependencies --&gt;
+        &lt;mx:init /&gt;
+		
+        &lt;!-- Compile your project --&gt;
+        &lt;mx:javac /&gt;
 
-<pre><code>ant -Dmx.verbose=true mytarget
-moxie -verbose mytarget
-</code></pre>
+        &lt;!-- Compile your unit tests and execute them --&gt;			
+        &lt;mx:test /&gt;
+		
+        &lt;!-- Generate class and source jars of your project --&gt;
+        &lt;mx:package /&gt;
+		
+        &lt;!-- Install your generated artifacts to your local Moxie cache --&gt;
+        &lt;mx:install /&gt;
+		
+    &lt;/target&gt;
 
-<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Debug Output</h3>
-<p>Moxie supports debug output during builds.</p>
-
-<pre><code>ant -Dmx.debug=true mytarget
-moxie -debug mytarget
-</code></pre>
-
-<h3 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Working Offline</h3>
-<p>Moxie supports disabling automatic network retrieval.</p>
-
-<pre><code>ant -Dmx.online=false mytarget
-moxie -offline mytarget
-</code></pre>
-
-<h3 class="section" id="H8"><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Disabling Checksum Verification</h3>
-<p>Moxie supports disabling SHA1 checksum verification.</p>
-
-<pre><code>ant -Dmx.enforceChecksums=false mytarget
-moxie -ignoreCheckums mytarget
-</code></pre>
-
-<h3 class="section" id="H9"><a href="#H9" class="sectionlink"><i class="icon-share-alt"> </i></a>Forcing Metadata Updates</h3>
-<p>Moxie supports forcing metadata updates.</p>
-
-<pre><code>ant -Dmx.updateMetadata=true mytarget
-moxie -updateMetadata mytarget
-</code></pre>
-
-<h3 class="section" id="H10"><a href="#H10" class="sectionlink"><i class="icon-share-alt"> </i></a>Relocating the Moxie Root Directory</h3>
-<p>By default, your Moxie root directory is <em>~/.moxie</em>.  This can be changed by passing a command-line parameter.</p>
-
-<pre><code>ant -Dmx.root=/path/to/dir mytarget
-moxie -Dmx.root=/path/to/dir mytarget
-
-</code></pre>
+&lt;/project&gt;
+</pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="samples.html">&larr; sample files</a></li> <li class="next"><a href="properties.html">ant property reference &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-04-10</p>
+<div ><ul class="pager"><li class="previous"><a href="settings.html">&larr; settings.moxie</a></li> <li class="next"><a href="tipsandtricks.html">tips & tricks &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-04-10</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>
