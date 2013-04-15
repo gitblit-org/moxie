@@ -102,19 +102,25 @@ public class Repository {
 		return true;
 	}
 	
-	protected synchronized void verifySHA1(Solver solver, String expectedSHA1, DownloadData data) {
+	protected synchronized void verifySHA1(Solver solver, String expectedSHA1, DownloadData data, boolean isRetry) {
 		if (calculateSHA1()) {
 			String calculatedSHA1 = StringUtils.getSHA1(data.content);
 			if (!StringUtils.isEmpty(expectedSHA1) && !calculatedSHA1.equals(expectedSHA1)) {
 				String message = MessageFormat.format("SHA1 checksum mismatch for {0}\ncalculated: {1}\nretrieved: {2}", data.url.toExternalForm(), calculatedSHA1, expectedSHA1);
-				for (String line : message.split("\n")) {
-					solver.getConsole().warn(line);
+				if (isRetry) {
+					// log warning on a retry
+					for (String line : message.split("\n")) {
+						solver.getConsole().warn(line);
+					}
 				}
 				if (solver.isFailOnChecksumError()) {
-					if (data.url.toString().contains(".xml.sha1")) {
-						solver.getConsole().warn(MessageFormat.format("Checksum file may have been cached for performance by the repository server or by a proxy server.\nspecify \"-D{0}=false\" to disable checksum verification\nOR\nspecify \"-D{1}=true\" to force a metadata refresh.", Toolkit.MX_ENFORCECHECKSUMS, Toolkit.MX_UPDATEMETADATA));
-					} else {
-						solver.getConsole().warn(MessageFormat.format("Checksum file may have been cached for performance by the repository server or by a proxy server.\nspecify \"-D{0}=false\" to disable checksum verification.", Toolkit.MX_ENFORCECHECKSUMS));
+					if (isRetry) {
+						// log warning on a retry
+						if (data.url.toString().endsWith(".xml")) {
+							solver.getConsole().warn(MessageFormat.format("Checksum file may have been cached for performance by the repository server or by a proxy server.\nspecify \"-D{0}=false\" to disable checksum verification\nOR\nspecify \"-D{1}=true\" to force a metadata refresh.", Toolkit.MX_ENFORCECHECKSUMS, Toolkit.MX_UPDATEMETADATA));
+						} else {
+							solver.getConsole().warn(MessageFormat.format("Checksum file may have been cached for performance by the repository server or by a proxy server.\nspecify \"-D{0}=false\" to disable checksum verification.", Toolkit.MX_ENFORCECHECKSUMS));
+						}
 					}
 					throw new MoxieException(message);
 				}
@@ -266,7 +272,7 @@ public class Repository {
 			solver.getConsole().download(url.toString());
 			DownloadData data = download(solver, url);
 			try {
-				verifySHA1(solver, expectedSHA1, data);
+				verifySHA1(solver, expectedSHA1, data, false);
 			} catch (MoxieException verification) {
 				// if SHA1 verificaton fails the first time
 				// wait a little bit and then repeat because it is possible
@@ -278,7 +284,7 @@ public class Repository {
 				}
 				
 				expectedSHA1 = downloadMetadataSHA1(solver, dep);
-				verifySHA1(solver, expectedSHA1, data);
+				verifySHA1(solver, expectedSHA1, data, true);
 			}
 			
 			Metadata oldMetadata;
@@ -371,7 +377,7 @@ public class Repository {
 			URL url = getURL(dep, ext);
 			DownloadData data = download(solver, url);
 			try {
-				verifySHA1(solver, expectedSHA1, data);
+				verifySHA1(solver, expectedSHA1, data, false);
 			} catch (MoxieException verification) {
 				// if SHA1 verificaton fails the first time
 				// wait a little bit and then repeat because it is possible
@@ -384,7 +390,7 @@ public class Repository {
 
 				try {
 					expectedSHA1 = getSHA1(solver, dep, ext);
-					verifySHA1(solver, expectedSHA1, data);
+					verifySHA1(solver, expectedSHA1, data, true);
 				} catch (MoxieException e) {
 					// checksum verification failed
 					// delete all artifacts for this dependency

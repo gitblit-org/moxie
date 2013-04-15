@@ -9,10 +9,11 @@ r9: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+    - Do not log first checksum verification failure for an artifact, log failure on retry
     changes: ~
     additions:
-	- mx:init now supports an mxroot attribute
+    - mx:init now supports an mxroot attribute
     dependencyChanges: ~
     contributors: ~
 }
