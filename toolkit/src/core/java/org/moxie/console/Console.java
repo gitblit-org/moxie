@@ -29,6 +29,7 @@ import java.util.Date;
 import org.moxie.Constants;
 import org.moxie.Dependency;
 import org.moxie.License;
+import org.moxie.Logger;
 import org.moxie.Pom;
 import org.moxie.Scope;
 import org.moxie.SourceDirectory;
@@ -38,7 +39,7 @@ import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 
 
-public class Console {
+public class Console implements Logger {
 
 	public static final String HDR = "=========================================================";
 
@@ -228,22 +229,27 @@ public class Console {
 		}
 	}
 
+	@Override
 	public void log() {
 		out.println();
 	}
 
+	@Override
 	public void log(String message) {
 		log(0, message, emptyArray);
 	}
 	
+	@Override
 	public void log(String message, Object... args) {
 		log(0, message, args);
 	}
 	
+	@Override
 	public void log(int indent, String message) {
 		log(indent, message, emptyArray);
 	}
 	
+	@Override
 	public void log(int indent, String message, Object... args) {
 		if (!StringUtils.isEmpty(message)) {
 			String [] lines = message.split("\n");
@@ -256,14 +262,17 @@ public class Console {
 		}
 	}
 
+	@Override
 	public void debug(String message) {
 		debug(0, message, emptyArray);
 	}
 
+	@Override
 	public void debug(String message, Object... args) {
 		debug(0, message, args);
 	}
 	
+	@Override
 	public void debug(int indent, String message, Object... args) {
 		if (!debug) {
 			return;
@@ -314,14 +323,17 @@ public class Console {
 		out.println("and your proxy server settings.");
 	}
 	
+	@Override
 	public final void notice(String message) {
 		notice(0, message, emptyArray);
 	}
 
+	@Override
 	public final void notice(String message, Object... args) {
 		notice(0, message, args);
 	}
 
+	@Override
 	public void notice(int indent, String message, Object... args) {
 		if (!StringUtils.isEmpty(message)) {
 			String [] lines = message.split("\n");
@@ -334,18 +346,22 @@ public class Console {
 		}
 	}
 	
+	@Override
 	public final void warn(Throwable t) {
 		warn(t, null, emptyArray);
 	}
 	
+	@Override
 	public final void warn(String message) {
 		warn(0, message, emptyArray);
 	}
 	
+	@Override
 	public final void warn(String message, Object... args) {
 		warn(0, message, args);
 	}
 	
+	@Override
 	public void warn(int indent, String message, Object... args) {
 		if (!StringUtils.isEmpty(message)) {
 			String [] lines = message.split("\n");
@@ -358,6 +374,7 @@ public class Console {
 		}
 	}
 
+	@Override
 	public String warn(Throwable t, String message, Object... args) {
 		StringBuilder sb = new StringBuilder();
 		if (!StringUtils.isEmpty(message)) {
@@ -378,22 +395,27 @@ public class Console {
 		return sb.toString();
 	}
 
+	@Override
 	public final void error(Throwable t) {
 		error(t, null, emptyArray);
 	}
 
+	@Override
 	public final String error(String message) {
 		return error(null, message, emptyArray);
 	}
 
+	@Override
 	public final String error(String message, Object... args) {
 		return error(null, message, args);
 	}
 
+	@Override
 	public final String error(Throwable t, String message) {
 		return error(t, message, emptyArray);
 	}
 
+	@Override
 	public String error(Throwable t, String message, Object... args) {
 		StringBuilder sb = new StringBuilder();
 		if (!StringUtils.isEmpty(message)) {

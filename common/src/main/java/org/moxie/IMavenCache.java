@@ -14,6 +14,8 @@ import org.moxie.utils.StringUtils;
 
 public abstract class IMavenCache {
 	
+	protected Logger logger;
+	
 	public abstract File getRootFolder();
 	
 	public abstract Collection<File> getFiles(String extension);
@@ -29,6 +31,10 @@ public abstract class IMavenCache {
 	public abstract File writeMetadata(Dependency dep, String ext, String content);
 
 	public abstract File writeMetadata(Dependency dep, String ext, byte[] content);
+	
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
 	
 	protected Dependency resolveRevision(Dependency dependency) {
 		if ((dependency.isSnapshot() && StringUtils.isEmpty(dependency.revision))
@@ -81,7 +87,9 @@ public abstract class IMavenCache {
 		Metadata metadata = MetadataReader.readMetadata(metadataFile);
 		List<String> purgedRevisions = metadata.purgeSnapshots(policy);
 		if (purgedRevisions.size() > 0) {
-			System.out.println("purging old snapshots of " + dep.getCoordinates());
+			if (logger != null) {
+				logger.debug("purging old snapshots of " + dep.getCoordinates());
+			}
 			for (String revision : purgedRevisions) {
 				Dependency old = DeepCopier.copy(dep);
 				old.revision = revision;
@@ -109,7 +117,9 @@ public abstract class IMavenCache {
 		File artifact = getArtifact(dep, dep.extension);
 		File folder = artifact.getParentFile();
 		if (folder == null || !folder.exists()) {
-			System.out.println("   ! skipping non existent folder " + folder);
+			if (logger != null) {
+				logger.debug(1, "! skipping non existent folder " + folder);
+			}
 			return;
 		}
 		File [] files = folder.listFiles();
@@ -118,7 +128,9 @@ public abstract class IMavenCache {
 		}
 		for (File file : files) {
 			if (file.isFile() && file.getName().contains(identifier)) {
-				System.out.println("   - " + file.getName());
+				if (logger != null) {
+					logger.debug(1, "- " + file.getName());
+				}
 				file.delete();
 			}
 		}
@@ -209,8 +221,9 @@ public abstract class IMavenCache {
 					Pom pom = PomReader.readPom(this, file);
 					poms.add(pom);
 				} catch (Throwable t) {
-					System.err.println("Failed to read POM " + file);
-					t.printStackTrace(System.err);
+					if (logger != null) {
+						logger.error(t, "Failed to read POM " + file);
+					}
 				}
 			}
 		}

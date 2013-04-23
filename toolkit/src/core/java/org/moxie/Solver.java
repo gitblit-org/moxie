@@ -85,6 +85,7 @@ public class Solver {
 		this.console = console == null ? new Console(config.isColor()) : console;
 		
 		this.moxieCache.setMavenCacheStrategy(config.getMavenCacheStrategy());
+		this.moxieCache.setLogger(console);
 		
 		// define required dependencies
 		requiredDependencies.put(Scope.build,resolveAliasedDependencies(
