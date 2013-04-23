@@ -390,21 +390,10 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     		}
     	}
     	
-    	// create the source folders
-    	List<String> folders = map.getStrings(Key.sourceDirectories.name(), Arrays.asList(new String [0]));
-    	for (String scopedFolder : folders) {
-    		String s = scopedFolder.substring(0, scopedFolder.indexOf(' ')).trim();
-    		Scope scope = Scope.fromString(s);
-    		if (scope.isValidSourceScope()) {
-    			String folder = StringUtils.stripQuotes(scopedFolder.substring(s.length() + 1).trim());
-        		File file = new File(project.dir, folder);
-        		file.mkdirs();
-    		} else {
-    			log("Illegal source folder scope: " + s);
-    		}
-    	}
+    	createDirectories(project, map, Key.sourceDirectories);
+    	createDirectories(project, map, Key.resourceDirectories);
     	
-    	// Eclipse-ext dependency folder
+    	// Eclipse-ext dependency directory
     	if (Eclipse.ext.equals(project.eclipse)) {
     		map.put(Toolkit.Key.dependencyDirectory.name(), "ext");
     	}
@@ -438,6 +427,21 @@ public class Main extends org.apache.tools.ant.Main implements BuildListener {
     	}
     	
     	return project;
+    }
+    
+    private void createDirectories(NewProject project, MaxmlMap map, Key key) {
+    	List<String> dirs = map.getStrings(key.name(), Arrays.asList(new String [0]));
+    	for (String scopedDir : dirs) {
+    		String s = scopedDir.substring(0, scopedDir.indexOf(' ')).trim();
+    		Scope scope = Scope.fromString(s);
+    		if (scope.isValidSourceScope()) {
+    			String folder = StringUtils.stripQuotes(scopedDir.substring(s.length() + 1).trim());
+        		File file = new File(project.dir, folder);
+        		file.mkdirs();
+    		} else {
+    			log("Illegal " + key.name() + " scope: " + s);
+    		}
+    	}
     }
     
     private void initGit() throws GitAPIException {

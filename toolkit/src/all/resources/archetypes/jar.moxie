@@ -7,8 +7,9 @@ packaging: jar
 apply: ${apply}
 sourceDirectories:
 - compile 'src/main/java'
-- compile 'src/main/resources'
 - test 'src/test/java'
+resourceDirectories:
+- compile 'src/main/resources'
 - test 'src/test/resources'
 dependencies:
 - test 'junit'
