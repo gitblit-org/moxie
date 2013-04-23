@@ -301,7 +301,8 @@ public class BuildConfig {
 					//System.out.println(repository.name + " has affinity for " + dep.getCoordinates());
 				} else if (!StringUtils.isEmpty(dep.origin)) {
 					// origin preference
-					if (dep.origin.equalsIgnoreCase(repository.name)) {
+					if (dep.origin.equalsIgnoreCase(repository.repositoryUrl)) {
+						//System.out.println(repository.repositoryUrl + "  " + dep.getCoordinates());
 						boostedRepository = repository;
 					}
 				}

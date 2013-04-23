@@ -643,10 +643,11 @@ public class Solver {
 			// Support VERSION RANGE, SNAPSHOT, RELEASE, and LATEST versions
 			File metadataFile = moxieCache.getMetadata(dependency, Constants.XML);
 			boolean updateRequired = !metadataFile.exists() || isUpdateMetadata();
+			// read MoxieData which sets the origin, if we have it
+			MoxieData moxiedata = moxieCache.readMoxieData(dependency);
 			
 			if (!updateRequired) {
 				UpdatePolicy policy = config.getUpdatePolicy();
-				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
 				// we have metadata, check update policy
 				if (UpdatePolicy.daily.equals(policy)) {
 					// daily is a special case
@@ -670,7 +671,7 @@ public class Solver {
 			if (updateRequired && isOnline()) {
 				// download artifact maven-metadata.xml
 				console.debug(1, "locating maven-metadata.xml for {0}", dependency.getManagementId());
-				for (Repository repository : config.getRepositories()) {
+				for (Repository repository : config.getRepositories(dependency)) {
 					if (!repository.isMavenSource()) {
 						// skip non-Maven repositories
 						continue;
@@ -686,9 +687,9 @@ public class Solver {
 					}
 				}
 				
-				// reset last checked date for next update check
-				// after we have resolved RELEASE, LATEST, or SNAPSHOT
-				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
+				// reload Moxie data and reset last checked date for next update
+				// check after we have resolved RELEASE, LATEST, or SNAPSHOT
+				moxiedata = moxieCache.readMoxieData(dependency);
 				moxiedata.setLastChecked(new Date());
 				moxieCache.writeMoxieData(dependency, moxiedata);
 			} else {
@@ -805,7 +806,9 @@ public class Solver {
 			return null;
 		}
 		
-		// standard artifact
+		// standard artifact, read Moxie data and set dependency origin
+		MoxieData moxiedata = moxieCache.readMoxieData(dependency);
+
 		for (Repository repository : config.getRepositories(dependency)) {
 			if (!repository.isSource(dependency)) {
 				// dependency incompatible with repository
@@ -817,7 +820,6 @@ public class Solver {
 			File artifactFile = moxieCache.getArtifact(dependency, dependency.extension);
 			boolean downloadDependency = !artifactFile.exists();				
 			if (!downloadDependency && dependency.isSnapshot()) {
-				MoxieData moxiedata = moxieCache.readMoxieData(dependency);
 				downloadDependency = moxiedata.isRefreshRequired();
 				if (downloadDependency) {
 					console.debug(1, "{0} is STALE according to {1}", dependency.getManagementId(), moxiedata.getOrigin());
