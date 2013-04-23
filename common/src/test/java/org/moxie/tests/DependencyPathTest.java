@@ -61,18 +61,18 @@ public class DependencyPathTest extends Assert {
 	
 	@Test
 	public void testPaths1() {
-		String pattern = Constants.MAVEN2_PATTERN;
+		String pattern = Constants.MAVEN2_ARTIFACT_PATTERN;
 		
 		Dependency dep = new Dependency("org.moxie:moxie-toolkit:1.0.0");
-		String path = Dependency.getMavenPath(dep, dep.extension, pattern);
+		String path = Dependency.getArtifactPath(dep, dep.extension, pattern);
 		assertEquals("org/moxie/moxie-toolkit/1.0.0/moxie-toolkit-1.0.0.jar", path);
 		
 		dep = new Dependency("org.moxie:moxie-toolkit:1.0.0:sources");
-		path = Dependency.getMavenPath(dep, dep.extension, pattern);
+		path = Dependency.getArtifactPath(dep, dep.extension, pattern);
 		assertEquals("org/moxie/moxie-toolkit/1.0.0/moxie-toolkit-1.0.0-sources.jar", path);
 		
 		dep = new Dependency("org.moxie:moxie-toolkit:1.0.0:sources:zip");
-		path = Dependency.getMavenPath(dep, dep.extension, pattern);
+		path = Dependency.getArtifactPath(dep, dep.extension, pattern);
 		assertEquals("org/moxie/moxie-toolkit/1.0.0/moxie-toolkit-1.0.0-sources.zip", path);
 	}
 

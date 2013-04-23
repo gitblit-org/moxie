@@ -387,8 +387,9 @@ dependencyManagement:
 <div class="row">
 <div class="span7">
 Dependencies can be defined using Gradle-style coordinates.
-
-    groupId:artifactId:version
+---FIXED---
+groupId:artifactId:version
+---FIXED---
 
 Each dependency must also have an assigned scope.
 <br/>
@@ -458,6 +459,28 @@ You may also specify exclusions by <code>groupId</code> and <code>groupId:artifa
 <div class="span5">
 ---YAML---
 - compile 'org.apache.ant:ant.1.8.4' !commons-logging
+---YAML---
+</div>
+</div>
+
+<div class="row">
+<div class="span7">
+#### GoogleCode Dependencies
+
+Sometimes useful artifacts are not available from a Maven repository.
+
+Moxie supports artifact retrieval from GoogleCode using a syntax similar to Gradle-style Maven coordinates.
+---FIXED---
+<googlecode>:projectName:filename
+---FIXED---
+
+</div>
+
+<div class="span5">
+---YAML---
+repositories: central, googlecode
+dependencies:
+- compile '<googlecode>:iciql:iciql-0.7.0.jar'
 ---YAML---
 </div>
 </div>

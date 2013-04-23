@@ -166,7 +166,7 @@ public class BuildConfig {
 		registrations.addAll(toolkitConfig.registeredRepositories);
 		
 		for (String url : projectConfig.repositories) {
-			if (url.equalsIgnoreCase("googlecode")) {
+			if (url.equalsIgnoreCase(GoogleCode.ID)) {
 				// GoogleCode-sourced artifact
 				repositories.add(new GoogleCode());
 				continue;

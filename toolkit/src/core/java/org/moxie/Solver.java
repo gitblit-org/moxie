@@ -329,7 +329,7 @@ public class Solver {
 		// clear registered urls
 		registeredUrls.clear();
 		for (Repository repository : config.getRepositories()) {
-			registeredUrls.add(repository.repositoryUrl);
+			registeredUrls.add(repository.getRepositoryUrl());
 		}
 		
 		// retrieve POMs serially for all dependencies in all scopes
@@ -829,7 +829,7 @@ public class Solver {
 				// Download primary artifact (e.g. jar)
 				artifactFile = repository.download(this, dependency, dependency.extension);
 				
-				if (artifactFile != null) {
+				if (artifactFile != null && dependency.isJavaBinary()) {
 					// Download sources artifact (e.g. -sources.jar)
 					Dependency sources = dependency.getSourcesArtifact();
 					repository.download(this, sources, sources.extension);

@@ -70,7 +70,7 @@ public class MavenCache extends IMavenCache {
 			return new File(((SystemDependency) dep).path);
 		}
 		resolveRevision(dep);
-		String path = Dependency.getMavenPath(dep,  ext, Constants.MAVEN2_PATTERN);
+		String path = Dependency.getArtifactPath(dep,  ext, Constants.MAVEN2_ARTIFACT_PATTERN);
 		return new File(root, path);
 	}
 
@@ -99,7 +99,7 @@ public class MavenCache extends IMavenCache {
 	 */
 	@Override
 	public File getMetadata(Dependency dep, String ext) {
-		String path = Dependency.getMavenPath(dep,  ext, dep.isSnapshot() ? Constants.MAVEN2_SNAPSHOT_PATTERN : Constants.MAVEN2_METADATA_PATTERN);
+		String path = Dependency.getArtifactPath(dep,  ext, dep.isSnapshot() ? Constants.MAVEN2_SNAPSHOT_PATTERN : Constants.MAVEN2_METADATA_PATTERN);
 		return new File(root, path);
 	}
 

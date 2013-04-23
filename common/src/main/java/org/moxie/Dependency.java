@@ -130,6 +130,15 @@ public class Dependency implements Serializable {
 			}
 		}
 		optional = options.contains("optional");
+		
+		if (!isMavenObject()) {
+			// forge dependency, filename is version field
+			int dot = version.lastIndexOf('.');
+			if (dot > -1) {
+				extension = version.substring(dot + 1);
+				version = version.substring(0, dot);
+			}
+		}
 	}
 	
 	public boolean isMavenObject() {
@@ -152,6 +161,10 @@ public class Dependency implements Serializable {
 	
 	public boolean isRangedVersion() {
 		return version.indexOf('[') > -1 || version.indexOf('(') > -1;
+	}
+	
+	public boolean isJavaBinary() {
+		return Constants.isJavaBinary(extension);
 	}
 
 	public Dependency getPomArtifact() {
@@ -276,7 +289,7 @@ public class Dependency implements Serializable {
 		return sb.toString();
 	}
 	
-	public static String getMavenPath(Dependency dep, String ext, String pattern) {
+	public static String getArtifactPath(Dependency dep, String ext, String pattern) {
 		return getPath(dep,  ext, pattern, true);
 	}
 	

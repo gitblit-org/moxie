@@ -64,7 +64,7 @@ public class Repository {
 	}
 
 	public Repository(String name, String mavenUrl) {
-		this(name, mavenUrl, Constants.MAVEN2_PATTERN, Constants.MAVEN2_METADATA_PATTERN, Constants.MAVEN2_SNAPSHOT_PATTERN);
+		this(name, mavenUrl, Constants.MAVEN2_ARTIFACT_PATTERN, Constants.MAVEN2_METADATA_PATTERN, Constants.MAVEN2_SNAPSHOT_PATTERN);
 	}
 
 	public Repository(String name, String mavenUrl, String pattern, String metadataPattern, String snapshotPattern) {
@@ -82,20 +82,20 @@ public class Repository {
 
 	@Override
 	public int hashCode() {
-		return repositoryUrl.toLowerCase().hashCode();
+		return getRepositoryUrl().toLowerCase().hashCode();
 	}
 	
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Repository) {
-			return ((Repository) o).repositoryUrl.equalsIgnoreCase(repositoryUrl);
+			return ((Repository) o).getRepositoryUrl().equalsIgnoreCase(getRepositoryUrl());
 		}
 		return false;
 	}
 	
 	@Override
 	public String toString() {
-		return StringUtils.isEmpty(name) ? repositoryUrl:name;
+		return StringUtils.isEmpty(name) ? getRepositoryUrl():name;
 	}
 	
 	protected boolean calculateSHA1() {
@@ -178,7 +178,7 @@ public class Repository {
 	}
 
 	protected URL getURL(Dependency dep, String ext) throws MalformedURLException {
-		String url = Dependency.getMavenPath(dep, ext, getArtifactUrl());
+		String url = Dependency.getArtifactPath(dep, ext, getArtifactUrl());
 		return new URL(url);
 	}
 
@@ -197,7 +197,7 @@ public class Repository {
 			String hashCode = content.substring(0, 40);
 			
 			// set origin so that we write the artifact into the proper cache
-			dep.setOrigin(repositoryUrl);
+			dep.setOrigin(getRepositoryUrl());
 			
 			// cache this sha1 file
 			File file = solver.getMoxieCache().writeArtifact(dep, extsha1, hashCode);
@@ -223,13 +223,13 @@ public class Repository {
 	protected String downloadMetadataSHA1(Solver solver, Dependency dep) {
 		try {
 			String extsha1 = Constants.XML + ".sha1";
-			URL url = new URL(Dependency.getMavenPath(dep, extsha1, getMetadataUrl(dep)));
+			URL url = new URL(Dependency.getArtifactPath(dep, extsha1, getMetadataUrl(dep)));
 			DownloadData data = download(solver, url);
 			String content = new String(data.content, "UTF-8").trim();
 			String hashCode = content.substring(0, 40);
 
 			// set origin so that we write the artifact into the proper cache
-			dep.setOrigin(repositoryUrl);
+			dep.setOrigin(getRepositoryUrl());
 
 			// cache this sha1 file
 			File file = solver.getMoxieCache().writeMetadata(dep, extsha1, hashCode);
@@ -258,7 +258,7 @@ public class Repository {
 				// check for the artifact just-in-case we can download w/o
 				// checksum verification
 				try {
-					URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl(dep)));
+					URL url = new URL(Dependency.getArtifactPath(dep, Constants.XML, getMetadataUrl(dep)));
 					URLConnection conn = url.openConnection();
 					conn.connect();
 				} catch (Throwable t) {
@@ -268,7 +268,7 @@ public class Repository {
 		}
 		
 		try {
-			URL url = new URL(Dependency.getMavenPath(dep, Constants.XML, getMetadataUrl(dep)));
+			URL url = new URL(Dependency.getArtifactPath(dep, Constants.XML, getMetadataUrl(dep)));
 			solver.getConsole().download(url.toString());
 			DownloadData data = download(solver, url);
 			try {
@@ -300,7 +300,7 @@ public class Repository {
 			newMetadata.merge(oldMetadata);
 
 			// set origin so that we write the artifact into the proper cache
-			dep.setOrigin(repositoryUrl);
+			dep.setOrigin(getRepositoryUrl());
 
 			// save merged metadata to the artifact cache
 			file = solver.getMoxieCache().writeMetadata(dep, Constants.XML, newMetadata.toXML());
@@ -309,7 +309,7 @@ public class Repository {
 			Date now = new Date();
 			if (dep.isSnapshot()) {
 				MoxieData moxiedata = solver.getMoxieCache().readMoxieData(dep);
-				moxiedata.setOrigin(repositoryUrl);
+				moxiedata.setOrigin(getRepositoryUrl());
 				// do not set lastDownloaded for metadata retrieval
 				moxiedata.setLastChecked(now);
 				moxiedata.setLastUpdated(newMetadata.lastUpdated);
@@ -320,7 +320,7 @@ public class Repository {
 				versions.version = Constants.RELEASE;
 				
 				MoxieData moxiedata = solver.getMoxieCache().readMoxieData(versions);
-				moxiedata.setOrigin(repositoryUrl);
+				moxiedata.setOrigin(getRepositoryUrl());
 				// do not set lastDownloaded for metadata retrieval
 				moxiedata.setLastChecked(now);
 				moxiedata.setLastUpdated(now);
@@ -332,7 +332,7 @@ public class Repository {
 				versions.version = Constants.LATEST;
 				
 				moxiedata = solver.getMoxieCache().readMoxieData(versions);
-				moxiedata.setOrigin(repositoryUrl);
+				moxiedata.setOrigin(getRepositoryUrl());
 				// do not set lastDownloaded for metadata retrieval
 				moxiedata.setLastChecked(now);
 				moxiedata.setLastUpdated(now);
@@ -403,7 +403,7 @@ public class Repository {
 			solver.getConsole().download(dep, ext, name);
 			
 			// set origin so that we write the artifact into the proper cache
-			dep.setOrigin(repositoryUrl);
+			dep.setOrigin(getRepositoryUrl());
 
 			// save to the artifact cache
 			File file = solver.getMoxieCache().writeArtifact(dep, ext, data.content);
@@ -411,7 +411,7 @@ public class Repository {
 			
 			// update Moxie metadata
 			MoxieData moxiedata = solver.getMoxieCache().readMoxieData(dep);
-			moxiedata.setOrigin(repositoryUrl);
+			moxiedata.setOrigin(getRepositoryUrl());
 			
 			Date now = new Date();
 			if (Constants.POM.equals(ext)) {
@@ -448,11 +448,11 @@ public class Repository {
 				// disregard bad request and not found responses
 				solver.getConsole().debug(2, "{0} not found @ {1} repository", dep.getDetailedCoordinates(), name);
 			} else {
-				java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, repositoryUrl);
+				java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, getRepositoryUrl());
 				if (java.net.Proxy.Type.DIRECT == proxy.type()) {
 					throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuildConfig().getMoxieConfig().file.getAbsolutePath()), e);
 				} else {
-					throw new RuntimeException(MessageFormat.format("Failed to use proxy {0} for {1}", proxy, repositoryUrl));
+					throw new RuntimeException(MessageFormat.format("Failed to use proxy {0} for {1}", proxy, getRepositoryUrl()));
 				}
 			}
 		}
@@ -463,11 +463,11 @@ public class Repository {
 		long lastModified = System.currentTimeMillis();
 		ByteArrayOutputStream buff = new ByteArrayOutputStream();
 
-		java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, repositoryUrl);
-		solver.getConsole().debug(2, "opening {0} ({1})", repositoryUrl, proxy.toString());
+		java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, getRepositoryUrl());
+		solver.getConsole().debug(2, "opening {0} ({1})", getRepositoryUrl(), proxy.toString());
 		URLConnection conn = url.openConnection(proxy);
 		if (java.net.Proxy.Type.DIRECT != proxy.type()) {
-			String auth = solver.getBuildConfig().getProxyAuthorization(name, repositoryUrl);
+			String auth = solver.getBuildConfig().getProxyAuthorization(name, getRepositoryUrl());
 			conn.setRequestProperty("Proxy-Authorization", auth);
 		}
 		

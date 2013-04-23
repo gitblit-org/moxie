@@ -23,12 +23,16 @@ import org.moxie.utils.StringUtils;
 
 public class Constants {
 	
-	public static final String MAVEN2_PATTERN = "[groupId]/[artifactId]/[version]/[artifactId]-[revision](-[classifier]).[ext]";
+	public static final String MAVEN2_ARTIFACT_PATTERN = "[groupId]/[artifactId]/[version]/[artifactId]-[revision](-[classifier]).[ext]";
 
 	public static final String MAVEN2_METADATA_PATTERN = "[groupId]/[artifactId]/maven-metadata.[ext]";
 	
 	public static final String MAVEN2_SNAPSHOT_PATTERN = "[groupId]/[artifactId]/[version]/maven-metadata.[ext]";
+
+	public static final String FORGE_ARTIFACT_PATTERN = "[artifactId]/[version].[ext]";
 	
+	public static final String FORGE_METADATA_PATTERN = "[artifactId]/[version].[ext]/[version].[ext]";
+
 	public static final String RELEASE = "RELEASE";
 	
 	public static final String LATEST = "LATEST";
@@ -97,5 +101,10 @@ public class Constants {
 			ext = packaging;
 		}
 		return ext;
+	}
+	
+	public static boolean isJavaBinary(String ext) {
+		String e = getExtension(ext);
+		return e.equals("jar") || e.equals("ear") || e.equals("war");
 	}
 }

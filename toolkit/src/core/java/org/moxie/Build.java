@@ -742,7 +742,7 @@ public class Build {
 			}
 			for (Repository repository : config.getRepositories()) {
 				console.log(1, repository.toString());
-				console.download(repository.repositoryUrl);
+				console.download(repository.getRepositoryUrl());
 				console.log();
 			}
 

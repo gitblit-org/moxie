@@ -97,12 +97,17 @@ public class MoxieCache extends IMavenCache {
 			baseFolder = localSnapshotsRoot;
 		}
 
-		String path = Dependency.getMavenPath(original, ext, Constants.MAVEN2_PATTERN);
+		String path;
+		if (dep.isMavenObject()) {
+			path = Dependency.getArtifactPath(original, ext, Constants.MAVEN2_ARTIFACT_PATTERN);
+		} else {
+			path = Dependency.getArtifactPath(original, ext, Constants.FORGE_ARTIFACT_PATTERN);
+		}
 		File moxieFile = new File(baseFolder, path);
 		
 		if (!moxieFile.exists() && original.isMetaVersion()) {
 			// try fully qualified revision 
-			path = Dependency.getMavenPath(dep, ext, Constants.MAVEN2_PATTERN);
+			path = Dependency.getArtifactPath(dep, ext, Constants.MAVEN2_ARTIFACT_PATTERN);
 			moxieFile = new File(baseFolder, path);
 		}
 		
@@ -156,7 +161,7 @@ public class MoxieCache extends IMavenCache {
 			baseFolder = localSnapshotsRoot;
 			pattern = Constants.MAVEN2_SNAPSHOT_PATTERN;
 		}
-		String path = Dependency.getMavenPath(dep,  ext, pattern);
+		String path = Dependency.getArtifactPath(dep,  ext, pattern);
 		
 		File moxieFile = new File(baseFolder, path);
 		
@@ -207,16 +212,19 @@ public class MoxieCache extends IMavenCache {
 	}
 	
 	protected File getMoxieDataFile(Dependency dep) {
-		if (!dep.isMavenObject()) {
-			return null;
-		}
 		// Resolve a clone of the dependency so we do not change
 		// the original object.  This is to resolve RELEASE and LATEST to a
 		// numeric version.  SNAPSHOT revisions are not part of the Moxie
 		// data filename and as such they are irrelevant for this lookup.
 		Dependency copy = DeepCopier.copy(dep);
-		resolveRevision(copy);		
-		String path = Dependency.getMavenPath(copy, "moxie", Constants.MAVEN2_PATTERN);
+		resolveRevision(copy);
+		
+		String path;
+		if (dep.isMavenObject()) {
+			path = Dependency.getArtifactPath(copy, "moxie", Constants.MAVEN2_ARTIFACT_PATTERN);
+		} else {
+			path = Dependency.getArtifactPath(copy, dep.extension, Constants.FORGE_METADATA_PATTERN);
+		}
 		
 		// create a temp file instance so we can get artifact parent folder
 		File moxieFile = new File(moxiedataRoot, path);
@@ -226,10 +234,6 @@ public class MoxieCache extends IMavenCache {
 	}
 	
 	public MoxieData readMoxieData(Dependency dep) {
-		if (!dep.isMavenObject()) {
-			return null;
-		}
-
 		File moxieFile = getMoxieDataFile(dep);
 		MoxieData moxiedata = new MoxieData(moxieFile);
 		moxiedata.setArtifact(dep);
@@ -268,7 +272,12 @@ public class MoxieCache extends IMavenCache {
 			// downloaded artifact
 			String folder = StringUtils.urlToFolder(dep.origin);
 			File repositoryRoot = new File(remoteRoot, folder);
-			String path = Dependency.getMavenPath(dep, ext, Constants.MAVEN2_PATTERN);
+			String path;
+			if (dep.isMavenObject()) {
+				path = Dependency.getArtifactPath(dep, ext, Constants.MAVEN2_ARTIFACT_PATTERN);
+			} else {				
+				path = Dependency.getArtifactPath(dep, ext, Constants.FORGE_ARTIFACT_PATTERN);
+			}
 			file = new File(repositoryRoot, path);			
 		}
 		FileUtils.writeContent(file, content);
@@ -304,7 +313,7 @@ public class MoxieCache extends IMavenCache {
 			// downloaded metadata
 			String folder = StringUtils.urlToFolder(dep.origin);
 			File repositoryRoot = new File(remoteRoot, folder);
-			String path = Dependency.getMavenPath(dep, ext, dep.isSnapshot() ? Constants.MAVEN2_SNAPSHOT_PATTERN : Constants.MAVEN2_METADATA_PATTERN);
+			String path = Dependency.getArtifactPath(dep, ext, dep.isSnapshot() ? Constants.MAVEN2_SNAPSHOT_PATTERN : Constants.MAVEN2_METADATA_PATTERN);
 			file = new File(repositoryRoot, path);			
 		}
 		FileUtils.writeContent(file, content);

@@ -16,12 +16,20 @@
 package org.moxie;
 
 
+
 public class GoogleCode extends Repository {
+	
+	public final static String ID = "googlecode";
 
 	public GoogleCode() {
-		super("GoogleCode", "http://", "${artifactId}.googlecode.com/files/${version}", null, null);
+		super("GoogleCode", "http://code.google.com", "files/[version].[ext]", null, null);
+		affinity.add("<" + ID + ">:");
 	}
 	
+	public String getArtifactUrl() {
+		return "https://[artifactId].googlecode.com/" + artifactPattern;
+	}
+
 	@Override
 	protected boolean calculateSHA1() {
 		return false;

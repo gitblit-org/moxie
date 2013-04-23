@@ -165,16 +165,18 @@ public class Console {
 			out.append(md).append(ansi().fg(Color.YELLOW).a(size).reset().toString()).println(MessageFormat.format("  last modified {0}", date));
 			rs.append(md).append(MessageFormat.format("{0}  last modified {1}", size, date)).append('\n');
 		}
-		if (pom.getLicenses().size() == 0) {
-			out.append(md).println(ansi().bold().fg(Color.YELLOW).a("unknown!").boldOff().reset());
-			rs.append(md).append("unknown!\n");
-		}
-		for (License license : pom.getLicenses()) {
-			out.append(md).println(ansi().fg(Color.WHITE).a(license.name).reset());
-			rs.append(md).append(license.name).append('\n');
-			if (!StringUtils.isEmpty(license.url)) {
-				out.append(md).println(ansi().fg(Color.CYAN).a(license.url).reset());
-				rs.append(md).append(license.url).append('\n');
+		if (pom != null) {
+			if (pom.getLicenses().size() == 0) {
+				out.append(md).println(ansi().bold().fg(Color.YELLOW).a("unknown!").boldOff().reset());
+				rs.append(md).append("unknown!\n");
+			}
+			for (License license : pom.getLicenses()) {
+				out.append(md).println(ansi().fg(Color.WHITE).a(license.name).reset());
+				rs.append(md).append(license.name).append('\n');
+				if (!StringUtils.isEmpty(license.url)) {
+					out.append(md).println(ansi().fg(Color.CYAN).a(license.url).reset());
+					rs.append(md).append(license.url).append('\n');
+				}
 			}
 		}
 		if (!dependency.tags.isEmpty()) {

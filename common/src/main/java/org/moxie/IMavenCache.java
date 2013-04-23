@@ -164,7 +164,7 @@ public abstract class IMavenCache {
 	}
 	
 	private String getMavenPath(Dependency dep) {
-		String path = Dependency.getMavenPath(dep, dep.extension, Constants.MAVEN2_PATTERN);
+		String path = Dependency.getArtifactPath(dep, dep.extension, Constants.MAVEN2_ARTIFACT_PATTERN);
 		if (new File(getRootFolder(), path).exists()) {
 			return path;
 		}
