@@ -294,13 +294,16 @@ public class MoxieData implements Serializable {
 		StringBuilder sb = new StringBuilder();
 		DateFormat df = getDateFormat();
 		sb.append(MessageFormat.format("# Moxie data generated {0}\n", df.format(new Date())));
-		sb.append("\n# artifact metadata\n");
-		sb.append(kvp(Key.groupId, groupId));
-		sb.append(kvp(Key.artifactId, artifactId));
-		sb.append(kvp(Key.version, version));
-		sb.append(kvp(Key.revision, revision));
-		sb.append(kvp(Key.release, release));
-		sb.append(kvp(Key.latest, latest));
+		
+		if (!StringUtils.isEmpty(artifactId)) {
+			sb.append("\n# artifact metadata\n");
+			sb.append(kvp(Key.groupId, groupId));
+			sb.append(kvp(Key.artifactId, artifactId));
+			sb.append(kvp(Key.version, version));
+			sb.append(kvp(Key.revision, revision));
+			sb.append(kvp(Key.release, release));
+			sb.append(kvp(Key.latest, latest));
+		}
 		
 		sb.append("\n# Moxie metadata\n");
 		sb.append(kvp(Key.solutionVersion, currentSolutionVersion));
@@ -310,8 +313,8 @@ public class MoxieData implements Serializable {
 		sb.append(kvp(Key.lastUpdated, lastUpdated));
 		sb.append(kvp(Key.lastSolved, lastSolved));
 		
-		sb.append("\n# transitive solution\n");
 		if (dependencies.size() > 0) {
+			sb.append("\n# transitive solution\n");
 			sb.append(MessageFormat.format("{0}:\n", Key.dependencies.name()));
 			for (Map.Entry<Scope, Set<Dependency>> entry : dependencies.entrySet()) {
 				for (Dependency dep : entry.getValue()) {
