@@ -19,6 +19,50 @@ Version ranges are the ugly duckling of Moxie.  They are only partially supporte
 
 When confronted with a version range specification, Moxie will resolve the highest version it can by consulting the maven-metadata.xml file.  Moxie does not consult the entire dependency graph during version range resolution.  This is a gross-simplification of the Maven version range feature.
 
+### Moxie Root Directory
+
+By default, Moxie stores it's retrieved artifacts and metadata in `${user.home}/.moxie`.
+
+The directory structure takes design elements from both Maven and Gradle.  Despite my preference for Gradle's *groupId* directory structure (org.apache.ant/ant/1.8.4), the Maven 2 directory structure was adopted (org/apache/ant/ant/1.8.4) because it allows direct http or ftp serving of those folders to a Maven 2-compatible client.  This is exploited by Moxie Proxy, which can serve any Moxie root directory.
+
+A typical Moxie root directory structure may look something like the following:
+---FIXED---
+[data]
+  +--[com]
+  +--[org]
+  +--[commons-io]
+    +--[commons-io]
+       +--[2.2]
+          -metadata.moxie
+[local]
+  +--[releases]
+  +--[snapshots]
+[lucene]
+  +--[central]
+  +--[releases]
+  +--[restlet]
+[remote]
+  +--[maven.restlet.org]
+  +--[repo1.maven.org_maven2]
+    +--[commons-io]
+      +--[commons-io]
+        +--[2.2]
+           -commons-io-2.2.pom
+           -commons-io-2.2.pom.sha1
+           -commons-io-2.2.jar
+           -commons-io-2.2.jar.sha1
+-moxie-toolkit-0.7.0.jar
+-moxie-toolkit-0.7.1.jar
+-moxie-toolkit-0.7.2.jar
+---FIXED---
+
+<dl>
+	<dt>data</dt><dd>directory where Moxie stores Moxie metadata about an artifact: it's origin, record keeping dates, solved transitive dependencies, etc</dd>
+	<dt>local</dt><dd>directory where artifacts you build are installed based on their release status<br/>directory where artifacts are copied to when using the <b>COPY</b> Maven cache strategy to re-use <em>${user.home}/.m2/repository</em> artifacts</dd>
+	<dt>lucene</dt><dd>directory where Lucene indexes are maintained, per-registered repository<br/><i>only applies to Moxie Proxy</i></dd>
+	<dt>remote</dt><dd>directory where retrieved artifacts and standard Maven metadata files are stored, per-repository</dd>
+</dl>
+
 ### Reference links
 
 - [Maven dependency resolution][mvnresolution]

@@ -39,4 +39,12 @@ public class MavenIndexTest extends Assert {
 		sb.append("]\n");
 		FileUtils.writeContent(new File("../maven/artifacts.json"), sb.toString());
 	}
+	
+	@Test
+	public void generatePrefixesIndex() {
+		IMavenCache cache = new MavenCache(new File("../maven"));
+		File index = cache.updatePrefixesIndex();
+		assertTrue(index.exists());
+	}
+
 }

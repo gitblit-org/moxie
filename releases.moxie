@@ -17,6 +17,7 @@ r9: {
     changes: ~
     additions:
     - mx:init now supports an mxroot attribute
+	- mx:deploy now generates/updates a prefix index for automatic routing in smart Maven clients
     dependencyChanges: ~
     contributors: ~
 }

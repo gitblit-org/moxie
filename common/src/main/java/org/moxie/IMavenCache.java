@@ -7,6 +7,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
@@ -149,8 +152,8 @@ public abstract class IMavenCache {
 		StringBuilder sb = new StringBuilder();		
 		for (Pom pom : poms) {
 			String artifact = pomTemplate;
-			artifact = artifact.replace("${artifact.name}", pom.getName());
-			artifact = artifact.replace("${artifact.description}", pom.getDescription());
+			artifact = artifact.replace("${artifact.name}", pom.getName() == null ? pom.getArtifactId() : pom.getName());
+			artifact = artifact.replace("${artifact.description}", pom.getDescription() == null ? "" : pom.getDescription());
 			artifact = artifact.replace("${artifact.groupId}", pom.getGroupId());
 			artifact = artifact.replace("${artifact.artifactId}", pom.getArtifactId());
 			artifact = artifact.replace("${artifact.version}", pom.getVersion());
@@ -173,6 +176,76 @@ public abstract class IMavenCache {
 		// trim trailing separator
 		sb.setLength(sb.length() - separator.length());
 		return sb.toString();
+	}
+	
+	/**
+	 * Creates/updates a prefixes index used by smart maven clients to do
+	 * automatic dependency routing.
+	 *  
+	 * @return the index file
+	 */
+	public File updatePrefixesIndex() {
+		return updatePrefixesIndex(getRootFolder());
+	}
+	
+	/**
+	 * Creates/updates a prefixes index used by smart Maven clients to do
+	 * automatic dependency routing.
+	 * 
+	 * https://issues.sonatype.org/browse/NEXUS-5472
+	 * https://github.com/restlet/restlet-framework-java/issues/449
+	 *  
+	 * @param dir directory to index
+	 * @return the index file
+	 */
+	protected File updatePrefixesIndex(File dir) {
+		Set<String> prefixes = new TreeSet<String>();
+		File file = new File(dir, Constants.PREFIXES);
+
+		// read existing index
+		if (file.exists()) {
+			Scanner scanner = null;
+			try {
+				scanner = new Scanner(file);
+				while (scanner.hasNext()) {
+					prefixes.add(scanner.next());
+				}
+			} catch (Exception e) {
+			} finally {
+				if (scanner != null) {
+					scanner.close();
+				}
+			}
+
+		}
+		
+		// generate index first from discovered poms
+		List<Pom> poms = readAllPoms(dir);
+		Collections.sort(poms);
+		for (Pom pom : poms) {
+			String groupId = pom.getGroupId();
+			String [] chunks = groupId.split("\\.");
+			if (chunks.length < 2) {
+				// single path
+				prefixes.add("/" + chunks[0]);
+			} else {
+				// add first two paths
+				prefixes.add("/" + chunks[0] + "/" + chunks[1]);
+			}
+		}
+		
+		// always add the .meta directory
+		prefixes.add("/.meta");
+
+		// create flat index content
+		StringBuilder sb = new StringBuilder();
+		for (String prefix : prefixes) {
+			sb.append(prefix).append('\n');
+		}
+		
+		// write the index file
+		FileUtils.writeContent(file, sb.toString());
+		return file;
 	}
 	
 	private String getMavenPath(Dependency dep) {
@@ -205,9 +278,9 @@ public abstract class IMavenCache {
 		return poms;
 	}
 	
-	private List<Pom> readAllPoms(File folder) {
+	private List<Pom> readAllPoms(File dir) {
 		List<Pom> poms = new ArrayList<Pom>();
-		File [] files = folder.listFiles();
+		File [] files = dir.listFiles();
 		if (files == null) {
 			return poms;
 		}

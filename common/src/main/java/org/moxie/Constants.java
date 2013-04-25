@@ -45,6 +45,8 @@ public class Constants {
 	
 	public static final String REMOTE = "remote";
 	
+	public static final String PREFIXES = ".meta/prefixes.txt";
+	
 	public static final int RING1 = 1;
 	
 	public static enum Key {

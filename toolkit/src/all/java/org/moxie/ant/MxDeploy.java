@@ -103,6 +103,9 @@ public class MxDeploy extends MxRepositoryTask {
 			deployRelease(pom, sourceDir, artifactDir, true);
 		}
 		
+		// updates the prefixes index
+		artifactCache.updatePrefixesIndex();
+
 		if (generateIndexPage) {
 			boolean extracted = extractResource(cacheRoot, "maven/index.html", "index.html", false);			
 			extractResource(cacheRoot, "maven/favicon.png", "favicon.png", false);
@@ -121,7 +124,7 @@ public class MxDeploy extends MxRepositoryTask {
 			sb.append(index);
 			sb.append("\n]\n");
 			FileUtils.writeContent(new File(cacheRoot, "artifacts.json"), sb.toString());
-		}
+		}		
 	}
 	
 	/**

@@ -22,6 +22,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.moxie.Constants.MavenCacheStrategy;
 import org.moxie.utils.DeepCopier;
@@ -321,4 +324,55 @@ public class MoxieCache extends IMavenCache {
 	}
 	
 
+	/**
+	 * Creates/updates a prefixes index used by smart maven clients to do
+	 * automatic dependency routing.
+	 *  
+	 * @return the index file
+	 */
+	@Override
+	public File updatePrefixesIndex() {
+		// generate a prefix index for each remote cache
+		List<File> indexes = new ArrayList<File>();
+		File [] remotes = remoteRoot.listFiles();
+		if (remotes != null) {
+			for (File remote : remotes) {
+				if (remote.isDirectory()) {
+					File index = updatePrefixesIndex(remote);
+					indexes.add(index);
+				}
+			}
+		}
+		
+		// generate a prefix index for the local releases and snapshots cache
+		indexes.add(updatePrefixesIndex(localReleasesRoot));
+		indexes.add(updatePrefixesIndex(localSnapshotsRoot));
+		
+		// merge all prefix indexes together
+		Set<String> prefixes = new TreeSet<String>();
+		for (File index : indexes) {
+			Scanner scanner = null;
+			try {
+				scanner = new Scanner(index);
+				while (scanner.hasNext()) {
+					prefixes.add(scanner.next());
+				}
+			} catch (Exception e) {
+			} finally {
+				if (scanner != null) {
+					scanner.close();
+				}
+			}
+		}
+		
+		// create flat index content
+		StringBuilder sb = new StringBuilder();
+		for (String value : prefixes) {
+			sb.append(value).append('\n');
+		}
+		
+		File index = new File(moxiedataRoot, "prefixes.txt");
+		FileUtils.writeContent(index, sb.toString());
+		return index;
+	}
 }
