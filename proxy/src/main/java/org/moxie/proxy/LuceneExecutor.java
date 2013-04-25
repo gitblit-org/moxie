@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Queue;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
@@ -133,6 +134,7 @@ public class LuceneExecutor implements Runnable {
 			return;
 		}
 		
+		Set<String> repositories = new TreeSet<String>();
 		long minDiff = 60*1000L; // 1 min
 		while(!queue.isEmpty()) {
 			IndexPom pom = queue.peek();
@@ -154,6 +156,16 @@ public class LuceneExecutor implements Runnable {
 			queue.poll();
 			logger.info("indexing " + pom.file);
 			incrementalIndex(pom.file);
+			
+			// cache the repository that we just indexed
+			String repository = config.getRepositoryId(pom.file);
+			repositories.add(repository);
+		}
+		
+		// create/update the prefix indexes for the repositories
+		for (String repository : repositories) {
+			IMavenCache cache = config.getMavenCache(repository);
+			cache.updatePrefixesIndex();
 		}
 	}
 
@@ -218,6 +230,10 @@ public class LuceneExecutor implements Runnable {
 					logger.severe(MessageFormat.format(msg, repository));
 				}
 			}
+
+			// create/update the prefix indexes for the repositories
+			IMavenCache cache = config.getMavenCache(repository);
+			cache.updatePrefixesIndex();
 		} catch (Throwable t) {
 			logger.log(Level.SEVERE, MessageFormat.format("Lucene indexing failure for {0}", repository), t);
 		}

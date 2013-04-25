@@ -21,6 +21,7 @@ r9: {
 	- mx:init now retrieves the Maven repository prefix index using the metadata update policy
 	- mx:init uses the prefix index, inconjunction with affinity, to reorder/boost repositories when resolving missing dependencies
 	- mx:deploy now generates/updates a prefix index for automatic routing in smart Maven clients
+	- [proxy] generates/updates/proxies prefix indexes
 	- [proxy] returns an existing cached file if the proxied download fails
     dependencyChanges: ~
     contributors: ~
