@@ -13,6 +13,15 @@ Moxie employs a two-pass solver which is executed for each scope (compile, test,
 1. The first pass retrieves POMs for all dependencies regardless of scope by walking up and down the dependency graph.
 2. The second pass generates the complete tree of resolved artifacts and then employs the *nearest* rule to eliminate duplicates in the graph.
 
+### Dependency Resolution
+
+To improve the efficiency of dependency resolution, Moxie uses the following information sources to re-order your repositories, per-dependency, to hopefully download the dependency from the first repository contacted:
+
+1. manually defined *groupId* affinities
+2. known origin urls (primarily used for metadata and SNAPSHOT updates)
+3. repository *.meta/prefixes.txt*, offered by some Maven repositories
+4. user-defined order in *repositories* setting
+
 ### Version Ranges
 
 Version ranges are the ugly duckling of Moxie.  They are only partially supported.  Maven (Aether) has a very sophisticated mechanism for dealing with version ranges which Moxie will never attempt to reproduce.  IMHO version ranges are an unnecessary implementation complexity.

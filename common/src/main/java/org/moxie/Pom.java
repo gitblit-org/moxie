@@ -566,6 +566,17 @@ public class Pom implements Comparable<Pom> {
 		return groupId + ":" + artifactId + ":" + version + (classifier == null ? "" : (":" + classifier));
 	}
 	
+	public String getPrefix() {
+		String [] chunks = groupId.split("\\.");
+		if (chunks.length < 2) {
+			// single path
+			return "/" + chunks[0];
+		} else {
+			// add first two paths
+			return "/" + chunks[0] + "/" + chunks[1];
+		}
+	}
+	
 	@Override
 	public String toString() {
 		return getCoordinates();

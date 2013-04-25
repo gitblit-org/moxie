@@ -31,6 +31,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.moxie.MoxieException.MissingParentPomException;
 import org.moxie.console.Console;
@@ -106,7 +107,7 @@ public class Solver {
 	boolean isUpdateMetadata() {
 		String mxUpdateMetadata = System.getProperty(Toolkit.MX_UPDATEMETADATA, null);
 		if (!StringUtils.isEmpty(mxUpdateMetadata)) {
-			// use system property to force updating maven-metadata.xml
+			// use system property to force updating repository and artifact metadata
 			return Boolean.parseBoolean(mxUpdateMetadata);
 		}
 		return false;
@@ -192,6 +193,26 @@ public class Solver {
 
 	public Set<Dependency> getDependencies(Scope scope) {
 		return solve(scope);
+	}
+	
+	public void updateRepositoryMetadata() {
+		Set<String> allPrefixes = new TreeSet<String>();
+		for (Repository repository : config.getRepositories()) {
+			File index = retrievePrefixIndex(repository);
+			if (index != null && index.exists()) {
+				Collection<String> prefixes = moxieCache.getPrefixes(repository.getRepositoryUrl());
+				allPrefixes.addAll(prefixes);
+				if (!prefixes.isEmpty()) {					
+					repository.setPrefixes(prefixes);
+					console.debug("loaded prefixes for " + repository.getRepositoryUrl());
+					console.debug(prefixes.toString());
+				}
+			}
+		}
+		
+		if (!allPrefixes.isEmpty()) {
+			moxieCache.writePrefixes(allPrefixes);
+		}
 	}
 	
 	public boolean solve() {
@@ -626,6 +647,45 @@ public class Solver {
 		} catch (Exception e) {
 			console.error(e, "Failed to cache project solution {0}", projectAsDep.getDetailedCoordinates());
 		}
+	}
+	
+	private File retrievePrefixIndex(Repository repository) {
+		if (!repository.isMavenSource()) {
+			// skip non-Maven repositories
+			return null;
+		}
+		File prefixesFile = moxieCache.getPrefixesIndex(repository.getRepositoryUrl());
+		boolean updateRequired = !prefixesFile.exists() || isUpdateMetadata();
+
+		if (!updateRequired) {
+			MoxieData moxiedata = moxieCache.readRepositoryMoxieData(repository.getRepositoryUrl());
+			UpdatePolicy policy = config.getUpdatePolicy();
+			// we have metadata, check update policy
+			if (UpdatePolicy.daily.equals(policy)) {
+				// daily is a special case
+				SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+				String mdate = df.format(moxiedata.getLastChecked());
+				String today = df.format(new Date());
+				updateRequired = !mdate.equals(today);
+			} else {
+				// always, never, interval
+				long msecs = policy.mins*60*1000L;
+				updateRequired = Math.abs(System.currentTimeMillis() - moxiedata.getLastChecked().getTime()) > msecs;
+			}
+
+			if (updateRequired) {
+				console.debug(1, "{0} prefixes index is STALE according to {1} update policy", repository.getRepositoryUrl(), policy.toString());
+			} else {
+				console.debug(1, "{0} prefixes index is CURRENT according to {1} update policy", repository.getRepositoryUrl(), policy.toString());
+			}
+		}
+
+		if (updateRequired && isOnline()) {
+			// download prefixes index
+			console.debug(1, "downloading prefixes index for {0}", Constants.PREFIXES, repository.getRepositoryUrl());
+			prefixesFile = repository.downloadPrefixIndex(this);
+		}
+		return prefixesFile;
 	}
 	
 	private File retrievePOM(Dependency dependency, Set<Dependency> retrieved) {

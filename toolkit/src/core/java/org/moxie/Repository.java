@@ -26,9 +26,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.moxie.utils.Base64;
 import org.moxie.utils.DeepCopier;
@@ -46,6 +48,7 @@ public class Repository {
 	boolean allowSnapshots;
 	PurgePolicy purgePolicy;
 	final Set<String> affinity;
+	final Set<String> prefixes;
 	int connectTimeout;
 	int readTimeout;
 	String username;
@@ -75,6 +78,7 @@ public class Repository {
 		this.snapshotPattern = snapshotPattern;
 		this.purgePolicy = new PurgePolicy();
 		this.affinity = new LinkedHashSet<String>();
+		this.prefixes = new TreeSet<String>();
 		// timeout defaults of Maven 3.0.4
 		this.connectTimeout = 20;
 		this.readTimeout = 1800;
@@ -143,6 +147,13 @@ public class Repository {
 		return false;
 	}
 	
+	/**
+	 * Returns true if the repository definition has declared an affinity for
+	 * this dependency.
+	 * 
+	 * @param dependency
+	 * @return true if there is an affinity for this dependency
+	 */
 	public boolean hasAffinity(Dependency dependency) {
 		if (affinity.isEmpty()) {
 			return false;
@@ -159,6 +170,23 @@ public class Repository {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * Returns true if the repository prefix index contains the dependency's
+	 * prefix.
+	 * 
+	 * @param dependency
+	 * @return true if the repository has the dependency prefix
+	 */
+	public boolean hasPrefix(Dependency dependency) {
+		String prefix = dependency.getPrefix();
+		return prefixes.contains(prefix);
+	}
+	
+	public void setPrefixes(Collection<String> prefixes) {
+		this.prefixes.clear();
+		this.prefixes.addAll(prefixes);
 	}
 	
 	public boolean allowSnapshots() {
@@ -180,6 +208,37 @@ public class Repository {
 	protected URL getURL(Dependency dep, String ext) throws MalformedURLException {
 		String url = Dependency.getArtifactPath(dep, ext, getArtifactUrl());
 		return new URL(url);
+	}
+	
+	public File downloadPrefixIndex(Solver solver) {
+		try {
+			String repoUrl = getRepositoryUrl();
+			URL url = new URL(repoUrl + (repoUrl.endsWith("/") ? "":"/")  + Constants.PREFIXES);
+			DownloadData data = download(solver, url);
+			solver.getConsole().download(url.toString());
+			File file = solver.getMoxieCache().writeRepositoryFile(repoUrl, Constants.PREFIXES, data.content);
+			file.setLastModified(data.lastModified);
+					
+			Date now = new Date();
+			MoxieData moxiedata = solver.getMoxieCache().readRepositoryMoxieData(repoUrl);
+			moxiedata.setOrigin(repoUrl);
+			// do not set lastDownloaded for metadata retrieval
+			moxiedata.setLastChecked(now);
+			moxiedata.setLastUpdated(new Date(data.lastModified));
+			solver.getMoxieCache().writeRepositoryMoxieData(repoUrl, moxiedata);	
+			return file;
+		} catch (MalformedURLException m) {
+			m.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// this repository does not have the requested artifact
+		} catch (IOException e) {
+			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
+				// disregard bad request and not found responses
+			} else {
+				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuildConfig().getMoxieConfig().file.getAbsolutePath()), e);
+			}
+		}
+		return null;
 	}
 
 	protected String getSHA1(Solver solver, Dependency dep, String ext) {

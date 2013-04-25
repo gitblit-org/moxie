@@ -179,6 +179,40 @@ public abstract class IMavenCache {
 	}
 	
 	/**
+	 * Reads the prefixes index.
+	 * 
+	 * @return a prefixes index.
+	 */
+	public Set<String> getPrefixes() {
+		return readPrefixesIndex(new File(getRootFolder(), Constants.PREFIXES));
+	}
+
+	/**
+	 * Reads the specified prefix index.
+	 *  
+	 * @param file
+	 * @return the prefixes
+	 */
+	protected Set<String> readPrefixesIndex(File file) {
+		Set<String> prefixes = new TreeSet<String>();
+		if (file.exists()) {
+			Scanner scanner = null;
+			try {
+				scanner = new Scanner(file);
+				while (scanner.hasNext()) {
+					prefixes.add(scanner.next());
+				}
+			} catch (Exception e) {
+			} finally {
+				if (scanner != null) {
+					scanner.close();
+				}
+			}
+		}
+		return prefixes;
+	}
+
+	/**
 	 * Creates/updates a prefixes index used by smart maven clients to do
 	 * automatic dependency routing.
 	 *  
@@ -199,50 +233,47 @@ public abstract class IMavenCache {
 	 * @return the index file
 	 */
 	protected File updatePrefixesIndex(File dir) {
-		Set<String> prefixes = new TreeSet<String>();
-		File file = new File(dir, Constants.PREFIXES);
-
-		// read existing index
-		if (file.exists()) {
-			Scanner scanner = null;
-			try {
-				scanner = new Scanner(file);
-				while (scanner.hasNext()) {
-					prefixes.add(scanner.next());
-				}
-			} catch (Exception e) {
-			} finally {
-				if (scanner != null) {
-					scanner.close();
-				}
-			}
-
-		}
+		Set<String> prefixes = readPrefixesIndex(dir);
 		
 		// generate index first from discovered poms
 		List<Pom> poms = readAllPoms(dir);
 		Collections.sort(poms);
 		for (Pom pom : poms) {
-			String groupId = pom.getGroupId();
-			String [] chunks = groupId.split("\\.");
-			if (chunks.length < 2) {
-				// single path
-				prefixes.add("/" + chunks[0]);
-			} else {
-				// add first two paths
-				prefixes.add("/" + chunks[0] + "/" + chunks[1]);
-			}
+			String prefix = pom.getPrefix();
+			prefixes.add(prefix);
 		}
 		
 		// always add the .meta directory
 		prefixes.add("/.meta");
 
+		File file = new File(dir, Constants.PREFIXES);
+		return writePrefixes(file, prefixes);
+	}
+	
+	/**
+	 * Writes the prefixes index.
+	 * 
+	 * @return a prefixes index file
+	 */
+	public File writePrefixes(Set<String> prefixes) {
+		File file = new File(getRootFolder(), Constants.PREFIXES);
+		return writePrefixes(file, prefixes);
+	}
+
+	/**
+	 * Writes the prefixes index.
+	 * 
+	 * @param file the target file
+	 * @param prefixes the set of prefixes
+	 * 
+	 */
+	protected File writePrefixes(File file, Set<String> prefixes) {
 		// create flat index content
 		StringBuilder sb = new StringBuilder();
 		for (String prefix : prefixes) {
 			sb.append(prefix).append('\n');
 		}
-		
+
 		// write the index file
 		FileUtils.writeContent(file, sb.toString());
 		return file;

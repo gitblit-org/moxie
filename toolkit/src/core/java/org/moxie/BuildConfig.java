@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -279,41 +281,71 @@ public class BuildConfig {
 	}
 
 	/**
-	 * Return a list of repositories to check for the dependency.  Origin and
-	 * repository preference are considered for ordering the repositories.
+	 * Return a list of repositories to check for the dependency.  Affinity,
+	 * dependency origin, and the repository prefix index are all considered
+	 * when ordering the repositories.
 	 * 
 	 * @param dep
 	 * @return a list of repositories
 	 */
-	public Collection<Repository> getRepositories(Dependency dep) {
+	public Collection<Repository> getRepositories(final Dependency dep) {
 		if (repositories.size() == 1) {
 			return repositories;
 		}
 		
-		Repository boostedRepository = null;
+		// origin and affinity trump the prefix index
+		Repository preferredRepository = null;
 		List<Repository> list = new ArrayList<Repository>();
 		for (Repository repository : repositories) {
 			list.add(repository);
-			if (boostedRepository == null) {
+			if (preferredRepository == null) {
 				if (repository.hasAffinity(dep)) {
 					// repository affinity based on package and maybe artifact
-					boostedRepository = repository;
+					preferredRepository = repository;
 					//System.out.println(repository.name + " has affinity for " + dep.getCoordinates());
 				} else if (!StringUtils.isEmpty(dep.origin)) {
 					// origin preference
 					if (dep.origin.equalsIgnoreCase(repository.repositoryUrl)) {
 						//System.out.println(repository.repositoryUrl + "  " + dep.getCoordinates());
-						boostedRepository = repository;
+						preferredRepository = repository;
 					}
 				}
 			}
 		}
 		
-		if (boostedRepository != null) {
-			// reorder repositories with preferred repository first
-			list.remove(boostedRepository);
-			list.add(0, boostedRepository);
+		// temporarily remove the preferred repository
+		if (preferredRepository != null) {
+			list.remove(preferredRepository);
 		}
+
+		// Sort the repositories based on the prefix indexes.  This boosts
+		// a repository if it indicates that it has a matching prefix of the
+		// dependency's groupId.  This does not guarantee that the repository
+		// has the artifact.
+		Collections.sort(list, new Comparator<Repository>() {
+
+			@Override
+			public int compare(Repository r1, Repository r2) {
+				boolean p1 = r1.hasPrefix(dep);
+				boolean p2 = r2.hasPrefix(dep);
+				if (p1 && p2) {
+					// both have prefix
+					return 0;
+				} else if (p1) {
+					// r1 has prefix
+					return -1;
+				}
+				// r2 has prefix
+				return 1;
+			}
+			
+		});
+		
+		// inject the preferred repository at the top of the list
+		if (preferredRepository != null) {
+			list.add(0, preferredRepository);
+		}
+		//System.out.println(dep.getCoordinates() + " " + list.toString());
 		return list;
 	}
 

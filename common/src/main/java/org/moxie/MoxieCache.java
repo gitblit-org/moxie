@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -40,6 +39,7 @@ public class MoxieCache extends IMavenCache {
 	final File localSnapshotsRoot;
 	final File localRoot;
 	final File remoteRoot;
+	final File masterPrefixIndex;
 	final IMavenCache dotM2Cache;
 	MavenCacheStrategy m2Strategy;
 
@@ -51,6 +51,8 @@ public class MoxieCache extends IMavenCache {
 
 		this.localReleasesRoot = new File(localRoot, "releases");
 		this.localSnapshotsRoot = new File(localRoot, "snapshots");
+		
+		this.masterPrefixIndex = new File(moxiedataRoot, "prefixes.txt");
 		
 		this.dotM2Cache = new MavenCache(new File(System.getProperty("user.home") + "/.m2/repository"));
 		
@@ -249,6 +251,32 @@ public class MoxieCache extends IMavenCache {
 		FileUtils.writeContent(file, moxiedata.toMaxML());
 		return file;
 	}
+	
+	protected File getMoxieDataFile(String repositoryUrl) {
+		String folder = StringUtils.urlToFolder(repositoryUrl);		
+		File moxieFile = new File(remoteRoot, folder + "/.meta/metadata.moxie");
+		return moxieFile;
+	}
+	
+	public MoxieData readRepositoryMoxieData(String repositoryUrl) {
+		File moxieFile = getMoxieDataFile(repositoryUrl);
+		MoxieData moxiedata = new MoxieData(moxieFile);
+		return moxiedata;
+	}
+	
+	public File writeRepositoryMoxieData(String repositoryUrl, MoxieData moxiedata) {
+		File file = getMoxieDataFile(repositoryUrl);
+		FileUtils.writeContent(file, moxiedata.toMaxML());
+		return file;
+	}
+	
+	public File writeRepositoryFile(String repositoryUrl, String filename, byte [] content) {
+		String dir = StringUtils.urlToFolder(repositoryUrl);		
+		File repoDir = new File(remoteRoot, dir);
+		File file = new File(repoDir, filename);
+		FileUtils.writeContent(file, content);
+		return file;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -323,7 +351,40 @@ public class MoxieCache extends IMavenCache {
 		return file;
 	}
 	
+	/**
+	 * Returns the prefix index file for the repository url.
+	 * 
+	 * @return the repository prefixes index file
+	 */
+	public File getPrefixesIndex(String repositoryUrl) {
+		String folder = StringUtils.urlToFolder(repositoryUrl);
+		File repositoryRoot = new File(remoteRoot, folder);
+		return new File(repositoryRoot, Constants.PREFIXES);
+	}
+	
+	/**
+	 * Reads the aggregate prefixes index for the entire cache.
+	 * 
+	 * @return aggregate prefixes index
+	 */
+	public Set<String> getPrefixes() {
+		return readPrefixesIndex(masterPrefixIndex);
+	}
 
+	/**
+	 * Reads the prefixes for the specified remote repository.
+	 * 
+	 * @param url
+	 * @return the prefixes index 
+	 */
+	public Set<String> getPrefixes(String url) {
+		File index = getPrefixesIndex(url);
+		if (index.exists()) {
+			return readPrefixesIndex(index);
+		}
+		return new TreeSet<String>();
+	}
+	
 	/**
 	 * Creates/updates a prefixes index used by smart maven clients to do
 	 * automatic dependency routing.
@@ -351,28 +412,20 @@ public class MoxieCache extends IMavenCache {
 		// merge all prefix indexes together
 		Set<String> prefixes = new TreeSet<String>();
 		for (File index : indexes) {
-			Scanner scanner = null;
-			try {
-				scanner = new Scanner(index);
-				while (scanner.hasNext()) {
-					prefixes.add(scanner.next());
-				}
-			} catch (Exception e) {
-			} finally {
-				if (scanner != null) {
-					scanner.close();
-				}
-			}
+			prefixes.addAll(readPrefixesIndex(index));
 		}
-		
-		// create flat index content
-		StringBuilder sb = new StringBuilder();
-		for (String value : prefixes) {
-			sb.append(value).append('\n');
-		}
-		
-		File index = new File(moxiedataRoot, "prefixes.txt");
-		FileUtils.writeContent(index, sb.toString());
-		return index;
+
+		// write aggregate/merged index
+		return writePrefixes(masterPrefixIndex, prefixes);
+	}
+	
+	/**
+	 * Writes the prefixes index.
+	 * 
+	 * @return a prefixes index file
+	 */
+	@Override
+	public File writePrefixes(Set<String> prefixes) {
+		return writePrefixes(masterPrefixIndex, prefixes);
 	}
 }

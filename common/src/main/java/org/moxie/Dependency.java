@@ -216,6 +216,17 @@ public class Dependency implements Serializable {
 		return groupId + ":" + artifactId + ":" + version + ":" + (classifier == null ? "" : classifier) + ":" + extension;
 	}
 	
+	public String getPrefix() {
+		String [] chunks = groupId.split("\\.");
+		if (chunks.length < 2) {
+			// single path
+			return "/" + chunks[0];
+		} else {
+			// add first two paths
+			return "/" + chunks[0] + "/" + chunks[1];
+		}
+	}
+	
 	public boolean excludes(Dependency dependency) {
 		return exclusions.contains(dependency.getMediationId()) 
 				|| exclusions.contains(dependency.getManagementId())

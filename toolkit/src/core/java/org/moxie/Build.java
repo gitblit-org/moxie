@@ -130,6 +130,8 @@ public class Build {
 		if (config.getRepositories().isEmpty()) {
 			console.warn("No dependency repositories have been defined!");
 		}
+		
+		solver.updateRepositoryMetadata();
 
 		boolean solutionBuilt = solver.solve();
 		ToolkitConfig project = config.getProjectConfig();
