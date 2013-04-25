@@ -835,11 +835,17 @@ public class Solver {
 				if (artifactFile != null && dependency.isJavaBinary()) {
 					// Download sources artifact (e.g. -sources.jar)
 					Dependency sources = dependency.getSourcesArtifact();
-					repository.download(this, sources, sources.extension);
+					File sourcesFile = moxieCache.getArtifact(sources, sources.extension);
+					if (dependency.isSnapshot() || !sourcesFile.exists()) {
+						repository.download(this, sources, sources.extension);
+					}
 
 					// Download javadoc artifact (e.g. -javadoc.jar)
 					Dependency javadoc = dependency.getJavadocArtifact();
-					repository.download(this, javadoc, javadoc.extension);
+					File javadocFile = moxieCache.getArtifact(javadoc, javadoc.extension);
+					if (dependency.isSnapshot() || !javadocFile.exists()) {
+						repository.download(this, javadoc, javadoc.extension);
+					}
 				}
 			}
 			

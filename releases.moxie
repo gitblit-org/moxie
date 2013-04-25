@@ -14,6 +14,7 @@ r9: {
 	- Fixed regression in GoogleCode artifact retrieval
 	- Fixed regression in repository boosting based on dependency origin when updating metadata
 	- Fixed regression in archetype resource directory creation
+	- mx:init will not also redownload -javadoc and -sources jars if they already exist and are not -SNAPSHOTs when retrieving a missing jar dependency
     changes: ~
     additions:
     - mx:init now supports an mxroot attribute
