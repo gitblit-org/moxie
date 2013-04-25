@@ -19,6 +19,7 @@ r9: {
     additions:
     - mx:init now supports an mxroot attribute
 	- mx:deploy now generates/updates a prefix index for automatic routing in smart Maven clients
+	- [proxy] returns an existing cached file if the proxied download fails
     dependencyChanges: ~
     contributors: ~
 }

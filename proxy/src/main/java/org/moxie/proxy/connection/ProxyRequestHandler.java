@@ -144,7 +144,12 @@ public class ProxyRequestHandler extends Thread {
 		}
 		String name = f.getName();
 
-		if (name.contains("-SNAPSHOT") || name.contains("maven-metadata") || !f.exists()) {
+		if (name.contains("-SNAPSHOT")
+				|| name.contains("maven-metadata")
+				|| name.contains("/.m2e/")
+				|| name.contains("/.meta/")
+				|| name.contains("/.nexus/")
+				|| !f.exists()) {
 			ProxyDownload d = new ProxyDownload(config, url, f);
 			try {
 				d.download();
@@ -155,11 +160,15 @@ public class ProxyRequestHandler extends Thread {
 				}
 			} catch (DownloadFailed e) {
 				log.severe(e.getMessage());
-
-				println(e.getStatusLine());
-				println();
-				getOut().flush();
-				return;
+				if (!f.exists()) {
+					// return failure
+					println(e.getStatusLine());
+					println();
+					getOut().flush();
+					return;
+				} else {
+					log.fine("Serving from local cache " + f.getAbsolutePath());		
+				}
 			}
 		} else {
 			log.fine("Serving from local cache " + f.getAbsolutePath());
@@ -203,10 +212,16 @@ public class ProxyRequestHandler extends Thread {
 		CONTENT_TYPES.put("xml", "application/xml");
 		CONTENT_TYPES.put("pom", "application/xml");
 
-		CONTENT_TYPES.put("jar", "application/java-archive");
-		CONTENT_TYPES.put("zip", "application/zip");
+		CONTENT_TYPES.put("jar", "application/java-archive");		
 		CONTENT_TYPES.put("war", "application/java-archive");
+		CONTENT_TYPES.put("ear", "application/java-archive");
+		
+		CONTENT_TYPES.put("zip", "application/zip");
+		CONTENT_TYPES.put("tar", "application/x-tar");
+		CONTENT_TYPES.put("tgz", "application/gzip");
+		CONTENT_TYPES.put("gz", "application/gzip");
 
+		CONTENT_TYPES.put("txt", "text/plain");
 		CONTENT_TYPES.put("md5", "text/plain");
 		CONTENT_TYPES.put("sha1", "text/plain");
 		CONTENT_TYPES.put("asc", "text/plain");
