@@ -9,7 +9,8 @@ r10: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+	- Fixed broken prefix index merging
     changes: ~
     additions: ~
     dependencyChanges: ~

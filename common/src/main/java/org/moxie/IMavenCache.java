@@ -233,7 +233,8 @@ public abstract class IMavenCache {
 	 * @return the index file
 	 */
 	protected File updatePrefixesIndex(File dir) {
-		Set<String> prefixes = readPrefixesIndex(dir);
+		File file = new File(dir, Constants.PREFIXES);
+		Set<String> prefixes = readPrefixesIndex(file);
 		
 		// generate index first from discovered poms
 		List<Pom> poms = readAllPoms(dir);
@@ -246,7 +247,6 @@ public abstract class IMavenCache {
 		// always add the .meta directory
 		prefixes.add("/.meta");
 
-		File file = new File(dir, Constants.PREFIXES);
 		return writePrefixes(file, prefixes);
 	}
 	
