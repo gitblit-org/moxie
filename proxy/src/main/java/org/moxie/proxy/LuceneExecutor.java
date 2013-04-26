@@ -221,7 +221,7 @@ public class LuceneExecutor implements Runnable {
 				IndexResult result = updateIndex(repository);
 				if (result.success) {
 					if (result.artifactCount > 0) {
-						String msg = "Updated {0} Lucene index with {1} artifacts in {42 secs";
+						String msg = "Updated {0} Lucene index with {1} artifacts in {2} secs";
 						logger.info(MessageFormat.format(msg, repository, result.artifactCount,
 								result.duration()));
 					}
