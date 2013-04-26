@@ -102,13 +102,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.3/moxie-toolkit-0.7.3-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.3/moxie-toolkit-0.7.3.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.4/moxie-toolkit-0.7.4-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.4/moxie-toolkit-0.7.4.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.7.3/moxie-proxy-0.7.3.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.7.4/moxie-proxy-0.7.4.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.3/moxie+ant-0.7.3.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.3/moxie+ant-0.7.3.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.4/moxie+ant-0.7.4.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.4/moxie+ant-0.7.4.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -125,7 +125,7 @@
 <!-- Begin Markdown -->
 
 <!-- CURRENT RELEASE -->
-	<h3 id="0.7.3" class="section"><a href="#0.7.3" class="sectionlink"><i class="icon-share-alt"> </i></a>Current Release (0.7.3) <small>this is the current stable release</small></h3>
+	<h3 id="0.7.4" class="section"><a href="#0.7.4" class="sectionlink"><i class="icon-share-alt"> </i></a>Current Release (0.7.4) <small>this is the current stable release</small></h3>
 	<table class="table">
 		<tbody>
 			<tr>
@@ -136,20 +136,7 @@
 
    	<h4>fixes</h4>
 	<ul>
-		<li>Do not log first checksum verification failure for an artifact, log failure on retry</li>
-		<li>Fixed regression in GoogleCode artifact retrieval</li>
-		<li>Fixed regression in repository boosting based on dependency origin when updating metadata</li>
-		<li>Fixed regression in archetype resource directory creation</li>
-		<li>mx:init will not also redownload -javadoc and -sources jars if they already exist and are not -SNAPSHOTs when retrieving a missing jar dependency</li>
-	</ul>
-   	<h4>additions</h4>
-	<ul>
-		<li>mx:init now supports an mxroot attribute</li>
-		<li>mx:init now retrieves the Maven repository prefix index using the metadata update policy</li>
-		<li>mx:init uses the prefix index, inconjunction with affinity, to reorder/boost repositories when resolving missing dependencies</li>
-		<li>mx:deploy now generates/updates a prefix index for automatic routing in smart Maven clients</li>
-		<li>[proxy] generates/updates/proxies prefix indexes</li>
-		<li>[proxy] returns an existing cached file if the proxied download fails</li>
+		<li>Fixed broken prefix index merging</li>
 	</ul>
 </td>
 			</tr>
