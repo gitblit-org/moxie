@@ -5,8 +5,8 @@ name: Moxie Build Toolkit
 description: 'tools to faciltate building Java projects'
 groupId: org.moxie
 artifactId: moxie-parent
-version: 0.8.0-SNAPSHOT
-organization: James Moger 
+version: 0.7.3-SNAPSHOT
+organization: James Moger
 organizationUrl: 'https://plus.google.com/u/0/116428776452027956920'
 inceptionYear: 2012
 
@@ -53,7 +53,7 @@ tasks: {
         target: 1.6
         compiler: javac1.6
         encoding: UTF-8
-        compilerArgs: '-Xlint:-options'  
+        compilerArgs: '-Xlint:-options'
     }
 }
 properties: {
