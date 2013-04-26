@@ -102,13 +102,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.2/moxie-toolkit-0.7.2-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.2/moxie-toolkit-0.7.2.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.3/moxie-toolkit-0.7.3-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.3/moxie-toolkit-0.7.3.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.7.2/moxie-proxy-0.7.2.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.7.3/moxie-proxy-0.7.3.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.2/moxie+ant-0.7.2.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.2/moxie+ant-0.7.2.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.3/moxie+ant-0.7.3.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.3/moxie+ant-0.7.3.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -425,8 +425,8 @@ dependencyManagement:
 <div class="row">
 <div class="span7">
 Dependencies can be defined using Gradle-style coordinates.
-
-    groupId:artifactId:version
+<pre>groupId:artifactId:version
+</pre>
 
 Each dependency must also have an assigned scope.
 <br/>
@@ -494,8 +494,28 @@ You may also specify exclusions by <code>groupId</code> and <code>groupId:artifa
 </pre>
 </div>
 </div>
+<div class="row">
+<div class="span7">
+<h4 class="section" id="H24"><a href="#H24" class="sectionlink"><i class="icon-share-alt"> </i></a>GoogleCode Dependencies</h4>
+
+Sometimes useful artifacts are not available from a Maven repository.
+
+Moxie supports artifact retrieval from GoogleCode using a syntax similar to Gradle-style Maven coordinates.
+<pre>&lt;googlecode&gt;:projectName:filename
+</pre>
+
+</div>
+
+<div class="span5">
+<pre class='prettyprint lang-yaml'>
+repositories: central, googlecode
+dependencies:
+- compile '&lt;googlecode&gt;:iciql:iciql-0.7.0.jar'
+</pre>
+</div>
+</div>
 <hr/>
-<h3 class="section" id="H24"><a href="#H24" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Directory</h3>
+<h3 class="section" id="H25"><a href="#H25" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Directory</h3>
 <div class="row">
 <div class="span7">
 You may optionally specify a project-relative directory to copy dependencies to.  If you decide to do this AND you are generating Eclipse or IntelliJ IDEA project files, your project files will reference these relatively located jar files.
@@ -508,7 +528,7 @@ dependencyDirectory: ext
 </div>
 </div>
 <hr/>
-<h3 class="section" id="H25"><a href="#H25" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Name Pattern</h3>
+<h3 class="section" id="H26"><a href="#H26" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Name Pattern</h3>
 <p>When you are using the <code>dependencyDirectory</code> setting you may also control the destination name of the project-relative artifacts.&lt;/div&gt;</p>
 
 <p><pre class='prettyprint lang-yaml'>
@@ -516,10 +536,10 @@ dependencyNamePattern: [artifactId]-[version](-[classifier]).[ext]
 </pre></p>
 
 <hr/>
-<h2 class="section" id="H26"><a href="#H26" class="sectionlink"><i class="icon-share-alt"> </i></a>Advanced Settings</h2>
+<h2 class="section" id="H27"><a href="#H27" class="sectionlink"><i class="icon-share-alt"> </i></a>Advanced Settings</h2>
 <p>These settings can be used to manipulate released POMs and/or to enable clever dependency tricks.  Both of these features are used internally by Moxie.</p>
 
-<h3 class="section" id="H27"><a href="#H27" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Aliases</h3>
+<h3 class="section" id="H28"><a href="#H28" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Aliases</h3>
 <p>Dependency aliases allow you to specify shorthand notation for a dependency which will be resolved at runtime to the full coordinates.</p>
 
 <p><pre class='prettyprint lang-yaml'>
@@ -535,7 +555,7 @@ dependencyAliases: {
 }
 </pre></p>
 
-<h3 class="section" id="H28"><a href="#H28" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Overrides</h3>
+<h3 class="section" id="H29"><a href="#H29" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Overrides</h3>
 <p>Dependency overrides are used to redefine the dependencies of released/published POMs from other projects.  The most common use case would be to add undeclared dependencies for old POMs or to purposefully exclude dependencies from specific scopes.</p>
 
 <p>Moxie uses this feature to simplify specification of &quot;build&quot; scope dependencies so that enabling Cobertura, Emma, or TestNG is as easy as adding a single build dependency.</p>
@@ -566,7 +586,7 @@ dependencyOverrides: {
 }
 </pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="gettingstarted.html">&larr; getting started</a></li> <li class="next"><a href="defaults.html">defaults.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-04-10</p>
+<div ><ul class="pager"><li class="previous"><a href="gettingstarted.html">&larr; getting started</a></li> <li class="next"><a href="defaults.html">defaults.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-04-26</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

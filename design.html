@@ -102,13 +102,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.2/moxie-toolkit-0.7.2-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.2/moxie-toolkit-0.7.2.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.3/moxie-toolkit-0.7.3-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.3/moxie-toolkit-0.7.3.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.7.2/moxie-proxy-0.7.2.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.7.3/moxie-proxy-0.7.3.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.2/moxie+ant-0.7.2.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.2/moxie+ant-0.7.2.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.3/moxie+ant-0.7.3.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.3/moxie+ant-0.7.3.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -138,12 +138,63 @@
 <li>The second pass generates the complete tree of resolved artifacts and then employs the <em>nearest</em> rule to eliminate duplicates in the graph.</li>
 </ol>
 
-<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Version Ranges</h3>
+<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Dependency Resolution</h3>
+<p>To improve the efficiency of dependency resolution, Moxie uses the following information sources to re-order your repositories, per-dependency, to hopefully download the dependency from the first repository contacted:</p>
+
+<ol>
+<li>manually defined <em>groupId</em> affinities</li>
+<li>known origin urls (primarily used for metadata and SNAPSHOT updates)</li>
+<li>repository <em>.meta/prefixes.txt</em>, offered by some Maven repositories</li>
+<li>user-defined order in <em>repositories</em> setting</li>
+</ol>
+
+<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Version Ranges</h3>
 <p>Version ranges are the ugly duckling of Moxie.  They are only partially supported.  Maven (Aether) has a very sophisticated mechanism for dealing with version ranges which Moxie will never attempt to reproduce.  IMHO version ranges are an unnecessary implementation complexity.</p>
 
 <p>When confronted with a version range specification, Moxie will resolve the highest version it can by consulting the maven-metadata.xml file.  Moxie does not consult the entire dependency graph during version range resolution.  This is a gross-simplification of the Maven version range feature.</p>
 
-<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Reference links</h3>
+<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Moxie Root Directory</h3>
+<p>By default, Moxie stores it's retrieved artifacts and metadata in <code>${user.home}/.moxie</code>.</p>
+
+<p>The directory structure takes design elements from both Maven and Gradle.  Despite my preference for Gradle's <em>groupId</em> directory structure (org.apache.ant/ant/1.8.4), the Maven 2 directory structure was adopted (org/apache/ant/ant/1.8.4) because it allows direct http or ftp serving of those folders to a Maven 2-compatible client.  This is exploited by Moxie Proxy, which can serve any Moxie root directory.</p>
+
+<p>A typical Moxie root directory structure may look something like the following:
+<pre>[data]
+  +--[com]
+  +--[org]
+  +--[commons-io]
+    +--[commons-io]
+       +--[2.2]
+          -metadata.moxie
+[local]
+  +--[releases]
+  +--[snapshots]
+[lucene]
+  +--[central]
+  +--[releases]
+  +--[restlet]
+[remote]
+  +--[maven.restlet.org]
+  +--[repo1.maven.org_maven2]
+    +--[commons-io]
+      +--[commons-io]
+        +--[2.2]
+           -commons-io-2.2.pom
+           -commons-io-2.2.pom.sha1
+           -commons-io-2.2.jar
+           -commons-io-2.2.jar.sha1
+-moxie-toolkit-0.7.0.jar
+-moxie-toolkit-0.7.1.jar
+-moxie-toolkit-0.7.2.jar
+</pre></p>
+
+<dl>
+	<dt>data</dt><dd>directory where Moxie stores Moxie metadata about an artifact: it's origin, record keeping dates, solved transitive dependencies, etc</dd>
+	<dt>local</dt><dd>directory where artifacts you build are installed based on their release status<br/>directory where artifacts are copied to when using the <b>COPY</b> Maven cache strategy to re-use <em>${user.home}/.m2/repository</em> artifacts</dd>
+	<dt>lucene</dt><dd>directory where Lucene indexes are maintained, per-registered repository<br/><i>only applies to Moxie Proxy</i></dd>
+	<dt>remote</dt><dd>directory where retrieved artifacts and standard Maven metadata files are stored, per-repository</dd>
+</dl>
+<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Reference links</h3>
 <ul>
 <li><a href="http://www.sonatype.com/people/2009/12/maven-dependency-resolution-a-repository-perspective">Maven dependency resolution</a></li>
 <li><a href="http://docs.codehaus.org/display/MAVEN/Repository+-+SNAPSHOT+Handling">Maven SNAPSHOT resolution</a></li>
@@ -157,7 +208,7 @@
 <li><a href="http://forums.gradle.org/gradle/topics/improved_gradle_dependency_cache">Gradle Cache Design</a></li>
 </ul>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="why.html">&larr; why?!</a></li> </ul></div><footer class="footer"><p class="pull-right">generated 2013-04-10</p>
+<div ><ul class="pager"><li class="previous"><a href="why.html">&larr; why?!</a></li> </ul></div><footer class="footer"><p class="pull-right">generated 2013-04-26</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>
