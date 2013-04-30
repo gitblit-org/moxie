@@ -16,6 +16,8 @@ By default, Windows Command Prompt does not support ANSI color but with a little
 
 This is the palette I use in Console 2, Gnome-Terminal, and iTerm ([download](moxie.itermcolors)).
 
+I set the background of the terminal to black.
+
 <table style="font-size:0.8em;font-family:monospace">
 <tr>
 <td class="span2" style="background-color:#2e3436;color:white">#2e3436<br/>rgb(46, 52, 54)</td>

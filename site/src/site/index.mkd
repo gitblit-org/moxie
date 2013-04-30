@@ -6,37 +6,37 @@ The Moxie binaries and this site are built with Moxie.
 
 <div class="row">
 <div class="span8">
-<pre>
-  [mx:init] =========================================================
-  [mx:init] ${project.name}  (${project.releaseVersion})
-  [mx:init] ---------------------------------------------------------
+<pre style="background-color:#000;color: #d2d6ce;">
+  [mx:init] <span style="color:#059799">=========================================================</span>
+  [mx:init] ${project.name}  (<span style="color: #744f7a;">${project.releaseVersion}</span>)
+  [mx:init] <span style="color:#059799">---------------------------------------------------------</span>
   [mx:init] project metadata
-  [mx:init]            name: ${project.name}
-  [mx:init]     description: ${project.description}
-  [mx:init]         groupId: ${project.groupId}
-  [mx:init]      artifactId: moxie-toolkit
-  [mx:init]         version: ${project.releaseVersion}
-  [mx:init]    organization: ${project.organization}
-  [mx:init]             url: ${project.url}
-  [mx:init] ---------------------------------------------------------
+  [mx:init]            name: <span style="color:#c39f00">${project.name}</span>
+  [mx:init]     description: <span style="color:#c39f00">${project.description}</span>
+  [mx:init]         groupId: <span style="color:#c39f00">${project.groupId}</span>
+  [mx:init]      artifactId: <span style="color:#c39f00">moxie-toolkit</span>
+  [mx:init]         version: <span style="color:#c39f00">${project.releaseVersion}</span>
+  [mx:init]    organization: <span style="color:#c39f00">${project.organization}</span>
+  [mx:init]             url: <span style="color:#c39f00">${project.url}</span>
+  [mx:init] <span style="color:#cb0000">---------------------------------------------------------</span>
   [mx:init] apply
-  [mx:init]    rebuilt Eclipse configuration
-  [mx:init]    rebuilt pom.xml
- [mx:javac] =========================================================
- [mx:javac] mx:Javac  (org.moxie:moxie-toolkit, compile)
- [mx:javac] ---------------------------------------------------------
+  [mx:init]    <span style="color:#c39f00">rebuilt Eclipse configuration</span>
+  [mx:init]    <span style="color:#c39f00">rebuilt pom.xml</span>
+ [mx:javac] <span style="color:#059799">=========================================================</span>
+ [mx:javac] mx:Javac  (<span style="color: #744f7a;">org.moxie:moxie-toolkit, compile</span>)
+ [mx:javac] <span style="color:#059799">---------------------------------------------------------</span>
  [mx:javac] Compiling 41 source files to C:\git\moxie\build\classes
  [mx:javac] Copying 20 files to C:\git\moxie\build\classes
-   [mx:jar] =========================================================
-   [mx:jar] mx:Jar  (moxie-toolkit-${project.releaseVersion})
-   [mx:jar] ---------------------------------------------------------
+   [mx:jar] <span style="color:#059799">=========================================================</span>
+   [mx:jar] mx:Jar  (<span style="color: #744f7a;">moxie-toolkit-${project.releaseVersion}</span>)
+   [mx:jar] <span style="color:#059799">---------------------------------------------------------</span>
    [mx:jar] Building jar: C:\git\moxie\target\moxie-toolkit-${project.releaseVersion}.jar
    [mx:jar]    500 KB, generated in 460 ms
    [mx:jar] Building jar: C:\git\moxie\target\moxie-toolkit-${project.releaseVersion}-sources.jar
    [mx:jar]    148 KB, generated in 80 ms
-[mx:deploy] =========================================================
-[mx:deploy] mx:Deploy  (moxie-toolkit-${project.releaseVersion})
-[mx:deploy] ---------------------------------------------------------
+[mx:deploy] <span style="color:#059799">=========================================================</span>
+[mx:deploy] mx:Deploy  (<span style="color: #744f7a;">moxie-toolkit-${project.releaseVersion}</span>)
+[mx:deploy] <span style="color:#059799">---------------------------------------------------------</span>
 [mx:deploy] Copying 2 files to C:\git\maven\org\moxie\moxie-toolkit\${project.releaseVersion}
 [mx:deploy] generating pom for moxie-toolkit-${project.releaseVersion}
 [mx:deploy] calculating checksums for installed artifacts
