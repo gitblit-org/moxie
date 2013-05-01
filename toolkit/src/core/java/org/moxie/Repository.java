@@ -215,7 +215,7 @@ public class Repository {
 			String repoUrl = getRepositoryUrl();
 			URL url = new URL(repoUrl + (repoUrl.endsWith("/") ? "":"/")  + Constants.PREFIXES);
 			DownloadData data = download(solver, url);
-			solver.getConsole().download(url.toString());
+			solver.getConsole().debug(1, "<= " + url.toString());
 			File file = solver.getMoxieCache().writeRepositoryFile(repoUrl, Constants.PREFIXES, data.content);
 			file.setLastModified(data.lastModified);
 					
@@ -328,7 +328,7 @@ public class Repository {
 		
 		try {
 			URL url = new URL(Dependency.getArtifactPath(dep, Constants.XML, getMetadataUrl(dep)));
-			solver.getConsole().download(url.toString());
+			solver.getConsole().debug(1, "<= " + url.toString());
 			DownloadData data = download(solver, url);
 			try {
 				verifySHA1(solver, expectedSHA1, data, false);

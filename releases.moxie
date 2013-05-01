@@ -10,7 +10,8 @@ r11: {
     text: ~
     security: ~
     fixes: ~
-    changes: ~
+    changes:
+    - changed log level of prefix and metadata downloads to clean up console
     additions: ~
     dependencyChanges: ~
     contributors: ~
@@ -148,7 +149,7 @@ r6: {
 	 - org.webjars:prettify:1-Jun-2011
 	 - org.webjars:d3js:2.10.3
 	 - com.asual.lesscss:lesscss-engine:1.3.3
-	 - org.codehaus.groovy:groovy-all:1.8.8	 
+	 - org.codehaus.groovy:groovy-all:1.8.8
 	 - org.fusesource.wikitext:wikitext-core:1.4
 	 - org.fusesource.wikitext:twiki-core:1.4
 	 - org.fusesource.wikitext:textile-core:1.4
