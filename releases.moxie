@@ -9,7 +9,8 @@ r11: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+	- [proxy] fixed proxying of files in .m2e/, .meta/, and .nexus/
     changes:
     - cleanup logging of prefix and metadata retrieval
     additions:

@@ -143,12 +143,13 @@ public class ProxyRequestHandler extends Thread {
 			throw new IOException("Unregistered remote repository, got " + downloadURL);
 		}
 		String name = f.getName();
+		String path = f.getPath().replace('\\', '/');
 
 		if (name.contains("-SNAPSHOT")
 				|| name.contains("maven-metadata")
-				|| name.contains("/.m2e/")
-				|| name.contains("/.meta/")
-				|| name.contains("/.nexus/")
+				|| path.contains("/.m2e/")
+				|| path.contains("/.meta/")
+				|| path.contains("/.nexus/")
 				|| !f.exists()) {
 			ProxyDownload d = new ProxyDownload(config, url, f);
 			try {
