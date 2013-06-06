@@ -66,7 +66,7 @@ public class Toolkit {
 		testSourcePath, outputDirectory, compileOutputDirectory, testOutputDirectory, linkedProjects,
 		dependencyDirectory, repositories, properties, dependencies, apply,
 		googleAnalyticsId, googlePlusId, runtimeClasspath, compileClasspath, testClasspath,
-		compileDependencypath, runtimeDependencypath, testDependencypath, commitId, targetDirectory,
+		compileDependencyPath, runtimeDependencyPath, testDependencyPath, commitId, targetDirectory,
 		proxies, parent, exclusions, mxjar, mxjavac, compilerArgs, excludes, includes,
 		dependencyManagement, mxreport, outputFile, verbose, buildClasspath, reportTargetDirectory,
 		dependencyOverrides, dependencyAliases, updatePolicy, lastChecked, lastUpdated, lastSolved,
@@ -77,7 +77,7 @@ public class Toolkit {
 		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl,
 		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution, mavenUrl, 
 		resourceDirectories, parallelDownloads, dependencyNamePattern, javadocTargetDirectory,
-		connectTimeout, readTimeout, username, password;
+		connectTimeout, readTimeout, username, password, compileOutputPath, testOutputPath;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

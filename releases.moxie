@@ -12,7 +12,8 @@ r11: {
     fixes: ~
     changes:
     - cleanup logging of prefix and metadata retrieval
-    additions: ~
+    additions:
+	- export compileOutputPath, testOutputPath properties to access the compiled classes for a project and it's linked modules
     dependencyChanges: ~
     contributors: ~
 }

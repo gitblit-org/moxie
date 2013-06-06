@@ -184,7 +184,7 @@ public class MxInit extends MxTask {
 			setProjectProperty(Key.outputDirectory, buildConfig.getOutputDirectory(null).toString());
 			setProjectProperty(Key.compileOutputDirectory, buildConfig.getOutputDirectory(Scope.compile).toString());
 			setProjectProperty(Key.testOutputDirectory, buildConfig.getOutputDirectory(Scope.test).toString());
-			
+
 			setProjectProperty(Key.targetDirectory, buildConfig.getTargetDirectory().toString());
 			setProjectProperty(Key.reportTargetDirectory, buildConfig.getReportsTargetDirectory().toString());
 			setProjectProperty(Key.javadocTargetDirectory, buildConfig.getJavadocTargetDirectory().toString());
@@ -199,15 +199,17 @@ public class MxInit extends MxTask {
 			
 			setSourcepath(Key.compileSourcePath, buildConfig, Scope.compile);
 			setSourcepath(Key.testSourcePath, buildConfig, Scope.test);
+			setClasspath(Key.compileOutputPath, build, Scope.compile, false, false);
+			setClasspath(Key.testOutputPath, build, Scope.test, true, false);
 
-			setClasspath(Key.compileClasspath, build, Scope.compile, false);
-			setClasspath(Key.runtimeClasspath, build, Scope.runtime, true);
-			setClasspath(Key.testClasspath, build, Scope.test, true);
-			setClasspath(Key.buildClasspath, build, Scope.build, false);
-
-			setDependencypath(Key.compileDependencypath, build, Scope.compile);
-			setDependencypath(Key.runtimeDependencypath, build, Scope.runtime);
-			setDependencypath(Key.testDependencypath, build, Scope.test);
+			setDependencypath(Key.compileDependencyPath, build, Scope.compile);
+			setDependencypath(Key.runtimeDependencyPath, build, Scope.runtime);
+			setDependencypath(Key.testDependencyPath, build, Scope.test);
+			
+			setClasspath(Key.compileClasspath, build, Scope.compile, false, true);
+			setClasspath(Key.runtimeClasspath, build, Scope.runtime, true, true);
+			setClasspath(Key.testClasspath, build, Scope.test, true, true);
+			setClasspath(Key.buildClasspath, build, Scope.build, false, true);
 			
 			updateExecutionClasspath();			
 		} catch (Exception e) {
@@ -236,8 +238,7 @@ public class MxInit extends MxTask {
 		setPathReference(key, sources, true);
 	}
 	
-	private void setClasspath(Key key, Build build, Scope scope, boolean includeResources) {
-		List<File> jars = build.getSolver().getClasspath(scope);
+	private void setClasspath(Key key, Build build, Scope scope, boolean includeResources, boolean includeJars) {
 		Path cp = new Path(getProject());
 		// output folder
 		PathElement of = cp.createPathElement();
@@ -269,11 +270,13 @@ public class MxInit extends MxTask {
 		}
 		
 		// jars
-		for (File jar : jars) {
-			PathElement element = cp.createPathElement();
-			element.setLocation(jar);
+		if (includeJars) {
+			for (File jar : build.getSolver().getClasspath(scope)) {
+				PathElement element = cp.createPathElement();
+				element.setLocation(jar);
+			}
 		}
-
+		
 		setPathReference(key, cp, true);
 	}
 	
