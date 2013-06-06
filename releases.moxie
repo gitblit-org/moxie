@@ -15,6 +15,7 @@ r11: {
     - cleanup logging of prefix and metadata retrieval
     additions:
 	- export compileOutputPath, testOutputPath properties to access the compiled classes for a project and it's linked modules
+	- support path attribute in mx:genjar library element
     dependencyChanges: ~
     contributors: ~
 }

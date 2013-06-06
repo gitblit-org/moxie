@@ -81,6 +81,8 @@ public class LibrarySpec extends DataType implements JarSpec {
 	private File jar = null;
 
 	private File dir = null; // the actual dir to use
+	
+	private String path = null;
 
 	private List<JarEntrySpec> jarEntries = new ArrayList<JarEntrySpec>();
 
@@ -124,6 +126,15 @@ public class LibrarySpec extends DataType implements JarSpec {
 	 */
 	public String getName() {
 		return jar.getName();
+	}
+	
+	/**
+	 * Sets the library entries from a path specification.
+	 * 
+	 * @param path
+	 */
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	/**
@@ -220,9 +231,11 @@ public class LibrarySpec extends DataType implements JarSpec {
 	 */
 	public void resolve(GenJar gj) throws IOException {
 		if (jar != null) {
-			resolveJar();
-		} else {
-			resolveDir();
+			resolveJar(jar);
+		} else if (dir != null) {
+			resolveDir(dir);
+		} else if (path != null) {
+			resolvePath(path);
 		}
 	}
 
@@ -230,7 +243,7 @@ public class LibrarySpec extends DataType implements JarSpec {
 	 * Locate the library jar file and add all the entries to list of jar
 	 * entries.
 	 */
-	private void resolveJar() {
+	private void resolveJar(File jar) {
 		try {
 			JarFile jarFile = new JarFile(jar);
 			Enumeration<JarEntry> entries = jarFile.entries();
@@ -266,14 +279,6 @@ public class LibrarySpec extends DataType implements JarSpec {
 	}
 
 	/**
-	 * resolves a dir into a slew of JarEntrySpec objects this just calls
-	 * _resolveDir to start the recursive descent of the dir structure
-	 */
-	private void resolveDir() {
-		resolveDir(dir);
-	}
-
-	/**
 	 * Description of the Method
 	 * 
 	 * @param root
@@ -296,6 +301,22 @@ public class LibrarySpec extends DataType implements JarSpec {
 			je.setJarName(genJarName(file));
 			je.setSourceFile(file);
 			jarEntries.add(je);
+		}
+	}
+	
+	private void resolvePath(String path) {
+		String [] paths = path.split(File.pathSeparator);
+		for (String p : paths) {
+			File file = new File(p);
+			if (file.exists()) {
+				if (file.isDirectory()) {
+					// dir
+					resolveDir(file);
+				} else {
+					// assume jar
+					resolveJar(file);
+				}
+			}
 		}
 	}
 
