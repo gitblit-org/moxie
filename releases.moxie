@@ -11,7 +11,7 @@ r11: {
     security: ~
     fixes: ~
     changes:
-    - changed log level of prefix and metadata downloads to clean up console
+    - cleanup logging of prefix and metadata retrieval
     additions: ~
     dependencyChanges: ~
     contributors: ~
