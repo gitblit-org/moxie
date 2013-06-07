@@ -64,6 +64,10 @@ These properties and references are available to Ant after executing the `mx:ini
 <tr><th colspan='2'>Output directories including linked modules</th></tr>
 <tr><th>compileOutputPath</th>        <td>${project.compileOutputPath}</td></tr>
 <tr><th>testOutputPath</th>           <td>${project.testOutputPath}</td></tr>
+<tr><th colspan='2'>Paths for scoped resources</th></tr>
+<tr><th>compileResourcePath</th>      <td>${project.compileResourcePath}</td></tr>
+<tr><th>runtimeResourcePath</th>      <td>${project.runtimeResourcePath}</td></tr>
+<tr><th>testResourcePath</th>         <td>${project.testResourcePath}</td></tr>
 <tr><th colspan='2'>Paths for scoped dependencies</th></tr>
 <tr><th>compileDependencyPath</th>    <td>${project.compileDependencyPath}</td></tr>
 <tr><th>runtimeDependencyPath</th>    <td>${project.runtimeDependencyPath}</td></tr>

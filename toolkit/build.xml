@@ -99,6 +99,7 @@
 		<taskdef classname="org.moxie.ant.MxReport" name="report" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxInstall" name="install" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxDeploy" name="deploy" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
+		<taskdef classname="org.moxie.ant.MxJar" name="jar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxGenJar" name="genjar" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxTest" name="test" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
 		<taskdef classname="org.moxie.ant.MxCommitId" name="commitid" classpathref="bootstrap.path" loaderref="moxie.bootstrap" uri="antlib:org.moxie" />
@@ -136,6 +137,11 @@
 			</resource>
 		</mx:genjar>
 
+		<!-- Create the One-Jar-Boot jar -->
+		<property name="one-jar-boot.jar" value = "${project.targetDirectory}/one-jar-boot.jar" />
+		<mx:genjar destfile="${one-jar-boot.jar}" includeResources="false">
+			<mainclass name="OneJar" />
+		</mx:genjar>
 		
 		<!-- Moxie-Toolkit -->
 		<mx:genjar packageSources="true" excludeClasspathJars="true">
@@ -165,6 +171,7 @@
 			<class name="org.moxie.ant.MxJavac" />
 			<class name="org.moxie.ant.MxJavadoc" />
 			<class name="org.moxie.ant.MxKeys" />
+			<class name="org.moxie.ant.MxOneJar" />
 			<class name="org.moxie.ant.MxPackage" />
 			<class name="org.moxie.ant.MxRun" />
 			<class name="org.moxie.ant.MxTar" />
@@ -181,6 +188,9 @@
 			</resource>
 			<resource prefix="org/moxie">
 				<fileset file="${basedir}/src/all/config/antlib.xml" />
+			</resource>
+			<resource prefix="org/moxie/onejar">
+				<fileset file="${one-jar-boot.jar}" />
 			</resource>
 		</mx:genjar>
 		

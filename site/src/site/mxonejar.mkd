@@ -1,0 +1,29 @@
+## mx:OneJar
+
+mx:OneJar is a fork of the [OneJar](http://http://onejar.sourceforge.net) ANT task by *P. Simon Tuffs*.  It has been enhanced with Moxie integration.
+
+### Synopsis
+
+One-JAR lets you package a Java application together with its dependency Jars into a single executable Jar file. 
+
+One-JAR provides custom classloader that knows how to load classes and resources from a jars inside an archive, instead of from jars in the filesystem. It discovers dependency jar files based on the internal structure of the archive, there is no custom code required to do this. One-JAR archives can be constructed using Ant or Maven2. Your application can be run using java -jar my-app.jar
+
+### Attributes
+
+---X:MEDIAWIKI---
+{| class="table table-bordered"
+|-
+! Attribute !! Description !! Required
+|}
+---X:MEDIAWIKI---
+
+### Nested Elements
+
+
+### Example
+
+This example will build a One-JAR jar file from your compiled sources and compile dependencies.
+
+---XML---
+<mx:onejar />
+---XML---

@@ -34,7 +34,9 @@ public class Toolkit {
 	
 	public static final String APPLY_CACHE = "cache";
 	
-	public static final String DEFAULT_EXCLUDES = "**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
+	public static final String DEFAULT_CODE_EXCLUDES = "**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
+	
+	public static final String DEFAULT_RESOURCE_EXCLUDES = "**/.class,**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
 	
 	public static final String MX_DEBUG = "mx.debug";
 
@@ -77,7 +79,8 @@ public class Toolkit {
 		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl,
 		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution, mavenUrl, 
 		resourceDirectories, parallelDownloads, dependencyNamePattern, javadocTargetDirectory,
-		connectTimeout, readTimeout, username, password, compileOutputPath, testOutputPath;
+		connectTimeout, readTimeout, username, password, compileOutputPath, testOutputPath,
+		compileResourcePath, runtimeResourcePath, testResourcePath;
 
 		public String projectId() {
 			return "project." + name().replace('_', '.');

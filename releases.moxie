@@ -16,6 +16,7 @@ r11: {
     additions:
 	- export compileOutputPath, testOutputPath properties to access the compiled classes for a project and it's linked modules
 	- support path attribute in mx:genjar library element
+	- integrated mx:OneJar from the One-JAR project
     dependencyChanges: ~
     contributors: ~
 }

@@ -274,7 +274,7 @@ public class MxJar extends Jar {
 		}
 		
 		if (excludes == null) {
-			excludes = Toolkit.DEFAULT_EXCLUDES;
+			excludes = Toolkit.DEFAULT_CODE_EXCLUDES;
 		}
 
 		// compiled output of this project
@@ -315,7 +315,7 @@ public class MxJar extends Jar {
 					}
 					resSet.setProject(getProject());
 					resSet.setDir(resDir);
-					resSet.setExcludes(Toolkit.DEFAULT_EXCLUDES);
+					resSet.setExcludes(Toolkit.DEFAULT_RESOURCE_EXCLUDES);
 					addFileset(resSet);
 				}
 			}
@@ -330,7 +330,7 @@ public class MxJar extends Jar {
 				}
 				set.setProject(getProject());
 				set.setDir(dir);
-				set.setExcludes(Toolkit.DEFAULT_EXCLUDES);
+				set.setExcludes(Toolkit.DEFAULT_RESOURCE_EXCLUDES);
 				addFileset(set);
 			}
 		}
@@ -445,7 +445,7 @@ public class MxJar extends Jar {
 				for (File dir : build.getConfig().getResourceDirectories(Scope.compile, tag)) {
 					FileSet set = new FileSet();
 					set.setDir(dir);
-					set.setExcludes(Toolkit.DEFAULT_EXCLUDES);
+					set.setExcludes(Toolkit.DEFAULT_RESOURCE_EXCLUDES);
 					jar.addFileset(set);
 				}
 			}

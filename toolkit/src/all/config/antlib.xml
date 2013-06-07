@@ -22,6 +22,7 @@
 	<taskdef name="javac" classname="org.moxie.ant.MxJavac" />
 	<taskdef name="javadoc" classname="org.moxie.ant.MxJavadoc" />
 	<taskdef name="keys" classname="org.moxie.ant.MxKeys" />
+	<taskdef name="onejar" classname="org.moxie.ant.MxOneJar" />
 	<taskdef name="package" classname="org.moxie.ant.MxPackage" />
 	<taskdef name="run" classname="org.moxie.ant.MxRun" />
 	<taskdef name="tar" classname="org.moxie.ant.MxTar" />

@@ -278,7 +278,7 @@ public class MxJavac extends Javac {
 
 		if (excludes == null) {
 			// default exclusions
-			excludes = Toolkit.DEFAULT_EXCLUDES;
+			excludes = Toolkit.DEFAULT_CODE_EXCLUDES;
 		}
 
 		for (String path : getSrcdir().list()) {

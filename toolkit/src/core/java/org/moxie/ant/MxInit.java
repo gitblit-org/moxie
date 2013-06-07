@@ -202,6 +202,10 @@ public class MxInit extends MxTask {
 			setClasspath(Key.compileOutputPath, build, Scope.compile, false, false);
 			setClasspath(Key.testOutputPath, build, Scope.test, true, false);
 
+			setResourcepath(Key.compileResourcePath, buildConfig, Scope.compile);
+			setResourcepath(Key.runtimeResourcePath, buildConfig, Scope.runtime);
+			setResourcepath(Key.testResourcePath, buildConfig, Scope.test);
+
 			setDependencypath(Key.compileDependencyPath, build, Scope.compile);
 			setDependencypath(Key.runtimeDependencyPath, build, Scope.runtime);
 			setDependencypath(Key.testDependencyPath, build, Scope.test);
@@ -229,6 +233,19 @@ public class MxInit extends MxTask {
 		Set<File> folders = new LinkedHashSet<File>();
 		folders.addAll(buildConfig.getSourceDirectories(scope));
 		folders.addAll(buildConfig.getSourceDirectories(Scope.defaultScope));
+		
+		Path sources = new Path(getProject());
+		for (File file : folders) {
+			PathElement element = sources.createPathElement();
+			element.setLocation(file);
+		}
+		setPathReference(key, sources, true);
+	}
+	
+	private void setResourcepath(Key key, BuildConfig buildConfig, Scope scope) {
+		Set<File> folders = new LinkedHashSet<File>();
+		folders.addAll(buildConfig.getResourceDirectories(scope));
+		folders.addAll(buildConfig.getResourceDirectories(Scope.defaultScope));
 		
 		Path sources = new Path(getProject());
 		for (File file : folders) {
