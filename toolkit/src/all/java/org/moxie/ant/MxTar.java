@@ -34,7 +34,7 @@ public class MxTar extends Tar {
 	
 	private TarCompressionMethod mode = new TarCompressionMethod();
 	
-	private ZipDependencies dependencies = null;
+	private List<ZipDependencies> dependencies = new ArrayList<ZipDependencies>();
 	
 	private File destFile;
 	
@@ -67,8 +67,9 @@ public class MxTar extends Tar {
 
 
 	public ZipDependencies createDependencies() {
-		dependencies = new ZipDependencies();
-		return dependencies;
+		ZipDependencies deps = new ZipDependencies();
+		dependencies.add(deps);
+		return deps;
 	}
 
 	private List<ZipArtifact> artifacts = new ArrayList<ZipArtifact>();
@@ -116,11 +117,11 @@ public class MxTar extends Tar {
 			}
 		}
 		
-		if (dependencies != null) {
-			for (File jar : build.getSolver().getClasspath(dependencies.getScope(), dependencies.getTag())) {
+		for (ZipDependencies deps : dependencies) {
+			for (File jar : build.getSolver().getClasspath(deps.getScope(), deps.getTag())) {
 				TarFileSet fs = createTarFileSet();
-				if (!StringUtils.isEmpty(dependencies.getPrefix())) {
-					fs.setPrefix(dependencies.getPrefix());
+				if (!StringUtils.isEmpty(deps.getPrefix())) {
+					fs.setPrefix(deps.getPrefix());
 				}
 				fs.setDir(jar.getParentFile());
 				fs.setIncludes(jar.getName());

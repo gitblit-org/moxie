@@ -130,12 +130,13 @@ public class MxWar extends MxJar {
 		return "WEB-INF/classes/";
 	}
 	
-	private ZipDependencies dependencies = null;
+	private List<ZipDependencies> dependencies = new ArrayList<ZipDependencies>();
 	
 	public ZipDependencies createDependencies() {
-		dependencies = new ZipDependencies();
-		dependencies.setPrefix("WEB-INF/lib"); 
-		return dependencies;
+		ZipDependencies deps = new ZipDependencies();
+		deps.setPrefix("WEB-INF/lib");
+		dependencies.add(deps);
+		return deps;
 	}
 
 	private List<ZipArtifact> artifacts = new ArrayList<ZipArtifact>();
@@ -243,12 +244,12 @@ public class MxWar extends MxJar {
 			addZipfileset(fs);
 		}
 		
-		if (dependencies != null) {
-			for (File jar : build.getSolver().getClasspath(dependencies.getScope(), dependencies.getTag())) {
+		for (ZipDependencies deps : dependencies) {
+			for (File jar : build.getSolver().getClasspath(deps.getScope(), deps.getTag())) {
 				ZipFileSet fs = new ZipFileSet();
 				fs.setProject(getProject());
-				if (!StringUtils.isEmpty(dependencies.getPrefix())) {
-					fs.setPrefix(dependencies.getPrefix());
+				if (!StringUtils.isEmpty(deps.getPrefix())) {
+					fs.setPrefix(deps.getPrefix());
 				}
 				fs.setDir(jar.getParentFile());
 				fs.setIncludes(jar.getName());
