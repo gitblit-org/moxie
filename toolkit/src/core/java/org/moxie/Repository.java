@@ -209,6 +209,11 @@ public class Repository {
 		String url = Dependency.getArtifactPath(dep, ext, getArtifactUrl());
 		return new URL(url);
 	}
+
+	protected String getOfflineProxyMessage(String msg) {
+		String file = new File(Toolkit.getMxRoot(), Toolkit.MOXIE_SETTINGS).getAbsolutePath();
+		return MessageFormat.format("Error!\n\n{0}\nDo you need to run offline?\n  append \"-D{1}=false\" to your Ant launch arguments\nDo you need to specify a proxy in {2}?\n  see http://gitblit.github.io/moxie/settings.html", msg, Toolkit.MX_ONLINE, file);
+	}
 	
 	public File downloadPrefixIndex(Solver solver) {
 		try {
@@ -235,7 +240,7 @@ public class Repository {
 			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuildConfig().getMoxieConfig().file.getAbsolutePath()), e);
+				throw new RuntimeException(getOfflineProxyMessage(MessageFormat.format("Failed to fetch [{0}] prefix index", name)), e);
 			}
 		}
 		return null;
@@ -408,7 +413,7 @@ public class Repository {
 			if (e.getMessage().contains("400") || e.getMessage().contains("404")) {
 				// disregard bad request and not found responses
 			} else {
-				throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuildConfig().getMoxieConfig().file.getAbsolutePath()), e);
+				throw new RuntimeException(getOfflineProxyMessage(MessageFormat.format("Failed to fetch [{0}] metadata", dep.isSnapshot() ? dep.getCoordinates() : dep.getManagementId())), e);
 			}
 		}
 		return null;
@@ -509,7 +514,7 @@ public class Repository {
 			} else {
 				java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, getRepositoryUrl());
 				if (java.net.Proxy.Type.DIRECT == proxy.type()) {
-					throw new RuntimeException(MessageFormat.format("Do you need to specify a proxy in {0}?", solver.getBuildConfig().getMoxieConfig().file.getAbsolutePath()), e);
+					throw new RuntimeException(getOfflineProxyMessage(MessageFormat.format("Failed to download [{0}]", dep.getDetailedCoordinates())), e);
 				} else {
 					throw new RuntimeException(MessageFormat.format("Failed to use proxy {0} for {1}", proxy, getRepositoryUrl()));
 				}

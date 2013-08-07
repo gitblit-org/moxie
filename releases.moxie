@@ -11,6 +11,7 @@ r11: {
     security: ~
     fixes:
 	- [proxy] fixed proxying of files in .m2e/, .meta/, and .nexus/
+	- fixed NPE exception in generating error message when running Moxie offline
     changes:
     - cleanup logging of prefix and metadata retrieval
     additions:
