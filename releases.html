@@ -102,13 +102,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.4/moxie-toolkit-0.7.4-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.7.4/moxie-toolkit-0.7.4.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.0/moxie-toolkit-0.8.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.0/moxie-toolkit-0.8.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.7.4/moxie-proxy-0.7.4.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.8.0/moxie-proxy-0.8.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.4/moxie+ant-0.7.4.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.7.4/moxie+ant-0.7.4.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.0/moxie+ant-0.8.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.0/moxie+ant-0.8.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -130,6 +130,37 @@
 	<table class="table">
 		<tbody>
 		<!-- RELEASE HISTORY -->
+		<tr id="0.8.0">
+			<td style="width:100px" id="0.8.0">
+				<b><a href="#0.8.0">0.8.0</a></b><br/>
+				2013-08-07
+			</td>
+			<td>		<p class="lead">Moxie Build Toolkit 0.8.0 released</p>		
+	
+	
+
+
+   	<h4>fixes</h4>
+	<ul>
+		<li>[proxy] fixed proxying of files in .m2e/, .meta/, and .nexus/</li>
+		<li>fixed NPE exception in generating error message when running Moxie offline</li>
+	</ul>
+   	<h4>changes</h4>
+	<ul>
+		<li>cleanup logging of prefix and metadata retrieval</li>
+	</ul>
+   	<h4>additions</h4>
+	<ul>
+		<li>export compileOutputPath, testOutputPath properties to access the compiled classes for a project and it's linked modules</li>
+		<li>support path attribute in mx:genjar library element</li>
+		<li>integrated mx:OneJar from the One-JAR project</li>
+	</ul>
+   	<h4>dependency changes</h4>
+	<ul>
+		<li>Ant 1.9.1</li>
+	</ul>
+</td>
+		</tr>
 		<tr id="0.7.4">
 			<td style="width:100px" id="0.7.4">
 				<b><a href="#0.7.4">0.7.4</a></b><br/>
@@ -442,7 +473,7 @@
 	</table>
 
 <!-- End Markdown -->
-<footer class="footer"><p class="pull-right">generated 2013-04-26</p>
+<footer class="footer"><p class="pull-right">generated 2013-08-07</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>
