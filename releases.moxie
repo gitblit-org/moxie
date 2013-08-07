@@ -1,4 +1,22 @@
 #
+# ${project.version} release
+#
+r12: {
+    title: ${project.name} ${project.version} released
+    id: ${project.version}
+    date: ${project.buildDate}
+    note: ~
+    html: ~
+    text: ~
+    security: ~
+    fixes: ~
+    changes: ~
+    additions: ~
+    dependencyChanges: ~
+    contributors: ~
+}
+
+#
 # 0.8.0 release
 #
 r11: {
@@ -302,5 +320,5 @@ r1: {
 # Release log data
 #
 release: &r11
-snapshot: ~
+snapshot: &r12
 releases: &r[1..11]
