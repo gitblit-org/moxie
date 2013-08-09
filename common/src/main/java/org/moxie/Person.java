@@ -15,12 +15,16 @@
  */
 package org.moxie;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.List;
 
 import org.moxie.utils.StringUtils;
 
-public class Person {
+public class Person implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	public String id;
 	public String name;
 	public String email;

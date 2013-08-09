@@ -15,9 +15,14 @@
  */
 package org.moxie;
 
+import java.io.Serializable;
+
 import org.moxie.utils.StringUtils;
 
-public class SCM {
+public class SCM implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	public String connection;
 	public String developerConnection;
 	public String url;

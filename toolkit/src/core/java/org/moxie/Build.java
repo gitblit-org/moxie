@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import org.moxie.Toolkit.Key;
 import org.moxie.console.Console;
 import org.moxie.maxml.MaxmlException;
+import org.moxie.utils.DeepCopier;
 import org.moxie.utils.FileUtils;
 import org.moxie.utils.StringUtils;
 
@@ -110,6 +111,24 @@ public class Build {
 	
 	public Pom getPom() {
 		return config.getPom();
+	}
+
+	public Pom getPom(List<String> tags) {
+		if (tags == null || tags.isEmpty()) {
+			return getPom();
+		}		
+		Pom pom = DeepCopier.copy(config.getPom());
+		pom.clearDependencies();
+		for (Dependency dep : config.getPom().getDependencies(false)) {
+			for (String tag : tags) {
+				if (dep.tags.contains(tag.toLowerCase())) {
+					if (dep.ring == Constants.RING1) {
+						pom.addDependency(dep, dep.definedScope);
+					}
+				}				
+			}
+		}
+		return pom;
 	}
 	
 	public File getBuildArtifact(String classifier) {

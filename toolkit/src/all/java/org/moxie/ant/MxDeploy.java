@@ -17,7 +17,12 @@ package org.moxie.ant;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.apache.tools.ant.types.FileSet;
 import org.moxie.Build;
@@ -28,6 +33,7 @@ import org.moxie.MetadataReader;
 import org.moxie.Pom;
 import org.moxie.PurgePolicy;
 import org.moxie.utils.FileUtils;
+import org.moxie.utils.StringUtils;
 
 
 public class MxDeploy extends MxRepositoryTask {
@@ -35,6 +41,10 @@ public class MxDeploy extends MxRepositoryTask {
 	private int revisionRetentionCount = -1;
 	private int revisionPurgeAfterDays = -1;
 	private boolean generateIndexPage;
+	private List<String> tags;
+	private String artifactId;
+	private String name;
+	private String description;
 	
 	public MxDeploy() {
 		super();
@@ -55,6 +65,29 @@ public class MxDeploy extends MxRepositoryTask {
 
 	public void setGenerateIndexPage(boolean value) {
 		this.generateIndexPage = value;
+	}
+	
+	public void setTags(String tags) {
+		if (tags != null && tags.length() > 0) {
+			Set<String> set = new LinkedHashSet<String>();
+			StringTokenizer tok = new StringTokenizer(tags, ", ", false);
+			while (tok.hasMoreTokens()) {
+				set.add(tok.nextToken().toLowerCase());
+			}
+			this.tags = new ArrayList<String>(set);
+		}		
+	}
+	
+	public void setArtifactid(String value) {
+		this.artifactId = value;
+	}
+	
+	public void setName(String value) {
+		this.name = value;
+	}
+
+	public void setDescription(String value) {
+		this.description = value;
 	}
 
 	protected PurgePolicy getPurgePolicy() {
@@ -82,7 +115,18 @@ public class MxDeploy extends MxRepositoryTask {
 	public void execute() {
 		Build build = getBuild();
 		
-		Pom pom = build.getPom();
+		Pom pom = build.getPom(tags);
+		
+		if (!StringUtils.isEmpty(name)) {
+			pom.name = name;
+		}
+		if (!StringUtils.isEmpty(description)) {
+			pom.description = description;
+		}
+		if (!StringUtils.isEmpty(artifactId)) {
+			pom.artifactId = artifactId;
+		}
+		
 		if (!allowSnapshots && pom.isSnapshot()) {
 			// do not deploy snapshots into the repository
 			return;

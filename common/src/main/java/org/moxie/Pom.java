@@ -15,6 +15,7 @@
  */
 package org.moxie;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -34,8 +35,10 @@ import java.util.regex.Pattern;
 import org.moxie.utils.StringUtils;
 
 
-public class Pom implements Comparable<Pom> {
+public class Pom implements Comparable<Pom>, Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	public String name;
 	public String description;
 	public String url;
@@ -274,6 +277,10 @@ public class Pom implements Comparable<Pom> {
 	
 	public void removeScope(Scope scope) {
 		dependencies.remove(scope);
+	}
+	
+	public void clearDependencies() {
+		dependencies.clear();
 	}
 	
 	public boolean hasDependencies() {

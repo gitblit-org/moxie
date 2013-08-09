@@ -13,7 +13,8 @@ r12: {
     changes: ~
     additions:
 	- support multiple dependencies for mx:onejar
-	- added missing page link for mx:onejar	
+	- added missing page link for mx:onejar
+	- added support to mx:deploy for specifying alternate artifacts built from the same project
     dependencyChanges: ~
     contributors: ~
 }
