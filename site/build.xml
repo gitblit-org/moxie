@@ -60,6 +60,7 @@
 						<page name="mx:Javac" src="mxjavac.mkd" />
 						<page name="mx:Javadoc" src="mxjavadoc.mkd" />
 						<page name="mx:Keys" src="mxkeys.mkd" />
+						<page name="mx:OneJar" src="mxonejar.mkd" />
 						<page name="mx:Report" src="mxreport.mkd" />
 						<page name="mx:Run" src="mxrun.mkd" />
 						<page name="mx:Tar" src="mxtar.mkd" />

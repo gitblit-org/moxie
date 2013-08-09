@@ -11,7 +11,9 @@ r12: {
     security: ~
     fixes: ~
     changes: ~
-    additions: ~
+    additions:
+	- support multiple dependencies for mx:onejar
+	- added missing page link for mx:onejar	
     dependencyChanges: ~
     contributors: ~
 }
