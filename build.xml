@@ -74,7 +74,7 @@
 		<chmod file="${recipe}" perm="ugo+rx" />
 
 		<!-- next cycle -->
-		<mx:version stage="snapshot" incrementNumber="minor" dryrun="${dryrun}" />
+		<mx:version stage="snapshot" incrementNumber="incremental" dryrun="${dryrun}" />
 		<mx:commit showtitle="no">
 		    <message>Reset build identifiers for next development cycle</message>
 		</mx:commit>
