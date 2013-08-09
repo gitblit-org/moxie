@@ -124,12 +124,34 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:Javac</h2>
+<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:OneJar</h2>
+<p>mx:OneJar is a fork of the <a href="http://http://onejar.sourceforge.net">OneJar</a> ANT task by <em>P. Simon Tuffs</em>.  It has been enhanced with Moxie integration.</p>
+
+<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Synopsis</h3>
+<p>One-JAR lets you package a Java application together with its dependency Jars into a single executable Jar file. </p>
+
+<p>One-JAR provides custom classloader that knows how to load classes and resources from a jars inside an archive, instead of from jars in the filesystem. It discovers dependency jar files based on the internal structure of the archive, there is no custom code required to do this.  Your application can be run using java -jar my-app.jar</p>
+
+<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes</h3>
+<p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr></table></p>
+
+<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Nested Elements</h3>
+<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Example</h3>
+<p>This example will build a One-JAR jar file from your compiled sources and compile dependencies.  The mainclass defind in build.moxie will be the jar's main-class.</p>
+
 <p><pre class='prettyprint lang-xml'>
-&lt;mx:javac /&gt;
+&lt;mx:onejar /&gt;
+</pre></p>
+
+<p>This example will build a One-JAR jar file from your compiled sources and compile dependencies tagged as <em>manager</em>.  The mainclass is manually specified.
+<pre class='prettyprint lang-xml'>
+&lt;mx:onejar&gt;
+  &lt;mainclass name=&quot;com.gitblit.client.Manager&quot; /&gt;
+  &lt;dependencies tag=&quot;manager&quot; /&gt;
+&lt;/mx:onejar&gt;
 </pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="mxjar.html">&larr; mx:Jar</a></li> <li class="next"><a href="mxjavadoc.html">mx:Javadoc &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-08-09</p>
+<div ><ul class="pager"><li class="previous"><a href="mxkeys.html">&larr; mx:Keys</a></li> <li class="next"><a href="mxreport.html">mx:Report &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-08-09</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

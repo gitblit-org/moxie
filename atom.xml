@@ -1,8 +1,8 @@
 <?xml version="1.0" standalone='yes'?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<generator uri="http://moxie.gitblit.com" version="0.8.0">Moxie</generator>
+	<generator uri="http://moxie.gitblit.com" version="0.8.1">Moxie</generator>
 	<title><![CDATA[Moxie]]></title>
-	<updated>2013-08-07</updated>
+	<updated>2013-08-09</updated>
 	<entry>
 		<content type="text/plain" />
    		<title type="text"><![CDATA[Moxie Build Toolkit 0.4.0 Released]]></title>
@@ -87,5 +87,12 @@
    		<link href="http://moxie.gitblit.com/history.html#0.8.0" rel="via" />
    		<guid isPermaLink="true">http://moxie.gitblit.com/history.html#0.8.0</guid>
    		<published>2013-08-07T00:00:00-0400</published>
+	</entry>
+	<entry>
+		<content type="text/plain" />
+   		<title type="text"><![CDATA[Moxie Build Toolkit 0.8.1 released]]></title>
+   		<link href="http://moxie.gitblit.com/history.html#0.8.1" rel="via" />
+   		<guid isPermaLink="true">http://moxie.gitblit.com/history.html#0.8.1</guid>
+   		<published>2013-08-09T00:00:00-0400</published>
 	</entry>
 </feed>
