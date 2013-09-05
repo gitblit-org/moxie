@@ -9,7 +9,8 @@ r13: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+	- Gracefully handle unspecified license names in POMs
     changes: ~
     additions: ~
     dependencyChanges: ~

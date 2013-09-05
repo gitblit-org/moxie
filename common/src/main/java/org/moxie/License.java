@@ -43,6 +43,9 @@ public class License implements Serializable {
 	 * @return a name
 	 */
 	private String convert(String name) {
+		if (StringUtils.isEmpty(name)) {
+			return "";
+		}
 		String n = name.toLowerCase();
 		String v = "";
 		if (n.contains("version")) {
