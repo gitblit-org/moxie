@@ -35,6 +35,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.util.DateUtil;
 import org.moxie.Proxy;
 import org.moxie.proxy.ProxyConfig;
@@ -82,6 +83,10 @@ public class ProxyDownload {
 		}
 
 		HttpClient client = new HttpClient();
+		String userAgent = config.getUserAgent();
+		if (userAgent != null && userAgent.trim().length() > 0) {
+		    client.getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
+		}
 
 		String msg = "";
 		if (config.useProxy(url)) {
@@ -115,13 +120,21 @@ public class ProxyDownload {
 				throw new DownloadFailed(get);
 			}
 
-			File dl = File.createTempFile("moxie-", ".tmp");
+			// Make sure the temporary file is created in
+			// the destination folder, otherwise
+			// dl.renameTo(dest) might not work
+			// for example if you have a separate /tmp partition
+			// on Linux
+			File destinationFolder = dest.getParentFile();
+			dest.getParentFile().mkdirs();
+			File dl = File.createTempFile("moxie-", ".tmp", destinationFolder);
 			OutputStream out = new BufferedOutputStream(new FileOutputStream(dl));
 			copy(get.getResponseBodyAsStream(), out);
 			out.close();
 			
 			// create folder structure after successful download
-			dest.getParentFile().mkdirs();
+			// - no, we create it before the download!
+			//dest.getParentFile().mkdirs();
 
 			if (dest.exists()) {
 				dest.delete();

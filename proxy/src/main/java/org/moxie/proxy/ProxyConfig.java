@@ -64,6 +64,7 @@ public class ProxyConfig {
 	private int atomCount;
 	private int searchCount;
 	private String keystorePassword;
+        private String userAgent;
 
 	private List<String> localRepositories;
 	private List<RemoteRepository> remoteRepositories;
@@ -93,6 +94,7 @@ public class ProxyConfig {
 		atomCount = 50;
 		searchCount = 50;
 		keystorePassword = "";
+		userAgent = "";
 	}
 	
 	public void setUserDefaults() {		
@@ -145,6 +147,7 @@ public class ProxyConfig {
 					shutdownPort = map.getInt("shutdownPort", shutdownPort);
 					bindAddresses = map.getStrings("bindAddresses", bindAddresses);
 					keystorePassword = map.getString("keystorePassword", keystorePassword);
+					userAgent = map.getString("userAgent", userAgent);
 					moxieRoot = new File(map.getString("rootFolder", "moxie"));
 					setMoxieRoot(moxieRoot);
 					localRepositories = map.getStrings("localRepositories", localRepositories);
@@ -309,6 +312,10 @@ public class ProxyConfig {
 
 	public String getKeystorePassword() {
 		return keystorePassword;
+	}
+
+	public String getUserAgent() {
+		return userAgent;
 	}
 
 	public void setStorePassword(String val) {
