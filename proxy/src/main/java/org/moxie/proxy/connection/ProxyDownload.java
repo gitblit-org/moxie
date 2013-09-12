@@ -35,6 +35,7 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.httpclient.util.DateUtil;
 import org.moxie.Proxy;
 import org.moxie.proxy.ProxyConfig;
@@ -82,6 +83,10 @@ public class ProxyDownload {
 		}
 
 		HttpClient client = new HttpClient();
+		String userAgent = config.getUserAgent();
+		if (userAgent != null && userAgent.trim().length() > 0) {
+		    client.getParams().setParameter(HttpMethodParams.USER_AGENT, userAgent);
+		}
 
 		String msg = "";
 		if (config.useProxy(url)) {

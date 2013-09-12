@@ -30,6 +30,12 @@ shutdownPort: 8079
 # RESTART REQUIRED
 keystorePassword: moxieproxy
 
+# UserAgent for downloads.
+# Default: Jakarta Commons-HttpClient/3.1
+#
+# RESTART REQUIRED
+userAgent: moxie proxy
+
 # Address of local interfaces to bind ports for Moxie Proxy.
 # If blank, all local addresses will serve
 #
