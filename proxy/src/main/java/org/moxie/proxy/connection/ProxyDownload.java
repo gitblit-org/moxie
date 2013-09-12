@@ -123,6 +123,8 @@ public class ProxyDownload {
 			// Make sure the temporary file is created in
 			// the destination folder, otherwise
 			// dl.renameTo(dest) might not work
+			// for example if you have a separate /tmp partition
+			// on Linux
 			File destinationFolder = dest.getParentFile();
 			dest.getParentFile().mkdirs();
 			File dl = File.createTempFile("moxie-", ".tmp", destinationFolder);
