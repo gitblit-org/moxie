@@ -120,13 +120,19 @@ public class ProxyDownload {
 				throw new DownloadFailed(get);
 			}
 
-			File dl = File.createTempFile("moxie-", ".tmp");
+			// Make sure the temporary file is created in
+			// the destination folder, otherwise
+			// dl.renameTo(dest) might not work
+			File destinationFolder = dest.getParentFile();
+			dest.getParentFile().mkdirs();
+			File dl = File.createTempFile("moxie-", ".tmp", destinationFolder);
 			OutputStream out = new BufferedOutputStream(new FileOutputStream(dl));
 			copy(get.getResponseBodyAsStream(), out);
 			out.close();
 			
 			// create folder structure after successful download
-			dest.getParentFile().mkdirs();
+			// - no, we create it before the download!
+			//dest.getParentFile().mkdirs();
 
 			if (dest.exists()) {
 				dest.delete();
