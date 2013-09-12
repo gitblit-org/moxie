@@ -57,7 +57,7 @@ tasks: {
     }
 }
 properties: {
-  ant.version : 1.9.1
+  ant.version : 1.9.2
 }
 modules:
 - toolkit
