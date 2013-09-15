@@ -16,7 +16,7 @@
  */
 package org.moxie.proxy.connection;
 
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.HttpMethodBase;
 
 /**
  * This exception extracts information from a failed GET request and presents it
@@ -31,7 +31,7 @@ public class DownloadFailed extends Exception {
 	
 	private String statusLine;
 
-	public DownloadFailed(GetMethod get) {
+	public DownloadFailed(HttpMethodBase get) {
 		super("Download failed: " + get.getStatusLine().toString());
 		statusLine = get.getStatusLine().toString();
 	}

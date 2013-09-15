@@ -18,6 +18,7 @@ package org.moxie.proxy.connection;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -35,6 +36,8 @@ import java.util.logging.Logger;
 import org.moxie.Constants;
 import org.moxie.proxy.LuceneExecutor;
 import org.moxie.proxy.ProxyConfig;
+
+import org.apache.commons.httpclient.Header;
 
 /**
  * Handle a connection from a maven.
@@ -66,6 +69,8 @@ public class ProxyRequestHandler extends Thread {
 			String line;
 			boolean keepAlive = false;
 			do {
+				requestTypeEnum requestType = requestTypeEnum.GET;
+				RequestHandler rh = requestType.getRequestHandler();
 				String downloadURL = null;
 				StringBuilder fullRequest = new StringBuilder(1024);
 				while ((line = readLine()) != null) {
@@ -79,9 +84,18 @@ public class ProxyRequestHandler extends Thread {
 					if ("proxy-connection: keep-alive".equals(line.toLowerCase()))
 						keepAlive = true;
 
-					if (line.startsWith("GET ")) {
+					int firstSpacePos = line.indexOf(' ');
+					String firstWord = line.substring(0, firstSpacePos);
+					try {
+						requestType = requestTypeEnum.valueOf(firstWord);
+					} catch (IllegalArgumentException e) {
+						requestType = null;
+					}
+
+					if (requestType != null) {
+						rh = requestType.getRequestHandler();
 						int pos = line.lastIndexOf(' ');
-						line = line.substring(4, pos);
+						line = line.substring(firstSpacePos + 1, pos);
 						downloadURL = line;
 					}
 				}
@@ -92,8 +106,8 @@ public class ProxyRequestHandler extends Thread {
 
 					log.severe("Found no URL to download in request:\n" + fullRequest.toString());
 				} else {
-					log.info("Got request for " + downloadURL);
-					serveURL(downloadURL);
+					log.info("Got request for " + downloadURL + " " + requestType);
+					rh.handleRequest(this, downloadURL);
 				}
 			} while (line != null && keepAlive);
 
@@ -154,7 +168,7 @@ public class ProxyRequestHandler extends Thread {
 			ProxyDownload d = new ProxyDownload(config, url, f);
 			try {
 				d.download();
-				
+
 				// index this artifact's pom
 				if (name.toLowerCase().endsWith(Constants.POM)) {
 					lucene.index(f);
@@ -168,7 +182,7 @@ public class ProxyRequestHandler extends Thread {
 					getOut().flush();
 					return;
 				} else {
-					log.fine("Serving from local cache " + f.getAbsolutePath());		
+					log.fine("Serving from local cache " + f.getAbsolutePath());
 				}
 			}
 		} else {
@@ -196,7 +210,7 @@ public class ProxyRequestHandler extends Thread {
 		copy(data, out);
 		data.close();
 	}
-	
+
 	void copy(InputStream in, OutputStream out) throws IOException {
 		byte[] buffer = new byte[1024 * 100];
 		int len;
@@ -207,16 +221,38 @@ public class ProxyRequestHandler extends Thread {
 		out.flush();
 	}
 
+	private void serveHeadURL(String downloadURL) throws IOException {
+		URL url = new URL(downloadURL);
+		url = config.getRedirect(url);
+
+		if (!"http".equals(url.getProtocol()))
+			throw new IOException("Can only handle HTTP requests, got " + downloadURL);
+
+		ProxyHead d = new ProxyHead(config, url);
+		try {
+			d.download();
+		} catch (DownloadFailed e) {
+			log.severe(e.getMessage());
+		}
+		println(d.getStatusLine());
+		for (Header h : d.getResponseHeaders()) {
+			print(h.toString());
+		}
+		println();
+		InputStream data = new BufferedInputStream(new ByteArrayInputStream(d.getResponseBody()));
+		copy(data, out);
+		data.close();
+	}
 
 	public final static HashMap<String, String> CONTENT_TYPES = new HashMap<String, String>();
 	static {
 		CONTENT_TYPES.put("xml", "application/xml");
 		CONTENT_TYPES.put("pom", "application/xml");
 
-		CONTENT_TYPES.put("jar", "application/java-archive");		
+		CONTENT_TYPES.put("jar", "application/java-archive");
 		CONTENT_TYPES.put("war", "application/java-archive");
 		CONTENT_TYPES.put("ear", "application/java-archive");
-		
+
 		CONTENT_TYPES.put("zip", "application/zip");
 		CONTENT_TYPES.put("tar", "application/x-tar");
 		CONTENT_TYPES.put("tgz", "application/gzip");
@@ -288,5 +324,51 @@ public class ProxyRequestHandler extends Thread {
 			return "";
 
 		return buffer.toString();
+	}
+
+	static private GetRequestHandler getRequestHandler = new GetRequestHandler();
+	static private HeadRequestHandler headRequestHandler = new HeadRequestHandler();
+
+	private enum requestTypeEnum {
+		GET(getRequestHandler), HEAD(headRequestHandler);
+
+		private RequestHandler requestHandler;
+
+		requestTypeEnum(RequestHandler requestHandler) {
+			this.requestHandler = requestHandler;
+		}
+
+		public RequestHandler getRequestHandler() {
+			return this.requestHandler;
+		}
+	}
+
+	private interface RequestHandler {
+		public void handleRequest(ProxyRequestHandler proxyRequestHandler, String downloadURL)
+				throws IOException;
+	}
+
+	static private class DummyRequestHandler implements RequestHandler {
+		@Override
+		public void handleRequest(ProxyRequestHandler proxyRequestHandler, String downloadURL)
+				throws IOException {
+			throw new IOException("DummyRequestHandler called");
+		}
+	}
+
+	static private class GetRequestHandler implements RequestHandler {
+		@Override
+		public void handleRequest(ProxyRequestHandler proxyRequestHandler, String downloadURL)
+				throws IOException {
+			proxyRequestHandler.serveURL(downloadURL);
+		}
+	}
+
+	static private class HeadRequestHandler implements RequestHandler {
+		@Override
+		public void handleRequest(ProxyRequestHandler proxyRequestHandler, String downloadURL)
+				throws IOException {
+			proxyRequestHandler.serveHeadURL(downloadURL);
+		}
 	}
 }
