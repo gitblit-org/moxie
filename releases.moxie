@@ -11,9 +11,11 @@ r14: {
     security: ~
     fixes: ~
     changes: ~
-    additions: ~
+    additions:
+	- [proxy] Added support for proxying HEAD in addition to GET requests
     dependencyChanges: ~
-    contributors: ~
+    contributors:
+	- Uli Heller
 }
 
 #

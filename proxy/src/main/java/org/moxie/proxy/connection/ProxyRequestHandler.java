@@ -1,13 +1,13 @@
 /*
  * Copyright 2002-2005 The Apache Software Foundation.
  * Copyright 2012 James Moger
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,9 +38,9 @@ import org.moxie.proxy.ProxyConfig;
 
 /**
  * Handle a connection from a maven.
- * 
+ *
  * @author digulla
- * 
+ *
  */
 public class ProxyRequestHandler extends Thread {
 	public static final Logger log = Logger.getLogger(ProxyRequestHandler.class.getSimpleName());
@@ -48,6 +48,19 @@ public class ProxyRequestHandler extends Thread {
 	private final ProxyConfig config;
 	private final LuceneExecutor lucene;
 	private Socket clientSocket;
+
+	private enum HttpMethod {
+		GET, HEAD;
+
+		static HttpMethod fromString(String val) {
+			for (HttpMethod method : values()) {
+				if (val.equals(method.name())) {
+					return method;
+				}
+			}
+			return null;
+		}
+	}
 
 	public ProxyRequestHandler(ProxyConfig config, LuceneExecutor lucene, Socket clientSocket) {
 		this.config = config;
@@ -66,6 +79,7 @@ public class ProxyRequestHandler extends Thread {
 			String line;
 			boolean keepAlive = false;
 			do {
+				HttpMethod method = null;
 				String downloadURL = null;
 				StringBuilder fullRequest = new StringBuilder(1024);
 				while ((line = readLine()) != null) {
@@ -79,10 +93,16 @@ public class ProxyRequestHandler extends Thread {
 					if ("proxy-connection: keep-alive".equals(line.toLowerCase()))
 						keepAlive = true;
 
-					if (line.startsWith("GET ")) {
-						int pos = line.lastIndexOf(' ');
-						line = line.substring(4, pos);
-						downloadURL = line;
+					// parse HTTP method
+					int spc = line.indexOf(' ');
+					if (spc > -1) {
+						HttpMethod m = HttpMethod.fromString(line.substring(0, spc).trim());
+						if (m != null) {
+							int pos = line.lastIndexOf(' ');
+							line = line.substring(m.name().length(), pos);
+							downloadURL = line;
+							method = m;
+						}
 					}
 				}
 
@@ -92,8 +112,8 @@ public class ProxyRequestHandler extends Thread {
 
 					log.severe("Found no URL to download in request:\n" + fullRequest.toString());
 				} else {
-					log.info("Got request for " + downloadURL);
-					serveURL(downloadURL);
+					log.info("Got request for " + method + " " + downloadURL);
+					handle(method, downloadURL);
 				}
 			} while (line != null && keepAlive);
 
@@ -131,7 +151,7 @@ public class ProxyRequestHandler extends Thread {
 		clientSocket = null;
 	}
 
-	private void serveURL(String downloadURL) throws IOException {
+	private void handle(HttpMethod method, String downloadURL) throws IOException {
 		URL url = new URL(downloadURL);
 		url = config.getRedirect(url);
 
@@ -145,6 +165,8 @@ public class ProxyRequestHandler extends Thread {
 		String name = f.getName();
 		String path = f.getPath().replace('\\', '/');
 
+		// ensure we have the requested artifact or the latest version
+		// of the requested artifact
 		if (name.contains("-SNAPSHOT")
 				|| name.contains("maven-metadata")
 				|| path.contains("/.m2e/")
@@ -154,7 +176,7 @@ public class ProxyRequestHandler extends Thread {
 			ProxyDownload d = new ProxyDownload(config, url, f);
 			try {
 				d.download();
-				
+
 				// index this artifact's pom
 				if (name.toLowerCase().endsWith(Constants.POM)) {
 					lucene.index(f);
@@ -168,23 +190,48 @@ public class ProxyRequestHandler extends Thread {
 					getOut().flush();
 					return;
 				} else {
-					log.fine("Serving from local cache " + f.getAbsolutePath());		
+					log.fine("Serving from local cache " + f.getAbsolutePath());
 				}
 			}
 		} else {
 			log.fine("Serving from local cache " + f.getAbsolutePath());
 		}
 
+		// now that we have the artifact, handle the client's request
+		switch (method) {
+		case HEAD:
+			handleHEAD(f);
+			break;
+		case GET:
+			handleGET(f);
+			break;
+		default:
+			log.warning("Unimplemented HTTP method " + method);
+			break;
+		}
+	}
+
+	/**
+	 * Set the http headers for the request.
+	 *
+	 * @param file
+	 * @throws IOException
+	 */
+	private void setHeaders(File file) throws IOException {
 		println("HTTP/1.1 200 OK");
-		Date d = new Date(f.lastModified());
+		println("Server: moxieproxy/" + org.moxie.proxy.Constants.getVersion());
+
 		print("Date: ");
-		println(INTERNET_FORMAT.format(d));
+		println(INTERNET_FORMAT.format(new Date(System.currentTimeMillis())));
+
 		print("Last-modified: ");
-		println(INTERNET_FORMAT.format(d));
+		println(INTERNET_FORMAT.format(new Date(file.lastModified())));
+
 		print("Content-length: ");
-		println(String.valueOf(f.length()));
+		println(String.valueOf(file.length()));
+
 		print("Content-type: ");
-		String ext = downloadURL.substring(downloadURL.lastIndexOf('.') + 1).toLowerCase();
+		String ext = file.getName().substring(file.getName().lastIndexOf('.') + 1).toLowerCase();
 		String type = CONTENT_TYPES.get(ext);
 		if (type == null) {
 			log.warning("Unknown extension " + ext + ". Using content type text/plain.");
@@ -192,11 +239,36 @@ public class ProxyRequestHandler extends Thread {
 		}
 		println(type);
 		println();
-		InputStream data = new BufferedInputStream(new FileInputStream(f));
+	}
+
+	/**
+	 * HEAD requests are used to determine the current status of a resource.
+	 *
+	 * @param file
+	 * @throws IOException
+	 */
+	protected void handleHEAD(File file) throws IOException {
+		// set the http headers for the file
+		setHeaders(file);
+		out.flush();
+	}
+
+	/**
+	 * GET requests are used to retrieve a resource.
+	 *
+	 * @param file
+	 * @throws IOException
+	 */
+	protected void handleGET(File file) throws IOException {
+		// set the http headers for the file
+		setHeaders(file);
+
+		// load the file for streaming back to the client
+		InputStream data = new BufferedInputStream(new FileInputStream(file));
 		copy(data, out);
 		data.close();
 	}
-	
+
 	void copy(InputStream in, OutputStream out) throws IOException {
 		byte[] buffer = new byte[1024 * 100];
 		int len;
@@ -210,13 +282,13 @@ public class ProxyRequestHandler extends Thread {
 
 	public final static HashMap<String, String> CONTENT_TYPES = new HashMap<String, String>();
 	static {
-		CONTENT_TYPES.put("xml", "application/xml");
-		CONTENT_TYPES.put("pom", "application/xml");
+		CONTENT_TYPES.put("xml", "text/xml");
+		CONTENT_TYPES.put("pom", "text/xml");
 
-		CONTENT_TYPES.put("jar", "application/java-archive");		
+		CONTENT_TYPES.put("jar", "application/java-archive");
 		CONTENT_TYPES.put("war", "application/java-archive");
 		CONTENT_TYPES.put("ear", "application/java-archive");
-		
+
 		CONTENT_TYPES.put("zip", "application/zip");
 		CONTENT_TYPES.put("tar", "application/x-tar");
 		CONTENT_TYPES.put("tgz", "application/gzip");
