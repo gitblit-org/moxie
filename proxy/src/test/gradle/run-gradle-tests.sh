@@ -17,14 +17,19 @@ BN="$(basename "$0")"
 
 GRADLE_CACHE="${D}/gradle-user-home"
 MOXIE_PROXY="${D}/../../.."
+MOXIE="${MOXIE_PROXY}/.."
 MOXIE_PROXY_CACHE="${MOXIE_PROXY}/moxie"
 MOXIE_PROXY_OUTPUT="${D}/moxie-proxie.output.txt"
 
 # clean the moxie proxy cache
 rm -rf "${MOXIE_PROXY_CACHE}"
 
+firstColumn() {
+  while read a b; do echo $a; done
+}
+
 killJetty () {
-  ps -ao pid,command|grep jetty|grep -v grep|cut -d' ' -f1|xargs -r kill -9
+    ps -ao pid,command|grep jetty|grep -v grep|firstColumn|xargs -r kill -9
 }
 
 cleanGradleCache () {
@@ -36,7 +41,16 @@ cleanGradleBuilds () {
   find "${D}" -name build -o -name "*.log"|xargs -r rm -rf
 }
 
+cleanAllBuilds () {
+  find "${MOXIE}" -name build -o -name "*.log"|xargs -r rm -rf
+}
+
+cleanMoxieProxyBuild () {
+  find "${MOXIE_PROXY}" -name build -o -name "*.log"|xargs -r rm -rf
+}
+
 killJetty
+cleanMoxieProxyBuild
 
 # compile the moxie proxy
 (

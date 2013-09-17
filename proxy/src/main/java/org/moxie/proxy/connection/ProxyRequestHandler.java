@@ -69,8 +69,9 @@ public class ProxyRequestHandler extends Thread {
 			String line;
 			boolean keepAlive = false;
 			do {
-				requestTypeEnum requestType = requestTypeEnum.GET;
-				RequestHandler rh = requestType.getRequestHandler();
+				boolean fGotRequestType = false;
+				requestTypeEnum requestType = null;
+				RequestHandler rh = null;
 				String downloadURL = null;
 				StringBuilder fullRequest = new StringBuilder(1024);
 				while ((line = readLine()) != null) {
@@ -85,18 +86,23 @@ public class ProxyRequestHandler extends Thread {
 						keepAlive = true;
 
 					int firstSpacePos = line.indexOf(' ');
-					String firstWord = line.substring(0, firstSpacePos);
-					try {
-						requestType = requestTypeEnum.valueOf(firstWord);
-					} catch (IllegalArgumentException e) {
-						requestType = null;
-					}
-
-					if (requestType != null) {
-						rh = requestType.getRequestHandler();
-						int pos = line.lastIndexOf(' ');
-						line = line.substring(firstSpacePos + 1, pos);
-						downloadURL = line;
+					if (firstSpacePos >= 0) {
+						String firstWord = line.substring(0, firstSpacePos);
+						try {
+							requestType = requestTypeEnum.valueOf(firstWord);
+							if (!fGotRequestType) {
+								fGotRequestType = true;
+								rh = requestType.getRequestHandler();
+								int pos = line.lastIndexOf(' ');
+								line = line.substring(firstSpacePos + 1, pos);
+								downloadURL = line;
+							}
+						} catch (IllegalArgumentException e) {
+							// not an error, since there are
+							// other lines than those containing
+							// GET or HEAD in a good HTTP response
+							;
+						}
 					}
 				}
 
