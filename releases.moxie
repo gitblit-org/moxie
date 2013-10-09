@@ -9,7 +9,8 @@ r14: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+	- Fixed automated mx:OneJar manifest attribute stamping
     changes: ~
     additions:
 	- [proxy] Added support for proxying HEAD in addition to GET requests

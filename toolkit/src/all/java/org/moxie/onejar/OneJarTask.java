@@ -29,8 +29,8 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Jar;
 import org.apache.tools.ant.taskdefs.Manifest;
-import org.apache.tools.ant.taskdefs.ManifestException;
 import org.apache.tools.ant.taskdefs.Manifest.Attribute;
+import org.apache.tools.ant.taskdefs.ManifestException;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Resource;
@@ -44,31 +44,34 @@ import org.apache.tools.zip.ZipOutputStream;
  *
  */
 public class OneJarTask extends Jar {
-    
+
     public static final int BUFFER_SIZE = 8192;
     public static final String META_INF_MANIFEST = "META-INF/MANIFEST.MF";
     public static final String MAIN_MAIN_JAR = "main/main.jar";
     public static final String CLASS = ".class";
     public static final String NL = "\n";
-    
+
     public static final String MAIN_CLASS = Attributes.Name.MAIN_CLASS.toString();
-    
+
     protected Main main;
     protected MainJars mainJars;
     protected ZipFile onejar;
     protected File mainManifest;
     protected String oneJarMainClass;
     protected boolean manifestSet;
-    
+
     public static class Main extends Task {
         protected List filesets = new ArrayList();
         protected File manifest;
         protected File jar;
+        public File getManifest() {
+        	return manifest;
+        }
         public void setManifest(File manifest) {
             this.manifest = manifest;
         }
         public void addFileSet(FileSet fileset) {
-            if (jar != null) 
+            if (jar != null)
                 throw new BuildException("'jar' attribute is mutually exclusive to use of <fileset>");
             log("Main.addFileSet() ", Project.MSG_VERBOSE);
             filesets.add(fileset);
@@ -77,7 +80,7 @@ public class OneJarTask extends Jar {
             jar = main;
         }
     }
-    
+
     public static class MainJars extends Task {
         protected List filesets = new ArrayList();
         protected String app;
@@ -99,7 +102,7 @@ public class OneJarTask extends Jar {
             while(pathIter.hasNext()) {
                 final Resource res = (Resource)pathIter.next();
                 if(res instanceof FileResource) {
-                    final FileResource fres = (FileResource)res;          
+                    final FileResource fres = (FileResource)res;
                     log("res.name: " + fres.getName()
                             + " res.exists: " + fres.isExists()
                             + " res.class: " + fres.getClass().getName()
@@ -115,7 +118,7 @@ public class OneJarTask extends Jar {
                 } else {
                     throw new BuildException("Not a file resource: " + res);
                 }
-            }          
+            }
         }
     }
 
@@ -126,7 +129,7 @@ public class OneJarTask extends Jar {
             filesets.add(fileset);
         }
     }
-    
+
     public static class BinLib extends Task {
         protected List filesets = new ArrayList();
         public void addFileSet(ZipFileSet fileset) {
@@ -134,14 +137,14 @@ public class OneJarTask extends Jar {
             filesets.add(fileset);
         }
     }
-    
+
     /**
      * Default constructor.
      */
     public OneJarTask() {
         super();
     }
-    
+
     /**
      *  Constructor for use outside Ant: creates a wrapping project and gives it a name.
      */
@@ -151,7 +154,7 @@ public class OneJarTask extends Jar {
         setProject(new Project());
         getProject().setName(project);
     }
-    
+
     public void setBootManifest(File manifest) {
         log("setBootManifest(" + manifest + ")", Project.MSG_VERBOSE);
         super.setManifest(manifest);
@@ -166,7 +169,7 @@ public class OneJarTask extends Jar {
         mainManifest = manifest;
         log("setMainManifest(" + manifest + ")", Project.MSG_VERBOSE);
     }
-    
+
     public void setOneJarMainClass(String main) {
         oneJarMainClass = main;
     }
@@ -180,12 +183,12 @@ public class OneJarTask extends Jar {
         log("addBoot()", Project.MSG_VERBOSE);
         super.addFileset(files);
     }
-    
+
     public void addMain(Main main) {
         log("addMain()", Project.MSG_VERBOSE);
         this.main =  main;
     }
-    
+
     public void addConfiguredLib(Lib lib) {
         log("addLib()", Project.MSG_VERBOSE);
         Iterator iter = lib.filesets.iterator();
@@ -195,12 +198,13 @@ public class OneJarTask extends Jar {
             super.addFileset(fileset);
         }
     }
-    
-    public void addConfiguredManifest(Manifest newManifest) throws ManifestException {
+
+    @Override
+	public void addConfiguredManifest(Manifest newManifest) throws ManifestException {
         super.addConfiguredManifest(newManifest);
         manifestSet = true;
     }
-    
+
     public void addConfiguredMainJars(MainJars jars) {
     	this.mainJars = jars;
         log("addMainJar()", Project.MSG_VERBOSE);
@@ -211,7 +215,7 @@ public class OneJarTask extends Jar {
             super.addFileset(fileset);
         }
     }
-    
+
     public void addConfiguredWrap(Wrap lib) {
         log("addWrap()", Project.MSG_VERBOSE);
         Iterator iter = lib.filesets.iterator();
@@ -221,7 +225,7 @@ public class OneJarTask extends Jar {
             super.addFileset(fileset);
         }
     }
-    
+
     public void addConfiguredBinLib(BinLib lib) {
         log("addBinLib()", Project.MSG_VERBOSE);
         Iterator iter = lib.filesets.iterator();
@@ -231,13 +235,13 @@ public class OneJarTask extends Jar {
             super.addFileset(fileset);
         }
     }
-    
-    
+
+
     protected class PipedThread extends Thread {
         protected boolean done = false;
         protected PipedInputStream pin = new PipedInputStream();
         protected PipedOutputStream pout = new PipedOutputStream();
-        
+
         protected Set entries = new HashSet();
         public PipedThread() {
             try {
@@ -246,7 +250,7 @@ public class OneJarTask extends Jar {
                 throw new BuildException(iox);
             }
         }
-        
+
     }
 
     /**
@@ -257,20 +261,21 @@ public class OneJarTask extends Jar {
      */
     protected class FileSetPump extends PipedThread {
         protected String target;
-        
+
         public FileSetPump(String target) {
             this.target = target;
         }
-        
-        public void run() {
+
+        @Override
+		public void run() {
             // Create the main/main.jar entry in the output file, and suck in
-            // all <filesets> from <main>.  
+            // all <filesets> from <main>.
             // TODO: Ignore duplicates (first takes precedence).
         	if (main != null) {
 	            Iterator iter = main.filesets.iterator();
 	            java.util.zip.ZipOutputStream zout = new java.util.zip.ZipOutputStream(pout);
-	            
-	            
+
+
 	            try {
 	                // Write the manifest file.
 	                ZipEntry m = new ZipEntry(META_INF_MANIFEST);
@@ -315,7 +320,7 @@ public class OneJarTask extends Jar {
 		                        	entries.add(dir);
 		                        }
 	                        }
-	                        
+
 	                        ZipEntry ze = new ZipEntry(file);
 	                        zout.putNextEntry(ze);
 	                        log("processing " + file, Project.MSG_DEBUG);
@@ -335,7 +340,7 @@ public class OneJarTask extends Jar {
         	}
         }
     }
-    
+
     protected void includeZip(ZipFile zip, ZipOutputStream zOut) {
         try {
             Enumeration entries = zip.entries();
@@ -359,33 +364,34 @@ public class OneJarTask extends Jar {
         }
         if (closein) is.close();
     }
-    
+
     protected void copy(String s, OutputStream os) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(s.getBytes());
         copy(bais, os, true);
     }
-    
-    public void setManifest(File manifestFile) {
+
+    @Override
+	public void setManifest(File manifestFile) {
         super.setManifest(manifestFile);
         manifestSet = true;
     }
-    
+
     protected void checkMain() {
-        if (mainJars == null && main == null) 
+        if (mainJars == null && main == null)
             throw new BuildException("No <main> or <mainjars> element found in the <mx:onejar> task!");
     }
-    
+
     protected void checkManifest() {
-        if (!manifestSet) 
+        if (!manifestSet)
             log("No 'manifest' attribute was specified for the <mx:onejar> task, a default manifest will be generated.", Project.MSG_WARN);
     }
-    
+
     protected void configureManifest(Manifest manifest) {
     }
-    
+
     protected void addOneJarBoot(ZipOutputStream zOut) throws IOException {
         // BUG-2674591: filesetmanifest attribute leads to null zOut: ignore.
-        if (zOut ==null) 
+        if (zOut ==null)
             return;
         // One-jar bootstrap files
         if (onejar != null) {
@@ -395,7 +401,7 @@ public class OneJarTask extends Jar {
             // this class.
             String ONE_JAR_BOOT = "one-jar-boot.jar";
             InputStream is = OneJarTask.class.getResourceAsStream(ONE_JAR_BOOT);
-            if (is == null) 
+            if (is == null)
                 throw new IOException("Unable to load default " + ONE_JAR_BOOT + ": consider using the <one-jar onejarboot=\"...\"> option.");
             // Pull the manifest out and use it.
             JarInputStream jis = new JarInputStream(is);
@@ -423,10 +429,10 @@ public class OneJarTask extends Jar {
                 }
                 entry = jis.getNextJarEntry();
             }
-            
+
         }
     }
-    
+
     protected void addMain(ZipOutputStream zOut) throws IOException {
         // Already constructed?
         if (main == null || main.jar != null)
@@ -435,24 +441,26 @@ public class OneJarTask extends Jar {
         FileSetPump pump = new FileSetPump(MAIN_MAIN_JAR);
         pump.start();
         super.zipFile(pump.pin, zOut, MAIN_MAIN_JAR, System.currentTimeMillis(), null, ZipFileSet.DEFAULT_FILE_MODE);
-        
+
     }
-    
-    protected void initZipOutputStream(ZipOutputStream zOut) throws IOException {
-        
+
+    @Override
+	protected void initZipOutputStream(ZipOutputStream zOut) throws IOException {
+
         // Sanity Checks.
         checkMain();
         checkManifest();
 
         // Add com.simontuffs.onejar classes
         addOneJarBoot(zOut);
-        
+
         // Add main/main.jar
         addMain(zOut);
-        
+
     }
-    
-    public void execute() throws BuildException {
+
+    @Override
+	public void execute() throws BuildException {
         log("execute()", Project.MSG_VERBOSE);
         // First include a main.jar if specified.
         if (main != null && main.jar != null) {
@@ -462,13 +470,14 @@ public class OneJarTask extends Jar {
             fs.setPrefix("main/");
             super.addFileset(fs);
         }
-        
+
         // Then, add all files to the final jar.
         super.execute();
     }
-    
-    
-    protected void zipFile(InputStream is, ZipOutputStream zOut, String vPath, long lastModified, File fromArchive,
+
+
+    @Override
+	protected void zipFile(InputStream is, ZipOutputStream zOut, String vPath, long lastModified, File fromArchive,
             int mode) throws IOException {
         if (vPath.equals(Boot.MAIN_JAR) && (main == null || main.jar == null)) {
             log("zipFile(): unable to build " + Boot.MAIN_JAR, Project.MSG_VERBOSE);
