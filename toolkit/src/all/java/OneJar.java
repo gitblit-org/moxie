@@ -36,11 +36,18 @@ public class OneJar {
      * @param args
      */
     public static void main(String[] args) throws Exception {
-        System.out.println("OneJar" + Arrays.asList(args).toString().replace('[','(').replace(']',')'));
+    	boolean info = Boolean.parseBoolean(System.getProperty("one-jar.info"));
+    	boolean verbose = Boolean.parseBoolean(System.getProperty("one-jar.verbose"));
+    	boolean showproperties = Boolean.parseBoolean(System.getProperty("one-jar.show.properties"));
+    	boolean showargs = Boolean.parseBoolean(System.getProperty("one-jar.show.args"));
+
+    	if (info || verbose || showproperties || showargs) {
+    		System.out.println("OneJar " + Arrays.asList(args).toString());
+    	}
         new OneJar().run(args);
-        
+
     }
-    
+
     public void run(String[] args) throws Exception {
         Boot.run(args);
     }

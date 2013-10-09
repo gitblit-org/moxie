@@ -10,8 +10,9 @@ r14: {
     text: ~
     security: ~
     fixes:
-	- Fixed automated mx:OneJar manifest attribute stamping
-    changes: ~
+	- Fixed automated mx:OneJar manifest attribute stamping	
+    changes:
+	- Disable printing of arguments from OneJar launcher.  This can be manually enabled by setting -Done-jar.show.args=true
     additions:
 	- [proxy] Added support for proxying HEAD in addition to GET requests
     dependencyChanges: ~
