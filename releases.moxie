@@ -11,6 +11,7 @@ r14: {
     security: ~
     fixes:
 	- Fixed automated mx:OneJar manifest attribute stamping	
+	- Properly follow redirects when retrieving artifacts
     changes:
 	- Disable printing of arguments from OneJar launcher.  This can be manually enabled by setting -Done-jar.show.args=true
     additions:

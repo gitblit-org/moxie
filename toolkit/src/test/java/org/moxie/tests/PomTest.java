@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.moxie.BuildConfig;
 import org.moxie.Dependency;
 import org.moxie.Pom;
+import org.moxie.Repository;
 import org.moxie.Scope;
 import org.moxie.Solver;
 import org.moxie.console.Console;
@@ -42,18 +43,18 @@ public class PomTest extends Assert {
 		folder.mkdirs();
 		System.setProperty("mx.root", folder.getAbsolutePath());
 		System.out.println("mx.root=" + folder.getAbsolutePath());
-		BuildConfig config = new BuildConfig(new File("test.moxie"), null);		
-		Solver solver = new Solver(new Console(), config);				
+		BuildConfig config = new BuildConfig(new File("test.moxie"), null);
+		Solver solver = new Solver(new Console(), config);
 		return solver;
 	}
-	
+
 	private Solver solve(Dependency dep) throws IOException, MaxmlException {
 		Solver solver = getSolver();
 		solver.getBuildConfig().getPom().addDependency(dep, Scope.compile);
 		solver.solve();
 		return solver;
 	}
-	
+
 	@Test
 	public void testParsing1() throws IOException, MaxmlException {
 		Dependency dep = new Dependency("org.eclipse.jetty:jetty-ajp:7.4.2.v20110526");
@@ -62,10 +63,10 @@ public class PomTest extends Assert {
 		assertEquals("org.eclipse.jetty", pom.groupId);
 		assertEquals("7.4.2.v20110526", pom.version);
 	}
-	
+
 	@Test
 	public void testParentProperties() throws Exception {
-		Dependency dep = new Dependency("org.jboss.resteasy.mobile:resteasy-mobile:1.0.0");		
+		Dependency dep = new Dependency("org.jboss.resteasy.mobile:resteasy-mobile:1.0.0");
 		Solver solver = solve(dep);
 		// [httpcomponents-client:4.0.3]
 		//    ${httpcore.version} = 4.0.1
@@ -73,8 +74,18 @@ public class PomTest extends Assert {
 		//    [httpcore:${httpcore.version}]
 		// [resteasy-mobile:1.0.0]
 		Set<Dependency> deps = solver.getDependencies(Scope.compile);
-		Dependency httpcore = new Dependency("org.apache.httpcomponents:httpcore:4.0.1");		
+		Dependency httpcore = new Dependency("org.apache.httpcomponents:httpcore:4.0.1");
 		assertTrue(deps.contains(httpcore));
+	}
+
+	@Test
+	public void testRedirects() throws Exception {
+		// Eclipse.org redirects http:// requests to https://
+		Solver solver = getSolver();
+		Repository r = new Repository("EclipseSnapshots", "http://repo.eclipse.org/content/groups/releases");
+		Dependency dep = new Dependency("org.eclipse.jgit:org.eclipse.jgit:3.1.0.201310021548-r");
+		File file = r.download(solver, dep, dep.extension);
+		assertTrue(file.exists());
 	}
 
 }

@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ConnectException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -54,7 +55,7 @@ public class Repository {
 	String username;
 	String password;
 	int checksumRetryWaitPeriod = 500;
-	
+
 	public Repository(RemoteRepository definition) {
 		this(definition.id, definition.url);
 		this.allowSnapshots = definition.allowSnapshots;
@@ -88,7 +89,7 @@ public class Repository {
 	public int hashCode() {
 		return getRepositoryUrl().toLowerCase().hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Repository) {
@@ -96,16 +97,16 @@ public class Repository {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
 		return StringUtils.isEmpty(name) ? getRepositoryUrl():name;
 	}
-	
+
 	protected boolean calculateSHA1() {
 		return true;
 	}
-	
+
 	protected synchronized void verifySHA1(Solver solver, String expectedSHA1, DownloadData data, boolean isRetry) {
 		if (calculateSHA1()) {
 			String calculatedSHA1 = StringUtils.getSHA1(data.content);
@@ -131,11 +132,11 @@ public class Repository {
 			}
 		}
 	}
-	
+
 	protected boolean isMavenSource() {
 		return true;
 	}
-	
+
 	public boolean isSource(Dependency dependency) {
 		if (dependency.isMavenObject() && isMavenSource()) {
 			// dependency is a Maven object AND the repository is a Maven source
@@ -146,11 +147,11 @@ public class Repository {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns true if the repository definition has declared an affinity for
 	 * this dependency.
-	 * 
+	 *
 	 * @param dependency
 	 * @return true if there is an affinity for this dependency
 	 */
@@ -171,11 +172,11 @@ public class Repository {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Returns true if the repository prefix index contains the dependency's
 	 * prefix.
-	 * 
+	 *
 	 * @param dependency
 	 * @return true if the repository has the dependency prefix
 	 */
@@ -183,20 +184,20 @@ public class Repository {
 		String prefix = dependency.getPrefix();
 		return prefixes.contains(prefix);
 	}
-	
+
 	public void setPrefixes(Collection<String> prefixes) {
 		this.prefixes.clear();
 		this.prefixes.addAll(prefixes);
 	}
-	
+
 	public boolean allowSnapshots() {
 		return allowSnapshots;
 	}
-	
+
 	public String getRepositoryUrl() {
 		return repositoryUrl;
 	}
-	
+
 	public String getArtifactUrl() {
 		return repositoryUrl + (repositoryUrl.endsWith("/") ? "":"/") + artifactPattern;
 	}
@@ -214,7 +215,7 @@ public class Repository {
 		String file = new File(Toolkit.getMxRoot(), Toolkit.MOXIE_SETTINGS).getAbsolutePath();
 		return MessageFormat.format("Error!\n\n{0}\nDo you need to run offline?\n  append \"-D{1}=false\" to your Ant launch arguments\nDo you need to specify a proxy in {2}?\n  see http://gitblit.github.io/moxie/settings.html", msg, Toolkit.MX_ONLINE, file);
 	}
-	
+
 	public File downloadPrefixIndex(Solver solver) {
 		try {
 			String repoUrl = getRepositoryUrl();
@@ -223,14 +224,14 @@ public class Repository {
 			solver.getConsole().download(MessageFormat.format("fetching [{0}] prefix index", name));
 			File file = solver.getMoxieCache().writeRepositoryFile(repoUrl, Constants.PREFIXES, data.content);
 			file.setLastModified(data.lastModified);
-					
+
 			Date now = new Date();
 			MoxieData moxiedata = solver.getMoxieCache().readRepositoryMoxieData(repoUrl);
 			moxiedata.setOrigin(repoUrl);
 			// do not set lastDownloaded for metadata retrieval
 			moxiedata.setLastChecked(now);
 			moxiedata.setLastUpdated(new Date(data.lastModified));
-			solver.getMoxieCache().writeRepositoryMoxieData(repoUrl, moxiedata);	
+			solver.getMoxieCache().writeRepositoryMoxieData(repoUrl, moxiedata);
 			return file;
 		} catch (MalformedURLException m) {
 			m.printStackTrace();
@@ -259,10 +260,10 @@ public class Repository {
 			DownloadData data = download(solver, url);
 			String content = new String(data.content, "UTF-8").trim();
 			String hashCode = content.substring(0, 40);
-			
+
 			// set origin so that we write the artifact into the proper cache
 			dep.setOrigin(getRepositoryUrl());
-			
+
 			// cache this sha1 file
 			File file = solver.getMoxieCache().writeArtifact(dep, extsha1, hashCode);
 			file.setLastModified(data.lastModified);
@@ -283,7 +284,7 @@ public class Repository {
 		}
 		return null;
 	}
-	
+
 	protected String downloadMetadataSHA1(Solver solver, Dependency dep) {
 		try {
 			String extsha1 = Constants.XML + ".sha1";
@@ -312,7 +313,7 @@ public class Repository {
 		}
 		return null;
 	}
-	
+
 	public File downloadMetadata(Solver solver, Dependency dep) {
 		String expectedSHA1 = "";
 		if (calculateSHA1()) {
@@ -330,10 +331,10 @@ public class Repository {
 				}
 			}
 		}
-		
+
 		try {
 			URL url = new URL(Dependency.getArtifactPath(dep, Constants.XML, getMetadataUrl(dep)));
-			solver.getConsole().download(MessageFormat.format("fetching [{0}] metadata", dep.isSnapshot() ? dep.getCoordinates() : dep.getManagementId()));			
+			solver.getConsole().download(MessageFormat.format("fetching [{0}] metadata", dep.isSnapshot() ? dep.getCoordinates() : dep.getManagementId()));
 			DownloadData data = download(solver, url);
 			try {
 				verifySHA1(solver, expectedSHA1, data, false);
@@ -344,23 +345,23 @@ public class Repository {
 				// the file and we have received a stale checksum.
 				try {
 					Thread.sleep(checksumRetryWaitPeriod);
-				} catch (InterruptedException i) {				
+				} catch (InterruptedException i) {
 				}
-				
+
 				expectedSHA1 = downloadMetadataSHA1(solver, dep);
 				verifySHA1(solver, expectedSHA1, data, true);
 			}
-			
+
 			Metadata oldMetadata;
 			File file = solver.getMoxieCache().getMetadata(dep, Constants.XML);
 			if (file != null && file.exists()) {
-				oldMetadata = MetadataReader.readMetadata(file);				
+				oldMetadata = MetadataReader.readMetadata(file);
 			} else {
 				oldMetadata = new Metadata();
 			}
-			
+
 			// merge metadata
-			Metadata newMetadata = MetadataReader.readMetadata(new String(data.content, "UTF-8"));				
+			Metadata newMetadata = MetadataReader.readMetadata(new String(data.content, "UTF-8"));
 			newMetadata.merge(oldMetadata);
 
 			// set origin so that we write the artifact into the proper cache
@@ -369,7 +370,7 @@ public class Repository {
 			// save merged metadata to the artifact cache
 			file = solver.getMoxieCache().writeMetadata(dep, Constants.XML, newMetadata.toXML());
 			file.setLastModified(data.lastModified);
-					
+
 			Date now = new Date();
 			if (dep.isSnapshot()) {
 				MoxieData moxiedata = solver.getMoxieCache().readMoxieData(dep);
@@ -377,12 +378,12 @@ public class Repository {
 				// do not set lastDownloaded for metadata retrieval
 				moxiedata.setLastChecked(now);
 				moxiedata.setLastUpdated(newMetadata.lastUpdated);
-				solver.getMoxieCache().writeMoxieData(dep, moxiedata);	
-			} else {				
+				solver.getMoxieCache().writeMoxieData(dep, moxiedata);
+			} else {
 				// update the Moxie RELEASE metadata
 				Dependency versions = DeepCopier.copy(dep);
 				versions.version = Constants.RELEASE;
-				
+
 				MoxieData moxiedata = solver.getMoxieCache().readMoxieData(versions);
 				moxiedata.setOrigin(getRepositoryUrl());
 				// do not set lastDownloaded for metadata retrieval
@@ -391,10 +392,10 @@ public class Repository {
 				moxiedata.setRELEASE(newMetadata.release);
 				moxiedata.setLATEST(newMetadata.latest);
 				solver.getMoxieCache().writeMoxieData(dep, moxiedata);
-				
+
 				// update the Moxie LATEST metadata
 				versions.version = Constants.LATEST;
-				
+
 				moxiedata = solver.getMoxieCache().readMoxieData(versions);
 				moxiedata.setOrigin(getRepositoryUrl());
 				// do not set lastDownloaded for metadata retrieval
@@ -402,7 +403,7 @@ public class Repository {
 				moxiedata.setLastUpdated(now);
 				moxiedata.setRELEASE(newMetadata.release);
 				moxiedata.setLATEST(newMetadata.latest);
-				solver.getMoxieCache().writeMoxieData(dep, moxiedata);	
+				solver.getMoxieCache().writeMoxieData(dep, moxiedata);
 			}
 			return file;
 		} catch (MalformedURLException m) {
@@ -436,7 +437,7 @@ public class Repository {
 				}
 			}
 		}
-		
+
 		try {
 			URL url = getURL(dep, ext);
 			DownloadData data = download(solver, url);
@@ -449,7 +450,7 @@ public class Repository {
 				// the file and we have received a stale checksum.
 				try {
 					Thread.sleep(checksumRetryWaitPeriod);
-				} catch (InterruptedException i) {				
+				} catch (InterruptedException i) {
 				}
 
 				try {
@@ -462,21 +463,21 @@ public class Repository {
 					throw e;
 				}
 			}
-			
+
 			// log successes
 			solver.getConsole().download(dep, ext, name);
-			
+
 			// set origin so that we write the artifact into the proper cache
 			dep.setOrigin(getRepositoryUrl());
 
 			// save to the artifact cache
 			File file = solver.getMoxieCache().writeArtifact(dep, ext, data.content);
 			file.setLastModified(data.lastModified);
-			
+
 			// update Moxie metadata
 			MoxieData moxiedata = solver.getMoxieCache().readMoxieData(dep);
 			moxiedata.setOrigin(getRepositoryUrl());
-			
+
 			Date now = new Date();
 			if (Constants.POM.equals(ext)) {
 				Pom pom = PomReader.readPom(solver.getMoxieCache(), file, PomReader.Requirements.LOOSE);
@@ -497,7 +498,7 @@ public class Repository {
 				}
 			}
 			solver.getMoxieCache().writeMoxieData(dep, moxiedata);
-			
+
 			return file;
 		} catch (MalformedURLException m) {
 			solver.getConsole().error(m);
@@ -522,28 +523,48 @@ public class Repository {
 		}
 		return null;
 	}
-	
+
+	private URLConnection getConnection(Solver solver, URL url) throws IOException {
+		java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, getRepositoryUrl());
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
+		if (java.net.Proxy.Type.DIRECT != proxy.type()) {
+			String auth = solver.getBuildConfig().getProxyAuthorization(name, getRepositoryUrl());
+			conn.setRequestProperty("Proxy-Authorization", auth);
+		}
+
+		if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
+			// set basic authentication header
+			String auth = Base64.encodeBytes((username + ":" + password).getBytes());
+			conn.setRequestProperty("Authorization", "Basic " + auth);
+		}
+
+		// configure timeouts
+		conn.setConnectTimeout(connectTimeout*1000);
+		conn.setReadTimeout(readTimeout*1000);
+
+		switch (conn.getResponseCode()) {
+		case HttpURLConnection.HTTP_MOVED_TEMP:
+		case HttpURLConnection.HTTP_MOVED_PERM:
+			// handle redirects by closing this connection and opening a new
+			// one to the new location of the requested resource
+			String newLocation = conn.getHeaderField("Location");
+			if (!StringUtils.isEmpty(newLocation)) {
+				solver.getConsole().debug("following redirect to {0}", newLocation);
+				conn.disconnect();
+				return getConnection(solver, new URL(newLocation));
+			}
+		}
+
+		return conn;
+	}
+
 	private DownloadData download(Solver solver, URL url) throws IOException {
 		long lastModified = System.currentTimeMillis();
 		ByteArrayOutputStream buff = new ByteArrayOutputStream();
 
 		java.net.Proxy proxy = solver.getBuildConfig().getProxy(name, getRepositoryUrl());
 		solver.getConsole().debug(2, "opening {0} ({1})", getRepositoryUrl(), proxy.toString());
-		URLConnection conn = url.openConnection(proxy);
-		if (java.net.Proxy.Type.DIRECT != proxy.type()) {
-			String auth = solver.getBuildConfig().getProxyAuthorization(name, getRepositoryUrl());
-			conn.setRequestProperty("Proxy-Authorization", auth);
-		}
-		
-		if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
-			// set basic authentication header
-			String auth = Base64.encodeBytes((username + ":" + password).getBytes());
-			conn.setRequestProperty("Authorization", "Basic " + auth);			
-		}
-		
-		// configure timeouts
-		conn.setConnectTimeout(connectTimeout*1000);
-		conn.setReadTimeout(readTimeout*1000);
+		URLConnection conn = getConnection(solver, url);
 
 		// try to get the server-specified last-modified date of this artifact
 		lastModified = conn.getHeaderFieldDate("Last-Modified", lastModified);
@@ -565,12 +586,12 @@ public class Repository {
 		byte[] data = buff.toByteArray();
 		return new DownloadData(url, data, lastModified);
 	}
-	
+
 	private class DownloadData {
 		final URL url;
 		final byte [] content;
 		final long lastModified;
-		
+
 		DownloadData(URL url, byte [] content, long lastModified) {
 			this.url = url;
 			this.content = content;
