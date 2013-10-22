@@ -23,45 +23,47 @@ import java.util.jar.Manifest;
 import org.moxie.utils.StringUtils;
 
 public class Toolkit {
-	
+
 	public static final String DEPENDENCY_FILENAME_PATTERN = "[artifactId]-[version](-[classifier]).[ext]";
-	
+
 	public static final String APPLY_ECLIPSE = "eclipse";
-	
+
     public static final String APPLY_INTELLIJ = "intellij";
 
     public static final String APPLY_POM = "pom";
-	
+
 	public static final String APPLY_CACHE = "cache";
-	
+
 	public static final String DEFAULT_CODE_EXCLUDES = "**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
-	
+
 	public static final String DEFAULT_RESOURCE_EXCLUDES = "**/.class,**/*.java, **/package.html, **/Thumbs.db, **/.svn, **/CVS, **/.gitignore, **/.hgignore, **/.hgtags";
-	
+
 	public static final String MX_DEBUG = "mx.debug";
 
 	public static final String MX_VERBOSE = "mx.verbose";
-	
+
 	public static final String MX_COLOR = "mx.color";
-	
+
 	public static final String MX_ONLINE = "mx.online";
-	
+
 	public static final String MX_UPDATEMETADATA = "mx.updateMetadata";
-	
+
 	public static final String MX_ROOT = "mx.root";
-	
+
 	public static final String MX_ENFORCECHECKSUMS = "mx.enforceChecksums";
-	
+
 	public static final String MOXIE_SETTINGS = "settings.moxie";
-	
+
 	public static final String MOXIE_DEFAULTS = "defaults.moxie";
-	
+
 	public static final String MOXIE_ROOT = "MX_ROOT";
-	
+
 	public static final int MAX_REVISIONS = 100;
-	
+
 	public static final int MAX_PURGE_AFTER_DAYS = 1000;
-	
+
+	public static final String [] TEST_BUILD_CLASSPATH_CASES = { "junit:junit", "org.testng:testng" };
+
 	public static enum Key {
 		build, name, description, url, organization, scope, groupId, artifactId, version,
 		type, classifier, optional, dir, sourceDirectory, sourceDirectories, compileSourcePath,
@@ -77,7 +79,7 @@ public class Toolkit {
 		contributors, id, email, roles, scm, connection, developerConnection, tag, requires, licenses,
 		parentPom, mainclass, modules, mavenCacheStrategy, coordinates, releaseVersion, releaseDate,
 		buildDate, buildTimestamp, issuesUrl, forumUrl, socialNetworkUrl, blogUrl, scmUrl, ciUrl,
-		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution, mavenUrl, 
+		siteSourceDirectory, siteTargetDirectory, failFastOnArtifactResolution, mavenUrl,
 		resourceDirectories, parallelDownloads, dependencyNamePattern, javadocTargetDirectory,
 		connectTimeout, readTimeout, username, password, compileOutputPath, testOutputPath,
 		compileResourcePath, runtimeResourcePath, testResourcePath;
@@ -91,7 +93,7 @@ public class Toolkit {
 		}
 
 	}
-	
+
 	public static File getMxRoot() {
 		File root = new File(System.getProperty("user.home"), ".moxie");
 		if (System.getProperty(Toolkit.MX_ROOT) != null) {
@@ -102,10 +104,10 @@ public class Toolkit {
 		}
 		return root;
 	}
-	
+
 	/**
 	 * Only sets MX_ROOT if it is not already set by a command-line parameter.
-	 * 
+	 *
 	 * @param dir
 	 * @return true if MX_ROOT was set
 	 */
@@ -116,7 +118,7 @@ public class Toolkit {
 		}
 		return false;
 	}
-	
+
 	public static String getVersion() {
 		String v = Toolkit.class.getPackage().getImplementationVersion();
 		if (v == null) {
@@ -124,7 +126,7 @@ public class Toolkit {
 		}
 		return v;
 	}
-	
+
 	public static String getBuildDate() {
 		return getManifestValue("build-date", "PENDING");
 	}

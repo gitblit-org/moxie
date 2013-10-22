@@ -9,7 +9,8 @@ r15: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+	- Fixed test->build classpath dependency leaking
     changes: ~
     additions: ~
     dependencyChanges: ~
