@@ -1,4 +1,4 @@
-Maxilla
+Moxie
 Copyright 2012 James Moger
 
 This product includes software developed at
@@ -32,12 +32,12 @@ JGit
    http://eclipse.org/jgit
    
 ---------------------------------------------------------------------------
-MarkdownPapers
+pegdown
 ---------------------------------------------------------------------------
-   MarkdownPapers, released under the
+   pegdown, released under the
    Apache Software License, Version 2.0.
 
-   http://markdown.tautua.org
+   https://github.com/sirthias/pegdown
    
 ---------------------------------------------------------------------------
 JSch

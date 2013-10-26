@@ -15,13 +15,11 @@
  */
 package org.moxie.utils;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
+import static org.pegdown.Extensions.ALL;
+import static org.pegdown.Extensions.SMARTYPANTS;
 
-import org.tautua.markdownpapers.Markdown;
-import org.tautua.markdownpapers.parser.ParseException;
+import org.pegdown.LinkRenderer;
+import org.pegdown.PegDownProcessor;
 
 /**
  * Utility methods for transforming raw markdown text to html.
@@ -33,47 +31,25 @@ public class MarkdownUtils {
 
 	/**
 	 * Returns the html version of the markdown source text.
-	 * 
+	 *
 	 * @param markdown
 	 * @return html version of markdown text
 	 * @throws java.text.ParseException
 	 */
-	public static String transformMarkdown(String markdown)
-			throws java.text.ParseException {
-		try {
-			StringReader reader = new StringReader(markdown);
-			String html = transformMarkdown(reader);
-			reader.close();
-			return html;
-		} catch (NullPointerException p) {
-			throw new java.text.ParseException("Markdown string is null!", 0);
-		}
+	public static String transformMarkdown(String markdown) {
+		return transformMarkdown(markdown, null);
 	}
 
 	/**
-	 * Returns the html version of the markdown source reader. The reader is
-	 * closed regardless of success or failure.
-	 * 
-	 * @param markdownReader
-	 * @return html version of the markdown text
+	 * Returns the html version of the markdown source text.
+	 *
+	 * @param markdown
+	 * @return html version of markdown text
 	 * @throws java.text.ParseException
 	 */
-	public static String transformMarkdown(Reader markdownReader)
-			throws java.text.ParseException {
-		// Read raw markdown content and transform it to html
-		StringWriter writer = new StringWriter();
-		try {
-			Markdown md = new Markdown();
-			md.transform(markdownReader, writer);
-			return writer.toString().trim();
-		} catch (ParseException p) {
-			throw new java.text.ParseException(p.getMessage(), 0);
-		} finally {
-			try {
-				writer.close();
-			} catch (IOException e) {
-				// IGNORE
-			}
-		}
+	public static String transformMarkdown(String markdown, LinkRenderer linkRenderer) {
+		PegDownProcessor pd = new PegDownProcessor(ALL & ~SMARTYPANTS);
+		String html = pd.markdownToHtml(markdown, linkRenderer == null ? new LinkRenderer() : linkRenderer);
+		return html;
 	}
 }

@@ -504,7 +504,7 @@ dependencyDirectory: ext
 
 ### Dependency Name Pattern
 
-When you are using the <code>dependencyDirectory</code> setting you may also control the destination name of the project-relative artifacts.</div>
+When you are using the `dependencyDirectory` setting you may also control the destination name of the project-relative artifacts.
 
 ---YAML---
 dependencyNamePattern: [artifactId]-[version](-[classifier]).[ext]

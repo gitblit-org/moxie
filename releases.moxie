@@ -13,7 +13,9 @@ r15: {
 	- Fixed test->build classpath dependency leaking
     changes: ~
     additions: ~
-    dependencyChanges: ~
+    dependencyChanges:
+	- removed MarkdownPapers
+	- added pegdown 1.4.1
     contributors: ~
 }
 

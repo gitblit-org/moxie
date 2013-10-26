@@ -272,7 +272,7 @@ public class MxDoc extends MxTask {
 		titleClass(build.getPom().name);
 
 		loadRuntimeDependencies(build, 
-				new Dependency("mx:markdownpapers"),
+				new Dependency("mx:pegdown"),
 				new Dependency("mx:wikitext-core"),
 				new Dependency("mx:wikitext-twiki"),
 				new Dependency("mx:wikitext-textile"),

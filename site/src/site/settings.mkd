@@ -3,7 +3,7 @@
 The `settings.moxie` file is used to control Moxie's behavior across all builds.
 
 ### Proxies
-Moxie automatically uses all proxy definitions <u>from your <b>local Maven settings</b></u> (*~/.m2/settings.xml*).  Moxie also supports proxy definitions in it's own <b>local Moxie settings</b> (*~/.moxie/settings.moxie*).
+Moxie automatically uses all proxy definitions <u>from your <b>local Maven settings</b></u> *(~/.m2/settings.xml)*.  Moxie also supports proxy definitions in it's own <b>local Moxie settings</b> *(~/.moxie/settings.moxie)*.
 
 Unlike Maven, which assumes you will proxy everything and requires you to manually exclude hostnames (i.e. *opt-out*), Moxie supports *opt-in* proxy definitions which allows you to specify what repositories will be proxied by a proxy definition. If this is undesirable, Moxie also supports Maven-style *opt-out* proxy definitions too. 
 

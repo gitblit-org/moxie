@@ -22,7 +22,7 @@ dependencies:
 - provided 'testng'
 - provided 'junit'
 - provided 'jacoco'
-- provided 'mx:markdownpapers'
+- provided 'mx:pegdown'
 - provided 'mx:freemarker'
 - provided 'mx:rhino'
 - provided 'mx:commons-net'
