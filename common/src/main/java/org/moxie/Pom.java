@@ -38,7 +38,7 @@ import org.moxie.utils.StringUtils;
 public class Pom implements Comparable<Pom>, Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public String name;
 	public String description;
 	public String url;
@@ -46,17 +46,17 @@ public class Pom implements Comparable<Pom>, Serializable {
 	public String organization;
 	public String organizationUrl;
 	public String inceptionYear;
-	
+
 	public String groupId;
 	public String artifactId;
 	public String version;
 	public String classifier;
 	public String packaging;
-		
+
 	public String parentGroupId;
 	public String parentArtifactId;
 	public String parentVersion;
-	
+
 	public String releaseVersion;
 	public Date releaseDate;
 
@@ -72,12 +72,12 @@ public class Pom implements Comparable<Pom>, Serializable {
 	private final Map<Scope, List<Dependency>> dependencies;
 	private final Map<String, String> managedVersions;
 	private final Map<String, Scope> managedScopes;
-	private final Set<String> exclusions;	
+	private final Set<String> exclusions;
 	private final Map<String, String> antProperties;
 	private final List<License> licenses;
 	private final List<Person> developers;
 	private final List<Person> contributors;
-	
+
 	public Pom() {
 		version = "";
 		managedVersions = new TreeMap<String, String>();
@@ -92,29 +92,29 @@ public class Pom implements Comparable<Pom>, Serializable {
 		scm = new SCM();
 		packaging = "jar";
 	}
-	
+
 	public void setAntProperties(Map<String, String> antProperties) {
 		this.antProperties.putAll(antProperties);
 	}
-	
+
 	public void setProperty(String key, String value) {
 		if (StringUtils.isEmpty(key) || StringUtils.isEmpty(value)) {
 			return;
 		}
 		properties.put(key.trim(), value);
 	}
-	
+
 	public String getAntProperty(String key) {
 		if (antProperties.containsKey(key)) {
 			return antProperties.get(key);
 		}
 		return null;
 	}
-	
+
 	public Map<String, String> getProperties() {
 		return properties;
 	}
-	
+
 	private String getProperty(String key) {
 		String value = null;
 		if (properties.containsKey(key)) {
@@ -122,11 +122,11 @@ public class Pom implements Comparable<Pom>, Serializable {
 		}
 		if (StringUtils.isEmpty(value)) {
 			if (key.startsWith("project.")) {
-				// try reflection on project fields 
+				// try reflection on project fields
 				String fieldName = key.substring(key.indexOf('.') + 1);
 				value = getFieldValue(fieldName);
 			} else if (key.startsWith("parent.")) {
-				// try reflection on project fields 
+				// try reflection on project fields
 				String fieldName = key.substring(key.indexOf('.') + 1);
 				value = getFieldValue("parent" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1));
 			} else if (key.startsWith("env.")) {
@@ -151,7 +151,7 @@ public class Pom implements Comparable<Pom>, Serializable {
 		}
 		return value;
 	}
-	
+
 	private String getFieldValue(String fieldName) {
 		try {
 			Field field = getClass().getField(fieldName);
@@ -163,7 +163,7 @@ public class Pom implements Comparable<Pom>, Serializable {
 			if (o != null) {
 				return o.toString();
 			}
-		} catch (Exception e) {					
+		} catch (Exception e) {
 		}
 		return null;
 	}
@@ -183,19 +183,19 @@ public class Pom implements Comparable<Pom>, Serializable {
 	public String getName() {
 		return name;
 	}
-	
+
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public String getUrl() {
 		return url;
 	}
-	
+
 	public String getIssuesUrl() {
 		return issuesUrl;
 	}
-	
+
 	public SCM getScm() {
 		return scm;
 	}
@@ -203,23 +203,23 @@ public class Pom implements Comparable<Pom>, Serializable {
 	public String getOrganization() {
 		return organization;
 	}
-	
+
 	public void addLicense(License license) {
 		licenses.add(license);
 	}
-	
+
 	public List<License> getLicenses() {
 		return licenses;
 	}
-	
+
 	public void clearLicenses() {
 		licenses.clear();
 	}
-	
+
 	public void addDeveloper(Person person) {
 		developers.add(person);
 	}
-	
+
 	public List<Person> getDevelopers() {
 		return developers;
 	}
@@ -227,11 +227,11 @@ public class Pom implements Comparable<Pom>, Serializable {
 	public void addContributor(Person person) {
 		contributors.add(person);
 	}
-	
+
 	public List<Person> getContributors() {
 		return contributors;
 	}
-	
+
 	public void addManagedDependency(Dependency dep, Scope scope) {
 		addManagedDependency(dep, scope, true);
 	}
@@ -250,54 +250,54 @@ public class Pom implements Comparable<Pom>, Serializable {
 		if (!StringUtils.isEmpty(dep.extension)) {
 			dep.extension = "jar";
 		}
-		
+
 		managedVersions.put(dep.getManagementId(), dep.version);
 		if (scope != null) {
 			managedScopes.put(dep.getManagementId(), scope);
 		}
 	}
-	
+
 	String getManagedVersion(Dependency dep) {
 		if (managedVersions.containsKey(dep.getManagementId())) {
 			return managedVersions.get(dep.getManagementId());
 		}
 		return dep.version;
 	}
-	
+
 	private Scope getManagedScope(Dependency dep) {
 		if (managedScopes.containsKey(dep.getManagementId())) {
 			return managedScopes.get(dep.getManagementId());
 		}
 		return null;
 	}
-	
+
 	public List<Scope> getScopes() {
 		return new ArrayList<Scope>(dependencies.keySet());
 	}
-	
+
 	public void removeScope(Scope scope) {
 		dependencies.remove(scope);
 	}
-	
+
 	public void clearDependencies() {
 		dependencies.clear();
 	}
-	
+
 	public boolean hasDependencies() {
 		return dependencies.size() > 0;
 	}
-	
+
 	public Scope addDependency(Dependency dep, Scope scope) {
 		return addDependency(dep, scope, true);
 	}
-	
+
 	public Scope addDependency(Dependency dep, Scope scope, boolean resolveProperties) {
 		if (dep.isMavenObject()) {
 			// determine group
 			if (resolveProperties) {
 				dep.groupId = resolveProperties(dep.groupId);
 			}
-			
+
 			// determine version
 			if (StringUtils.isEmpty(dep.version)) {
 				dep.version = getManagedVersion(dep);
@@ -310,7 +310,7 @@ public class Pom implements Comparable<Pom>, Serializable {
 			if (StringUtils.isEmpty(dep.extension)) {
 				dep.extension = "jar";
 			}
-			
+
 			if (dep.getManagementId().equals(getManagementId())) {
 				System.out.println(MessageFormat.format("WARNING: ignoring circular dependency {0}", dep.getManagementId()));
 				return null;
@@ -321,12 +321,12 @@ public class Pom implements Comparable<Pom>, Serializable {
 			String path = resolveProperties(sys.path);
 			dep = new SystemDependency(path);
 		}
-		
+
 		// POM-level dependency exclusion is a Moxie feature
 		if (hasDependency(dep) || excludes(dep)) {
 			return null;
 		}
-		
+
 		if (scope == null) {
 			scope = getManagedScope(dep);
 			// use default scope if completely unspecified
@@ -334,28 +334,28 @@ public class Pom implements Comparable<Pom>, Serializable {
 				scope = Scope.defaultScope;
 			}
 		}
-		
+
 		if (!dependencies.containsKey(scope)) {
 			dependencies.put(scope, new ArrayList<Dependency>());
 		}
-		
+
 		dependencies.get(scope).add(dep);
 		return scope;
 	}
-		
+
 	void resolveProperties() {
 		name = resolveProperties(name);
 		description = resolveProperties(description);
-		organization = resolveProperties(organization);		
+		organization = resolveProperties(organization);
 		url = resolveProperties(url);
 		issuesUrl = resolveProperties(issuesUrl);
 	}
-	
+
 	String resolveProperties(String string) {
 		if (string == null) {
 			return null;
 		}
-		Pattern p = Pattern.compile("\\$\\{[a-zA-Z0-9-_\\.]+\\}");			
+		Pattern p = Pattern.compile("\\$\\{[a-zA-Z0-9-_\\.]+\\}");
 		StringBuilder sb = new StringBuilder(string);
 		int start = 0;
 		while (true) {
@@ -374,9 +374,9 @@ public class Pom implements Comparable<Pom>, Serializable {
 			} else {
 				return sb.toString();
 			}
-		}		
+		}
 	}
-	
+
 	public List<Dependency> getDependencies(boolean ignoreDuplicates) {
 		if (ignoreDuplicates) {
 			// We just care about the unique dependencies
@@ -394,13 +394,13 @@ public class Pom implements Comparable<Pom>, Serializable {
 			return all;
 		}
 	}
-	
+
 	public List<Dependency> getDependencies(Scope scope) {
 		return getDependencies(scope, Constants.RING1);
 	}
-	
+
 	public List<Dependency> getDependencies(Scope scope, int ring) {
-		Set<Dependency> set = new LinkedHashSet<Dependency>();		
+		Set<Dependency> set = new LinkedHashSet<Dependency>();
 		for (Scope dependencyScope : dependencies.keySet()) {
             Scope definedScope = dependencyScope;
 			boolean includeScope = false;
@@ -413,11 +413,11 @@ public class Pom implements Comparable<Pom>, Serializable {
 				includeScope = scope.includeOnClasspath(transitiveScope);
                 definedScope = transitiveScope;
 			}
-			
+
 			if (includeScope) {
 				List<Dependency> list = dependencies.get(dependencyScope);
 				for (Dependency dependency : list) {
-					if (ring > 0 && dependency.optional) {
+					if (ring > Constants.RING1 && dependency.optional) {
 						// skip optional transitive dependencies
 						continue;
 					}
@@ -429,15 +429,15 @@ public class Pom implements Comparable<Pom>, Serializable {
 		}
 		return new ArrayList<Dependency>(set);
 	}
-	
+
 	public boolean hasParentDependency() {
 		return !StringUtils.isEmpty(parentArtifactId);
 	}
-	
+
 	public Dependency getParentDependency() {
 		return new Dependency(parentGroupId + ":" + parentArtifactId + ":" + parentVersion + "::" + Constants.POM);
 	}
-	
+
 	public boolean hasDependency(Dependency dependency) {
 		String id = dependency.getMediationId();
 		for (Map.Entry<Scope, List<Dependency>> entry : dependencies.entrySet()) {
@@ -449,18 +449,18 @@ public class Pom implements Comparable<Pom>, Serializable {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Maven POMs do not have a notion of a pom-level exclusion list. In Maven,
 	 * exclusions must be set within the dependency declaration.  Because Moxie
 	 * supports direct dependency importing, Moxie also supports pom-level
 	 * exclusion.  This method only makes sense for Moxie POMs.
-	 * 
+	 *
 	 * @param dependency
 	 * @return true of the dependency is excluded
 	 */
 	public boolean excludes(Dependency dependency) {
-		return exclusions.contains(dependency.getMediationId()) 
+		return exclusions.contains(dependency.getMediationId())
 				|| exclusions.contains(dependency.getManagementId())
 				|| exclusions.contains(dependency.groupId);
 	}
@@ -470,13 +470,13 @@ public class Pom implements Comparable<Pom>, Serializable {
 	 * exclusions must be set within the dependency declaration.  Because Moxie
 	 * supports direct dependency importing, Moxie also supports pom-level
 	 * exclusion.  This method only makes sense for Moxie POMs.
-	 * 
+	 *
 	 * @param exclusions
 	 */
 	public void addExclusions(Collection<String> exclusions) {
 		exclusions.addAll(exclusions);
 	}
-	
+
 	public boolean isPOM() {
 		return getExtension().equalsIgnoreCase(Constants.POM);
 	}
@@ -488,15 +488,15 @@ public class Pom implements Comparable<Pom>, Serializable {
 	public boolean isWAR() {
 		return getExtension().equalsIgnoreCase("war");
 	}
-	
+
 	public String getPackaging() {
 		return packaging;
 	}
-	
+
 	public String getExtension() {
 		return Constants.getExtension(packaging);
 	}
-	
+
 	public boolean isSnapshot() {
 		if (version == null) {
 			throw new MoxieException(MessageFormat.format("Version is undefined for \"{0}\"!",  getCoordinates()));
@@ -508,7 +508,7 @@ public class Pom implements Comparable<Pom>, Serializable {
 		nonDestructiveCopy(pom.managedVersions, managedVersions);
 		nonDestructiveCopy(pom.managedScopes, managedScopes);
 		nonDestructiveCopy(pom.properties, properties);
-		
+
 		// inherit groupId and version from parent, by default
 		// if parent definition is at end of pom then we already
 		// have this data so ignore
@@ -544,16 +544,16 @@ public class Pom implements Comparable<Pom>, Serializable {
 			issuesUrl = pom.issuesUrl;
 		}
 	}
-	
+
 	public void importManagedDependencies(Pom pom) {
 		nonDestructiveCopy(pom.managedVersions, managedVersions);
-		nonDestructiveCopy(pom.managedScopes, managedScopes);		
+		nonDestructiveCopy(pom.managedScopes, managedScopes);
 	}
-	
+
 	/**
 	 * Copies values from sourceMap into destinationMap without overriding keys
 	 * already in destinationMap.
-	 * 
+	 *
 	 * @param sourceMap
 	 * @param destinationMap
 	 */
@@ -572,7 +572,7 @@ public class Pom implements Comparable<Pom>, Serializable {
 	public String getCoordinates() {
 		return groupId + ":" + artifactId + ":" + version + (classifier == null ? "" : (":" + classifier));
 	}
-	
+
 	public String getPrefix() {
 		String [] chunks = groupId.split("\\.");
 		if (chunks.length < 2) {
@@ -583,16 +583,16 @@ public class Pom implements Comparable<Pom>, Serializable {
 			return "/" + chunks[0] + "/" + chunks[1];
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return getCoordinates();
 	}
-	
+
 	public String toXML() {
 		return toXML(true);
 	}
-	
+
 	public String toXML(boolean includeProperties) {
 		String pomVersion = "4.0.0";
 		StringBuilder sb = new StringBuilder();
@@ -600,11 +600,11 @@ public class Pom implements Comparable<Pom>, Serializable {
 		sb.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n");
 		sb.append(MessageFormat.format("xsi:schemaLocation=\"http://maven.apache.org/POM/{0} ", pomVersion));
 		sb.append(MessageFormat.format("http://maven.apache.org/maven-v{0}.xsd\">\n", pomVersion.replace('.', '_')));
-		
+
 		sb.append('\n');
 		sb.append(StringUtils.toXML("modelVersion", pomVersion));
 		sb.append('\n');
-		
+
 		// parent metadata
 		if (hasParentDependency()) {
 			StringBuilder node = new StringBuilder();
@@ -629,7 +629,7 @@ public class Pom implements Comparable<Pom>, Serializable {
 		sb.append(StringUtils.toXML("url", url));
 		sb.append(StringUtils.toXML("inceptionYear", inceptionYear));
 		sb.append('\n');
-		
+
 		// licenses
 		if (licenses.size() > 0) {
 			StringBuilder node = new StringBuilder();
@@ -647,7 +647,7 @@ public class Pom implements Comparable<Pom>, Serializable {
 			sb.append(StringUtils.insertHalfTab(scm.toXML()));
 			sb.append('\n');
 		}
-		
+
 		// persons
 		if (developers.size() > 0) {
 			sb.append(StringUtils.insertHalfTab(toXML("developer", developers)));
@@ -675,7 +675,7 @@ public class Pom implements Comparable<Pom>, Serializable {
 					filtered.put(key, entry.getValue());
 				}
 			}
-			
+
 			// only output filtered properties
 			if (filtered.size() > 0) {
 				StringBuilder node = new StringBuilder();
@@ -708,7 +708,7 @@ public class Pom implements Comparable<Pom>, Serializable {
 			sb.append(StringUtils.insertHalfTab(node.toString()));
 			sb.append('\n');
 		}
-		
+
 		// dependencies
 		if (dependencies.size() > 0) {
 			StringBuilder node = new StringBuilder();
@@ -730,12 +730,12 @@ public class Pom implements Comparable<Pom>, Serializable {
 			sb.append(StringUtils.insertHalfTab(node.toString()));
 			sb.append('\n');
 		}
-		
+
 		// close project
 		sb.append("</project>\n\n");
 		return sb.toString();
 	}
-	
+
 	private String toXML(String nodename, List<Person> persons) {
 		StringBuilder list = new StringBuilder();
 		if (persons.size() > 0) {

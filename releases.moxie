@@ -11,6 +11,7 @@ r15: {
     security: ~
     fixes:
 	- Fixed test->build classpath dependency leaking
+	- Include RING1 optional dependencies on classpath
     changes: ~
     additions: ~
     dependencyChanges:
