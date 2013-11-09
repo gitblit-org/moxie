@@ -20,6 +20,7 @@ r15: {
     dependencyChanges:
 	- removed MarkdownPapers
 	- added pegdown 1.4.1
+	- updated to Jacoco 0.6.3
     contributors: ~
 }
 

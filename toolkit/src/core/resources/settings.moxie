@@ -85,7 +85,7 @@ dependencyManagement:
 - 'org.tautua.markdownpapers:markdownpapers-core:1.3.2'
 - 'org.freemarker:freemarker:2.3.19'
 - 'org.mozilla:rhino:1.7R4'
-- 'org.jacoco:org.jacoco.ant:0.6.1.201212231917'
+- 'org.jacoco:org.jacoco.ant:0.6.3.201306030806'
 - 'commons-net:commons-net:1.4.0'
 - 'oro:oro:2.0.8'
 - 'org.webjars:prettify:1-Jun-2011'
