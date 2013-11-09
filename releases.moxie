@@ -14,7 +14,8 @@ r15: {
 	- Exclude RING1 optional dependencies on runtime classpath
 	- Export runtime classpath dependencies, not compile classpath dependencies in mx:zip, mx:war, and mx:onejar
     changes: ~
-    additions: ~
+    additions:
+	- Ignore fenced code blocks (```) in mx:doc processing
     dependencyChanges:
 	- removed MarkdownPapers
 	- added pegdown 1.4.1

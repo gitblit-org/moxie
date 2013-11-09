@@ -327,6 +327,7 @@ public class MxDoc extends MxTask {
 		createNomarkdown().configure("---NOMARKDOWN---", false, false);
 		createNomarkdown().configure("---ESCAPE---", true, false);
 		createNomarkdown().configure("---FIXED---", true, true);
+		createNomarkdown().configure("```", true, true);
 		doc.nomarkdowns.add(new ExcludeText("---EXCLUDE---"));
 		
 		// wikitext transform directives
