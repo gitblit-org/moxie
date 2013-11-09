@@ -40,6 +40,7 @@ public class Dependency implements Serializable {
 	public String extension;
 	public String classifier;
 	public boolean optional;	
+	public boolean apt;	
 	public boolean resolveDependencies;
 	public Set<String> exclusions;
 	public Set<String> tags;
@@ -130,6 +131,7 @@ public class Dependency implements Serializable {
 			}
 		}
 		optional = options.contains("optional");
+		apt = options.contains("apt");
 		
 		if (!isMavenObject()) {
 			// forge dependency, filename is version field

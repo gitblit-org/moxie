@@ -18,7 +18,9 @@ package org.moxie;
 import static java.text.MessageFormat.format;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -27,6 +29,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -162,6 +165,7 @@ public class Build {
 			// create/update Eclipse configuration files
 			if (solutionBuilt && (project.getEclipseSettings() != null)) {
 				EclipseSettings settings = project.getEclipseSettings();
+				writeEclipseFactorypath(settings);
 				writeEclipseClasspath(settings);
 				writeEclipseProject(settings);
 				console.notice(1, "rebuilt Eclipse configuration");
@@ -279,7 +283,6 @@ public class Build {
 				}
 			}
 		}
-		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(Scope.compile))));
 				
 		for (Build linkedProject : solver.getLinkedModules()) {
 			String projectName = null;
@@ -321,13 +324,137 @@ public class Build {
 			sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jst.j2ee.internal.module.container\" />\n");
 		}
 
+		// determine if we should append an apt source folder to the classpath
+		File aptPrefs = new File(projectFolder, ".settings/org.eclipse.jdt.apt.core.prefs");
+		Properties aptProps = readEclipsePrefs(aptPrefs);
+		if (Boolean.valueOf(aptProps.getProperty("org.eclipse.jdt.apt.aptEnabled"))) {
+			String aptSrc = aptProps.getProperty("org.eclipse.jdt.apt.genSrcDir");
+			if (aptSrc == null) {
+				aptSrc = ".apt_generated";
+			}
+			sb.append(format("<classpathentry kind=\"src\" path=\"{0}\">\n", aptSrc));
+			sb.append("\t<attributes>\n");
+			sb.append("\t\t<attribute name=\"optional\" value=\"true\"/>\n");
+			sb.append("\t</attributes>\n");
+			sb.append("</classpathentry>\n");
+		}
+
+		sb.append(format("<classpathentry kind=\"output\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(Scope.compile))));
+
 		StringBuilder file = new StringBuilder();
 		file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 		file.append("<classpath>\n");
 		file.append(StringUtils.insertHardTab(sb.toString()));
-		file.append("</classpath>");
+		file.append("</classpath>\n");
 		
 		FileUtils.writeContent(new File(projectFolder, ".classpath"), file.toString());
+	}
+	
+	private void writeEclipseFactorypath(EclipseSettings settings) {
+		File projectFolder = config.getProjectDirectory();
+		StringBuilder sb = new StringBuilder();
+
+		// identify apt-processing dependencies on compile classpath
+		Set<Dependency> aptDeps = new LinkedHashSet<Dependency>();
+		List<Dependency> dependencies = config.getPom().getDependencies(Scope.compile);
+		for (Dependency dep : dependencies) {
+			if (dep.ring == Constants.RING1 && dep.apt) {
+				aptDeps.addAll(solver.getRuntimeDependencies(dep));
+			}
+		}
+
+		if (aptDeps.size() > 0) {
+			// resolve apt artifacts
+			Set<File> aptFiles = new LinkedHashSet<File>();
+			for (Dependency dep : aptDeps) {
+				File file = solver.getArtifact(dep);
+				aptFiles.add(file);
+			}
+			
+			// create the factorypath file
+			boolean runInBatchMode = false;
+			String pattern = "<factorypathentry kind=\"{0}\" id=\"{1}\" enabled=\"true\" runInBatchMode=\"{2}\" />\n";
+			sb.append(MessageFormat.format(pattern, "PLUGIN", "org.eclipse.jst.ws.annotations.core", runInBatchMode));
+			// kind choices are EXTJAR, VARJAR, or WKSPJAR
+			String kind = "EXTJAR";
+			for (File file : aptFiles) {
+				sb.append(MessageFormat.format(pattern, kind, file, runInBatchMode));
+			}
+			
+			// write the factorypath file
+			StringBuilder file = new StringBuilder();
+			file.append("<factorypath>\n");
+			file.append(StringUtils.insertHardTab(sb.toString()));
+			file.append("</factorypath>\n");
+
+			FileUtils.writeContent(new File(projectFolder, ".factorypath"), file.toString());
+			
+			// create/update Eclipse apt preferences
+			File aptPrefs = new File(projectFolder, ".settings/org.eclipse.jdt.apt.core.prefs");
+			Properties aptDefaults = new Properties();
+			aptDefaults.put("org.eclipse.jdt.apt.genSrcDir", ".apt_generated");
+			aptDefaults.put("org.eclipse.jdt.apt.reconcileEnabled", "true");
+			Properties aptOverrides = new Properties();
+			aptOverrides.put("org.eclipse.jdt.apt.aptEnabled", "true");
+			writeEclipsePrefs(aptPrefs, aptDefaults, aptOverrides);
+			
+			// create/update Eclipse jdt preferences
+			File jdtPrefs = new File(projectFolder, ".settings/org.eclipse.jdt.core.prefs");
+			Properties jdtOverrides = new Properties();
+			jdtOverrides.put("org.eclipse.jdt.core.compiler.processAnnotations", "enabled");
+			writeEclipsePrefs(jdtPrefs, new Properties(), jdtOverrides);
+		}
+	}
+	
+	private Properties readEclipsePrefs(File prefsFile) {
+		Properties props = new Properties();
+		if (prefsFile.exists()) {
+			// load existing prefs file
+			FileInputStream is = null;
+			try {
+				is = new FileInputStream(prefsFile);
+				props.load(is);
+			} catch (Exception e) {
+				getConsole().error(e);
+			} finally {
+				try {
+					is.close();
+				} catch (Exception e) {
+				}
+			}
+		}
+		return props;
+	}
+	
+	private void writeEclipsePrefs(File prefsFile, Properties defaults, Properties overrides) {
+		// create/update Eclipse preferences
+		if (prefsFile.exists()) {
+			// load existing prefs file
+			Properties props = readEclipsePrefs(prefsFile);
+			defaults.putAll(props);
+		} else {
+			// create .settings folder
+			prefsFile.getParentFile().mkdirs();
+			
+			// insert prefs version
+			defaults.put("eclipse.preferences.version", "1");
+		}
+		
+		// ensure the overrides are set
+		defaults.putAll(overrides);
+		
+		FileOutputStream os = null;
+		try {
+			os = new FileOutputStream(prefsFile);
+			defaults.store(os, null);
+		} catch (Exception e) {
+			getConsole().error(e);
+		} finally {
+			try {
+				os.close();
+			} catch (Exception e) {
+			}
+		}
 	}
 	
 	private void writeEclipseProject(EclipseSettings settings) {

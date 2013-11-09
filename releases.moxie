@@ -16,6 +16,7 @@ r15: {
     changes: ~
     additions:
 	- Ignore fenced code blocks (```) in mx:doc processing
+	- Support apt option for dependencies and automatic Eclipse .factorypath & project prefs generation
     dependencyChanges:
 	- removed MarkdownPapers
 	- added pegdown 1.4.1
