@@ -80,7 +80,7 @@ dependencyManagement:
 - 'org.testng:testng:6.8'
 - 'net.sourceforge.cobertura:cobertura:1.9.4.1'
 - 'emma:emma:2.1.5320'
-- 'org.eclipse.jgit:org.eclipse.jgit:2.3.1.201302201838-r'
+- 'org.eclipse.jgit:org.eclipse.jgit:3.1.0.201310021548-r'
 - 'org.pegdown:pegdown:1.4.1'
 - 'org.tautua.markdownpapers:markdownpapers-core:1.3.2'
 - 'org.freemarker:freemarker:2.3.19'

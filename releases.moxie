@@ -21,6 +21,7 @@ r15: {
 	- removed MarkdownPapers
 	- added pegdown 1.4.1
 	- updated to Jacoco 0.6.3
+	- updated to JGit 3.1.0.201310021548-r
     contributors: ~
 }
 
