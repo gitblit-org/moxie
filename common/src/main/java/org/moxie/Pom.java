@@ -417,7 +417,15 @@ public class Pom implements Comparable<Pom>, Serializable {
 			if (includeScope) {
 				List<Dependency> list = dependencies.get(dependencyScope);
 				for (Dependency dependency : list) {
-					if (ring > Constants.RING1 && dependency.optional) {
+					if (ring == Constants.RING1 && dependency.optional) {
+						switch (scope) {
+						case runtime:
+							// optional dependencies are not exported
+							continue;
+						default:
+							break;
+						}
+					} else if (ring > Constants.RING1 && dependency.optional) {
 						// skip optional transitive dependencies
 						continue;
 					}
