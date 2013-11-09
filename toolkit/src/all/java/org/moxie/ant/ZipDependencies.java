@@ -24,7 +24,7 @@ public class ZipDependencies {
 	private String tag;
 	
 	public ZipDependencies() {
-		scope = Scope.compile;
+		scope = Scope.runtime;
 	}
 	
 	public void setScope(Scope scope) {

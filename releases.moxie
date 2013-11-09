@@ -12,6 +12,7 @@ r15: {
     fixes:
 	- Fixed test->build classpath dependency leaking
 	- Exclude RING1 optional dependencies on runtime classpath
+	- Export runtime classpath dependencies, not compile classpath dependencies in mx:zip, mx:war, and mx:onejar
     changes: ~
     additions: ~
     dependencyChanges:

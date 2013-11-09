@@ -255,7 +255,7 @@ public class MxJar extends Jar {
 		
 		if (fatjar) {
 			// FatJar generation (merging reference dependencies)
-			Object o = getProject().getReference(Key.compileClasspath.referenceId());
+			Object o = getProject().getReference(Key.runtimeClasspath.referenceId());
 			if (o != null && o instanceof Path) {
 				Path cp = (Path) o;
 				for (String path : cp.list()) {
