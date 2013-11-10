@@ -44,7 +44,7 @@ import org.moxie.utils.StringUtils;
 
 
 /**
- * Reads a Moxie tookit config file such as settings.moxie or build.moxie. 
+ * Reads a Moxie tookit config file such as settings.moxie or build.moxie.
  */
 public class ToolkitConfig implements Serializable {
 
@@ -55,13 +55,13 @@ public class ToolkitConfig implements Serializable {
 	Pom pom;
 	long lastModified;
 	String mainclass;
-	
+
 	List<Proxy> proxies;
 	List<Module> modules;
 	List<Module> linkedModules;
 	List<String> repositories;
 	List<RemoteRepository> registeredRepositories;
-	
+
 	File dependencyDirectory;
 	List<SourceDirectory> sourceDirectories;
 	List<SourceDirectory> resourceDirectories;
@@ -103,7 +103,7 @@ public class ToolkitConfig implements Serializable {
 		targetDirectory = new File("build/target");
 		linkedModules = new ArrayList<Module>();
 		repositories = Arrays.asList("central");
-		registeredRepositories = Arrays.asList(new RemoteRepository("central", "http://repo1.maven.org/maven2", false));		
+		registeredRepositories = Arrays.asList(new RemoteRepository("central", "http://repo1.maven.org/maven2", false));
 		pom = new Pom();
 		dependencyDirectory = null;
 		dependencyNamePattern = Toolkit.DEPENDENCY_FILENAME_PATTERN;
@@ -118,12 +118,12 @@ public class ToolkitConfig implements Serializable {
 		revisionRetentionCount = 1;
 		revisionPurgeAfterDays = 0;
 	}
-	
+
 	public ToolkitConfig(File file, File baseDirectory, String defaultResource) throws IOException, MaxmlException {
 		this();
 		parse(file, baseDirectory, defaultResource);
 	}
-	
+
 	private ToolkitConfig(String resource) throws IOException, MaxmlException {
 		this();
 		InputStream is = getClass().getResourceAsStream(resource);
@@ -136,22 +136,22 @@ public class ToolkitConfig implements Serializable {
 		}
 		parse(sb.toString(), null);
 	}
-	
+
 	public Pom getPom() {
 		return pom;
 	}
-	
+
 	public String getMainclass() {
 		return mainclass;
 	}
-	
+
 	public PurgePolicy getPurgePolicy() {
 		PurgePolicy  policy = new PurgePolicy();
 		policy.retentionCount = revisionRetentionCount;
 		policy.purgeAfterDays = revisionPurgeAfterDays;
 		return policy;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "ToolkitConfig (" + pom + ")";
@@ -169,13 +169,13 @@ public class ToolkitConfig implements Serializable {
 			this.lastModified = FileUtils.getLastModified(file);
 			content = FileUtils.readContent(file, "\n").trim();
 		}
-		return parse(content, defaultResource);		
+		return parse(content, defaultResource);
 	}
-	
-	
+
+
 	ToolkitConfig parse(String content, String defaultResource) throws IOException, MaxmlException {
 		MaxmlMap map = Maxml.parse(content);
-		
+
 		if (map.containsKey(Key.requires.name())) {
 			// enforce a required minimum Moxie version
 			String req = map.getString(Key.requires.name(), null);
@@ -185,7 +185,7 @@ public class ToolkitConfig implements Serializable {
 				throw new MoxieException("Moxie {0} required for this script.", requires);
 			}
 		}
-		
+
 		if (!StringUtils.isEmpty(defaultResource)) {
 			// build.moxie inheritance
 			File parentConfig = readFile(map, Key.parent, null);
@@ -206,12 +206,12 @@ public class ToolkitConfig implements Serializable {
 				setDefaultsFrom(parent);
 			}
 		}
-		
+
 		// metadata (partially preserve inherited defaults)
 		pom.name = readString(map, Key.name, null);
 		pom.version = readString(map, Key.version, pom.version);
 		pom.groupId = readString(map, Key.groupId, pom.groupId);
-		pom.artifactId = readString(map, Key.artifactId, null);	
+		pom.artifactId = readString(map, Key.artifactId, null);
 		pom.classifier = readString(map, Key.classifier, null);
 		pom.description = readString(map, Key.description, null);
 		pom.url = readString(map, Key.url, pom.url);
@@ -228,7 +228,7 @@ public class ToolkitConfig implements Serializable {
 		pom.blogUrl = readString(map, Key.blogUrl, pom.blogUrl);
 		pom.ciUrl = readString(map, Key.ciUrl, pom.ciUrl);
 		pom.mavenUrl = readString(map, Key.mavenUrl, pom.mavenUrl);
-		
+
 		String parentPom = map.getString(Key.parentPom.name(), null);
 		if (!StringUtils.isEmpty(parentPom)) {
 			// config specifies a parent pom
@@ -237,7 +237,7 @@ public class ToolkitConfig implements Serializable {
 			pom.parentArtifactId = parent.artifactId;
 			pom.parentVersion = parent.version;
 		}
-		
+
 		// scm metadata
 		if (map.containsKey(Key.scm)) {
 			MaxmlMap scm = map.getMap(Key.scm.name());
@@ -246,12 +246,12 @@ public class ToolkitConfig implements Serializable {
 			pom.scm.url = scm.getString(Key.url.name(), null);
 			pom.scm.tag = scm.getString(Key.tag.name(), null);
 		}
-		
+
 		// set default name to artifact id
 		if (StringUtils.isEmpty(pom.name)) {
 			pom.name = pom.artifactId;
 		}
-		
+
 		mainclass = readString(map, Key.mainclass, null);
 		pom.releaseVersion = readString(map, Key.releaseVersion, pom.releaseVersion);
 		pom.releaseDate = map.getDate(Key.releaseDate.name(), pom.releaseDate);
@@ -265,7 +265,7 @@ public class ToolkitConfig implements Serializable {
 		targetDirectory = readFile(map, Key.targetDirectory, new File(baseDirectory, "build/target"));
 		sourceDirectories = readSourceDirectories(map, Key.sourceDirectories, sourceDirectories);
 		if (sourceDirectories.isEmpty()) {
-			// container descriptors (e.g. POM) can define modules 
+			// container descriptors (e.g. POM) can define modules
 			modules = readModules(map, Key.modules);
 		} else {
 			// standard project/modules can define linked modules which are
@@ -276,7 +276,7 @@ public class ToolkitConfig implements Serializable {
 		resourceDirectories = readSourceDirectories(map, Key.resourceDirectories, resourceDirectories);
 		dependencyDirectory = readFile(map, Key.dependencyDirectory, null);
 		dependencyNamePattern = map.getString(Key.dependencyNamePattern.name(), dependencyNamePattern);
-		
+
 		String policy = readString(map, Key.updatePolicy, null);
 		if (!StringUtils.isEmpty(policy)) {
 			int mins = 0;
@@ -289,16 +289,16 @@ public class ToolkitConfig implements Serializable {
 				updatePolicy.setMins(mins);
 			}
 		}
-		
+
 		// default snapshot purge policy
-		revisionRetentionCount = Math.min(Toolkit.MAX_REVISIONS, 
+		revisionRetentionCount = Math.min(Toolkit.MAX_REVISIONS,
 				Math.max(1, map.getInt(Key.revisionRetentionCount.name(), revisionRetentionCount)));
 		revisionPurgeAfterDays = Math.min(Toolkit.MAX_PURGE_AFTER_DAYS,
 				Math.max(0, map.getInt(Key.revisionPurgeAfterDays.name(), revisionPurgeAfterDays)));
-		
+
 		if (map.containsKey(Key.properties.name())) {
 			MaxmlMap props = map.getMap(Key.properties.name());
-			for (String key : props.keySet()) {				
+			for (String key : props.keySet()) {
 				pom.setProperty(key, props.getString(key, null));
 			}
 		}
@@ -315,7 +315,7 @@ public class ToolkitConfig implements Serializable {
 		parseDependencies(map, Key.dependencies);
 		parseDependencyOverrides(map, Key.dependencyOverrides);
 		parseProxies(map, Key.proxies);
-		
+
 		pom.addExclusions(readStrings(map, Key.exclusions, new ArrayList<String>(), true));
 
 		// all task attributes are inherited. individual attributes can be overridden
@@ -333,16 +333,16 @@ public class ToolkitConfig implements Serializable {
 				}
 			}
 		}
-		
+
 		// maxml build properties
 		if (file != null) {
 			// config object represents actual file, not internal default resource
 			importProperties(file.getParentFile());
 		}
-		
+
 		return this;
 	}
-	
+
 	void parseDependencyAliases(MaxmlMap map, Key key) {
 		if (map.containsKey(key.name())) {
 			MaxmlMap aliases = map.getMap(key.name());
@@ -364,9 +364,9 @@ public class ToolkitConfig implements Serializable {
 					throw new RuntimeException("Illegal dependency " + definition);
 				}
 			}
-		}		
+		}
 	}
-	
+
 	void parseDependencyOverrides(MaxmlMap map, Key key) {
 		if (map.containsKey(key.name())) {
 			MaxmlMap poms = map.getMap(key.name());
@@ -374,20 +374,20 @@ public class ToolkitConfig implements Serializable {
 				String definition = entry.getKey();
 				if (entry.getValue() instanceof MaxmlMap) {
 					Dependency dep = new Dependency(definition);
-					Pom override = new Pom();					
+					Pom override = new Pom();
 					override.groupId = dep.groupId;
 					override.artifactId = dep.artifactId;
 					override.version = dep.version;
-					
+
 					if (StringUtils.isEmpty(override.version)) {
 						throw new RuntimeException(MessageFormat.format("{0} setting for {1} must specify a version!", Key.dependencyOverrides.name(), definition));
 					}
-					
+
 					MaxmlMap depMap = (MaxmlMap) entry.getValue();
 					for (String def : depMap.getStrings(Key.dependencies.name(), new ArrayList<String>())) {
 						processDependency(def, override);
 					}
-					
+
 					if (depMap.containsKey(Key.scope.name())) {
 						// scopes specified
 						for (String value : depMap.getStrings(Key.scope.name(), new ArrayList<String>())) {
@@ -415,7 +415,7 @@ public class ToolkitConfig implements Serializable {
 			}
 		}
 	}
-	
+
 	void processDependency(String def, Pom pom) {
 		Scope scope = Scope.fromString(def.substring(0, def.indexOf(' ')));
 		if (scope == null) {
@@ -424,9 +424,9 @@ public class ToolkitConfig implements Serializable {
 		} else {
 			// trim out scope
 			def = def.substring(scope.name().length()).trim();
-		}					
+		}
 		def = StringUtils.stripQuotes(def);
-		
+
 		Dependency dep;
 		if (Scope.system.equals(scope)) {
 			dep = new SystemDependency(def);
@@ -436,7 +436,7 @@ public class ToolkitConfig implements Serializable {
         dep.definedScope = scope;
 		pom.addDependency(dep, scope);
 	}
-	
+
 	List<RemoteRepository> parseRemoteRepositories(MaxmlMap map, Key key, List<RemoteRepository> defaultsValue) {
 		List<RemoteRepository> remotes = new ArrayList<RemoteRepository>();
 		if (map.containsKey(key.name())) {
@@ -449,9 +449,9 @@ public class ToolkitConfig implements Serializable {
 					String url = repoMap.getString("url", null).replace('\\', '/');
 					boolean allowSnapshots = repoMap.getBoolean("allowSnapshots", false);
 					RemoteRepository repo = new RemoteRepository(id, url, allowSnapshots);
-					repo.purgePolicy.retentionCount = Math.min(Toolkit.MAX_REVISIONS, 
+					repo.purgePolicy.retentionCount = Math.min(Toolkit.MAX_REVISIONS,
 							Math.max(1, repoMap.getInt(Key.revisionRetentionCount.name(), revisionRetentionCount)));
-					repo.purgePolicy.purgeAfterDays = Math.min(Toolkit.MAX_PURGE_AFTER_DAYS, 
+					repo.purgePolicy.purgeAfterDays = Math.min(Toolkit.MAX_PURGE_AFTER_DAYS,
 							Math.max(0, repoMap.getInt(Key.revisionPurgeAfterDays.name(), revisionPurgeAfterDays)));
 					for (String value : repoMap.getStrings("affinity", new ArrayList<String>())) {
 						repo.affinity.add(value.toLowerCase());
@@ -467,7 +467,7 @@ public class ToolkitConfig implements Serializable {
 		}
 		return defaultsValue;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	void parseProxies(MaxmlMap map, Key key) {
 		if (map.containsKey(key.name())) {
@@ -513,7 +513,7 @@ public class ToolkitConfig implements Serializable {
 	List<String> readStrings(MaxmlMap map, Key key, List<String> defaultValue) {
 		return readStrings(map, key, defaultValue, false);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	List<String> readStrings(MaxmlMap map, Key key, List<String> defaultValue, boolean toLowerCase) {
 		if (map.containsKey(key.name())) {
@@ -560,7 +560,7 @@ public class ToolkitConfig implements Serializable {
 		}
 		return defaultValue;
 	}
-	
+
 	File readFile(MaxmlMap map, Key key, File defaultValue) {
 		if (map.containsKey(key.name())) {
 			Object o = map.get(key.name());
@@ -605,10 +605,10 @@ public class ToolkitConfig implements Serializable {
 						def = def.substring(scopeString.length()).trim();
 						int x = def.indexOf(' ') == -1 ? def.length() - 1 : def.indexOf(' ');
 						String dir = StringUtils.stripQuotes(def.substring(0, x));
-						
+
 						SourceDirectory sd = new SourceDirectory(dir, scope);
 						values.add(sd);
-						
+
 						def = def.substring(x + 1);
 						if (!StringUtils.isEmpty(def)) {
 							def = def.substring(def.indexOf(' ') + 1);
@@ -618,6 +618,10 @@ public class ToolkitConfig implements Serializable {
 									case ':':
 										sd.tags.add(defValue.substring(1).toLowerCase());
 										break;
+									default:
+										if ("apt".equalsIgnoreCase(defValue)) {
+											sd.apt = true;
+										}
 									}
 								}
 							}
@@ -642,18 +646,18 @@ public class ToolkitConfig implements Serializable {
 							values.add(sd);
 						}
 					}
-				}				
+				}
 			} else {
-				// string definition - all source folders are compile				
+				// string definition - all source folders are compile
 				String list = o.toString();
 				for (String value : StringUtils.breakCSV(list)) {
 					if (!StringUtils.isEmpty(value)) {
 						values.add(new SourceDirectory(StringUtils.stripQuotes(value), Scope.compile));
 					}
-				}				
+				}
 			}
 		}
-		
+
 		if (values.size() == 0) {
 			values.addAll(defaultValue);
 		}
@@ -677,11 +681,11 @@ public class ToolkitConfig implements Serializable {
 		}
 		return resolved;
 	}
-	
+
 	/**
 	 * Returns true if the specified dir is the parent of one of the source
 	 * directories in the list.
-	 * 
+	 *
 	 * @param dirs
 	 * @param scope
 	 * @param dir
@@ -698,7 +702,7 @@ public class ToolkitConfig implements Serializable {
 		}
 		return false;
 	}
-	
+
 	List<Module> readModules(MaxmlMap map, Key key) {
 		List<Module> list = new ArrayList<Module>();
 		for (String def : readStrings(map, key, new ArrayList<String>())) {
@@ -707,7 +711,7 @@ public class ToolkitConfig implements Serializable {
 		}
 		return list;
 	}
-	
+
 	List<Person> readPersons(MaxmlMap map, Key key) {
 		List<Person> list = new ArrayList<Person>();
 		if (map.containsKey(key)) {
@@ -738,10 +742,10 @@ public class ToolkitConfig implements Serializable {
 					String name = m.getString(Key.name.name(), null);
 					String url = m.getString(Key.url.name(), null);
 					License license = new License(name, url);
-					
+
 					license.distribution = m.getString("distribution", null);
 					license.comments = m.getString("comments", null);
-					
+
 					list.add(license);
 				}
 			}
@@ -752,7 +756,7 @@ public class ToolkitConfig implements Serializable {
 	void keyError(Key key) {
 		System.err.println(MessageFormat.format("ERROR: {0} is improperly specified in {1}, using default", key.name(), file.getAbsolutePath()));
 	}
-	
+
 	public List<SourceDirectory> getSourceDirectories() {
 		return sourceDirectories;
 	}
@@ -764,11 +768,11 @@ public class ToolkitConfig implements Serializable {
 	public File getDependencyDirectory() {
 		return dependencyDirectory;
 	}
-	
+
 	public File getDependencySourceDirectory() {
 		return new File(dependencyDirectory, "src");
 	}
-	
+
 	public File getProjectDependencyArtifact(Dependency dependency) {
 		File baseFolder = getDependencyDirectory();
 		String filename = Dependency.getFilename(dependency, dependency.extension, dependencyNamePattern);
@@ -784,11 +788,11 @@ public class ToolkitConfig implements Serializable {
 	public List<Proxy> getProxies() {
 		return proxies;
 	}
-	
+
 	boolean apply(String value) {
 		return apply.contains(value.toLowerCase());
 	}
-	
+
 	EclipseSettings getEclipseSettings() {
 		EclipseSettings settings = apply(EclipseSettings.class, Toolkit.APPLY_ECLIPSE);
 		return settings;
@@ -798,7 +802,7 @@ public class ToolkitConfig implements Serializable {
 		IntelliJSettings settings = apply(IntelliJSettings.class, Toolkit.APPLY_INTELLIJ);
 		return settings;
 	}
-	
+
 	<X> X apply(Class<X> clazz, String parameter) {
 		for (String value : apply) {
 			if (value.toLowerCase().startsWith(parameter)) {
@@ -832,7 +836,7 @@ public class ToolkitConfig implements Serializable {
 							} catch (NoSuchFieldException e) {
 								System.out.println(MessageFormat.format("WARNING: Unrecognized switch \"{1}\" for apply parameter \"{0}\"", parameter, sw));
 							}
-						}				
+						}
 					}
 					return x;
 				} catch (Exception e) {
@@ -852,14 +856,14 @@ public class ToolkitConfig implements Serializable {
 		}
 		return activeProxies;
 	}
-	
+
 	Pom getDependencyOverrides(Scope scope, String coordinates) {
 		if (dependencyOverrides.containsKey(scope)) {
 			return dependencyOverrides.get(scope).get(coordinates);
 		}
 		return null;
 	}
-	
+
 	void importProperties(File directory) {
 		if (directory == null || !directory.exists()) {
 			return;
@@ -868,7 +872,7 @@ public class ToolkitConfig implements Serializable {
 		importExternalProperties(new File(directory, "project.properties"));
 		importExternalProperties(new File(directory, file.getName().substring(0, file.getName().lastIndexOf('.')) + ".properties"));
 	}
-	
+
 	void importExternalProperties(File propsFile) {
 		if (propsFile.exists()) {
 			// System.out.println("importing " + propsFile.getAbsolutePath());
@@ -885,7 +889,7 @@ public class ToolkitConfig implements Serializable {
 			}
 		}
 	}
-	
+
 	void setDefaultsFrom(ToolkitConfig parent) {
 		pom = parent.pom;
 		lastModified = Math.max(lastModified, parent.lastModified);

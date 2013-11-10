@@ -30,6 +30,7 @@ import org.apache.tools.ant.types.Path.PathElement;
 import org.moxie.Build;
 import org.moxie.MoxieException;
 import org.moxie.Scope;
+import org.moxie.SourceDirectory;
 import org.moxie.Toolkit;
 import org.moxie.Toolkit.Key;
 import org.moxie.console.Console;
@@ -40,7 +41,7 @@ import org.moxie.utils.StringUtils;
 
 
 public class MxJavac extends Javac {
-	
+
 	Scope scope;
 	String tag;
 	boolean clean;
@@ -48,29 +49,29 @@ public class MxJavac extends Javac {
 	String includes;
 	String excludes;
 	Set<Build> builds;
-	
+
 	private boolean configured;
-	
+
 	private Boolean showtitle;
 
 	public MxJavac() {
 		super();
 		setTaskName("mx:javac");
 	}
-	
+
 	private MxJavac(Set<Build> builds) {
 		this.builds = builds;
 		setTaskName("mx:javac");
 	}
-	
+
 	public boolean getClean() {
 		return clean;
 	}
-	
+
 	public void setClean(boolean clean) {
 		this.clean = clean;
 	}
-	
+
 	public boolean getCompilelinkedprojects() {
 		return compileLinkedProjects;
 	}
@@ -78,7 +79,7 @@ public class MxJavac extends Javac {
 	public void setCompilelinkedprojects(boolean compileLinkedProjects) {
 		this.compileLinkedProjects = compileLinkedProjects;
 	}
-	
+
 	public String getScope() {
 		return scope.name();
 	}
@@ -99,22 +100,24 @@ public class MxJavac extends Javac {
 		return includes;
 	}
 
+	@Override
 	public void setIncludes(String includes) {
 		this.includes = includes;
 	}
-	
+
 	public String getExcludes() {
 		return excludes;
 	}
 
+	@Override
 	public void setExcludes(String excludes) {
 		this.excludes = excludes;
 	}
-	
+
 	public void setShowtitle(boolean value) {
 		this.showtitle = value;
 	}
-	
+
 	public boolean isShowTitle() {
 		return showtitle == null || showtitle;
 	}
@@ -127,7 +130,7 @@ public class MxJavac extends Javac {
 			configure(build);
 		}
 	}
-	
+
 	/**
 	 * Configure the javac task from the mxjavac attributes
 	 * @param build
@@ -144,7 +147,7 @@ public class MxJavac extends Javac {
 		Object args = attributes.remove(Key.compilerArgs.name());
 
 		AttributeReflector.setAttributes(getProject(), this, attributes);
-		
+
 		if (args != null) {
 			// set the compiler args, if any
 			List<Object> list = new ArrayList<Object>();
@@ -161,26 +164,34 @@ public class MxJavac extends Javac {
 				createCompilerArg().setValue(o.toString());
 			}
 		}
+
+		// create compiler arg for apt generated source
+		for (SourceDirectory sd : build.getConfig().getSourceDirectories()) {
+			if (sd.apt) {
+				createCompilerArg().setLine("-s " + sd.getSources().getAbsolutePath());
+			}
+		}
 	}
 
+	@Override
 	public void execute() {
 		Build build = (Build) getProject().getReference(Key.build.referenceId());
 		Console console = build.getConsole();
-		
+
 		if (!configured) {
 			// called from moxie.compile
 			configure(build);
 		}
-		
+
 		if (scope == null) {
 			scope = Scope.defaultScope;
 		}
-		
+
 		if (builds == null) {
 			// top-level mx:javac instantiates the build stack
 			builds = new HashSet<Build>();
 		}
-		
+
 		if (compileLinkedProjects) {
 			for (Build linkedProject: build.getSolver().getLinkedModules()) {
 				if (builds.contains(linkedProject)) {
@@ -190,7 +201,7 @@ public class MxJavac extends Javac {
 				}
 				// add the build to the stack so we do not rebuild
 				builds.add(linkedProject);
-				
+
 				try {
 					// compile the linked project
 					Project project = new Project();
@@ -217,7 +228,7 @@ public class MxJavac extends Javac {
 		// display specified mxjavac attributes
 		MaxmlMap attributes = build.getConfig().getTaskAttributes(getTaskName());
 		AttributeReflector.logAttributes(this, attributes, console);
-		
+
 		// project folder
 		console.debug(1, "projectdir = {0}", build.getConfig().getProjectDirectory());
 
@@ -232,7 +243,7 @@ public class MxJavac extends Javac {
 		// set output folder
 		setDestdir(build.getConfig().getOutputDirectory(scope));
 		console.debug(1, "destdir = {0}", getDestdir());
-		
+
 		// create classpath
 		Path classpath = createClasspath();
 		if (Scope.test.equals(scope)) {
@@ -249,15 +260,24 @@ public class MxJavac extends Javac {
 			element.setLocation(subbuild.getConfig().getOutputDirectory(Scope.compile));
 		}
 		console.debug(1, "classpath = {0}", classpath);
-				
+
+		for (SourceDirectory sd : build.getConfig().getSourceDirectories()) {
+			// clean apt source directories before compiling
+			if (sd.apt) {
+				console.log("Cleaning apt source directory {0}", sd.name);
+				FileUtils.delete(sd.getSources());
+				sd.getSources().mkdirs();
+			}
+		}
+
 		if (clean) {
 			// clean the output folder before compiling
-			console.log("Cleaning {0}", getDestdir().getAbsolutePath());
+			console.log("Cleaning output directory {0}", getDestdir().getAbsolutePath());
 			FileUtils.delete(getDestdir());
 		}
-		
+
 		getDestdir().mkdirs();
-		
+
 		// set the update property name so we know if nothing compiled
 		String prop = build.getPom().getCoordinates().replace(':', '.') + ".compiled";
 		setUpdatedProperty(prop);
@@ -294,7 +314,7 @@ public class MxJavac extends Javac {
 
 		copy.execute();
 	}
-	
+
 	protected FileSet prepareResourceSet(File dir) {
 		FileSet set = new FileSet();
 		set.setDir(dir);

@@ -53,22 +53,22 @@ public class Build {
 	private final Console console;
 	private final Solver solver;
 	private final Date buildDate;
-	
+
 	public Build(File configFile, File basedir) throws MaxmlException, IOException {
 		this.config = new BuildConfig(configFile, basedir);
-		
+
 		this.console = new Console(config.isColor());
 		this.console.setDebug(config.isDebug());
 
 		this.solver = new Solver(console, config);
 		this.buildDate = new Date();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return config.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof Build) {
@@ -76,11 +76,11 @@ public class Build {
 		}
 		return false;
 	}
-	
+
 	public Date getBuildDate() {
 		return buildDate;
 	}
-	
+
 	public String getBuildDateString() {
 		return new SimpleDateFormat("yyyy-MM-dd").format(buildDate);
 	}
@@ -88,11 +88,11 @@ public class Build {
 	public String getBuildTimestamp() {
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(buildDate);
 	}
-	
+
 	public Date getReleaseDate() {
 		return config.getPom().releaseDate;
 	}
-	
+
 	public String getReleaseDateString() {
 		if (config.getPom().releaseDate != null) {
 			return new SimpleDateFormat("yyyy-MM-dd").format(config.getPom().releaseDate);
@@ -103,15 +103,15 @@ public class Build {
 	public Solver getSolver() {
 		return solver;
 	}
-	
+
 	public BuildConfig getConfig() {
 		return config;
 	}
-	
+
 	public Console getConsole() {
 		return console;
 	}
-	
+
 	public Pom getPom() {
 		return config.getPom();
 	}
@@ -119,7 +119,7 @@ public class Build {
 	public Pom getPom(List<String> tags) {
 		if (tags == null || tags.isEmpty()) {
 			return getPom();
-		}		
+		}
 		Pom pom = DeepCopier.copy(config.getPom());
 		pom.clearDependencies();
 		for (Dependency dep : config.getPom().getDependencies(false)) {
@@ -128,12 +128,12 @@ public class Build {
 					if (dep.ring == Constants.RING1) {
 						pom.addDependency(dep, dep.definedScope);
 					}
-				}				
+				}
 			}
 		}
 		return pom;
 	}
-	
+
 	public File getBuildArtifact(String classifier) {
 		String name = config.getPom().artifactId;
 		if (!StringUtils.isEmpty(config.getPom().version)) {
@@ -147,21 +147,28 @@ public class Build {
 		}
 		return new File(getConfig().getTargetDirectory(), name + ".jar");
 	}
-	
+
 	public void setup() {
 		if (config.getRepositories().isEmpty()) {
 			console.warn("No dependency repositories have been defined!");
 		}
-		
+
 		solver.updateRepositoryMetadata();
 
 		boolean solutionBuilt = solver.solve();
 		ToolkitConfig project = config.getProjectConfig();
+		// create apt source directories
+		for (SourceDirectory sd : config.getSourceDirectories()) {
+			if (sd.apt) {
+				sd.getSources().mkdirs();
+			}
+		}
+
 		if (project.apply.size() > 0) {
 			console.separator();
 			console.log("apply");
 			boolean applied = false;
-			
+
 			// create/update Eclipse configuration files
 			if (solutionBuilt && (project.getEclipseSettings() != null)) {
 				EclipseSettings settings = project.getEclipseSettings();
@@ -188,13 +195,13 @@ public class Build {
 				console.notice(1, "rebuilt pom.xml");
 				applied = true;
 			}
-			
+
 			if (!applied) {
 				console.log(1, "nothing applied");
 			}
 		}
 	}
-	
+
 	private File getIDEOutputFolder(Scope scope) {
 		File baseFolder = new File(config.getProjectDirectory(), "bin");
 		if (scope == null) {
@@ -207,7 +214,7 @@ public class Build {
 			return new File(baseFolder, "classes");
 		}
 	}
-	
+
 	private void writeEclipseClasspath(EclipseSettings settings) {
 		if (config.getSourceDirectories().isEmpty()
     			|| config.getPom().isPOM()
@@ -217,7 +224,8 @@ public class Build {
     	}
 
 		File projectFolder = config.getProjectDirectory();
-		
+
+		String genSrcDir = null;
 		List<SourceDirectory> sourceDirs = new ArrayList<SourceDirectory>();
 		sourceDirs.addAll(config.getProjectConfig().getSourceDirectories());
 		sourceDirs.addAll(config.getProjectConfig().getResourceDirectories());
@@ -226,27 +234,40 @@ public class Build {
 			if (Scope.site.equals(sourceFolder.scope)) {
 				continue;
 			}
+			String srcPath = FileUtils.getRelativePath(projectFolder, sourceFolder.getSources());
 			if (sourceFolder.scope.isDefault()) {
-				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources())));
+				if (sourceFolder.apt) {
+					// defined apt generated source folder
+					genSrcDir = srcPath;
+					sb.append(format("<classpathentry kind=\"src\" path=\"{0}\">\n", srcPath));
+					sb.append("\t<attributes>\n");
+					sb.append("\t\t<attribute name=\"optional\" value=\"true\"/>\n");
+					sb.append("\t</attributes>\n");
+					sb.append("</classpathentry>\n");
+				} else {
+					// defined standard source folder
+					sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" />\n", srcPath));
+				}
 			} else {
-				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" output=\"{1}\" />\n", FileUtils.getRelativePath(projectFolder, sourceFolder.getSources()), FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(sourceFolder.scope))));
+				// defined source folder, not compile-scoped (i.e. test)
+				sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" output=\"{1}\" />\n", srcPath, FileUtils.getRelativePath(projectFolder, getIDEOutputFolder(sourceFolder.scope))));
 			}
 		}
-		
+
 		// determine how to output dependencies (fixed-path or variable-relative)
 		String kind = settings.var ? "var" : "lib";
 		boolean extRelative = getConfig().getProjectConfig().dependencyDirectory != null && getConfig().getProjectConfig().dependencyDirectory.exists();
-		
+
 		// always link classpath against Moxie artifact cache
 		Set<Dependency> dependencies = solver.solve(Scope.test);
 		for (Dependency dependency : dependencies) {
 			if (dependency instanceof SystemDependency) {
 				SystemDependency sys = (SystemDependency) dependency;
 				sb.append(format("<classpathentry kind=\"lib\" path=\"{0}\" />\n", FileUtils.getRelativePath(projectFolder, new File(sys.path))));
-			} else {				
+			} else {
 				File jar = solver.getMoxieCache().getArtifact(dependency, dependency.extension);
 				Dependency sources = dependency.getSourcesArtifact();
-				File srcJar = solver.getMoxieCache().getArtifact(sources, sources.extension);				
+				File srcJar = solver.getMoxieCache().getArtifact(sources, sources.extension);
 				String jarPath;
 				String srcPath;
 				if ("var".equals(kind)) {
@@ -258,10 +279,10 @@ public class Build {
 					if (extRelative) {
 						// relative to project dependency folder
 						jar = config.getProjectConfig().getProjectDependencyArtifact(dependency);
-						
+
 						// relative to project dependency source folder
 						srcJar = config.getProjectConfig().getProjectDependencySourceArtifact(dependency);
-						
+
 						jarPath = FileUtils.getRelativePath(projectFolder, jar);
 						srcPath = FileUtils.getRelativePath(projectFolder, srcJar);
 					} else {
@@ -283,7 +304,7 @@ public class Build {
 				}
 			}
 		}
-				
+
 		for (Build linkedProject : solver.getLinkedModules()) {
 			String projectName = null;
 			File dotProject = new File(linkedProject.config.getProjectDirectory(), ".project");
@@ -314,25 +335,25 @@ public class Build {
 			sb.append(format("<classpathentry kind=\"src\" path=\"/{0}\" />\n", projectName));
 		}
 		sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jdt.launching.JRE_CONTAINER\" />\n");
-		
+
 		if (settings.groovy) {
 			sb.append("<classpathentry exported=\"true\" kind=\"con\" path=\"GROOVY_SUPPORT\" />\n");
 			sb.append("<classpathentry exported=\"true\" kind=\"con\" path=\"GROOVY_DSL_SUPPORT\" />\n");
-		}		
+		}
 		if (settings.wst){
 			sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jst.j2ee.internal.web.container\" />\n");
 			sb.append("<classpathentry kind=\"con\" path=\"org.eclipse.jst.j2ee.internal.module.container\" />\n");
 		}
 
-		// determine if we should append an apt source folder to the classpath
+		// determine if we should append an default apt source folder to the classpath
 		File aptPrefs = new File(projectFolder, ".settings/org.eclipse.jdt.apt.core.prefs");
 		Properties aptProps = readEclipsePrefs(aptPrefs);
-		if (Boolean.valueOf(aptProps.getProperty("org.eclipse.jdt.apt.aptEnabled"))) {
-			String aptSrc = aptProps.getProperty("org.eclipse.jdt.apt.genSrcDir");
-			if (aptSrc == null) {
-				aptSrc = ".apt_generated";
+		if (genSrcDir == null && Boolean.valueOf(aptProps.getProperty("org.eclipse.jdt.apt.aptEnabled"))) {
+			genSrcDir = aptProps.getProperty("org.eclipse.jdt.apt.genSrcDir");
+			if (genSrcDir == null) {
+				genSrcDir = ".apt_generated";
 			}
-			sb.append(format("<classpathentry kind=\"src\" path=\"{0}\">\n", aptSrc));
+			sb.append(format("<classpathentry kind=\"src\" path=\"{0}\">\n", genSrcDir));
 			sb.append("\t<attributes>\n");
 			sb.append("\t\t<attribute name=\"optional\" value=\"true\"/>\n");
 			sb.append("\t</attributes>\n");
@@ -346,10 +367,10 @@ public class Build {
 		file.append("<classpath>\n");
 		file.append(StringUtils.insertHardTab(sb.toString()));
 		file.append("</classpath>\n");
-		
+
 		FileUtils.writeContent(new File(projectFolder, ".classpath"), file.toString());
 	}
-	
+
 	private void writeEclipseFactorypath(EclipseSettings settings) {
 		File projectFolder = config.getProjectDirectory();
 		StringBuilder sb = new StringBuilder();
@@ -370,7 +391,7 @@ public class Build {
 				File file = solver.getArtifact(dep);
 				aptFiles.add(file);
 			}
-			
+
 			// create the factorypath file
 			boolean runInBatchMode = false;
 			String pattern = "<factorypathentry kind=\"{0}\" id=\"{1}\" enabled=\"true\" runInBatchMode=\"{2}\" />\n";
@@ -380,7 +401,7 @@ public class Build {
 			for (File file : aptFiles) {
 				sb.append(MessageFormat.format(pattern, kind, file, runInBatchMode));
 			}
-			
+
 			// write the factorypath file
 			StringBuilder file = new StringBuilder();
 			file.append("<factorypath>\n");
@@ -388,16 +409,24 @@ public class Build {
 			file.append("</factorypath>\n");
 
 			FileUtils.writeContent(new File(projectFolder, ".factorypath"), file.toString());
-			
+
+			String genSrcDir = ".apt_generated";
+			for (SourceDirectory dir : config.getSourceDirectories()) {
+				if (dir.apt && Scope.compile.equals(dir.scope)) {
+					genSrcDir = dir.name;
+					break;
+				}
+			}
+
 			// create/update Eclipse apt preferences
 			File aptPrefs = new File(projectFolder, ".settings/org.eclipse.jdt.apt.core.prefs");
 			Properties aptDefaults = new Properties();
-			aptDefaults.put("org.eclipse.jdt.apt.genSrcDir", ".apt_generated");
+			aptDefaults.put("org.eclipse.jdt.apt.genSrcDir", genSrcDir);
 			aptDefaults.put("org.eclipse.jdt.apt.reconcileEnabled", "true");
 			Properties aptOverrides = new Properties();
 			aptOverrides.put("org.eclipse.jdt.apt.aptEnabled", "true");
 			writeEclipsePrefs(aptPrefs, aptDefaults, aptOverrides);
-			
+
 			// create/update Eclipse jdt preferences
 			File jdtPrefs = new File(projectFolder, ".settings/org.eclipse.jdt.core.prefs");
 			Properties jdtOverrides = new Properties();
@@ -405,7 +434,7 @@ public class Build {
 			writeEclipsePrefs(jdtPrefs, new Properties(), jdtOverrides);
 		}
 	}
-	
+
 	private Properties readEclipsePrefs(File prefsFile) {
 		Properties props = new Properties();
 		if (prefsFile.exists()) {
@@ -425,7 +454,7 @@ public class Build {
 		}
 		return props;
 	}
-	
+
 	private void writeEclipsePrefs(File prefsFile, Properties defaults, Properties overrides) {
 		// create/update Eclipse preferences
 		if (prefsFile.exists()) {
@@ -435,14 +464,14 @@ public class Build {
 		} else {
 			// create .settings folder
 			prefsFile.getParentFile().mkdirs();
-			
+
 			// insert prefs version
 			defaults.put("eclipse.preferences.version", "1");
 		}
-		
+
 		// ensure the overrides are set
 		defaults.putAll(overrides);
-		
+
 		FileOutputStream os = null;
 		try {
 			os = new FileOutputStream(prefsFile);
@@ -456,7 +485,7 @@ public class Build {
 			}
 		}
 	}
-	
+
 	private void writeEclipseProject(EclipseSettings settings) {
     	if (!config.getModules().isEmpty()) {
     		// do not write project file for a parent descriptor
@@ -469,14 +498,14 @@ public class Build {
 				StringBuilder sb = new StringBuilder();
 				Pattern namePattern = Pattern.compile("\\s*?<name>(.+)</name>");
 				Pattern descriptionPattern = Pattern.compile("\\s*?<comment>(.+)</comment>");
-				
+
 				boolean replacedName = false;
 				boolean replacedDescription = false;
-				
+
 				Scanner scanner = new Scanner(dotProject);
 				while (scanner.hasNextLine()) {
 					String line = scanner.nextLine();
-					
+
 					// replace name
 					if (!replacedName) {
 						Matcher m = namePattern.matcher(line);
@@ -489,7 +518,7 @@ public class Build {
 							replacedName = true;
 						}
 					}
-					
+
 					// replace description
 					if (!replacedDescription) {
 						Matcher m = descriptionPattern.matcher(line);
@@ -503,17 +532,17 @@ public class Build {
 							replacedDescription = true;
 						}
 					}
-					
+
 					sb.append(line).append('\n');
 				}
 				scanner.close();
-				
+
 				FileUtils.writeContent(dotProject, sb.toString());
 			} catch (FileNotFoundException e) {
 			}
 			return;
 		}
-		
+
 		// create file
 		StringBuilder sb = new StringBuilder();
 		sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -523,12 +552,12 @@ public class Build {
 		sb.append("\t<projects>\n");
 		sb.append("\t</projects>\n");
 		sb.append("\t<buildSpec>\n");
-		
+
 		List<String> buildCommands = new ArrayList<String>();
 		if (config.getSourceDirectories().size() > 0) {
 			buildCommands.add("org.eclipse.jdt.core.javabuilder");
 		}
-		
+
 		if (settings.wst) {
 			buildCommands.add("org.eclipse.wst.common.project.facet.core.builder");
 			buildCommands.add("org.eclipse.wst.validation.validationbuilder");
@@ -555,37 +584,37 @@ public class Build {
 				natures.add("org.eclipse.wst.common.modulecore.ModuleCoreNature");
 				natures.add("org.eclipse.wst.common.project.facet.core.nature");
 				natures.add("org.eclipse.wst.jsdt.core.jsNature");
-			}			
+			}
 			for (String nature : natures) {
 				sb.append(MessageFormat.format("\t\t<nature>{0}</nature>\n", nature));
 			}
 		}
 		sb.append("\t</natures>\n");
 		sb.append("</projectDescription>\n\n");
-		
+
 		FileUtils.writeContent(dotProject, sb.toString());
 	}
-	
+
 	private void writeIntelliJProject(IntelliJSettings settings) {
     	if (config.getModules().isEmpty()) {
     		// no modules to write project files
     		return;
     	}
-    	
+
 		ToolkitConfig project = config.getProjectConfig();
-		
+
 		File dotIdea = new File(project.baseDirectory, ".idea");
 		dotIdea.mkdirs();
-		
+
 		// Group name prefers name attribute, but will use groupId if required
 		String groupName = project.pom.getGroupId();
 		if (!project.pom.getArtifactId().equals(project.pom.getName())) {
 			groupName = project.pom.getName();
 		}
-		
+
 		List<Module> modules = new ArrayList<Module>(config.getModules());
 		Collections.sort(modules);
-		
+
         StringBuilder sb = new StringBuilder();
 		for (Module module : modules) {
 			File moduleFolder = new File(project.baseDirectory, module.folder);
@@ -611,7 +640,7 @@ public class Build {
 					continue;
 				}
 				sb.append(format("<module fileurl=\"file://$PROJECT_DIR$/{0}/{1}.iml\" filepath=\"$PROJECT_DIR$/{0}/{1}.iml\" group=\"{2}\" />\n",
-						module.folder, moduleConfig.getPom().artifactId, groupName));	
+						module.folder, moduleConfig.getPom().artifactId, groupName));
 			} catch (Exception e) {
 				console.error(e, "Failed to parse {0} for module {1}!", module.descriptor, module.folder);
 			}
@@ -626,7 +655,7 @@ public class Build {
         component.append("<component name=\"ProjectModuleManager\">\n");
         component.append(StringUtils.insertHalfTab(modulesStr.toString()));
         component.append("</component>");
-		
+
         StringBuilder file = new StringBuilder();
         file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         file.append("<project version=\"4\">\n");
@@ -634,15 +663,15 @@ public class Build {
         file.append("</project>\n\n");
         FileUtils.writeContent(new File(dotIdea, "modules.xml"), file.toString());
 	}
-	
+
 	private void writeIntelliJAnt() {
     	if (config.getModules().isEmpty()) {
     		// no modules to write project files
     		return;
     	}
-    	
+
 		ToolkitConfig project = config.getProjectConfig();
-		
+
 		File dotIdea = new File(project.baseDirectory, ".idea");
 		dotIdea.mkdirs();
     	File antFile = new File(dotIdea, "ant.xml");
@@ -650,7 +679,7 @@ public class Build {
     		// do not attempt to update this file
     		return;
     	}
-		
+
         StringBuilder sb = new StringBuilder();
 
         File rootAnt = new File(project.baseDirectory, "build.xml");
@@ -671,7 +700,7 @@ public class Build {
         component.append("<component name=\"AntConfiguration\">\n");
         component.append(StringUtils.insertHalfTab(sb.toString()));
         component.append("</component>");
-		
+
         StringBuilder file = new StringBuilder();
         file.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
         file.append("<project version=\"4\">\n");
@@ -718,7 +747,7 @@ public class Build {
         dependencies.addAll(solver.solve(Scope.compile));
         // add unique test classpath items
         dependencies.addAll(solver.solve(Scope.test));
-        
+
         for (Dependency dependency : dependencies) {
             Scope scope = null;
             File jar = null;
@@ -752,7 +781,7 @@ public class Build {
                     if (extRelative) {
 						// relative to project dependency folder
 						jar = config.getProjectConfig().getProjectDependencyArtifact(dependency);
-						
+
 						// relative to project dependency source folder
 						srcJar = config.getProjectConfig().getProjectDependencySourceArtifact(dependency);
 
@@ -814,11 +843,11 @@ public class Build {
         file.append("<module type=\"JAVA_MODULE\" version=\"4\">\n");
         file.append(StringUtils.insertHalfTab(component.toString()));
         file.append("</module>\n\n");
-        
+
         String name = config.getPom().getArtifactId();
         FileUtils.writeContent(new File(projectFolder, name + ".iml"), file.toString());
     }
-	
+
 	private void writePOM() {
 		if (config.getSourceDirectories().isEmpty()
     			|| config.getPom().isPOM()
@@ -831,14 +860,14 @@ public class Build {
 		sb.append(getPom().toXML(false));
 		FileUtils.writeContent(new File(config.getProjectDirectory(), "pom.xml"), sb.toString());
 	}
-	
+
 	public void describe() {
 		console.title(getPom().name, getPom().version);
 
 		describeConfig();
 		describeSettings();
 	}
-	
+
 	void describeConfig() {
 		Pom pom = getPom();
 		console.log("project metadata");
@@ -849,7 +878,7 @@ public class Build {
 		describe(Key.version, pom.version);
 		describe(Key.organization, pom.organization);
 		describe(Key.url, pom.url);
-		
+
 		if (!solver.isOnline()) {
 			console.separator();
 			console.warn("Moxie is running offline. Network functions disabled.");
@@ -873,7 +902,7 @@ public class Build {
 			console.separator();
 		}
 	}
-	
+
 	void describeSettings() {
 		if (config.isVerbose()) {
 			console.log("Moxie parameters");
@@ -883,7 +912,7 @@ public class Build {
 			describe(Toolkit.MX_DEBUG, "" + config.isDebug());
 			describe(Toolkit.MX_VERBOSE, "" + config.isVerbose());
 			describe(Toolkit.Key.mavenCacheStrategy, config.getMavenCacheStrategy().name());
-			
+
 			console.log("dependency sources");
 			if (config.getRepositories().size() == 0) {
 				console.error("no dependency sources defined!");
@@ -910,14 +939,14 @@ public class Build {
 	void describe(Enum<?> key, String value) {
 		describe(key.name(), value);
 	}
-	
+
 	void describe(String key, String value) {
 		if (StringUtils.isEmpty(value)) {
 			return;
 		}
 		console.key(StringUtils.leftPad(key, 12, ' '), value);
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Build (" + getPom().toString() + ")";

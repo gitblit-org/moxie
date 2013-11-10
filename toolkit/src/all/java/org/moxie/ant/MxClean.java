@@ -19,46 +19,60 @@ import java.io.File;
 
 import org.moxie.Build;
 import org.moxie.Scope;
+import org.moxie.SourceDirectory;
 import org.moxie.Toolkit.Key;
 import org.moxie.utils.FileUtils;
 
 
 public class MxClean extends MxTask {
-	
+
 	Scope scope;
-	
+
 	public MxClean() {
 		super();
 		setTaskName("mx:clean");
 	}
-	
+
 	public void setScope(String scope) {
 		this.scope = Scope.fromString(scope);
 	}
 
+	@Override
 	public void execute() {
+		if (scope == null || Scope.compile.equals(scope)) {
+			// clean apt source folders
+			Build build = getBuild();
+			for (SourceDirectory sd : build.getConfig().getSourceDirectories()) {
+				if (sd.apt) {
+					getConsole().log("cleaning apt source directory {0}", sd.name);
+					FileUtils.delete(sd.getSources());
+					sd.getSources().mkdirs();
+				}
+			}
+		}
+
 		if (scope == null) {
 			// clean output folder
 			File dir = new File(getProject().getProperty(Key.outputDirectory.projectId()));
-			getConsole().log("cleaning {0}", dir.getAbsolutePath());
-			FileUtils.delete(dir);			
+			getConsole().log("cleaning output directory {0}", dir.getAbsolutePath());
+			FileUtils.delete(dir);
 
 			// clean target folder
 			dir = new File(getProject().getProperty(Key.targetDirectory.projectId()));
-			getConsole().log("cleaning {0}", dir.getAbsolutePath());
+			getConsole().log("cleaning output directory {0}", dir.getAbsolutePath());
 			FileUtils.delete(dir);
-			
+
 			if (getProject().getProperty(Key.dependencyDirectory.projectId()) != null) {
 				// clean project dependency directory
 				dir = new File(getProject().getProperty(Key.dependencyDirectory.projectId()));
-				getConsole().log("cleaning {0}", dir.getAbsolutePath());
+				getConsole().log("cleaning dependency directory {0}", dir.getAbsolutePath());
 				FileUtils.delete(dir);
 			}
 		} else {
 			clean(scope);
 		}
 	}
-	
+
 	private void clean(Scope scope) {
 		if (!scope.isValidSourceScope()) {
 			getConsole().error("Illegal scope for cleaning {0}", scope);
@@ -68,6 +82,6 @@ public class MxClean extends MxTask {
 		Build build = getBuild();
 		File dir = build.getConfig().getOutputDirectory(scope);
 		getConsole().log("cleaning {0}", dir.getAbsolutePath());
-		FileUtils.delete(dir);			
+		FileUtils.delete(dir);
 	}
 }

@@ -36,16 +36,17 @@ public class SourceDirectory implements Serializable {
 	private File sources;
 	private File classes;
 	public Set<String> tags;
+	public boolean apt;
 
 	SourceDirectory(String name, Scope scope) {
 		this.name = StringUtils.stripQuotes(name);
 		this.scope = scope;
 		tags = new TreeSet<String>();
 	}
-	
+
 	boolean resolve(File projectDirectory, File outputDirectory) {
 		sources = new File(projectDirectory, name);
-		if (sources.exists()) {
+		if (sources.exists() || apt) {
 			String dir = null;
 			switch (scope) {
 			case compile:
@@ -65,26 +66,26 @@ public class SourceDirectory implements Serializable {
 		}
 		return false;
 	}
-	
+
 	public File getSources() {
 		if (sources == null) {
 			throw new RuntimeException(MessageFormat.format("SourceDirectory {0} has not been resolved!", name));
 		}
 		return sources;
 	}
-	
+
 	public File getOutputDirectory() {
 		if (classes == null) {
 			throw new RuntimeException(MessageFormat.format("SourceDirectory {0} has not been resolved!", name));
 		}
 		return classes;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return getSources().hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof SourceDirectory) {
@@ -92,9 +93,9 @@ public class SourceDirectory implements Serializable {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getSources() + " (" + scope + ")";
-	}		
+	}
 }
