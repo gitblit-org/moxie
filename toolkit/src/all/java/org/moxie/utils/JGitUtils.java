@@ -36,6 +36,7 @@ import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheBuilder;
 import org.eclipse.jgit.dircache.DirCacheEntry;
 import org.eclipse.jgit.internal.JGitText;
+import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.CommitBuilder;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.FileMode;
@@ -49,14 +50,13 @@ import org.eclipse.jgit.lib.RepositoryCache.FileKey;
 import org.eclipse.jgit.lib.TreeFormatter;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.storage.file.FileRepository;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.util.FS;
 import org.moxie.MoxieException;
 
 public class JGitUtils {
-	
+
 	public static File findRepositoryDir(File dir) {
 		File resolved = FileKey.resolve(dir, FS.detect());
 		if (resolved != null) {
@@ -99,7 +99,7 @@ public class JGitUtils {
 
 	/**
 	 * Create an orphaned branch in a repository.
-	 * 
+	 *
 	 * @param repository
 	 * @param branchName
 	 * @param author
@@ -243,7 +243,7 @@ public class JGitUtils {
 
 	/**
 	 * Creates an in-memory index of the issue change.
-	 * 
+	 *
 	 * @param repo
 	 * @param headId
 	 * @param sourceFolder
@@ -348,21 +348,21 @@ public class JGitUtils {
 		}
 		return list;
 	}
-	
-	public static String commitFiles(File dir, List<String> files, String message, 
+
+	public static String commitFiles(File dir, List<String> files, String message,
 			String tagName, String tagMessage) throws IOException, GitAPIException {
-		Git git = Git.open(dir);		
+		Git git = Git.open(dir);
 		AddCommand add = git.add();
 		for (String file : files) {
 			add.addFilepattern(file);
 		}
 		add.call();
-		
+
 		// execute the commit
 		CommitCommand commit = git.commit();
 		commit.setMessage(message);
 		RevCommit revCommit = commit.call();
-		
+
 		if (!StringUtils.isEmpty(tagName) && !StringUtils.isEmpty(tagMessage)) {
 			// tag the commit
 			TagCommand tagCommand = git.tag();
