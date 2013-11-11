@@ -1,6 +1,6 @@
 name: Moxie-Common
 description: 'common classes for Moxie'
-groupId: org.moxie
+groupId: com.gitblit.moxie
 artifactId: moxie-common
 parent: ../build.moxie
 modules:

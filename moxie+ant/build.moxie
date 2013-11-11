@@ -1,6 +1,6 @@
 name: Moxie+Ant
 description: 'Moxie+Ant distribution'
-groupId: org.moxie
+groupId: com.gitblit.moxie
 artifactId: moxie+ant
 packaging: zip
 parent: ../build.moxie

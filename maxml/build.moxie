@@ -1,6 +1,6 @@
 name: Moxie-Maxml
 description: 'a parser for Maxml, a YAML-like format'
-groupId: org.moxie
+groupId: com.gitblit.moxie
 artifactId: maxml
 parent: ../build.moxie
 sourceDirectories:

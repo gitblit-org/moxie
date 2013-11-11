@@ -13,7 +13,8 @@ r15: {
 	- Fixed test->build classpath dependency leaking
 	- Exclude RING1 optional dependencies on runtime classpath
 	- Export runtime classpath dependencies, not compile classpath dependencies in mx:zip, mx:war, and mx:onejar
-    changes: ~
+    changes:
+	- Changed groupId to com.gitblit.moxie to make Sonatype happy
     additions:
 	- Ignore fenced code blocks (```) in mx:doc processing
 	- Support apt option for dependencies and automatic Eclipse .factorypath & project prefs generation
