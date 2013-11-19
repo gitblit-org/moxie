@@ -103,13 +103,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.8.3/moxie-proxy-0.8.3.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.9.0/moxie-proxy-0.9.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -124,19 +124,10 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:If</h2>
-<p>This is a fork of the <a href="http://ant-contrib.sourceforge.net">Ant-Contrib</a> if task.</p>
-
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Synopsis</h3>
-<p>Perform some tasks based on whether a given condition holds true or not.</p>
-
-<p>This task is heavily based on the Condition framework that can be found in Ant 1.4 and later, therefore it cannot be used inconjunction with versions of Ant prior to 1.4. Due to numeruos bugs in Ant 1.4(.1) that affect this task, we recommend to use Ant 1.5 or later.</p>
-
-<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Nested Elements</h3>
-<p>This task doesn't have any attributes, the condition to test is specified by a nested element - see the documentation of your &lt;condition&gt; task (see the [online documentation](http://ant.apache.org/manual/CoreTasks/condition.html) for example) for a complete list of nested elements.<br/><br/>Just like the &lt;condition&gt; task, only a single condition can be specified - you combine them using &lt;and&gt; or &lt;or&gt; conditions.<br/><br/>In addition to the condition, you can specify three different child elements, &lt;elseif&gt;, &lt;then&gt; and &lt;else&gt;. All three subelements are optional. Both &lt;then&gt; and &lt;else&gt; must not be used more than once inside the if task. Both are containers for Ant tasks, just like Ant's &lt;parallel&gt; and &lt;sequential&gt; tasks - in fact they are implemented using the same class as Ant's &lt;sequential&gt; task.<br/><br/>The &lt;elseif&gt; behaves exactly like an &lt;if&gt; except that it cannot contain the &lt;else&gt; element inside of it. You may specify as may of these as you like, and the order they are specified is the order they are evaluated in. If the condition on the &lt;if&gt; is false, then the first &lt;elseif&gt; who's conditional evaluates to true will be executed. The &lt;else&gt; will be executed only if the &lt;if&gt; and all &lt;elseif&gt; conditions are false. <br/></p>
-
-<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h3>
-<p><pre class='prettyprint lang-xml'>
+<h2 class="section" id='H1'><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:If</h2><p>This is a fork of the <a href="http://ant-contrib.sourceforge.net">Ant-Contrib</a> if task.</p>
+<h3 class="section" id='H2'><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Synopsis</h3><p>Perform some tasks based on whether a given condition holds true or not.</p><p>This task is heavily based on the Condition framework that can be found in Ant 1.4 and later, therefore it cannot be used inconjunction with versions of Ant prior to 1.4. Due to numeruos bugs in Ant 1.4(.1) that affect this task, we recommend to use Ant 1.5 or later.</p>
+<h3 class="section" id='H3'><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Nested Elements</h3><p>This task doesn't have any attributes, the condition to test is specified by a nested element - see the documentation of your &lt;condition&gt; task for a complete list of nested elements.<br/><br/>Just like the &lt;condition&gt; task, only a single condition can be specified - you combine them using &lt;and&gt; or &lt;or&gt; conditions.<br/><br/>In addition to the condition, you can specify three different child elements, &lt;elseif&gt;, &lt;then&gt; and &lt;else&gt;. All three subelements are optional. Both &lt;then&gt; and &lt;else&gt; must not be used more than once inside the if task. Both are containers for Ant tasks, just like Ant's &lt;parallel&gt; and &lt;sequential&gt; tasks - in fact they are implemented using the same class as Ant's &lt;sequential&gt; task.<br/><br/>The &lt;elseif&gt; behaves exactly like an &lt;if&gt; except that it cannot contain the &lt;else&gt; element inside of it. You may specify as may of these as you like, and the order they are specified is the order they are evaluated in. If the condition on the &lt;if&gt; is false, then the first &lt;elseif&gt; who's conditional evaluates to true will be executed. The &lt;else&gt; will be executed only if the &lt;if&gt; and all &lt;elseif&gt; conditions are false. <br/></p><p>See the <a href="http://ant.apache.org/manual/CoreTasks/condition.html">condition</a> documentation for examples.</p>
+<h3 class="section" id='H4'><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h3><p><pre class='prettyprint lang-xml'>
 &lt;mx:if&gt;
  &lt;equals arg1=&quot;${foo}&quot; arg2=&quot;bar&quot; /&gt;
  &lt;then&gt;
@@ -166,7 +157,7 @@
 &lt;/mx:if&gt;
 </pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="mxcommit.html">&larr; mx:Commit</a></li> <li class="next"><a href="mxinit.html">mx:Init &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-10-09</p>
+<div ><ul class="pager"><li class="previous"><a href="mxcommit.html">&larr; mx:Commit</a></li> <li class="next"><a href="mxinit.html">mx:Init &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-11-19</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

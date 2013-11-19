@@ -103,13 +103,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.8.3/moxie-proxy-0.8.3.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.9.0/moxie-proxy-0.9.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -124,22 +124,13 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Tips and Tricks</h2>
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Colored Output</h3>
-<p>Moxie supports ANSI color output during builds.  Color output can be activated either by setting the <code>MX_COLOR</code> enviroment variable or by specifying a command-line parameter.</p>
-
+<h2 class="section" id='H1'><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Tips and Tricks</h2>
+<h3 class="section" id='H2'><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Colored Output</h3><p>Moxie supports ANSI color output during builds. Color output can be activated either by setting the <code>MX_COLOR</code> enviroment variable or by specifying a command-line parameter.</p>
 <pre><code>ant -Dmx.color=true mytarget
 moxie -color mytarget
 </code></pre>
-
-<h4 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Windows</h4>
-<p>By default, Windows Command Prompt does not support ANSI color but with a little help from <a href="https://github.com/adoxa/ansicon">ansicon</a> (<a href="ansi151.zip">download</a>), a nifty little tool, you can make Windows Command Prompt (and Console2, etc) support ANSI escape sequences.</p>
-
-<h4 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>A Nice Palette</h4>
-<p>This is the palette I use in Console 2, Gnome-Terminal, and iTerm (<a href="moxie.itermcolors">download</a>).</p>
-
-<p>I set the background of the terminal to black.</p>
-
+<h4 class="section" id='H3'><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Windows</h4><p>By default, Windows Command Prompt does not support ANSI color but with a little help from <a href="https://github.com/adoxa/ansicon">ansicon</a> (<a href="ansi151.zip">download</a>), a nifty little tool, you can make Windows Command Prompt (and Console2, etc) support ANSI escape sequences.</p>
+<h4 class="section" id='H4'><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>A Nice Palette</h4><p>This is the palette I use in Console 2, Gnome-Terminal, and iTerm (<a href="moxie.itermcolors">download</a>).</p><p>I set the background of the terminal to black.</p>
 <table style="font-size:0.8em;font-family:monospace">
 <tr>
 <td class="span2" style="background-color:#2e3436;color:white">#2e3436<br/>rgb(46, 52, 54)</td>
@@ -162,50 +153,32 @@ moxie -color mytarget
 <td class="span1" style="background-color:#ededeb;color:#2e3436">#ededeb<br/>rgb(238, 238, 236)</td>
 </tr>
 </table>
-<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Verbose Output</h3>
-<p>Moxie supports verbose output during builds.</p>
-
+<h3 class="section" id='H5'><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Verbose Output</h3><p>Moxie supports verbose output during builds.</p>
 <pre><code>ant -Dmx.verbose=true mytarget
 moxie -verbose mytarget
 </code></pre>
-
-<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Debug Output</h3>
-<p>Moxie supports debug output during builds.</p>
-
+<h3 class="section" id='H6'><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Debug Output</h3><p>Moxie supports debug output during builds.</p>
 <pre><code>ant -Dmx.debug=true mytarget
 moxie -debug mytarget
 </code></pre>
-
-<h3 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Working Offline</h3>
-<p>Moxie supports disabling automatic network retrieval.</p>
-
+<h3 class="section" id='H7'><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Working Offline</h3><p>Moxie supports disabling automatic network retrieval.</p>
 <pre><code>ant -Dmx.online=false mytarget
 moxie -offline mytarget
 </code></pre>
-
-<h3 class="section" id="H8"><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Disabling Checksum Verification</h3>
-<p>Moxie supports disabling SHA1 checksum verification.</p>
-
+<h3 class="section" id='H8'><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Disabling Checksum Verification</h3><p>Moxie supports disabling SHA1 checksum verification.</p>
 <pre><code>ant -Dmx.enforceChecksums=false mytarget
 moxie -ignoreCheckums mytarget
 </code></pre>
-
-<h3 class="section" id="H9"><a href="#H9" class="sectionlink"><i class="icon-share-alt"> </i></a>Forcing Metadata Updates</h3>
-<p>Moxie supports forcing metadata updates.</p>
-
+<h3 class="section" id='H9'><a href="#H9" class="sectionlink"><i class="icon-share-alt"> </i></a>Forcing Metadata Updates</h3><p>Moxie supports forcing metadata updates.</p>
 <pre><code>ant -Dmx.updateMetadata=true mytarget
 moxie -updateMetadata mytarget
 </code></pre>
-
-<h3 class="section" id="H10"><a href="#H10" class="sectionlink"><i class="icon-share-alt"> </i></a>Relocating the Moxie Root Directory</h3>
-<p>By default, your Moxie root directory is <em>~/.moxie</em>.  This can be changed by passing a command-line parameter.</p>
-
+<h3 class="section" id='H10'><a href="#H10" class="sectionlink"><i class="icon-share-alt"> </i></a>Relocating the Moxie Root Directory</h3><p>By default, your Moxie root directory is <em>~/.moxie</em>. This can be changed by passing a command-line parameter.</p>
 <pre><code>ant -Dmx.root=/path/to/dir mytarget
 moxie -Dmx.root=/path/to/dir mytarget
-
 </code></pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="samples.html">&larr; sample files</a></li> <li class="next"><a href="properties.html">ant property reference &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-10-09</p>
+<div ><ul class="pager"><li class="previous"><a href="samples.html">&larr; sample files</a></li> <li class="next"><a href="properties.html">ant property reference &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-11-19</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

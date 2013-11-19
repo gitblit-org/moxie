@@ -103,13 +103,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.8.3/moxie-proxy-0.8.3.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.9.0/moxie-proxy-0.9.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -124,20 +124,9 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>settings.moxie</h2>
-<p>The <code>settings.moxie</code> file is used to control Moxie's behavior across all builds.</p>
-
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Proxies</h3>
-<p>Moxie automatically uses all proxy definitions <u>from your <b>local Maven settings</b></u> (<em>~/.m2/settings.xml</em>).  Moxie also supports proxy definitions in it's own <b>local Moxie settings</b> (<em>~/.moxie/settings.moxie</em>).</p>
-
-<p>Unlike Maven, which assumes you will proxy everything and requires you to manually exclude hostnames (i.e. <em>opt-out</em>), Moxie supports <em>opt-in</em> proxy definitions which allows you to specify what repositories will be proxied by a proxy definition. If this is undesirable, Moxie also supports Maven-style <em>opt-out</em> proxy definitions too. </p>
-
-<p>If you want to define proxy settings, copy and edit one of the following example proxy definitions to a new text file: <em>~/.moxie/settings.moxie</em></p>
-
-<h4 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Example standard network proxy configuration</h4>
-<p>All repositories are proxied through this connection.</p>
-
-<p><pre class='prettyprint lang-yaml'>
+<h2 class="section" id='H1'><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>settings.moxie</h2><p>The <code>settings.moxie</code> file is used to control Moxie's behavior across all builds.</p>
+<h3 class="section" id='H2'><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Proxies</h3><p>Moxie automatically uses all proxy definitions <u>from your <b>local Maven settings</b></u> <em>(~/.m2/settings.xml)</em>. Moxie also supports proxy definitions in it's own <b>local Moxie settings</b> <em>(~/.moxie/settings.moxie)</em>.</p><p>Unlike Maven, which assumes you will proxy everything and requires you to manually exclude hostnames (i.e. <em>opt-out</em>), Moxie supports <em>opt-in</em> proxy definitions which allows you to specify what repositories will be proxied by a proxy definition. If this is undesirable, Moxie also supports Maven-style <em>opt-out</em> proxy definitions too. </p><p>If you want to define proxy settings, copy and edit one of the following example proxy definitions to a new text file: <em>~/.moxie/settings.moxie</em></p>
+<h4 class="section" id='H3'><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Example standard network proxy configuration</h4><p>All repositories are proxied through this connection.</p><p><pre class='prettyprint lang-yaml'>
 proxies:
 - {
     id: 'myproxy'
@@ -149,11 +138,7 @@ proxies:
     password: 'somepassword'
   }
 </pre></p>
-
-<h4 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Example Moxie Proxy configuration</h4>
-<p>Only the identified repositories are proxied through this connection.</p>
-
-<p><pre class='prettyprint lang-yaml'>
+<h4 class="section" id='H4'><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Example Moxie Proxy configuration</h4><p>Only the identified repositories are proxied through this connection.</p><p><pre class='prettyprint lang-yaml'>
 proxies:
 - {
     id: 'moxieProxy'
@@ -166,15 +151,8 @@ proxies:
     repositories: &quot;central, mavencentral, restlet, codehaus, sonatype-oss&quot;
   }
 </pre></p>
-
-<hr/>
-<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Registered Repositories</h3>
-<p>This section is used to define remote artifact repositories.  Currently only http/https repositories are supported.</p>
-
-<p>The default <em>connectTimeout</em> is 20 seconds.<br/>
-The default <em>readTimeout</em> is 1800 seconds (30 mins).</p>
-
-<p><pre class='prettyprint lang-yaml'>
+<hr />
+<h3 class="section" id='H5'><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Registered Repositories</h3><p>This section is used to define remote artifact repositories. Currently only http/https repositories are supported.</p><p>The default <em>connectTimeout</em> is 20 seconds.<br/>The default <em>readTimeout</em> is 1800 seconds (30 mins).</p><p><pre class='prettyprint lang-yaml'>
 registeredRepositories:
 - { id: 'central', url: 'http://repo1.maven.org/maven2' }
 - { id: 'mavencentral', url: 'http://repo1.maven.org/maven2' }
@@ -203,11 +181,8 @@ registeredRepositories:
     password: 'mypassword'
   }
 </pre></p>
-
-<hr/>
-<p></p>
-
-<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Fail Fast</h3>
+<hr /><p></p>
+<h3 class="section" id='H6'><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Fail Fast</h3>
 <div class="row">
 <div class="span7">
 Should the build immediately fail if an artifact can not be immediately resolved from the remote repositories or the local cache?
@@ -219,8 +194,8 @@ failFastOnArtifactResolution: true
 </pre>
 </div>
 </div>
-<hr/>
-<h3 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Metadata Update Policy</h3>
+<hr />
+<h3 class="section" id='H7'><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Metadata Update Policy</h3>
 <div class="row">
 <div class="span7">
 Specify the metadata update check policy for LATEST, RELEASE, and SNAPSHOT.
@@ -238,8 +213,8 @@ updatePolicy: 'daily'
 </pre>
 </div>
 </div>
-<hr/>
-<h3 class="section" id="H8"><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Snapshot Purge Policy</h3>
+<hr />
+<h3 class="section" id='H8'><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Snapshot Purge Policy</h3>
 <div class="row">
 <div class="span7">
 Default minimum count of snapshot revisions to keep.<br/>
@@ -253,7 +228,7 @@ revisionRetentionCount: 1
 </pre>
 </div>
 </div>
-<hr/>
+<hr />
 <div class="row">
 <div class="span7">
 If the count of snapshot revisions exceeds the specified retention count, then delete all snapshot revisions older than this count of days.<br/>
@@ -266,12 +241,12 @@ revisionPurgeAfterDays: 0
 </pre>
 </div>
 </div>
-<hr/>
-<h3 class="section" id="H9"><a href="#H9" class="sectionlink"><i class="icon-share-alt"> </i></a>Maven Cache Strategy</h3>
+<hr />
+<h3 class="section" id='H9'><a href="#H9" class="sectionlink"><i class="icon-share-alt"> </i></a>Maven Cache Strategy</h3>
 <div class="row">
 <div class="span7">
 Defines how to use the <em>${user.home}/.m2/repository</em> folder.
-<br/>
+<br />
 Options are:
 <dl>
   <dt>IGNORE</dt><dd>ignore Maven cache entirely</dd>
@@ -287,7 +262,7 @@ mavenCacheStrategy: 'IGNORE'
 </div>
 </div>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="defaults.html">&larr; defaults.moxie</a></li> <li class="next"><a href="samples.html">sample files &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-10-09</p>
+<div ><ul class="pager"><li class="previous"><a href="defaults.html">&larr; defaults.moxie</a></li> <li class="next"><a href="samples.html">sample files &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-11-19</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

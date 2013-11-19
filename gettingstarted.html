@@ -103,13 +103,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.8.3/moxie-proxy-0.8.3.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.9.0/moxie-proxy-0.9.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -124,10 +124,8 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Getting Started</h2>
-<p>Moxie does not use <a href="https://maven.apache.org/pom.html" title="Apache Maven POM Reference">Maven's pom.xml</a> nor <a href="https://ant.apache.org/ivy/history/latest-milestone/ivyfile.html" title="Apache Ivy File Reference">Ivy's ixy.xml</a> to describe your project.  Moxie uses the <code>build.moxie</code> project descriptor.  This file employs a <em>key:value</em> format which is very similar to YAML.</p>
-
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Minimal build.moxie</h3>
+<h2 class="section" id='H1'><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Getting Started</h2><p>Moxie does not use <a href="https://maven.apache.org/pom.html" title="Apache Maven POM Reference">Maven's pom.xml</a> nor <a href="https://ant.apache.org/ivy/history/latest-milestone/ivyfile.html" title="Apache Ivy File Reference">Ivy's ixy.xml</a> to describe your project. Moxie uses the <code>build.moxie</code> project descriptor. This file employs a <em>key:value</em> format which is very similar to YAML.</p>
+<h3 class="section" id='H2'><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Minimal build.moxie</h3>
 <div class="row">
 <div class="span8">
 Like Maven, Moxie supports convention-over-configuration so that the minimal build.moxie project descriptor can be defined as shown.  This example assumes that your project uses the <a href="http://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html">Apache Standard Directory Layout</a>.
@@ -142,7 +140,7 @@ version: '1.2.3-SNAPSHOT'
 
 <i>minimal Moxie project descriptor</i>
 </div></div>
-<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>A realistic build.moxie</h3>
+<h3 class="section" id='H3'><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>A realistic build.moxie</h3>
 <div class="row">
 <div class="span6">
 
@@ -182,12 +180,12 @@ dependencies:
 
 <i>a more elaborate Moxie project descriptor</i>
 </div></div>
-<h2 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Ant build.xml</h2>
+<h2 class="section" id='H4'><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Ant build.xml</h2>
 <div class="row">
 <div class="span9">
 Moxie turbo-charges Ant and allows you to build your artifacts with easier to read build scripts.
 This example script uses Moxie Extension tasks with automatic property defaults based on the <code>build.moxie</code> descriptor.
-<p/>
+<p />
 <pre class='prettyprint lang-xml'>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;project default=&quot;main&quot; xmlns:mx=&quot;antlib:org.moxie&quot;&gt;
@@ -217,7 +215,7 @@ This example script uses Moxie Extension tasks with automatic property defaults 
 <div class="span3">
 </div></div>
 <!-- End Markdown -->
-<div ><ul class="pager"> <li class="next"><a href="moxiedescriptor.html">build.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-10-09</p>
+<div ><ul class="pager"> <li class="next"><a href="moxiedescriptor.html">build.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-11-19</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

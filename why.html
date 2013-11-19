@@ -103,13 +103,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.8.3/moxie-proxy-0.8.3.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.9.0/moxie-proxy-0.9.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -124,57 +124,30 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Why Moxie?</h2>
-<p>Why not.  :)</p>
-
-<p>Moxie is written for those who prefer <a href="http://ant.apache.org" title="Apache Ant">Ant</a> or for those who must continue building with Ant, though they may yearn for <a href="http://maven.apache.org" title="Apache Maven">Maven</a> or <a href="http://www.gradle.org" title="Gradle">Gradle</a>.</p>
-
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Don't Repeat Yourself</h3>
-<p>As a Java developer you are faced with the need to develop code and then build deliverables from your code.  Often these two requirements have different solutions which require maintaining IDE settings and an Ant script full of paths and properties.  (i.e. Eclipse .classpath is not <em>directly</em> usable from Ant).  This is maintenance intensive, often leads to verbose Ant build scripts, and violates the <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself" title="Don't Repeat Yourself">DRY Principal</a>.</p>
-
-<p>At it's core, Moxie does two things for you:</p>
-
+<h2 class="section" id='H1'><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Why Moxie?</h2><p>Why not. :)</p><p>Moxie is written for those who prefer <a href="http://ant.apache.org" title="Apache Ant">Ant</a> or for those who must continue building with Ant, though they may yearn for <a href="http://maven.apache.org" title="Apache Maven">Maven</a> or <a href="http://www.gradle.org" title="Gradle">Gradle</a>.</p>
+<h3 class="section" id='H2'><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Don't Repeat Yourself</h3><p>As a Java developer you are faced with the need to develop code and then build deliverables from your code. Often these two requirements have different solutions which require maintaining IDE settings and an Ant script full of paths and properties. (i.e. Eclipse .classpath is not <em>directly</em> usable from Ant). This is maintenance intensive, often leads to verbose Ant build scripts, and violates the <a href="https://en.wikipedia.org/wiki/Don%27t_repeat_yourself" title="Don&#39;t Repeat Yourself">DRY Principal</a>.</p><p>At it's core, Moxie does two things for you:</p>
 <ol>
-<li>Allows you to define your project code structure and dependencies once.<br/>
-This information is used to generate IDE settings and to setup classpaths and properties for your Ant script.</li>
-<li>Resolves and retrieves your dependencies (and their dependencies) with checksum verification.</li>
+  <li>Allows you to define your project code structure and dependencies once.<br/> This information is used to generate IDE settings and to setup classpaths and properties for your Ant script.</li>
+  <li>Resolves and retrieves your dependencies (and their dependencies) with checksum verification.</li>
 </ol>
-
-<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Limitations</h3>
-<p>Some will consider Moxie <a href="http://www.merriam-webster.com/dictionary/rinky-dink">rinky-dink</a>, and I have to agree that it is less capable than the alternatives.<br/>
-If the following limitations are of concern, then Moxie may not suit your needs. </p>
-
+<h3 class="section" id='H3'><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Limitations</h3><p>Some will consider Moxie <a href="http://www.merriam-webster.com/dictionary/rinky-dink">rinky-dink</a>, and I have to agree that it is less capable than the alternatives.<br/>If the following limitations are of concern, then Moxie may not suit your needs. </p>
 <ol>
-<li>Moxie employs the Maven 2 transitive dependency resolution mechanism<div class="alert alert-info">Currently, Maven 2.0 only supports using the "nearest definition" which means that it will use the version of the closest dependency to your project in the tree of dependencies. You can always guarantee a version by declaring it explicitly in your project's POM. Note that if two dependency versions are at the same depth in the dependency tree ... the first declaration wins.</div></li>
-<li>Moxie has simplified/limited support for version ranges.<br/>
-When Moxie encounters a version range specification it will always resolve the highest version number possible based on the range specification and the list of versions in <em>maven-metadata.xml</em>.  The resolved version identifier is substituted for the version range specification.  From that point the &quot;nearest definition&quot; rule is applied.  Maven version-pinning, like [1.2.3], is not honored.</li>
-<li>Moxie does not currently deploy artifacts to a remote repository.</li>
+  <li>Moxie employs the Maven 2 transitive dependency resolution mechanism<div class="alert alert-info">Currently, Maven 2.0 only supports using the "nearest definition" which means that it will use the version of the closest dependency to your project in the tree of dependencies. You can always guarantee a version by declaring it explicitly in your project's POM. Note that if two dependency versions are at the same depth in the dependency tree ... the first declaration wins.</div></li>
+  <li>Moxie has simplified/limited support for version ranges.<br/>When Moxie encounters a version range specification it will always resolve the highest version number possible based on the range specification and the list of versions in <em>maven-metadata.xml</em>. The resolved version identifier is substituted for the version range specification. From that point the "nearest definition" rule is applied. Maven version-pinning, like [1.2.3], is not honored.</li>
+  <li>Moxie does not currently deploy artifacts to a remote repository.</li>
 </ol>
-
-<h2 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Why not Maven?</h2>
-<p>There is much to admire and respect about <a href="http://maven.apache.org" title="Apache Maven">Maven</a>.</p>
-
-<p><a href="http://maven.apache.org" title="Apache Maven">Maven</a> has done some tremendous things and has moved the Java ecosystem forward.  But while I like <a href="http://maven.apache.org" title="Apache Maven">Maven</a> repositories and the artifact metadata, I dislike the Maven build process.  I want to define my own build rules and flow, not be forced to use Maven's grand unified process.</p>
-
-<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Lessons learned from Maven</h3>
+<h2 class="section" id='H4'><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Why not Maven?</h2><p>There is much to admire and respect about <a href="http://maven.apache.org" title="Apache Maven">Maven</a>.</p><p><a href="http://maven.apache.org" title="Apache Maven">Maven</a> has done some tremendous things and has moved the Java ecosystem forward. But while I like <a href="http://maven.apache.org" title="Apache Maven">Maven</a> repositories and the artifact metadata, I dislike the Maven build process. I want to define my own build rules and flow, not be forced to use Maven's grand unified process.</p>
+<h3 class="section" id='H5'><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Lessons learned from Maven</h3>
 <ol>
-<li>A central repository of project artifacts accessible by http is brilliant.<br/>
-<em>I don't think Maven is given enough credit for the amazing achievement of convincing hundreds of Java open-source projects to offer their artifacts through a central repository.</em></li>
-<li>Defining and recursively retrieving dependencies of those artifacts is <em>really</em> brilliant.</li>
-<li>Fighting Maven causes pain.<br/>
-<em>Convention-over-configuration simplifies the build process, but convention-instead-of-configuration is too restrictive.  Not every project can be easily represented by a Maven POM without massive reorganization.</em></li>
+  <li>A central repository of project artifacts accessible by http is brilliant.<br/><em>I don't think Maven is given enough credit for the amazing achievement of convincing hundreds of Java open-source projects to offer their artifacts through a central repository.</em></li>
+  <li>Defining and recursively retrieving dependencies of those artifacts is <em>really</em> brilliant.</li>
+  <li>Fighting Maven causes pain.<br/><em>Convention-over-configuration simplifies the build process, but convention-instead-of-configuration is too restrictive. Not every project can be easily represented by a Maven POM without massive reorganization.</em></li>
 </ol>
-
-<h2 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Why not Gradle?</h2>
-<p>I like the idea of <a href="http://www.gradle.org" title="Gradle">Gradle</a>.  I have not used it.  I may use it in other projects, but I feel that <a href="http://ant.apache.org" title="Apache Ant">Ant</a> doesn't have to be put out to pasture quite yet.</p>
-
-<h2 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Why not Ant+Ivy?</h2>
-<p><a href="http://ant.apache.org/ivy" title="Apache Ivy">Ivy</a> is probably a more robust dependency manager and definitely supports more transports.  But it is strictly an artifact retrieval/deployment tool.  It does nothing to decrease the complexity or verbosity of Ant build scripts.  It is a artifact manager with a complex XML configuration file.  And at 1 MB it is a bit too large to embed within a repository, IMO.</p>
-
-<h2 class="section" id="H8"><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Why not EasyAnt?</h2>
-<p><a href="https://incubator.apache.org/easyant" title="Apache EasyAnt">EasyAnt</a>, if you've never heard of it - because I had not - is an Apache incubator project which targets offering a Maven-like experience using an enhanced Ant.  Moxie is not as ambitious in it's design as EasyAnt; Moxie is  more of a subset of EasyAnt.  EasyAnt is based on <a href="http://ant.apache.org/ivy" title="Apache Ivy">Ivy</a>.
+<h2 class="section" id='H6'><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Why not Gradle?</h2><p>I like the idea of <a href="http://www.gradle.org" title="Gradle">Gradle</a>. I have not used it. I may use it in other projects, but I feel that <a href="http://ant.apache.org" title="Apache Ant">Ant</a> doesn't have to be put out to pasture quite yet.</p>
+<h2 class="section" id='H7'><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Why not Ant+Ivy?</h2><p><a href="http://ant.apache.org/ivy" title="Apache Ivy">Ivy</a> is probably a more robust dependency manager and definitely supports more transports. But it is strictly an artifact retrieval/deployment tool. It does nothing to decrease the complexity or verbosity of Ant build scripts. It is a artifact manager with a complex XML configuration file. And at 1 MB it is a bit too large to embed within a repository, IMO.</p>
+<h2 class="section" id='H8'><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>Why not EasyAnt?</h2><p><a href="https://incubator.apache.org/easyant" title="Apache EasyAnt">EasyAnt</a>, if you've never heard of it - because I had not - is an Apache incubator project which targets offering a Maven-like experience using an enhanced Ant. Moxie is not as ambitious in it's design as EasyAnt; Moxie is more of a subset of EasyAnt. EasyAnt is based on <a href="http://ant.apache.org/ivy" title="Apache Ivy">Ivy</a>.
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="index.html">&larr; overview</a></li> <li class="next"><a href="design.html">design &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-10-09</p>
+<div ><ul class="pager"><li class="previous"><a href="index.html">&larr; overview</a></li> <li class="next"><a href="design.html">design &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-11-19</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

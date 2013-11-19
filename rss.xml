@@ -107,5 +107,12 @@
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
     		<pubDate>Wed, 09 Oct 2013 00:00:00 -0400</pubDate>
   		</item>
+  		<item>
+    		<title><![CDATA[Moxie Build Toolkit 0.9.0 released]]></title>
+    		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.9.0]]></link>
+    		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.9.0</guid>
+   			<dc:creator><![CDATA[Moxie]]></dc:creator>
+    		<pubDate>Tue, 19 Nov 2013 00:00:00 -0500</pubDate>
+  		</item>
   	</channel>
 </rss>

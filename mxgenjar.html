@@ -103,13 +103,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.8.3/moxie-proxy-0.8.3.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.9.0/moxie-proxy-0.9.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -124,34 +124,18 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:GenJar</h2>
-<p>mx:GenJar is a fork of the <a href="http://http://genjar.sourceforge.net">GenJar</a> ANT task by <em>John W. Kohler</em> and <em>Jesse Stockall</em>.  It has been enhanced with improved error reporting and Moxie integration.</p>
-
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Synopsis</h3>
-<p>Jars a set of classes and resources.<br/><br/>The &lt;genjar&gt; task is designed to make Jar creation as easy as possible. You give it the root classes (i.e. entry points) of your application and it will determine all other class files that need to be included in the jar.<br/><br/>It does this by recursively examining each class file, extracting a list of all classes referenced, eventually arriving at the complete set of classes required to execute the application. These classes are then placed into the target jar file.<br/></p>
-
-<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes</h3>
-<p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>jarfile</td><td>The name of the har file to create</td><td>At least 1 of jarfile or destdir.</td></tr><tr><td>destdir</td><td>the name of the directory to copy dependencies to</td><td>At least 1 of jarfile or destdir.</td></tr></table></p>
-
-<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Nested Elements</h3>
-<h4 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;class&gt;</h4>
-<p>Use &lt;class&gt; elements to specify the names of the classes from which &lt;genjar&gt; will begin its class dependency search. Each class is recursively searched for the classes on which it depends. In this way, all classes necessary to execute an application can be automatically included in the jar. (See class filter for a method of preventing certain classes from being placed in the jar.)<br/><br/>This referenced class inclusion works for all classes that are known at compile time. Any classes that are dynamically loaded cannot be located in this fashion and therefore must be explicitly included using a &lt;class&gt; element.<br/><br/>Note: Class names listed in the &lt;class&gt; element are not subject to filtering performed by the class filter.<br/><br/>If the name starts with a File.pathSeparator or the second character is a : then the path is assumed to be absolute. Otherwise the project baseDir attribute is prepended to the name to create the full path to the new jar file. <br/></p>
-
-<h5 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes</h5>
-<p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>name</td><td>The fully qualified name of the class include in the jar. (Use the standard Java 'dotted' notation.) </td><td>Yes (Unless a fileset is supplied)</td></tr><tr><td>bean</td><td>If set to 'yes', this class' manifest entry will be marked as being a JavaBean (Java-Bean: true). </td><td>No</td></tr></table></p>
-
-<h5 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h5>
-<p>This example builds a jar containing all classes necessary to run the two specified applications (Main and Test). </p>
-
-<p><pre class='prettyprint lang-xml'>
+<h2 class="section" id='H1'><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:GenJar</h2><p>mx:GenJar is a fork of the <a href="http://http://genjar.sourceforge.net">GenJar</a> ANT task by <em>John W. Kohler</em> and <em>Jesse Stockall</em>. It has been enhanced with improved error reporting and Moxie integration.</p>
+<h3 class="section" id='H2'><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Synopsis</h3><p>Jars a set of classes and resources.<br/><br/>The &lt;genjar&gt; task is designed to make Jar creation as easy as possible. You give it the root classes (i.e. entry points) of your application and it will determine all other class files that need to be included in the jar.<br/><br/>It does this by recursively examining each class file, extracting a list of all classes referenced, eventually arriving at the complete set of classes required to execute the application. These classes are then placed into the target jar file.<br/></p>
+<h3 class="section" id='H3'><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes</h3><p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>jarfile</td><td>The name of the har file to create</td><td>At least 1 of jarfile or destdir.</td></tr><tr><td>destdir</td><td>the name of the directory to copy dependencies to</td><td>At least 1 of jarfile or destdir.</td></tr></table></p>
+<h3 class="section" id='H4'><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Nested Elements</h3>
+<h4 class="section" id='H5'><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;class&gt;</h4><p>Use &lt;class&gt; elements to specify the names of the classes from which &lt;genjar&gt; will begin its class dependency search. Each class is recursively searched for the classes on which it depends. In this way, all classes necessary to execute an application can be automatically included in the jar. (See class filter for a method of preventing certain classes from being placed in the jar.)<br/><br/>This referenced class inclusion works for all classes that are known at compile time. Any classes that are dynamically loaded cannot be located in this fashion and therefore must be explicitly included using a &lt;class&gt; element.<br/><br/>Note: Class names listed in the &lt;class&gt; element are not subject to filtering performed by the class filter.<br/><br/>If the name starts with a File.pathSeparator or the second character is a : then the path is assumed to be absolute. Otherwise the project baseDir attribute is prepended to the name to create the full path to the new jar file. <br/></p>
+<h5 class="section" id='H6'><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes</h5><p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>name</td><td>The fully qualified name of the class include in the jar. (Use the standard Java 'dotted' notation.) </td><td>Yes (Unless a fileset is supplied)</td></tr><tr><td>bean</td><td>If set to 'yes', this class' manifest entry will be marked as being a JavaBean (Java-Bean: true). </td><td>No</td></tr></table></p>
+<h5 class="section" id='H7'><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h5><p>This example builds a jar containing all classes necessary to run the two specified applications (Main and Test). </p><p><pre class='prettyprint lang-xml'>
 &lt;mx:genjar jarfile=&quot;test.jar&quot;&gt;
     &lt;class name=&quot;com.killer.app.Main&quot;/&gt;
     &lt;class name=&quot;com.killer.app.Test&quot;/&gt;
 &lt;/mx:genjar&gt;
-</pre></p>
-
-<p>This example builds a jar containing all classes necessary to run all the classes in the <code>com.company</code> package.
-<pre class='prettyprint lang-xml'>
+</pre></p><p>This example builds a jar containing all classes necessary to run all the classes in the <code>com.company</code> package.<br/><pre class='prettyprint lang-xml'>
 &lt;genjar jarfile=&quot;test.jar&quot;&gt;
     &lt;class&gt;
       &lt;fileset dir=&quot;${classes.dir}&gt;
@@ -160,33 +144,18 @@
     &lt;/class&gt;
 &lt;/genjar&gt;
 </pre></p>
-
-<h4 class="section" id="H8"><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;resource&gt;</h4>
-<p>Use &lt;resource&gt; elements to specify non-class files to be included in the jar. <br/></p>
-
-<h5 class="section" id="H9"><a href="#H9" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes</h5>
-<p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>file</td><td>Specifies a single file to include in the jar</td><td>Yes</td></tr><tr><td>package</td><td>A package name that's to replace the default package name of all resources specified in this &lt;resource> element.</td><td>No</td></tr></table></p>
-
-<h5 class="section" id="H10"><a href="#H10" class="sectionlink"><i class="icon-share-alt"> </i></a>Nested Elements</h5>
-<p>A &lt;resource&gt; element may take a standard Ant fileset. In this case, the path given to the jarred files is taken from the &lt;include&gt; parameter. If a package is specified on the resource, then all files included in the fileset will have their paths changed to the package specified.<br/></p>
-
-<h5 class="section" id="H11"><a href="#H11" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h5>
-<p>This example results in the file icon.png being included in the jar with a path of /images.
-<pre class='prettyprint lang-xml'>
+<h4 class="section" id='H8'><a href="#H8" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;resource&gt;</h4><p>Use &lt;resource&gt; elements to specify non-class files to be included in the jar. <br/></p>
+<h5 class="section" id='H9'><a href="#H9" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes</h5><p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>file</td><td>Specifies a single file to include in the jar</td><td>Yes</td></tr><tr><td>package</td><td>A package name that's to replace the default package name of all resources specified in this &lt;resource> element.</td><td>No</td></tr></table></p>
+<h5 class="section" id='H10'><a href="#H10" class="sectionlink"><i class="icon-share-alt"> </i></a>Nested Elements</h5><p>A &lt;resource&gt; element may take a standard Ant fileset. In this case, the path given to the jarred files is taken from the &lt;include&gt; parameter. If a package is specified on the resource, then all files included in the fileset will have their paths changed to the package specified.<br/></p>
+<h5 class="section" id='H11'><a href="#H11" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h5><p>This example results in the file icon.png being included in the jar with a path of /images.<br/><pre class='prettyprint lang-xml'>
 &lt;genjar jarfile=&quot;test.jar&quot;&gt;
   &lt;resource file=&quot;images/icon.png&quot; /&gt;
 &lt;/genjar&gt;
-</pre></p>
-
-<p>This example results in the file icon.png being included in the jar with a path of /com/foo/ka, effectively placing into the com.foo.ka package.
-<pre class='prettyprint lang-xml'>
+</pre></p><p>This example results in the file icon.png being included in the jar with a path of /com/foo/ka, effectively placing into the com.foo.ka package.<br/><pre class='prettyprint lang-xml'>
 &lt;genjar jarfile=&quot;test.jar&quot;&gt;
   &lt;resource file=&quot;images/icon.png&quot; package=&quot;com/foo/ka&quot; /&gt;
 &lt;/genjar&gt;
-</pre></p>
-
-<p>This example results in all the files in and below the ${build.docs}/api directory being included into the jar. The path used in the jar begins at api.
-<pre class='prettyprint lang-xml'>
+</pre></p><p>This example results in all the files in and below the ${build.docs}/api directory being included into the jar. The path used in the jar begins at api.<br/><pre class='prettyprint lang-xml'>
 &lt;genjar jarfile=&quot;test.jar&quot;&gt;
   &lt;resource&gt;
     &lt;fileset dir=&quot;${build.docs}&quot;&gt;
@@ -194,10 +163,7 @@
     &lt;/fileset&gt;
   &lt;/resource&gt;
 &lt;/genjar&gt;
-</pre></p>
-
-<p>This example will copy the xcatalog.dtd file from the Xerces jar (in the classpath) into the target jar.
-<pre class='prettyprint lang-xml'>
+</pre></p><p>This example will copy the xcatalog.dtd file from the Xerces jar (in the classpath) into the target jar.<br/><pre class='prettyprint lang-xml'>
 &lt;genjar jarfile=&quot;test.jar&quot;&gt;
   &lt;resource file=&quot;org/apache/xerces/readers/xcatalog.dtd&quot; /&gt;
   &lt;classpath&gt;
@@ -205,84 +171,45 @@
   &lt;/classpath&gt;
 &lt;/genjar&gt;
 </pre></p>
-
-<h4 class="section" id="H12"><a href="#H12" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;library&gt;</h4>
-<p>The &lt;library&gt; specifies either a directory tree or a jar file to be included into the generated jar. In either case, the entire content of the referenced library is included in the jar.<br/><br/>In the case of a directory, all files contained within (and below) the named directory will be inserted into the jar with a path name beginning at the named directory. For example, if you specify a library like this &lt;library dir=&quot;docs&quot;/&gt; then all files and subdirectories within the docs will be inserted into the jar with their paths beginning at docs.<br/><br/>If you postfix the directory's path with the /* pattern, then the named directory will be stripped from the file paths before insertion into the jar. For example, &lt;library dir=&quot;docs/*&quot;/&gt; will insert all the files in and below the docs into the generated jar, but their paths will begin immediately below docs.<br/><br/>When the specified library is a jar, all entries in the jar are copied into the generated jar with the exception of the library jar's manifest file. Along with the library jar's files, any entry attributes are also imported into the generated jar.<br/></p>
-
-<h5 class="section" id="H13"><a href="#H13" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes</h5>
-<p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>dir</td><td>A directory containing the library files. All files within this directory tree will be added to the jar, the path used in the jar will start at this name.</td><td>One of dir or jar</td></tr><tr><td>jar</td><td>A jar to include in the target jar. ALL files in this jar will be copied to the target jar except the manifest file.</td><td>One of dir or jar</td></tr></table></p>
-
-<h5 class="section" id="H14"><a href="#H14" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h5>
-<p>This example will copy the entire xerces.jar into the generated jar. 
-<pre class='prettyprint lang-xml'>
+<h4 class="section" id='H12'><a href="#H12" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;library&gt;</h4><p>The &lt;library&gt; specifies either a directory tree or a jar file to be included into the generated jar. In either case, the entire content of the referenced library is included in the jar.<br/><br/>In the case of a directory, all files contained within (and below) the named directory will be inserted into the jar with a path name beginning at the named directory. For example, if you specify a library like this &lt;library dir=&quot;docs&quot;/&gt; then all files and subdirectories within the docs will be inserted into the jar with their paths beginning at docs.<br/><br/>If you postfix the directory's path with the /* pattern, then the named directory will be stripped from the file paths before insertion into the jar. For example, &lt;library dir=&quot;docs/*&quot;/&gt; will insert all the files in and below the docs into the generated jar, but their paths will begin immediately below docs.<br/><br/>When the specified library is a jar, all entries in the jar are copied into the generated jar with the exception of the library jar's manifest file. Along with the library jar's files, any entry attributes are also imported into the generated jar.<br/></p>
+<h5 class="section" id='H13'><a href="#H13" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes</h5><p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>dir</td><td>A directory containing the library files. All files within this directory tree will be added to the jar, the path used in the jar will start at this name.</td><td>One of dir or jar</td></tr><tr><td>jar</td><td>A jar to include in the target jar. ALL files in this jar will be copied to the target jar except the manifest file.</td><td>One of dir or jar</td></tr></table></p>
+<h5 class="section" id='H14'><a href="#H14" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h5><p>This example will copy the entire xerces.jar into the generated jar.<br/><pre class='prettyprint lang-xml'>
 &lt;library jar=&quot;${lib}/xerces.jar&quot;/&gt;
-</pre></p>
-
-<p>This example will pull all files located in and below the ${lib}/classes directory into the jar. Their jar names will include the path named by the ${lib}/classes.
-<pre class='prettyprint lang-xml'>
+</pre></p><p>This example will pull all files located in and below the ${lib}/classes directory into the jar. Their jar names will include the path named by the ${lib}/classes.<br/><pre class='prettyprint lang-xml'>
 &lt;library dir=&quot;${lib}/classes&quot; /&gt;
-</pre></p>
-
-<p>This example will insert all files (and directories) below the ${docs} directory into the generated jar. But the path named by ${docs} will be stripped form those files before insertion.
-<pre class='prettyprint lang-xml'>
+</pre></p><p>This example will insert all files (and directories) below the ${docs} directory into the generated jar. But the path named by ${docs} will be stripped form those files before insertion.<br/><pre class='prettyprint lang-xml'>
 &lt;library dir=&quot;${docs}/*&quot;/&gt;
-</pre></p>
-
-<p>Assume the following structure and files:
-<pre>./docs
+</pre></p><p>Assume the following structure and files:<br/><pre>./docs
 ./docs/index.html
 ./docs/images
 ./docs/images/fig1.jpg
 ./docs/images/fig2.jpg
-</pre></p>
-
-<p>If you use the library tag this way <library dir="docs"/> then the jar will contain:
-<pre>docs/index.html
+</pre></p><p>If you use the library tag this way <library dir="docs"/> then the jar will contain:<br/><pre>docs/index.html
 docs/images/fig1.jpg
 docs/images/fig2.jpg
-</pre></p>
-
-<p>If you were to specify the library this way: <library dir="docs/*"/> then the jar will contain:</p>
-
-<p><pre>index.html
+</pre></p><p>If you were to specify the library this way: <library dir="docs/*"/> then the jar will contain:</p><p><pre>index.html
 images/fig1.jpg
 images/fig2.jpg
 </pre></p>
-
 <div class="alert alert-info">
 Note that the main attributes (Main-Class, Class-Path) from a library jar are NOT imported into the generated jar. Any package information embedded within the jar is also lost.
 </div>
-<h4 class="section" id="H15"><a href="#H15" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;classfilter&gt;</h4>
-<p>Use the &lt;classfilter&gt; element to specify which classes are not to be included in the jar, and as necessary, which classes are to be explicitly included. Any number of &lt;include&gt; and &lt;exclude&gt; elements may be used inside the &lt;classfilter&gt;.<br/><br/>(Note that the traditional Ant includes/includesfile/excludes/excludesfile attributes are not used as they deal with files and GenJar deals with classes.)<br/><br/>The class filtering mechanism operates on patterns. These patterns are class name prefixes, i.e. partial package or class names. If a class' fully qualified name starts with an include/exlcude pattern, then it's considered a match. For example: the class name com.foo.Test matches the pattern com.foo. because the class name starts with the pattern.<br/><br/>When determining if a class should be in the jar, &lt;genjar&gt; first checks the list of include patterns. If the candidate class' name matches an include pattern then the class is included in the jar (explicit inclusion). If the class' name does not match an include pattern but matches an exclude pattern, the class is not included in the jar (explicit exclusion). If the class' name does not match any patterns, then it's included in the jar by default (implicit inclusion).<br/><br/>This algorithm allows the user to select very narrow slices of large package spaces. For example, one can include just the Ant types package into a jar by excluding the entire apache package space and then including specifically the Ant types package:<br/></p>
-
-<p>This example demonstrates the fact that include patterns override exclude patterns.
-<pre class='prettyprint lang-xml'>
+<h4 class="section" id='H15'><a href="#H15" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;classfilter&gt;</h4><p>Use the &lt;classfilter&gt; element to specify which classes are not to be included in the jar, and as necessary, which classes are to be explicitly included. Any number of &lt;include&gt; and &lt;exclude&gt; elements may be used inside the &lt;classfilter&gt;.<br/><br/>(Note that the traditional Ant includes/includesfile/excludes/excludesfile attributes are not used as they deal with files and GenJar deals with classes.)<br/><br/>The class filtering mechanism operates on patterns. These patterns are class name prefixes, i.e. partial package or class names. If a class' fully qualified name starts with an include/exlcude pattern, then it's considered a match. For example: the class name com.foo.Test matches the pattern com.foo. because the class name starts with the pattern.<br/><br/>When determining if a class should be in the jar, &lt;genjar&gt; first checks the list of include patterns. If the candidate class' name matches an include pattern then the class is included in the jar (explicit inclusion). If the class' name does not match an include pattern but matches an exclude pattern, the class is not included in the jar (explicit exclusion). If the class' name does not match any patterns, then it's included in the jar by default (implicit inclusion).<br/><br/>This algorithm allows the user to select very narrow slices of large package spaces. For example, one can include just the Ant types package into a jar by excluding the entire apache package space and then including specifically the Ant types package:<br/></p><p>This example demonstrates the fact that include patterns override exclude patterns.<br/><pre class='prettyprint lang-xml'>
 &lt;classfilter&gt;
   &lt;exclude name=&quot;org.apache.&quot; /&gt;  &lt;!-- exclude the entire apache package space --&gt;
   &lt;include name=&quot;org.apache.tools.ant.types.&quot; /&gt; &lt;!-- but include Ant types --&gt;
 &lt;/classfilter&gt;
-</pre></p>
-
-<p>There is a default list of exclude patterns that's compiled into the class filter: </p>
-
+</pre></p><p>There is a default list of exclude patterns that's compiled into the class filter: </p>
 <ul>
-<li>java.</li>
-<li>javax.</li>
-<li>sun.</li>
-<li>sunw.</li>
-<li>com.sun.</li>
-<li>org.omg.</li>
-</ul>
-
-<p>A site wide list of exclusions may be specified in the resource file site-exclusions. This file is expected to located in the same location (directory/package) as the GenJar class. the site-exclusions file is expected to contain one exclude pattern per line with blank lines being ignored. You may embed comments by prefixing the comment line with '#'.</p>
-
-<h5 class="section" id="H16"><a href="#H16" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes of &lt;include&gt; and &lt;exclude&gt; Nested Elements</h5>
-<p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>name</td><td>Include/Exclude pattern</td><td>yes</td></tr></table></p>
-
-<h5 class="section" id="H17"><a href="#H17" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h5>
-<p>This specifies a jar that will contain all classes referenced by com.killer.app.Main except those in any package starting with org.apache or com.ibm. </p>
-
-<p><pre class='prettyprint lang-xml'>
+  <li>java.</li>
+  <li>javax.</li>
+  <li>sun.</li>
+  <li>sunw.</li>
+  <li>com.sun.</li>
+  <li>org.omg.</li>
+</ul><p>A site wide list of exclusions may be specified in the resource file site-exclusions. This file is expected to located in the same location (directory/package) as the GenJar class. the site-exclusions file is expected to contain one exclude pattern per line with blank lines being ignored. You may embed comments by prefixing the comment line with '#'.</p>
+<h5 class="section" id='H16'><a href="#H16" class="sectionlink"><i class="icon-share-alt"> </i></a>Attributes of &lt;include&gt; and &lt;exclude&gt; Nested Elements</h5><p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>name</td><td>Include/Exclude pattern</td><td>yes</td></tr></table></p>
+<h5 class="section" id='H17'><a href="#H17" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h5><p>This specifies a jar that will contain all classes referenced by com.killer.app.Main except those in any package starting with org.apache or com.ibm. </p><p><pre class='prettyprint lang-xml'>
 &lt;genjar jarfile=&quot;test.jar&quot;&gt;
   &lt;class name=&quot;com.killer.app.Main&quot;/&gt;
   &lt;classfilter&gt;
@@ -290,10 +217,7 @@ Note that the main attributes (Main-Class, Class-Path) from a library jar are NO
     &lt;exclude name=&quot;com.ibm.&quot;/&gt;
   &lt;/classfilter&gt;
 &lt;/genjar&gt;
-</pre></p>
-
-<p>This specifies a jar that will contain all classes referenced by com.killer.app.Main except those in any package starting with org.apache or com.ibm. All referenced classes from org.apache.ant will be included as an explicit inclusion overrides an exclusion. 
-<pre class='prettyprint lang-xml'>
+</pre></p><p>This specifies a jar that will contain all classes referenced by com.killer.app.Main except those in any package starting with org.apache or com.ibm. All referenced classes from org.apache.ant will be included as an explicit inclusion overrides an exclusion.<br/><pre class='prettyprint lang-xml'>
 &lt;genjar jarfile=&quot;test.jar&quot;&gt;
   &lt;class name=&quot;com.killer.app.Main&quot;/&gt;
   &lt;classfilter&gt;
@@ -303,12 +227,8 @@ Note that the main attributes (Main-Class, Class-Path) from a library jar are NO
   &lt;/classfilter&gt;
 &lt;/genjar&gt;
 </pre></p>
-
-<h4 class="section" id="H18"><a href="#H18" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;classpath&gt;</h4>
-<p>The &lt;classpath&gt; element is used to specify search paths to genjar's jar builder. See the Ant documentation for a full discussion on &lt;classpath&gt;. <br/></p>
-
-<h5 class="section" id="H19"><a href="#H19" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h5>
-<p><pre class='prettyprint lang-xml'>
+<h4 class="section" id='H18'><a href="#H18" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;classpath&gt;</h4><p>The &lt;classpath&gt; element is used to specify search paths to genjar's jar builder. See the Ant documentation for a full discussion on &lt;classpath&gt;. <br/></p>
+<h5 class="section" id='H19'><a href="#H19" class="sectionlink"><i class="icon-share-alt"> </i></a>Examples</h5><p><pre class='prettyprint lang-xml'>
 &lt;genjar jarfile=&quot;test.jar&quot;&gt;
   &lt;class name=&quot;com.killer.app.Main&quot;/&gt;
   &lt;classfilter&gt;
@@ -320,34 +240,20 @@ Note that the main attributes (Main-Class, Class-Path) from a library jar are NO
   &lt;/classpath&gt;
 &lt;/genjar&gt;
 </pre></p>
-
-<h4 class="section" id="H20"><a href="#H20" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;manifest&gt;</h4>
-<p>The &lt;manifest&gt; element controls how the jar manifest is initially constructed and what main attributes are placed into the manifest. (For more information on Jar Manifests, see this.)<br/><br/>The &lt;manifest&gt; element allows the developer to specify a template manifest file that will form the base for the manifest placed into the jar. Additionally, main and per-entry attributes may be specified. And control over the default per-entry attributes may be asserted.<br/><br/>To specify a template manifest file, use the template attribute on the &lt;manifest&gt; element. All attributes (main and per-entry) will be included in the manifest written to the jar. Note that any duplicate attributes generated by GenJar will overwrite those in the template manifest. Example:<br/>
-<pre class='prettyprint lang-xml'>
+<h4 class="section" id='H20'><a href="#H20" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;manifest&gt;</h4><p>The &lt;manifest&gt; element controls how the jar manifest is initially constructed and what main attributes are placed into the manifest. (For more information on Jar Manifests, see this.)<br/><br/>The &lt;manifest&gt; element allows the developer to specify a template manifest file that will form the base for the manifest placed into the jar. Additionally, main and per-entry attributes may be specified. And control over the default per-entry attributes may be asserted.<br/><br/>To specify a template manifest file, use the template attribute on the &lt;manifest&gt; element. All attributes (main and per-entry) will be included in the manifest written to the jar. Note that any duplicate attributes generated by GenJar will overwrite those in the template manifest. Example:<br/><br/><pre class='prettyprint lang-xml'>
 &lt;manifest template=&quot;default.mft&quot;&gt;
 ....
 &lt;/manifest&gt;
-</pre>
-Normally GenJar will generate a set of per-entry attributes for every file included in the jar. These attributes include the full path to the original resource, the last modified date of that resource and the size of that resource. This information is included in the manifest to aid in tracking down problems like: &quot;Do I have the right version of that library file?&quot; and &quot;Where did that class file come from? Is it the old one?&quot; These automatic per-entry attributes may be disabled by specifying generateEntryAttributes='no' in the &lt;manifest&gt; element. At least two attributes are generated for each entry placed in the jar:<br/>
-<dl>
-	<dt>Content-Location</dt>
-    <dd>This attribute is set to the absolute path to the source file or archive (jar/zip).</dd>
+</pre><br/>Normally GenJar will generate a set of per-entry attributes for every file included in the jar. These attributes include the full path to the original resource, the last modified date of that resource and the size of that resource. This information is included in the manifest to aid in tracking down problems like: &quot;Do I have the right version of that library file?&quot; and &quot;Where did that class file come from? Is it the old one?&quot; These automatic per-entry attributes may be disabled by specifying generateEntryAttributes='no' in the &lt;manifest&gt; element. At least two attributes are generated for each entry placed in the jar:<br/><br/><dl><br/> <dt>Content-Location</dt><br/> <dd>This attribute is set to the absolute path to the source file or archive (jar/zip).</dd></p>
+<pre><code>&lt;dt&gt;Last-Modified&lt;/dt&gt;
+&lt;dd&gt;This attribute is set to the last modification time of the source file (file/jar/zip) or the modification time from the source jar (if the source is in fact a jar).&lt;/dd&gt;
 
-	<dt>Last-Modified</dt>
-    <dd>This attribute is set to the last modification time of the source file (file/jar/zip) or the modification time from the source jar (if the source is in fact a jar).</dd>
-	
-	<dt>others</dt>
-    <dd>If the jar entry is taken from a jar, then the source's entry-attributes are imported into the new jar.</dd>
-</dl></p>
-
-<h5 class="section" id="H21"><a href="#H21" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;manifest&gt; Attributes</h5>
-<p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>template</td><td>path to template file</td><td>no</td></tr><tr><td>generateEntryAttributes</td><td>prohibits generation of per-entry attributes (see text)</td><td>no</td></tr></table></p>
-
-<h5 class="section" id="H22"><a href="#H22" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;attribute&gt; Attributes</h5>
-<p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>name</td><td>the attribute's name</td><td>yes</td></tr><tr><td>value</td><td>the attribute's value</td><td>yes</td></tr><tr><td>entry</td><td>the entry name to which this attribute belongs. If not supplied (or equal to 'main'), then the attribute is a Main-Entry.</td><td>no</td></tr></table></p>
-
-<h5 class="section" id="H23"><a href="#H23" class="sectionlink"><i class="icon-share-alt"> </i></a>Example</h5>
-<p><pre class='prettyprint lang-xml'>
+&lt;dt&gt;others&lt;/dt&gt;
+&lt;dd&gt;If the jar entry is taken from a jar, then the source&#39;s entry-attributes are imported into the new jar.&lt;/dd&gt;
+</code></pre><p></dl></p>
+<h5 class="section" id='H21'><a href="#H21" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;manifest&gt; Attributes</h5><p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>template</td><td>path to template file</td><td>no</td></tr><tr><td>generateEntryAttributes</td><td>prohibits generation of per-entry attributes (see text)</td><td>no</td></tr></table></p>
+<h5 class="section" id='H22'><a href="#H22" class="sectionlink"><i class="icon-share-alt"> </i></a>&lt;attribute&gt; Attributes</h5><p><table class="table table-bordered"><tr><th>Attribute</th><th>Description</th><th>Required</th></tr><tr><td>name</td><td>the attribute's name</td><td>yes</td></tr><tr><td>value</td><td>the attribute's value</td><td>yes</td></tr><tr><td>entry</td><td>the entry name to which this attribute belongs. If not supplied (or equal to 'main'), then the attribute is a Main-Entry.</td><td>no</td></tr></table></p>
+<h5 class="section" id='H23'><a href="#H23" class="sectionlink"><i class="icon-share-alt"> </i></a>Example</h5><p><pre class='prettyprint lang-xml'>
 &lt;manifest&gt;
   &lt;attribute name=&quot;Specification-Title&quot;    value=&quot;Killer App&quot; /&gt;
   &lt;attribute name=&quot;Specification-Version&quot;  value=&quot;2.0&quot; /&gt;
@@ -359,9 +265,7 @@ Normally GenJar will generate a set of per-entry attributes for every file inclu
              value=&quot;large-icon.png&quot; /&gt;
 &lt;manifest&gt;
 </pre></p>
-
-<h3 class="section" id="H24"><a href="#H24" class="sectionlink"><i class="icon-share-alt"> </i></a>Complete Example</h3>
-<p><pre class='prettyprint lang-xml'>
+<h3 class="section" id='H24'><a href="#H24" class="sectionlink"><i class="icon-share-alt"> </i></a>Complete Example</h3><p><pre class='prettyprint lang-xml'>
 &lt;mx:genjar destfile=&quot;moxie-all.jar&quot;&gt;
 	&lt;classfilter&gt;
 		&lt;exclude name=&quot;org.apache.&quot; /&gt;
@@ -378,7 +282,7 @@ Normally GenJar will generate a set of per-entry attributes for every file inclu
 &lt;/mx:genjar&gt;
 </pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="mxgcupload.html">&larr; mx:GCUpload</a></li> <li class="next"><a href="mxget.html">mx:Get &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-10-09</p>
+<div ><ul class="pager"><li class="previous"><a href="mxgcupload.html">&larr; mx:GCUpload</a></li> <li class="next"><a href="mxget.html">mx:Get &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-11-19</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

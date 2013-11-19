@@ -103,13 +103,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.8.3/moxie-proxy-0.8.3.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.9.0/moxie-proxy-0.9.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -124,56 +124,37 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:Doc</h2>
-<p>mx:Doc is Moxie's documentation generation task.  It is based on <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>, <a href="http://code.google.com/p/google-code-prettify">GoogleCode Prettify</a>.</p>
-
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Directives</h3>
-<p>Directives are single-line text commands that surround a block of text and apply a rule to that text.  Directives can not be combined nor can they be nested.</p>
-
-<p>Directives are written as:</p>
-
+<h2 class="section" id='H1'><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>mx:Doc</h2><p>mx:Doc is Moxie's documentation generation task. It is based on <a href="http://twitter.github.com/bootstrap">Twitter Bootstrap</a>, <a href="http://code.google.com/p/google-code-prettify">GoogleCode Prettify</a>.</p>
+<h3 class="section" id='H2'><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Directives</h3><p>Directives are single-line text commands that surround a block of text and apply a rule to that text. Directives can not be combined nor can they be nested.</p><p>Directives are written as:</p>
 <pre><code>---DIRECTIVE---
 Here is my text block.
 ---DIRECTIVE---
 </code></pre>
-
-<h4 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Text Block Directives</h4>
-<p><table class="table table-bordered"><tr><th>Directive</th><th>Description</th></tr><tr><td>NOMARKDOWN</td><td>Excludes text block from Markdown processing</td></tr><tr><td>ESCAPE</td><td>Escapes &lt; > &amp; and \n characters with their HTML equivalents.</td></tr><tr><td>FIXED</td><td>Escapes &lt; > &amp; and \n characters with their HTML equivalents and wraps the text in a &lt;pre&gt; block.</td></tr></table></p>
-
-<h4 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Prettify Directives</h4>
-<p><table class="table table-bordered"><tr><th>Directive</th><th>Description</th></tr><tr><td>CODE</td><td>Escapes and wraps the textblock with Prettify</td></tr><tr><td>CSS</td><td>Escapes and wraps the textblock with Prettify using a CSS syntax hint</td></tr><tr><td>JAVA</td><td>Escapes and wraps the textblock with Prettify using a Java syntax hint</td></tr><tr><td>JSON</td><td>Escapes and wraps the textblock with Prettify using a JSON syntax hint</td></tr><tr><td>SQL</td><td>Escapes and wraps the textblock with Prettify using a SQL syntax hint</td></tr><tr><td>WIKI</td><td>Escapes and wraps the textblock with Prettify using a WIKI syntax hint</td></tr><tr><td>XML</td><td>Escapes and wraps the textblock with Prettify using an XML syntax hint</td></tr><tr><td>YAML</td><td>Escapes and wraps the textblock with Prettify using a YAML syntax hint</td></tr></table></p>
-
-<h4 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Wiki Transform Directives</h4>
-<p>The wiki transform directives will interpret the enclosed text block using the <a href="http://eclipse.org/mylyn">Eclipse Mylyn WikiText</a> parser for the specified syntax.  This is useful, for example, for table generation since Markdown does not specify a table syntax.</p>
-
-<p><table class="table table-bordered"><tr><th>Directive</th><th>Description</th></tr><tr><td>X:TWIKI</td><td>Interprets the block as <a href="http://twiki.org/cgi-bin/view/TWiki/WikiSyntax">TWiki</a> markup</td></tr><tr><td>X:TEXTILE</td><td>Interprets the block as <a href="http://txstyle.org/article/44/an-overview-of-the-textile-syntax">Textile</a> markup</td></tr><tr><td>X:TRACWIKI</td><td>Interprets the block as <a href="http://trac.edgewall.org/wiki/WikiFormatting">TracWiki</a> markup</td></tr><tr><td>X:MEDIAWIKI</td><td>Interprets the block as <a href="https://www.mediawiki.org/wiki/Help:Formatting">MediaWiki</a> markup</td></tr><tr><td>X:CONFLUENCE</td><td>Interprets the block as Confluence markup</td></tr></table></p>
-
-<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Prettify Themes</h3>
-<p>Many Prettify themes are bundled in Moxie.</p>
-
+<h4 class="section" id='H3'><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Text Block Directives</h4><p><table class="table table-bordered"><tr><th>Directive</th><th>Description</th></tr><tr><td>NOMARKDOWN</td><td>Excludes text block from Markdown processing</td></tr><tr><td>ESCAPE</td><td>Escapes &lt; > &amp; and \n characters with their HTML equivalents.</td></tr><tr><td>FIXED</td><td>Escapes &lt; > &amp; and \n characters with their HTML equivalents and wraps the text in a &lt;pre&gt; block.</td></tr></table></p>
+<h4 class="section" id='H4'><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Prettify Directives</h4><p><table class="table table-bordered"><tr><th>Directive</th><th>Description</th></tr><tr><td>CODE</td><td>Escapes and wraps the textblock with Prettify</td></tr><tr><td>CSS</td><td>Escapes and wraps the textblock with Prettify using a CSS syntax hint</td></tr><tr><td>JAVA</td><td>Escapes and wraps the textblock with Prettify using a Java syntax hint</td></tr><tr><td>JSON</td><td>Escapes and wraps the textblock with Prettify using a JSON syntax hint</td></tr><tr><td>SQL</td><td>Escapes and wraps the textblock with Prettify using a SQL syntax hint</td></tr><tr><td>WIKI</td><td>Escapes and wraps the textblock with Prettify using a WIKI syntax hint</td></tr><tr><td>XML</td><td>Escapes and wraps the textblock with Prettify using an XML syntax hint</td></tr><tr><td>YAML</td><td>Escapes and wraps the textblock with Prettify using a YAML syntax hint</td></tr></table></p>
+<h4 class="section" id='H5'><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Wiki Transform Directives</h4><p>The wiki transform directives will interpret the enclosed text block using the <a href="http://eclipse.org/mylyn">Eclipse Mylyn WikiText</a> parser for the specified syntax. This is useful, for example, for table generation since Markdown does not specify a table syntax.</p><p><table class="table table-bordered"><tr><th>Directive</th><th>Description</th></tr><tr><td>X:TWIKI</td><td>Interprets the block as <a href="http://twiki.org/cgi-bin/view/TWiki/WikiSyntax">TWiki</a> markup</td></tr><tr><td>X:TEXTILE</td><td>Interprets the block as <a href="http://txstyle.org/article/44/an-overview-of-the-textile-syntax">Textile</a> markup</td></tr><tr><td>X:TRACWIKI</td><td>Interprets the block as <a href="http://trac.edgewall.org/wiki/WikiFormatting">TracWiki</a> markup</td></tr><tr><td>X:MEDIAWIKI</td><td>Interprets the block as <a href="https://www.mediawiki.org/wiki/Help:Formatting">MediaWiki</a> markup</td></tr><tr><td>X:CONFLUENCE</td><td>Interprets the block as Confluence markup</td></tr></table></p>
+<h3 class="section" id='H6'><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Prettify Themes</h3><p>Many Prettify themes are bundled in Moxie.</p>
 <ul>
-<li>bootstrap</li>
-<li>desert</li>
-<li>doxy</li>
-<li>github</li>
-<li>googlecode</li>
-<li>hemisu-dark</li>
-<li>hemisu-light</li>
-<li>prettify</li>
-<li>solarized-dark</li>
-<li>solarized-light</li>
-<li>sons-of-obsidian</li>
-<li>sunburst</li>
-<li>tomorrow</li>
-<li>tomorrow-night-blue</li>
-<li>tomorrow-night-dark</li>
-<li>tomorrow-night-eighties</li>
-<li>tomorrow-night-light</li>
-<li>vibrant-ink</li>
+  <li>bootstrap</li>
+  <li>desert</li>
+  <li>doxy</li>
+  <li>github</li>
+  <li>googlecode</li>
+  <li>hemisu-dark</li>
+  <li>hemisu-light</li>
+  <li>prettify</li>
+  <li>solarized-dark</li>
+  <li>solarized-light</li>
+  <li>sons-of-obsidian</li>
+  <li>sunburst</li>
+  <li>tomorrow</li>
+  <li>tomorrow-night-blue</li>
+  <li>tomorrow-night-dark</li>
+  <li>tomorrow-night-eighties</li>
+  <li>tomorrow-night-light</li>
+  <li>vibrant-ink</li>
 </ul>
-
-<h3 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Complete Example</h3>
-<p><pre class='prettyprint lang-xml'>
+<h3 class="section" id='H7'><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Complete Example</h3><p><pre class='prettyprint lang-xml'>
 &lt;mx:doc&gt;
 	&lt;structure&gt;
 		&lt;page name=&quot;overview&quot; src=&quot;index.mkd&quot; /&gt;
@@ -208,7 +189,7 @@ Here is my text block.
 &lt;/mx:doc&gt;
 </pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="mxdeploy.html">&larr; mx:Deploy</a></li> <li class="next"><a href="mxextract.html">mx:Extract &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-10-09</p>
+<div ><ul class="pager"><li class="previous"><a href="mxdeploy.html">&larr; mx:Deploy</a></li> <li class="next"><a href="mxextract.html">mx:Extract &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-11-19</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

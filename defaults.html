@@ -103,13 +103,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.8.3/moxie-proxy-0.8.3.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.9.0/moxie-proxy-0.9.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -124,10 +124,8 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>defaults.moxie</h2>
-<p>This file defines the default values for all Moxie projects.  It is usually loaded from the Moxie jar file unless <em>${user.home}/.moxie/defaults.moxie</em> is present.</p>
-
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Repositories</h3>
+<h2 class="section" id='H1'><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>defaults.moxie</h2><p>This file defines the default values for all Moxie projects. It is usually loaded from the Moxie jar file unless <em>${user.home}/.moxie/defaults.moxie</em> is present.</p>
+<h3 class="section" id='H2'><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Repositories</h3>
 <div class="row">
 <div class="span7">
 The repositories settings defines the list of registeredRepositories from whcih to source artifacts.  By default, only MavenCentral is specified, however Moxie ships with several other registeredRepositories including sonatype-oss, codehaus, & restlet.
@@ -139,8 +137,8 @@ repositories: 'central'
 </pre>
 </div>
 </div>
-<hr/>
-<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Source Directories</h3>
+<hr />
+<h3 class="section" id='H3'><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Source Directories</h3>
 <div class="row">
 <div class="span7">
 Source directories are verified during initialization.  Defined directories that do not exist are excluded.  Defined order is preserved. Directories are excluded if they are the parent of an already included directory for the specified scope.
@@ -161,8 +159,8 @@ sourceDirectories:
 </pre>
 </div>
 </div>
-<hr/>
-<h3 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Resource Directories</h3>
+<hr />
+<h3 class="section" id='H4'><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Resource Directories</h3>
 <div class="row">
 <div class="span7">
 Resource directories are verified during initialization. Defined directories that do not exist are excluded.  Defined order is preserved.
@@ -177,8 +175,8 @@ resourceDirectories:
 </pre>
 </div>
 </div>
-<hr/>
-<h3 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Output Directory</h3>
+<hr />
+<h3 class="section" id='H5'><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Output Directory</h3>
 <div class="row">
 <div class="span7">
 Default working directory for the build.
@@ -190,8 +188,8 @@ outputDirectory: 'build'
 </pre>
 </div>
 </div>
-<hr/>
-<h3 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Target Directory</h3>
+<hr />
+<h3 class="section" id='H6'><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>Target Directory</h3>
 <div class="row">
 <div class="span7">
 The base directory within the project for build artifacts.
@@ -203,12 +201,8 @@ targetDirectory: 'build/target'
 </pre>
 </div>
 </div>
-<hr/>
-<h3 class="section" id="H7"><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Tasks</h3>
-<p>Default settings for Moxie tasks.</p>
-
-<p>These attributes are set via reflection using Ant's standard utility classes.
-<pre class='prettyprint lang-yaml'>
+<hr />
+<h3 class="section" id='H7'><a href="#H7" class="sectionlink"><i class="icon-share-alt"> </i></a>Tasks</h3><p>Default settings for Moxie tasks.</p><p>These attributes are set via reflection using Ant's standard utility classes.<br/><pre class='prettyprint lang-yaml'>
 tasks: {
     # mx:Javac compiler attributes
     # These defaults may be overriden in your build.moxie file.
@@ -291,7 +285,7 @@ tasks: {
 }
 </pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="moxiedescriptor.html">&larr; build.moxie</a></li> <li class="next"><a href="settings.html">settings.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-10-09</p>
+<div ><ul class="pager"><li class="previous"><a href="moxiedescriptor.html">&larr; build.moxie</a></li> <li class="next"><a href="settings.html">settings.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2013-11-19</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

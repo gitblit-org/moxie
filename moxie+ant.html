@@ -103,13 +103,13 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.8.3/moxie-toolkit-0.8.3.jar'>moxie toolkit</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-toolkit/0.9.0/moxie-toolkit-0.9.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.8.3/moxie-proxy-0.8.3.zip'>moxie-proxy</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie-proxy/0.9.0/moxie-proxy-0.9.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.8.3/moxie+ant-0.8.3.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='http://gitblit.github.io/moxie/maven/org/moxie/moxie+ant/0.9.0/moxie+ant-0.9.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
 <li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
 <li class='divider'></li>
@@ -124,14 +124,8 @@
 		</div><!-- end Navigation Bar -->
 <div class='container'>
 <!-- Begin Markdown -->
-<h2 class="section" id="H1"><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Moxie+Ant</h2>
-<p>Moxie+Ant is a distribution of <a href="http://ant.apache.org" title="Apache Ant">Ant</a> with Moxie.</p>
-
-<p>This bundle provides a command-line executable (<code>moxie</code>) for all platforms supported by <a href="http://ant.apache.org" title="Apache Ant">Ant</a>.  Using the <code>moxie</code> command instead of the <code>ant</code> command gives you some additional features.</p>
-
-<h3 class="section" id="H2"><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Moxie Phases</h3>
-<p>Moxie+Ant automatically injects several phase targets at runtime which you may use to build your projects.  These are similar to Maven's phases, but not nearly as sophisticated.  They are suitable for building simple projects.</p>
-
+<h2 class="section" id='H1'><a href="#H1" class="sectionlink"><i class="icon-share-alt"> </i></a>Moxie+Ant</h2><p>Moxie+Ant is a distribution of <a href="http://ant.apache.org" title="Apache Ant">Ant</a> with Moxie.</p><p>This bundle provides a command-line executable (<code>moxie</code>) for all platforms supported by <a href="http://ant.apache.org" title="Apache Ant">Ant</a>. Using the <code>moxie</code> command instead of the <code>ant</code> command gives you some additional features.</p>
+<h3 class="section" id='H2'><a href="#H2" class="sectionlink"><i class="icon-share-alt"> </i></a>Moxie Phases</h3><p>Moxie+Ant automatically injects several phase targets at runtime which you may use to build your projects. These are similar to Maven's phases, but not nearly as sophisticated. They are suitable for building simple projects.</p>
 <dl class="dl-horizontal">
  <dt>phase:init</dt>
  <dd>validates project configuration, retrieves dependencies, and configures Ant properties</dd>
@@ -152,30 +146,17 @@
  <dt>phase:release</dt>
  <dd>prepares a new release and begins a new development cycle</dd>
 </dl>
-<h3 class="section" id="H3"><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Project Creation</h3>
-<p>Moxie+Ant has very primitive project creation support.  This is a work-in-progress.</p>
-
-<p><pre>moxie -new -&lt;archetype&gt; &lt;groupId&gt;:&lt;artifactId&gt;:&lt;version&gt; -dir:&lt;dirname&gt; -git&lt;:originId&gt; -eclipse&lt;:+var&gt; -intellij
+<h3 class="section" id='H3'><a href="#H3" class="sectionlink"><i class="icon-share-alt"> </i></a>Project Creation</h3><p>Moxie+Ant has very primitive project creation support. This is a work-in-progress.</p><p><pre>moxie -new -&lt;archetype&gt; &lt;groupId&gt;:&lt;artifactId&gt;:&lt;version&gt; -dir:&lt;dirname&gt; -git&lt;:originId&gt; -eclipse&lt;:+var&gt; -intellij
 </pre></p>
-
-<h4 class="section" id="H4"><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Archetypes</h4>
+<h4 class="section" id='H4'><a href="#H4" class="sectionlink"><i class="icon-share-alt"> </i></a>Archetypes</h4>
 <ul>
-<li>jar</li>
-<li>parent</li>
+  <li>jar</li>
+  <li>parent</li>
 </ul>
-
-<h4 class="section" id="H5"><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Git</h4>
-<p>Passing <em>-git</em> will initialize a git repository.</p>
-
-<p>Specifying an <em>originId</em> will automatically setup a an origin remote.  If you are using Gitblit and your account has create-on-push permission this is sufficient to create a local project and push it to Gitblit.</p>
-
-<h4 class="section" id="H6"><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>IDE parameters</h4>
-<p>-eclipse generates .project and .classpath files
--eclipse:+var generates .project and .classpath files that are relative to an Eclipse variable MX_ROOT which must be defined in your Eclipse IDE.  This is useful to version-control the .classpath file since it does not have direct path links to your personal Moxie root folder.
--eclipse:+ext generates .project and .classpath files that are relative to the ext folder of your project.
--intellij generates .iml files
+<h4 class="section" id='H5'><a href="#H5" class="sectionlink"><i class="icon-share-alt"> </i></a>Git</h4><p>Passing <em>-git</em> will initialize a git repository.</p><p>Specifying an <em>originId</em> will automatically setup a an origin remote. If you are using Gitblit and your account has create-on-push permission this is sufficient to create a local project and push it to Gitblit.</p>
+<h4 class="section" id='H6'><a href="#H6" class="sectionlink"><i class="icon-share-alt"> </i></a>IDE parameters</h4><p>-eclipse generates .project and .classpath files<br/>-eclipse:+var generates .project and .classpath files that are relative to an Eclipse variable MX_ROOT which must be defined in your Eclipse IDE. This is useful to version-control the .classpath file since it does not have direct path links to your personal Moxie root folder.<br/>-eclipse:+ext generates .project and .classpath files that are relative to the ext folder of your project.<br/>-intellij generates .iml files
 <!-- End Markdown -->
-<footer class="footer"><p class="pull-right">generated 2013-10-09</p>
+<footer class="footer"><p class="pull-right">generated 2013-11-19</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>
