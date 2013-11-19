@@ -5,14 +5,14 @@ name: Moxie Build Toolkit
 description: 'tools to faciltate building Java projects'
 groupId: com.gitblit.moxie
 artifactId: moxie-parent
-version: 0.9.0-SNAPSHOT
+version: 0.9.0
 organization: James Moger
 organizationUrl: 'https://plus.google.com/u/0/+JamesMoger'
 inceptionYear: 2012
 
 # Current stable release
-releaseVersion: 0.8.3
-releaseDate: 2013-10-09
+releaseVersion: 0.9.0
+releaseDate: 2013-11-19
 
 # Project urls
 url: 'http://moxie.gitblit.com'
