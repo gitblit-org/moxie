@@ -12,7 +12,8 @@ r16: {
     fixes:
 	- existing Eclipse settings were not properly updated for apt generated source directories
     changes: ~
-    additions: ~
+    additions:
+	- support Eclipse factorypath var jars
     dependencyChanges: ~
     contributors: ~
 }

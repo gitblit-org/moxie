@@ -392,9 +392,18 @@ public class Build {
 			String pattern = "<factorypathentry kind=\"{0}\" id=\"{1}\" enabled=\"true\" runInBatchMode=\"{2}\" />\n";
 			sb.append(MessageFormat.format(pattern, "PLUGIN", "org.eclipse.jst.ws.annotations.core", runInBatchMode));
 			// kind choices are EXTJAR, VARJAR, or WKSPJAR
-			String kind = "EXTJAR";
+			String kind = settings.var ? "VARJAR" : "EXTJAR";
 			for (File file : aptFiles) {
-				sb.append(MessageFormat.format(pattern, kind, file, runInBatchMode));
+				// default to EXTJAR
+				String jarPath = file.getAbsolutePath();
+				if ("VARJAR".equals(kind)) {
+					// relative to MOXIE_HOME
+					jarPath = Toolkit.MOXIE_ROOT + "/" + FileUtils.getRelativePath(config.getMoxieRoot(), file);
+				} else if ("WKSPJAR".equals(kind)) {
+					// relative to workspace
+					// TODO
+				}
+				sb.append(MessageFormat.format(pattern, kind, jarPath, runInBatchMode));
 			}
 
 			// write the factorypath file
