@@ -343,7 +343,7 @@ public class Build {
 		// determine if we should append an default apt source folder to the classpath
 		File aptPrefs = new File(projectFolder, ".settings/org.eclipse.jdt.apt.core.prefs");
 		Properties aptProps = readEclipsePrefs(aptPrefs);
-		if (genSrcDir == null && Boolean.valueOf(aptProps.getProperty("org.eclipse.jdt.apt.aptEnabled"))) {
+		if (Boolean.valueOf(aptProps.getProperty("org.eclipse.jdt.apt.aptEnabled"))) {
 			genSrcDir = aptProps.getProperty("org.eclipse.jdt.apt.genSrcDir");
 			if (genSrcDir == null) {
 				genSrcDir = ".apt_generated";
