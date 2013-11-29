@@ -9,7 +9,8 @@ r16: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+	- existing Eclipse settings were not properly updated for apt generated source directories
     changes: ~
     additions: ~
     dependencyChanges: ~

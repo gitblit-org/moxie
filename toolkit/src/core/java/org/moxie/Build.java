@@ -239,11 +239,6 @@ public class Build {
 				if (sourceFolder.apt) {
 					// defined apt generated source folder
 					genSrcDir = srcPath;
-					sb.append(format("<classpathentry kind=\"src\" path=\"{0}\">\n", srcPath));
-					sb.append("\t<attributes>\n");
-					sb.append("\t\t<attribute name=\"optional\" value=\"true\"/>\n");
-					sb.append("\t</attributes>\n");
-					sb.append("</classpathentry>\n");
 				} else {
 					// defined standard source folder
 					sb.append(format("<classpathentry kind=\"src\" path=\"{0}\" />\n", srcPath));
@@ -421,9 +416,9 @@ public class Build {
 			// create/update Eclipse apt preferences
 			File aptPrefs = new File(projectFolder, ".settings/org.eclipse.jdt.apt.core.prefs");
 			Properties aptDefaults = new Properties();
-			aptDefaults.put("org.eclipse.jdt.apt.genSrcDir", genSrcDir);
 			aptDefaults.put("org.eclipse.jdt.apt.reconcileEnabled", "true");
 			Properties aptOverrides = new Properties();
+			aptOverrides.put("org.eclipse.jdt.apt.genSrcDir", genSrcDir);
 			aptOverrides.put("org.eclipse.jdt.apt.aptEnabled", "true");
 			writeEclipsePrefs(aptPrefs, aptDefaults, aptOverrides);
 
