@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone='yes'?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-	<generator uri="http://moxie.gitblit.com" version="0.9.1">Moxie</generator>
+	<generator uri="http://moxie.gitblit.com" version="0.9.2-SNAPSHOT">Moxie</generator>
 	<title><![CDATA[Moxie]]></title>
 	<updated>2013-11-29</updated>
 	<entry>
