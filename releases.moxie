@@ -1,10 +1,10 @@
 #
-# ${project.version} release
+# 0.9.2 release
 #
 r17: {
-    title: ${project.name} ${project.version} released
-    id: ${project.version}
-    date: ${project.buildDate}
+    title: Moxie Build Toolkit 0.9.2 released
+    id: 0.9.2
+    date: 2014-06-09
     note: ~
     html: ~
     text: ~
@@ -431,6 +431,6 @@ r1: {
 #
 # Release log data
 #
-release: &r16
-snapshot: &r17
-releases: &r[1..16]
+release: &r17
+snapshot: ~
+releases: &r[1..17]
