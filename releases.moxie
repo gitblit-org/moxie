@@ -9,7 +9,8 @@ r17: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+    - add classpath resource javadoc-frame-injections-fix.txt for the MxJavadoc task
     changes: ~
     additions: ~
     dependencyChanges: ~
