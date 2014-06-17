@@ -41,23 +41,23 @@ public class MxWebXml extends MxTask {
 	private String COMMENT_PATTERN = "\n\t<!-- {0} -->";
 
 	private String PARAM_PATTERN = "\n\t<context-param>\n\t\t<param-name>{0}</param-name>\n\t\t<param-value>{1}</param-value>\n\t</context-param>\n";
-	
+
 	File prototypeFile;
-	
+
 	File propertiesFile;
 
 	File destinationFile;
-	
+
 	List<String> skips;
-	
+
 	List<Substitute> substitutions;
-	
+
 	public Substitute createReplace() {
 		Substitute sub = new Substitute();
 		substitutions.add(sub);
 		return sub;
 	}
-	
+
 	public void setSourcefile(File source) {
 		this.prototypeFile = source;
 	}
@@ -69,7 +69,7 @@ public class MxWebXml extends MxTask {
 	public void setPropertiesfile(File props) {
 		this.propertiesFile = props;
 	}
-	
+
 	public void setSkip(String values) {
 		String [] tokens = values.split(",|\\s");
 		skips.addAll(Arrays.asList(tokens));
@@ -81,7 +81,8 @@ public class MxWebXml extends MxTask {
 		skips = new ArrayList<String>();
 		substitutions = new ArrayList<Substitute>();
 	}
-	
+
+	@Override
 	public void execute() {
 		Build build = getBuild();
 
@@ -156,13 +157,19 @@ public class MxWebXml extends MxTask {
 			for (String stripToken : STRIP_TOKENS) {
 				webXmlContent = webXmlContent.replace(stripToken, "");
 			}
+
+			String content;
 			int idx = webXmlContent.indexOf(PARAMS);
-			StringBuilder sb = new StringBuilder();
-			sb.append(webXmlContent.substring(0, idx));
-			sb.append(parameters.toString());
-			sb.append(webXmlContent.substring(idx + PARAMS.length()));
-			
-			String content = sb.toString();
+			if (idx > -1) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(webXmlContent.substring(0, idx));
+				sb.append(parameters.toString());
+				sb.append(webXmlContent.substring(idx + PARAMS.length()));
+				content = sb.toString();
+			} else {
+				content = webXmlContent;
+			}
+
 			for (Substitute sub : substitutions) {
 				content = content.replace(sub.token, sub.value.toString());
 			}

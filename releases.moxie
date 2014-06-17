@@ -9,7 +9,8 @@ r18: {
     html: ~
     text: ~
     security: ~
-    fixes: ~
+    fixes:
+    - Fixed bug in mx:WebXml which required a PARAMS section
     changes: ~
     additions: ~
     dependencyChanges: ~
