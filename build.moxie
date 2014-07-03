@@ -5,7 +5,7 @@ name: Moxie Build Toolkit
 description: 'tools to faciltate building Java projects'
 groupId: com.gitblit.moxie
 artifactId: moxie-parent
-version: 0.9.4
+version: 0.9.5-SNAPSHOT
 organization: James Moger
 organizationUrl: 'https://plus.google.com/u/0/+JamesMoger'
 inceptionYear: 2012
