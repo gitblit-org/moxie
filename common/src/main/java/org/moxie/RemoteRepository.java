@@ -49,12 +49,26 @@ public class RemoteRepository implements Serializable {
 	public String getHost() {
 		return StringUtils.getHost(url);
 	}
-	
+
+	public String toXML() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<repository>\n");
+		sb.append(StringUtils.toXML("id", id));
+		sb.append(StringUtils.toXML("url", url));
+		if (allowSnapshots) {
+			sb.append("<snapshots>\n");
+			sb.append(StringUtils.insertHalfTab(StringUtils.toXML("enabled", allowSnapshots)));
+			sb.append("</snapshots>\n");
+		}
+		sb.append("</repository>\n");
+		return sb.toString();
+	}
+
 	@Override
 	public int hashCode() {
 		return 11 + url.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof RemoteRepository) {

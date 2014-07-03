@@ -85,6 +85,10 @@ public class Repository {
 		this.readTimeout = 1800;
 	}
 
+	public RemoteRepository getDefinition() {
+		return new RemoteRepository(name, repositoryUrl, allowSnapshots);
+	}
+
 	@Override
 	public int hashCode() {
 		return getRepositoryUrl().toLowerCase().hashCode();

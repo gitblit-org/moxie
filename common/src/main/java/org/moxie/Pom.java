@@ -602,6 +602,10 @@ public class Pom implements Comparable<Pom>, Serializable {
 	}
 
 	public String toXML(boolean includeProperties) {
+		return toXML(includeProperties, new ArrayList<RemoteRepository>());
+	}
+
+	public String toXML(boolean includeProperties, Collection<RemoteRepository> repositories) {
 		String pomVersion = "4.0.0";
 		StringBuilder sb = new StringBuilder();
 		sb.append(MessageFormat.format("<project xmlns=\"http://maven.apache.org/POM/{0}\" ", pomVersion));
@@ -695,6 +699,20 @@ public class Pom implements Comparable<Pom>, Serializable {
 				sb.append(StringUtils.insertHalfTab(node.toString()));
 				sb.append('\n');
 			}
+		}
+
+		// repositories
+		if (repositories.size() > 0) {
+			StringBuilder node = new StringBuilder();
+			node.append("<repositories>\n");
+			StringBuilder subnode = new StringBuilder();
+			for (RemoteRepository repository : repositories) {
+				subnode.append(repository.toXML());
+			}
+			node.append(StringUtils.insertHalfTab(subnode.toString()));
+			node.append("</repositories>\n");
+			sb.append(StringUtils.insertHalfTab(node.toString()));
+			sb.append('\n');
 		}
 
 		// managed versions

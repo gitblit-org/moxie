@@ -44,12 +44,12 @@ public class BuildConfig {
 	private final Map<String, Dependency> aliases;
 	private final ToolkitConfig toolkitConfig;
 	private final ToolkitConfig projectConfig;
-	
+
 	private final File moxieRoot;
 	private final File projectConfigFile;
 	private final File projectDirectory;
 	private boolean verbose;
-	
+
 	public BuildConfig(File configFile, File basedir) throws MaxmlException, IOException {
 		this.projectConfigFile = configFile;
 		if (basedir == null) {
@@ -57,14 +57,14 @@ public class BuildConfig {
 		} else {
 			this.projectDirectory = basedir;
 		}
-		
+
 		// allow specifying Moxie root folder
 		this.moxieRoot = Toolkit.getMxRoot();
 		this.moxieRoot.mkdirs();
-		
+
 		this.toolkitConfig = new ToolkitConfig(new File(moxieRoot, Toolkit.MOXIE_SETTINGS), projectDirectory, Toolkit.MOXIE_SETTINGS);
 		this.projectConfig = new ToolkitConfig(configFile, projectDirectory, Toolkit.MOXIE_DEFAULTS);
-		
+
 		this.proxies = new LinkedHashSet<Proxy>();
 		this.repositories = new LinkedHashSet<Repository>();
 		this.aliases = new HashMap<String, Dependency>();
@@ -73,12 +73,12 @@ public class BuildConfig {
 		determineRepositories();
 		determineAliases();
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return 11 + projectConfigFile.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (o instanceof BuildConfig) {
@@ -86,7 +86,7 @@ public class BuildConfig {
 		}
 		return false;
 	}
-	
+
 	public boolean isColor() {
 		String mxColor = System.getenv("MX_COLOR");
 		mxColor = System.getProperty(Toolkit.MX_COLOR, mxColor);
@@ -98,7 +98,7 @@ public class BuildConfig {
 			return Boolean.parseBoolean(mxColor);
 		}
 	}
-	
+
 	public boolean isDebug() {
 		String mxDebug = System.getenv("MX_DEBUG");
 		mxDebug = System.getProperty(Toolkit.MX_DEBUG, mxDebug);
@@ -122,7 +122,7 @@ public class BuildConfig {
 			return Boolean.parseBoolean(mxVerbose);
 		}
 	}
-	
+
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
 	}
@@ -134,26 +134,26 @@ public class BuildConfig {
 	public boolean isFailFastOnArtifactResolution() {
 		return toolkitConfig.failFastOnArtifactResolution;
 	}
-	
+
 	public UpdatePolicy getUpdatePolicy() {
 		return toolkitConfig.updatePolicy;
 	}
-	
+
 	public PurgePolicy getPurgePolicy() {
 		return toolkitConfig.getPurgePolicy();
 	}
-	
+
 	public MavenCacheStrategy getMavenCacheStrategy() {
 		if (toolkitConfig.mavenCacheStrategy != null) {
 			return toolkitConfig.mavenCacheStrategy;
 		}
 		return MavenCacheStrategy.IGNORE;
 	}
-	
-	private void determineProxies() {		
+
+	private void determineProxies() {
 		proxies.addAll(projectConfig.getActiveProxies());
 		proxies.addAll(toolkitConfig.getActiveProxies());
-		
+
 		// add M2 defined proxies last since they can only define host exclusions
 		File m2Settings = new File(System.getProperty("user.home"), "/.m2/settings.xml");
 		if (m2Settings.exists()) {
@@ -161,12 +161,12 @@ public class BuildConfig {
 			proxies.addAll(settings.getActiveProxies());
 		}
 	}
-	
+
 	private void determineRepositories() {
 		List<RemoteRepository> registrations = new ArrayList<RemoteRepository>();
 		registrations.addAll(projectConfig.registeredRepositories);
 		registrations.addAll(toolkitConfig.registeredRepositories);
-		
+
 		for (String url : projectConfig.repositories) {
 			if (url.equalsIgnoreCase(GoogleCode.ID)) {
 				// GoogleCode-sourced artifact
@@ -179,9 +179,9 @@ public class BuildConfig {
 					repositories.add(new Repository(definition));
 					added = true;
 					break;
-				}	
+				}
 			}
-			
+
 			if (!added) {
 				// just add url and use hostname as name
 				String name = url.substring(url.indexOf("://") + 3);
@@ -192,17 +192,17 @@ public class BuildConfig {
 			}
 		}
 	}
-	
+
 	private void determineAliases() {
 		aliases.clear();
 		aliases.putAll(toolkitConfig.dependencyAliases);
 		aliases.putAll(projectConfig.dependencyAliases);
 	}
-	
+
 	public File getMoxieRoot() {
 		return moxieRoot;
 	}
-	
+
 	public ToolkitConfig getMoxieConfig() {
 		return toolkitConfig;
 	}
@@ -222,11 +222,11 @@ public class BuildConfig {
 	public Map<String, String> getExternalProperties() {
 		return projectConfig.externalProperties;
 	}
-	
+
 	public Map<String, Dependency> getAliases() {
 		return aliases;
 	}
-	
+
 	public List<SourceDirectory> getSourceDirectories() {
 		return projectConfig.sourceDirectories;
 	}
@@ -234,7 +234,7 @@ public class BuildConfig {
 	public List<File> getSourceDirectories(Scope scope) {
 		return getSourceDirectories(scope, null);
 	}
-	
+
 	public List<File> getSourceDirectories(Scope scope, String tag) {
 		return getDirectories(scope, tag, projectConfig.sourceDirectories);
 	}
@@ -246,15 +246,15 @@ public class BuildConfig {
 	public List<File> getResourceDirectories(Scope scope) {
 		return getResourceDirectories(scope, null);
 	}
-	
+
 	public List<File> getResourceDirectories(Scope scope, String tag) {
 		return getDirectories(scope, tag, projectConfig.resourceDirectories);
 	}
-	
+
 	private List<File> getDirectories(Scope scope, String tag, List<SourceDirectory> directories) {
 		List<File> dirs = new ArrayList<File>();
 		for (SourceDirectory sourceFolder : directories) {
-			if (scope == null || sourceFolder.scope.equals(scope)) {				
+			if (scope == null || sourceFolder.scope.equals(scope)) {
 				if (StringUtils.isEmpty(tag) || sourceFolder.tags.contains(tag.toLowerCase())) {
 					dirs.add(sourceFolder.getSources());
 				}
@@ -266,11 +266,19 @@ public class BuildConfig {
 	public List<Module> getModules() {
 		return projectConfig.modules;
 	}
-	
+
 	public Collection<Repository> getRepositories() {
 		return new ArrayList<Repository>(repositories);
 	}
-	
+
+	public Collection<RemoteRepository> getRepositoryDefinitions() {
+		List<RemoteRepository> list = new ArrayList<RemoteRepository>();
+		for (Repository repository : repositories) {
+			list.add(repository.getDefinition());
+		}
+		return list;
+	}
+
 	public Repository getRepository(String name) {
 		for (Repository repository : repositories) {
 			if (repository.name.equalsIgnoreCase(name)) {
@@ -284,7 +292,7 @@ public class BuildConfig {
 	 * Return a list of repositories to check for the dependency.  Affinity,
 	 * dependency origin, and the repository prefix index are all considered
 	 * when ordering the repositories.
-	 * 
+	 *
 	 * @param dep
 	 * @return a list of repositories
 	 */
@@ -292,7 +300,7 @@ public class BuildConfig {
 		if (repositories.size() == 1) {
 			return repositories;
 		}
-		
+
 		// origin and affinity trump the prefix index
 		Repository preferredRepository = null;
 		List<Repository> list = new ArrayList<Repository>();
@@ -312,7 +320,7 @@ public class BuildConfig {
 				}
 			}
 		}
-		
+
 		// temporarily remove the preferred repository
 		if (preferredRepository != null) {
 			list.remove(preferredRepository);
@@ -338,9 +346,9 @@ public class BuildConfig {
 				// r2 has prefix
 				return 1;
 			}
-			
+
 		});
-		
+
 		// inject the preferred repository at the top of the list
 		if (preferredRepository != null) {
 			list.add(0, preferredRepository);
@@ -360,7 +368,7 @@ public class BuildConfig {
 		}
 		return java.net.Proxy.NO_PROXY;
 	}
-	
+
 	public String getProxyAuthorization(String repositoryId, String url) {
 		for (Proxy proxy : proxies) {
 			if (proxy.active && proxy.matches(repositoryId, url)) {
@@ -369,7 +377,7 @@ public class BuildConfig {
 		}
 		return "";
 	}
-	
+
 	public File getOutputDirectory(Scope scope) {
 		if (scope == null) {
 			return projectConfig.outputDirectory;
@@ -381,7 +389,7 @@ public class BuildConfig {
 			return new File(projectConfig.outputDirectory, "classes");
 		}
 	}
-	
+
 	public File getTargetFile() {
 		Pom pom = projectConfig.pom;
 		String name = pom.groupId + "/" + pom.artifactId + "/" + pom.version + (pom.classifier == null ? "" : ("-" + pom.classifier));
@@ -399,11 +407,11 @@ public class BuildConfig {
 	public File getTargetDirectory() {
 		return projectConfig.targetDirectory;
 	}
-	
+
 	public File getProjectDirectory() {
 		return projectDirectory;
 	}
-	
+
 	public File getSiteSourceDirectory() {
 		for (SourceDirectory sourceFolder : projectConfig.sourceDirectories) {
 			if (Scope.site.equals(sourceFolder.scope)) {
@@ -423,7 +431,7 @@ public class BuildConfig {
 		// default site target directory
 		return new File(projectConfig.targetDirectory, "site");
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Build (" + projectConfig.pom.toString() + ")";
