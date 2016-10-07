@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration>
+    <appender name="file" class="org.apache.log4j.FileAppender">
+        <param name="File" value="logging-junit.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd} %d{ABSOLUTE} [%t] %5p %C:%L-%M() - %m%n" />
+        </layout>
+    </appender>
+
+    <root>
+        <priority value="trace"></priority>
+        <appender-ref ref="file"/>
+    </root>
+</log4j:configuration>
