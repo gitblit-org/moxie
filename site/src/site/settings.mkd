@@ -55,7 +55,6 @@ The default *readTimeout* is 1800 seconds (30 mins).
 
 ---YAML---
 registeredRepositories:
-- { id: 'codehaus', url: 'http://repository.codehaus.org' }
 - { id: 'central', url: 'https://repo1.maven.org/maven2' }
 - { id: 'mavencentral', url: 'https://repo1.maven.org/maven2' }
 - {
