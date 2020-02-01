@@ -16,7 +16,6 @@ proxies:
 # a complete url.  A repository definition can override the default snapshot
 # revision purge policy.
 registeredRepositories:
-- { id: 'codehaus', url: 'http://repository.codehaus.org' }
 - { id: 'central', url: 'https://repo1.maven.org/maven2' }
 - { id: 'mavencentral', url: 'https://repo1.maven.org/maven2' }
 - {

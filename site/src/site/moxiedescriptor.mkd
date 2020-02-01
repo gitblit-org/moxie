@@ -207,7 +207,6 @@ In the following example, the *Restlet* repository has an affinity for all artif
 
 ---YAML---
 registeredRepositories:
-- { id: 'codehaus', url: 'http://repository.codehaus.org' }
 - { id: 'central', url: 'https://repo1.maven.org/maven2' }
 - { id: 'mavencentral', url: 'https://repo1.maven.org/maven2' }
 - {
