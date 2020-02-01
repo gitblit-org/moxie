@@ -33,7 +33,7 @@ public class TestMaxmlParser extends Assert {
 
 	String inlineMap = "{ id: myproxy, active: true, protocol: http, host:proxy.somewhere.com, port:8080, username: proxyuser, password: somepassword }";
 	
-	String inlineMap2 = "{ id: central, url: \"http://repo1.apache.org/maven\", url2: \"http://repo1.apache.org/maven\", affinity: [ 'org.moxie' ] }";
+	String inlineMap2 = "{ id: central, url: \"https://repo1.apache.org/maven\", url2: \"https://repo1.apache.org/maven\", affinity: [ 'org.moxie' ] }";
 	
 	String maplist = "developers :\n- {\n  id: james\n  name : James Moger\n  url : https://plus.google.com/u/0/116428776452027956920\n  roles : developer\n  }";
 	

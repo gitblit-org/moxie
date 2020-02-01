@@ -55,9 +55,9 @@ The default *readTimeout* is 1800 seconds (30 mins).
 
 ---YAML---
 registeredRepositories:
-- { id: 'central', url: 'http://repo1.maven.org/maven2' }
-- { id: 'mavencentral', url: 'http://repo1.maven.org/maven2' }
 - { id: 'codehaus', url: 'http://repository.codehaus.org' }
+- { id: 'central', url: 'https://repo1.maven.org/maven2' }
+- { id: 'mavencentral', url: 'https://repo1.maven.org/maven2' }
 - {
     id: 'sonatype-oss'
     url: 'https://oss.sonatype.org/content/groups/public'
@@ -67,7 +67,7 @@ registeredRepositories:
   }
 - {
     id: 'restlet'
-    url: 'http://maven.restlet.org'
+    url: 'https://maven.restlet.org'
     # Snapshot Purge Policy
     revisionRetentionCount: 1
     revisionPurgeAfterDays: 0

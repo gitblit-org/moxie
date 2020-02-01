@@ -207,9 +207,9 @@ In the following example, the *Restlet* repository has an affinity for all artif
 
 ---YAML---
 registeredRepositories:
-- { id: 'central', url: 'http://repo1.maven.org/maven2' }
-- { id: 'mavencentral', url: 'http://repo1.maven.org/maven2' }
 - { id: 'codehaus', url: 'http://repository.codehaus.org' }
+- { id: 'central', url: 'https://repo1.maven.org/maven2' }
+- { id: 'mavencentral', url: 'https://repo1.maven.org/maven2' }
 - {
     id: 'sonatype-oss'
     url: 'https://oss.sonatype.org/content/groups/public'

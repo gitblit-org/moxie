@@ -14,8 +14,8 @@ localRepositories :
 
 # Remote Maven 2 Repositories which will be proxied on-demand
 remoteRepositories :
-- { id: central, url: "http://repo1.maven.org/maven2" }
 - {	id: restlet, url: "http://maven.restlet.org" }
+- { id: central, url: "https://repo1.maven.org/maven2" }
 
 # Enable the Restlet access log
 accessLog : false
@@ -39,11 +39,11 @@ proxies :
 redirects :
 
 # Redirect all requests to central to the closest mirror
-- { from: "http://repo1.maven.org/maven2", to: "http://maven.sateh.com/maven2" }
+- { from: "https://repo1.maven.org/maven2", to: "https://maven.sateh.com/maven2" }
 
 # Sometimes, a POM will ask for a file from a mirror. In this case, direct
 # the requests to the closest mirror.
-- { from: "http://www.ibiblio.org/maven2", to: "http://maven.sateh.com/maven2" }
+- { from: "https://www.ibiblio.org/maven2", to: "https://maven.sateh.com/maven2" }
 
 # These two directories on the server always contain the same content (on
 # the server, one is a soft link to the other). We don't want to cache the
