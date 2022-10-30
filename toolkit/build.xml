@@ -177,6 +177,7 @@
 			<class name="org.moxie.ant.MxTar" />
 			<class name="org.moxie.ant.MxTest" />
 			<class name="org.moxie.ant.MxThumbs" />
+			<class name="org.moxie.ant.MxUpdateRepo" />
 			<class name="org.moxie.ant.MxVersion" />
 			<class name="org.moxie.ant.MxWar" />
 			<class name="org.moxie.ant.MxWebXml" />

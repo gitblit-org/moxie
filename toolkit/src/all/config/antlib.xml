@@ -32,7 +32,9 @@
 	<taskdef name="war" classname="org.moxie.ant.MxWar" />
 	<taskdef name="webxml" classname="org.moxie.ant.MxWebXml" />
 	<taskdef name="zip" classname="org.moxie.ant.MxZip" />
-	
+	<taskdef name="repoupdate" classname="org.moxie.ant.MxUpdateRepo" />
+
+
 	<!-- All -->
 	<taskdef name="doc" classname="org.moxie.ant.MxDoc" />
 </antlib>
