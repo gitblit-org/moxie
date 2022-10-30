@@ -5,14 +5,15 @@ r20: {
     title: ${project.name} ${project.version} released
     id: ${project.version}
     date: ${project.buildDate}
-    note: ~
+    note: The update of Ant to 1.10.13 means that Java 8 is now the minimum required JRE version.
     html: ~
     text: ~
     security: ~
     fixes: ~
     changes: ~
     additions: ~
-    dependencyChanges: ~
+    dependencyChanges:
+    - Ant 1.10.13
     contributors: ~
 }
 
