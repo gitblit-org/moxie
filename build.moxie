@@ -5,7 +5,7 @@ name: Moxie Build Toolkit
 description: 'tools to faciltate building Java projects'
 groupId: com.gitblit.moxie
 artifactId: moxie-parent
-version: 0.9.5-SNAPSHOT
+version: 0.10.0-SNAPSHOT
 organization: James Moger
 organizationUrl: 'https://plus.google.com/u/0/+JamesMoger'
 inceptionYear: 2012
@@ -17,13 +17,13 @@ releaseDate: 2014-07-03
 # Project urls
 url: 'http://moxie.gitblit.com'
 issuesUrl: 'https://gitblit.github.com/moxie'
-mavenUrl: 'http://gitblit.github.io/moxie/maven'
+mavenUrl: 'http://gitblit.github.io/moxie/maven/'
 
 # Licenses section included for POM generation
 licenses:
 - {
     name: Apache ASL v2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    url: 'https://www.apache.org/licenses/LICENSE-2.0.html'
   }
 
 # Developers section included for POM generation
@@ -49,15 +49,15 @@ scm: {
 apply: eclipse, intellij, pom
 tasks: {
     "mx:javac": {
-        source: 1.6
-        target: 1.6
-        compiler: javac1.6
+        source: 1.8
+        target: 1.8
+        compiler: javac1.8
         encoding: UTF-8
         compilerArgs: '-Xlint:-options'
     }
 }
 properties: {
-  ant.version : 1.9.2
+  ant.version : 1.10.13
 }
 modules:
 - toolkit
