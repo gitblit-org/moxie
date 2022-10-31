@@ -322,7 +322,7 @@ public abstract class IMavenCache {
 			} else if (file.getName().endsWith(Constants.POM)) {
 				// read this pom
 				try {
-					Pom pom = PomReader.readPom(this, file);
+					Pom pom = PomReader.readPom(this, file, PomReader.Requirements.LOOSE);
 					poms.add(pom);
 				} catch (Throwable t) {
 					if (logger != null) {
