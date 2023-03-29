@@ -26,7 +26,7 @@ public class Constants {
 	}
 	
 	public static String getUrl() {
-		return "http://gitblit.github.com/moxie/";
+		return "http://gitblit-org.github.com/moxie/";
 	}
 	
 	public static String getVersion() {

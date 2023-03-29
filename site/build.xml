@@ -92,7 +92,7 @@
 					<link name="moxie+ant (zip)" src="${project.mavenUrl}/com/gitblit/moxie/moxie+ant/${project.releaseVersion}/moxie+ant-${project.releaseVersion}.zip" />
 					<link name="moxie+ant (tar.gz)" src="${project.mavenUrl}/com/gitblit/moxie/moxie+ant/${project.releaseVersion}/moxie+ant-${project.releaseVersion}.tar.gz" />
 					<divider />
-					<link name="Github Project" src="http://github.com/gitblit/moxie" />
+					<link name="Github Project" src="https://github.com/gitblit-org/moxie" />
 					<divider />
 					<link name="Maven Repository" src="${project.mavenUrl}" />
 				</menu>

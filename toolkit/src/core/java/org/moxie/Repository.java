@@ -217,7 +217,7 @@ public class Repository {
 
 	protected String getOfflineProxyMessage(String msg) {
 		String file = new File(Toolkit.getMxRoot(), Toolkit.MOXIE_SETTINGS).getAbsolutePath();
-		return MessageFormat.format("Error!\n\n{0}\nDo you need to run offline?\n  append \"-D{1}=false\" to your Ant launch arguments\nDo you need to specify a proxy in {2}?\n  see http://gitblit.github.io/moxie/settings.html", msg, Toolkit.MX_ONLINE, file);
+		return MessageFormat.format("Error!\n\n{0}\nDo you need to run offline?\n  append \"-D{1}=false\" to your Ant launch arguments\nDo you need to specify a proxy in {2}?\n  see http://gitblit-org.github.io/moxie/settings.html", msg, Toolkit.MX_ONLINE, file);
 	}
 
 	public File downloadPrefixIndex(Solver solver) {

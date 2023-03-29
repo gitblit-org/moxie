@@ -16,8 +16,8 @@ releaseDate: 2014-07-03
 
 # Project urls
 url: 'http://moxie.gitblit.com'
-issuesUrl: 'https://gitblit.github.com/moxie'
-mavenUrl: 'http://gitblit.github.io/moxie/maven/'
+issuesUrl: 'https://gitblit-org.github.com/moxie'
+mavenUrl: 'https://gitblit-org.github.io/moxie/maven/'
 
 # Licenses section included for POM generation
 licenses:
@@ -40,9 +40,9 @@ developers:
 
 # SCM section included for POM generation
 scm: {
-  connection: 'scm:git:git://github.com/gitblit/moxie.git'
-  developerConnection: 'scm:git:https://github.com/gitblit/moxie.git'
-  url: 'https://github.com/gitblit/moxie'
+  connection: 'scm:git:git://github.com/gitblit-org/moxie.git'
+  developerConnection: 'scm:git:https://github.com/gitblit-org/moxie.git'
+  url: 'https://github.com/gitblit-org/moxie'
   tag: HEAD
   }
 

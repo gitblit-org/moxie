@@ -183,9 +183,9 @@ You can specify the project SCM information in the *scm* setting.  This setting 
 
 ---YAML---
 scm: {
-  connection: 'scm:git:git://github.com/gitblit/moxie.git'
-  developerConnection: 'scm:git:https://github.com/gitblit/moxie.git'
-  url: 'http://gitblit.github.com/moxie'
+  connection: 'scm:git:git://github.com/gitblit-org/moxie.git'
+  developerConnection: 'scm:git:https://github.com/gitblit-org/moxie.git'
+  url: 'https://gitblit-org.github.com/moxie'
   tag: HEAD
   }
 ---YAML---

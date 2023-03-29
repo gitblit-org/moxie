@@ -131,7 +131,7 @@ Many Prettify themes are bundled in Moxie.
 			<link name="moxie-all" src="moxie-all.jar" />
 		</menu>
 		<report name="reports" />
-		<link name="GitHub" src="http://github.com/gitblit/moxie" />
+		<link name="GitHub" src="https://github.com/gitblit-org/moxie" />
 		<divider />
 	</structure>
 	<substitute token="%VERSION%" value="${max-version}" />
