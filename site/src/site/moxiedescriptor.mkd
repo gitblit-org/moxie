@@ -218,7 +218,7 @@ registeredRepositories:
   }
 - { 
     id: 'restlet'
-    url: 'http://maven.restlet.org'
+    url: 'https://maven.restlet.talend.com'
     # Snapshot Purge Policy
     revisionRetentionCount: 1
     revisionPurgeAfterDays: 0

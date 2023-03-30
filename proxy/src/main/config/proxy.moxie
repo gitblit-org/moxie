@@ -58,8 +58,8 @@ localRepositories:
 #
 # RESTART REQUIRED
 remoteRepositories:
-- {	id: 'restlet', url: "http://maven.restlet.org" }
 - { id: 'central', url: "https://repo1.maven.org/maven2" }
+- { id: 'restlet', url: "https://maven.restlet.talend.com" }
 - { id: 'sonatype-oss' , url: "https://oss.sonatype.org/content/groups/public" }
 
 # Enable the Restlet access log

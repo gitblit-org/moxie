@@ -26,7 +26,7 @@ registeredRepositories:
   }
 - {
     id: 'restlet'
-    url: 'https://maven.restlet.org'
+    url: 'https://maven.restlet.talend.com'
     revisionRetentionCount: 1
     revisionPurgeAfterDays: 0
     # define a groupid affinity for all org.restlet artifacts

@@ -14,8 +14,8 @@ localRepositories :
 
 # Remote Maven 2 Repositories which will be proxied on-demand
 remoteRepositories :
-- {	id: restlet, url: "http://maven.restlet.org" }
 - { id: central, url: "https://repo1.maven.org/maven2" }
+- {	id: restlet, url: "https://maven.restlet.talend.com" }
 
 # Enable the Restlet access log
 accessLog : false

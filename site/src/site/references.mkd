@@ -6,7 +6,7 @@
 [Jetty]: http://eclipse.org/jetty "Jetty"
 [Lucene]: http://lucene.apache.org "Apache Lucene"
 [GenJar]: http://genjar.sourceforge.net "GenJar"
-[Restlet]: http://restlet.org "Restlet"
+[Restlet]: http://restlet.talend.com "Restlet"
 [Freemarker]: http://freemarker.sourceforge.net "Freemarker"
 [Moxie+Ant]: moxie+ant.html "Moxie+Ant distribution"
 [YAML]: http://yaml.org "YAML"
