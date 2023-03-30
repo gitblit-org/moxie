@@ -111,7 +111,7 @@ public class ProxyConfig {
 		
 		// default proxy of central
 		remoteRepositories = new ArrayList<RemoteRepository>();
-		remoteRepositories.add(new RemoteRepository("central", "http://repo1.maven.org/maven2", false));
+		remoteRepositories.add(new RemoteRepository("central", "https://repo1.maven.org/maven2", false));
 		
 		remoteRepositoryLookup = new HashMap<String, RemoteRepository>();
 		for (RemoteRepository repository : remoteRepositories) {
