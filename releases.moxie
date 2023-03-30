@@ -14,6 +14,7 @@ r20: {
     additions: ~
     dependencyChanges:
     - Ant 1.10.13
+    - updated to JaCoCo 0.8.4
     contributors: ~
 }
 
