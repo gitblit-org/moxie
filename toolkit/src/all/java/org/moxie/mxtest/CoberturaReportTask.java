@@ -81,7 +81,7 @@ public class CoberturaReportTask extends CommonMatchingTask
    private String encoding;
 
 	public CoberturaReportTask() {
-		super("net.sourceforge.cobertura.reporting.Main");
+		super("net.sourceforge.cobertura.reporting.ReportMain");
 	}
 	
 	public void execute() throws BuildException {

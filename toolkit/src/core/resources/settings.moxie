@@ -77,7 +77,7 @@ mavenCacheStrategy: IGNORE
 dependencyManagement:
 - 'junit:junit:4.11'
 - 'org.testng:testng:6.8'
-- 'net.sourceforge.cobertura:cobertura:1.9.4.1'
+- 'net.sourceforge.cobertura:cobertura:2.1.1'
 - 'emma:emma:2.1.5320'
 - 'org.eclipse.jgit:org.eclipse.jgit:3.1.0.201310021548-r'
 - 'org.pegdown:pegdown:1.4.1'
@@ -144,14 +144,21 @@ dependencyAliases: {
 dependencyOverrides: {
 
 # cobertura: redefine ant as optional for build scope
-	'net.sourceforge.cobertura:cobertura:1.9.4.1' : {
+	'net.sourceforge.cobertura:cobertura:2.1.1' : {
 		scope: build
 		dependencies:
+		- compile 'jaxen:jaxen:1.1.4'
 		- compile 'oro:oro:2.0.8'
-		- compile 'asm:asm:3.0'
-		- compile 'asm:asm-tree:3.0'
-		- compile 'log4j:log4j:1.2.9'
-		- compile 'org.apache.ant:ant:1.7.0' optional
+		- compile 'org.ow2.asm:asm:5.0.1'
+		- compile 'org.ow2.asm:asm-tree:5.0.1'
+		- compile 'org.ow2.asm:asm-commons:5.0.1'
+		- compile 'org.ow2.asm:asm-util:5.0.1'
+		- compile 'org.ow2.asm:asm-analysis:5.0.1'
+		- compile 'org.apache.commons:commons-lang3:3.3.2'
+		- compile 'org.slf4j:slf4j-api:1.7.5'
+		- compile 'ch.qos.logback:logback-classic:1.0.13'
+		- compile 'org.apache.ant:ant:1.10.13' optional
+		- compile 'org.apache.ant:ant-junit:1.10.13' optional
 	}
 
 # emma: add emma_ant dependency for build scope

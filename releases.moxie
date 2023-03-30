@@ -15,6 +15,7 @@ r20: {
     dependencyChanges:
     - Ant 1.10.13
     - updated to JaCoCo 0.8.4
+    - updated to Cobertura 2.1.1
     contributors: ~
 }
 
