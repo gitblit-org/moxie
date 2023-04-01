@@ -549,6 +549,8 @@ public class Repository {
 		switch (conn.getResponseCode()) {
 		case HttpURLConnection.HTTP_MOVED_TEMP:
 		case HttpURLConnection.HTTP_MOVED_PERM:
+		case 307:  // Temporary Redirect
+		case 308:  // Permanent Redirect
 			// handle redirects by closing this connection and opening a new
 			// one to the new location of the requested resource
 			String newLocation = conn.getHeaderField("Location");
