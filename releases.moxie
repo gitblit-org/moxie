@@ -1,10 +1,10 @@
 #
-# ${project.version} release
+# 0.10.0 release
 #
 r20: {
-    title: ${project.name} ${project.version} released
-    id: ${project.version}
-    date: ${project.buildDate}
+    title: Moxie Build Toolkit 0.10.0 released
+    id: 0.10.0
+    date: 2023-04-01
     note: With the update of Ant to 1.10.13, Java 8 is now the minimum required JRE version.
     html: ~
     text: ~
@@ -497,6 +497,6 @@ r1: {
 #
 # Release log data
 #
-release: &r19
-snapshot: &r20
-releases: &r[1..19]
+release: &r20
+snapshot: ~
+releases: &r[1..20]
