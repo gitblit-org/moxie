@@ -103,7 +103,7 @@ public class ToolkitConfig implements Serializable {
 		targetDirectory = new File("build/target");
 		linkedModules = new ArrayList<Module>();
 		repositories = Arrays.asList("central");
-		registeredRepositories = Arrays.asList(new RemoteRepository("central", "https://repo1.maven.org/maven2/", false));
+		registeredRepositories = Arrays.asList(new RemoteRepository("central", "https://repo1.maven.org/maven2", false));
 		pom = new Pom();
 		dependencyDirectory = null;
 		dependencyNamePattern = Toolkit.DEPENDENCY_FILENAME_PATTERN;
