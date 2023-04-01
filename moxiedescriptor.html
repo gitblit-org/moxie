@@ -103,17 +103,17 @@
 <li class='dropdown'> <!-- Menu -->
 <a class='dropdown-toggle' href='#' data-toggle='dropdown'>downloads<b class='caret'></b></a>
 <ul class='dropdown-menu'>
-<li><a href='http://gitblit.github.io/moxie/maven/com/gitblit/moxie/moxie-toolkit/0.9.4/moxie-toolkit-0.9.4-core.jar'>moxie toolkit (core)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/com/gitblit/moxie/moxie-toolkit/0.9.4/moxie-toolkit-0.9.4.jar'>moxie toolkit</a></li>
+<li><a href='https://gitblit-org.github.io/moxie/maven//com/gitblit/moxie/moxie-toolkit/0.10.0/moxie-toolkit-0.10.0-core.jar'>moxie toolkit (core)</a></li>
+<li><a href='https://gitblit-org.github.io/moxie/maven//com/gitblit/moxie/moxie-toolkit/0.10.0/moxie-toolkit-0.10.0.jar'>moxie toolkit</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/com/gitblit/moxie/moxie-proxy/0.9.4/moxie-proxy-0.9.4.zip'>moxie-proxy</a></li>
+<li><a href='https://gitblit-org.github.io/moxie/maven//com/gitblit/moxie/moxie-proxy/0.10.0/moxie-proxy-0.10.0.zip'>moxie-proxy</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven/com/gitblit/moxie/moxie+ant/0.9.4/moxie+ant-0.9.4.zip'>moxie+ant (zip)</a></li>
-<li><a href='http://gitblit.github.io/moxie/maven/com/gitblit/moxie/moxie+ant/0.9.4/moxie+ant-0.9.4.tar.gz'>moxie+ant (tar.gz)</a></li>
+<li><a href='https://gitblit-org.github.io/moxie/maven//com/gitblit/moxie/moxie+ant/0.10.0/moxie+ant-0.10.0.zip'>moxie+ant (zip)</a></li>
+<li><a href='https://gitblit-org.github.io/moxie/maven//com/gitblit/moxie/moxie+ant/0.10.0/moxie+ant-0.10.0.tar.gz'>moxie+ant (tar.gz)</a></li>
 <li class='divider'></li>
-<li><a href='http://github.com/gitblit/moxie'>Github Project</a></li>
+<li><a href='https://github.com/gitblit-org/moxie'>Github Project</a></li>
 <li class='divider'></li>
-<li><a href='http://gitblit.github.io/moxie/maven'>Maven Repository</a></li>
+<li><a href='https://gitblit-org.github.io/moxie/maven/'>Maven Repository</a></li>
 </ul></li> <!-- End Menu -->
 <li class='divider-vertical'></li>
 <li><div class='gplusone'><g:plusone size='small' href='http://moxie.gitblit.com'></g:plusone></div></li>
@@ -228,9 +228,9 @@ developers:
 <hr/>
 <h3 class="section" id='H10'><a href="#H10" class="sectionlink"><i class="icon-share-alt"> </i></a>SCM</h3><p>You can specify the project SCM information in the <em>scm</em> setting. This setting is currently only used during POM generation.</p><p><pre class='prettyprint lang-yaml'>
 scm: {
-  connection: 'scm:git:git://github.com/gitblit/moxie.git'
-  developerConnection: 'scm:git:https://github.com/gitblit/moxie.git'
-  url: 'http://gitblit.github.com/moxie'
+  connection: 'scm:git:git://github.com/gitblit-org/moxie.git'
+  developerConnection: 'scm:git:https://github.com/gitblit-org/moxie.git'
+  url: 'https://gitblit-org.github.com/moxie'
   tag: HEAD
   }
 </pre></p>
@@ -238,9 +238,8 @@ scm: {
 <h3 class="section" id='H11'><a href="#H11" class="sectionlink"><i class="icon-share-alt"> </i></a>Registered Repositories</h3><p>This section is used to define remote artifact repositories. Currently only http/https repositories are supported.</p><p>The default <em>connectTimeout</em> is 20 seconds.<br/>The default <em>readTimeout</em> is 1800 seconds (30 mins).</p>
 <h4 class="section" id='H12'><a href="#H12" class="sectionlink"><i class="icon-share-alt"> </i></a>Affinities</h4><p>If a repository specifies one or more affinities and a dependency matches one of those affinities, that repository will be used first during dependency or metadata resolution of that artifact. This allows you to control the efficiency of the resolution process by boosting the importance of a specific repository.</p><p>In the following example, the <em>Restlet</em> repository has an affinity for all artifacts belonging to the <em>org.restlet</em> groupId. During resolution, the Restlet repository is checked first for all <em>org.restlet</em>.</p><p><pre class='prettyprint lang-yaml'>
 registeredRepositories:
-- { id: 'central', url: 'http://repo1.maven.org/maven2' }
-- { id: 'mavencentral', url: 'http://repo1.maven.org/maven2' }
-- { id: 'codehaus', url: 'http://repository.codehaus.org' }
+- { id: 'central', url: 'https://repo1.maven.org/maven2' }
+- { id: 'mavencentral', url: 'https://repo1.maven.org/maven2' }
 - {
     id: 'sonatype-oss'
     url: 'https://oss.sonatype.org/content/groups/public'
@@ -250,7 +249,7 @@ registeredRepositories:
   }
 - { 
     id: 'restlet'
-    url: 'http://maven.restlet.org'
+    url: 'https://maven.restlet.talend.com'
     # Snapshot Purge Policy
     revisionRetentionCount: 1
     revisionPurgeAfterDays: 0
@@ -539,7 +538,7 @@ dependencyOverrides: {
 }
 </pre>
 <!-- End Markdown -->
-<div ><ul class="pager"><li class="previous"><a href="gettingstarted.html">&larr; getting started</a></li> <li class="next"><a href="defaults.html">defaults.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2014-07-03</p>
+<div ><ul class="pager"><li class="previous"><a href="gettingstarted.html">&larr; getting started</a></li> <li class="next"><a href="defaults.html">defaults.moxie &rarr;</a></li></ul></div><footer class="footer"><p class="pull-right">generated 2023-04-02</p>
 <p>The content of this page is licensed under the <a href="http://creativecommons.org/licenses/by/3.0">Creative Commons Attribution 3.0 License</a>.</p>
 </footer>
 </div>

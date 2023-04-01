@@ -11,7 +11,7 @@
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.4.0</guid>
     		<description><![CDATA[Milestone 1: basic transitive dependency handling and most core tasks]]></description>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Thu, 05 Jul 2012 00:00:00 -0400</pubDate>
+    		<pubDate>Thu, 05 Jul 2012 00:00:00 +0200</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.5.0 Released]]></title>
@@ -19,7 +19,7 @@
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.5.0</guid>
     		<description><![CDATA[Milestone 2: Most tasks and features to build Gitblit]]></description>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Wed, 23 Jan 2013 00:00:00 -0500</pubDate>
+    		<pubDate>Wed, 23 Jan 2013 00:00:00 +0100</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.6.0 Released]]></title>
@@ -27,7 +27,7 @@
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.6.0</guid>
     		<description><![CDATA[Milestone 3: All major tasks implemented, enhanced documentation features, and more intuitive syntax]]></description>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Wed, 06 Mar 2013 00:00:00 -0500</pubDate>
+    		<pubDate>Wed, 06 Mar 2013 00:00:00 +0100</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.6.1 released]]></title>
@@ -35,112 +35,119 @@
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.6.1</guid>
     		<description><![CDATA[Minor fix for module property loading from parent projects and global settings]]></description>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Wed, 06 Mar 2013 00:00:00 -0500</pubDate>
+    		<pubDate>Wed, 06 Mar 2013 00:00:00 +0100</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.6.2 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.6.2]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.6.2</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Fri, 08 Mar 2013 00:00:00 -0500</pubDate>
+    		<pubDate>Fri, 08 Mar 2013 00:00:00 +0100</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.7.0 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.7.0]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.7.0</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Mon, 25 Mar 2013 00:00:00 -0400</pubDate>
+    		<pubDate>Mon, 25 Mar 2013 00:00:00 +0100</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.7.1 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.7.1]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.7.1</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Wed, 27 Mar 2013 00:00:00 -0400</pubDate>
+    		<pubDate>Wed, 27 Mar 2013 00:00:00 +0100</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.7.2 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.7.2]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.7.2</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Wed, 10 Apr 2013 00:00:00 -0400</pubDate>
+    		<pubDate>Wed, 10 Apr 2013 00:00:00 +0200</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.7.3 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.7.3]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.7.3</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Fri, 26 Apr 2013 00:00:00 -0400</pubDate>
+    		<pubDate>Fri, 26 Apr 2013 00:00:00 +0200</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.7.4 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.7.4]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.7.4</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Fri, 26 Apr 2013 00:00:00 -0400</pubDate>
+    		<pubDate>Fri, 26 Apr 2013 00:00:00 +0200</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.8.0 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.8.0]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.8.0</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Wed, 07 Aug 2013 00:00:00 -0400</pubDate>
+    		<pubDate>Wed, 07 Aug 2013 00:00:00 +0200</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.8.1 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.8.1]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.8.1</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Fri, 09 Aug 2013 00:00:00 -0400</pubDate>
+    		<pubDate>Fri, 09 Aug 2013 00:00:00 +0200</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.8.2 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.8.2]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.8.2</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Thu, 05 Sep 2013 00:00:00 -0400</pubDate>
+    		<pubDate>Thu, 05 Sep 2013 00:00:00 +0200</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.8.3 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.8.3]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.8.3</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Wed, 09 Oct 2013 00:00:00 -0400</pubDate>
+    		<pubDate>Wed, 09 Oct 2013 00:00:00 +0200</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.9.0 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.9.0]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.9.0</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Tue, 19 Nov 2013 00:00:00 -0500</pubDate>
+    		<pubDate>Tue, 19 Nov 2013 00:00:00 +0100</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.9.1 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.9.1]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.9.1</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Fri, 29 Nov 2013 00:00:00 -0500</pubDate>
+    		<pubDate>Fri, 29 Nov 2013 00:00:00 +0100</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.9.2 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.9.2]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.9.2</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Mon, 09 Jun 2014 00:00:00 -0400</pubDate>
+    		<pubDate>Mon, 09 Jun 2014 00:00:00 +0200</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.9.3 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.9.3]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.9.3</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Tue, 17 Jun 2014 00:00:00 -0400</pubDate>
+    		<pubDate>Tue, 17 Jun 2014 00:00:00 +0200</pubDate>
   		</item>
   		<item>
     		<title><![CDATA[Moxie Build Toolkit 0.9.4 released]]></title>
     		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.9.4]]></link>
     		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.9.4</guid>
    			<dc:creator><![CDATA[Moxie]]></dc:creator>
-    		<pubDate>Thu, 03 Jul 2014 00:00:00 -0400</pubDate>
+    		<pubDate>Thu, 03 Jul 2014 00:00:00 +0200</pubDate>
+  		</item>
+  		<item>
+    		<title><![CDATA[Moxie Build Toolkit 0.10.0 released]]></title>
+    		<link><![CDATA[http://moxie.gitblit.com/releases.html#0.10.0]]></link>
+    		<guid isPermaLink="true">http://moxie.gitblit.com/releases.html#0.10.0</guid>
+   			<dc:creator><![CDATA[Moxie]]></dc:creator>
+    		<pubDate>Sat, 01 Apr 2023 00:00:00 +0200</pubDate>
   		</item>
   	</channel>
 </rss>
