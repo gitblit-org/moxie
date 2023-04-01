@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -169,8 +170,15 @@ public class JGitUtils {
 		return success;
 	}
 
-	public static void updateGhPages(File repositoryFolder, File sourceFolder,
-			boolean obliterate) {
+	public static void updateGhPages(File repositoryFolder, File sourceFolder, boolean obliterate)
+	{
+		updateGhPages(repositoryFolder, sourceFolder, obliterate, Collections.emptyList());
+	}
+
+
+
+	public static void updateGhPages(File repositoryFolder, File sourceFolder, boolean obliterate, List<String> keepFiles)
+	{
 		String ghpages = "refs/heads/gh-pages";
 		try {
 			File gitDir = FileKey.resolve(repositoryFolder, FS.DETECTED);
@@ -186,8 +194,7 @@ public class JGitUtils {
 			ObjectInserter odi = repository.newObjectInserter();
 			try {
 				// Create the in-memory index of the new/updated issue.
-				DirCache index = createIndex(repository, headId, sourceFolder,
-						obliterate);
+				DirCache index = createIndex(repository, headId, sourceFolder, obliterate, keepFiles);
 				ObjectId indexTreeId = index.writeTree(odi);
 
 				// Create a commit object
@@ -250,11 +257,13 @@ public class JGitUtils {
 	 * @param obliterate
 	 *            if true the source folder tree is used as the new tree for
 	 *            gh-pages and non-existent files are considered deleted
+	 * @param keepFiles
+	 * 			List of files to keep from the last tree, if obliterate is true
 	 * @return an in-memory index
 	 * @throws IOException
 	 */
 	private static DirCache createIndex(Repository repo, ObjectId headId,
-			File sourceFolder, boolean obliterate) throws IOException {
+			File sourceFolder, boolean obliterate, List<String> keepFiles) throws IOException {
 
 		DirCache inCoreIndex = DirCache.newInCore();
 		DirCacheBuilder dcBuilder = inCoreIndex.builder();
@@ -289,7 +298,7 @@ public class JGitUtils {
 				dcBuilder.add(dcEntry);
 			}
 
-			if (!obliterate) {
+			if (!obliterate || (keepFiles != null && !keepFiles.isEmpty())) {
 				// Traverse HEAD to add all other paths
 				TreeWalk treeWalk = new TreeWalk(repo);
 				int hIdx = -1;
@@ -304,8 +313,8 @@ public class JGitUtils {
 					if (hIdx != -1)
 						hTree = treeWalk.getTree(hIdx,
 								CanonicalTreeParser.class);
-					if (!ignorePaths.contains(path)) {
-						// add entries from HEAD for all other paths
+					if (!ignorePaths.contains(path) &&	(!obliterate || keepFiles.contains(path))) {
+						// add entries from HEAD for all other paths to keep
 						if (hTree != null) {
 							// create a new DirCacheEntry with data retrieved
 							// from

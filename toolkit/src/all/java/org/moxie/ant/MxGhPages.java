@@ -16,8 +16,13 @@
 package org.moxie.ant;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileList;
 import org.moxie.Build;
 import org.moxie.MoxieException;
 import org.moxie.utils.JGitUtils;
@@ -28,6 +33,8 @@ public class MxGhPages extends MxGitTask {
 	private File sourceDir;
 
 	private boolean obliterate;
+
+	private Keep keep;
 	
 	public MxGhPages() {
 		super();
@@ -41,6 +48,13 @@ public class MxGhPages extends MxGitTask {
 	public void setObliterate(boolean value) {
 		this.obliterate = value;
 	}
+
+	public Keep createKeep()
+	{
+		if (this.keep == null) this.keep = new Keep(getProject());
+		return keep;
+	}
+
 
 	@Override
 	public void execute() throws BuildException {
@@ -57,6 +71,53 @@ public class MxGhPages extends MxGitTask {
 		}
 
 		File dir = getRepositoryDir();
-		JGitUtils.updateGhPages(dir, sourceDir, obliterate);
+		JGitUtils.updateGhPages(dir, sourceDir, obliterate, (keep != null) ? keep.fileList() : Collections.emptyList());
+	}
+
+
+	public static class Keep
+	{
+		Project project;
+		List<FileList.FileName> files = new ArrayList<>();
+		List<FileList> filelists;
+
+
+		Keep(Project p)
+		{
+			this.project = p;
+		}
+
+		public void addFile(FileList.FileName file)
+		{
+			files.add(file);
+		}
+
+		public void addFilelist(FileList list)
+		{
+			if (filelists == null) filelists = new ArrayList<>();
+			filelists.add(list);
+		}
+
+		List<String> fileList()
+		{
+			List<String> list = new ArrayList<>();
+			for (FileList.FileName fn : files) {
+				String name = fn.getName();
+				if (name != null && !name.isEmpty()) {
+					list.add(name);
+				}
+			}
+
+			if (filelists == null) return list;
+
+			for (FileList fl : filelists) {
+				if (fl.size() <= 0) continue;
+				String dir = fl.getDir(project).getName();
+				for (String file : fl.getFiles(project)) {
+					list.add(dir + "/" + file);
+				}
+			}
+			return list;
+		}
 	}
 }

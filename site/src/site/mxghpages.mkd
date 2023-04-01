@@ -3,3 +3,15 @@
 ---XML---
 <mx:ghpages repositoryFolder="${basedir}" sourceFolder="${basedir}/site" obliterate="true"/>
 ---XML---
+
+---XML---
+<mx:ghpages repositoryFolder="${basedir}" sourceFolder="${basedir}/site" obliterate="true">
+  <keep>
+    <file name="keep.me"/>
+    <filelist
+        id="manpages"
+        dir="${doc.src}"
+        files="foo.man1,bar.man1"/>
+  </keep>
+</mx:ghpages>
+---XML---
