@@ -5,13 +5,20 @@ r20: {
     title: ${project.name} ${project.version} released
     id: ${project.version}
     date: ${project.buildDate}
-    note: The update of Ant to 1.10.13 means that Java 8 is now the minimum required JRE version.
+    note: With the update of Ant to 1.10.13, Java 8 is now the minimum required JRE version.
     html: ~
     text: ~
     security: ~
-    fixes: ~
-    changes: ~
-    additions: ~
+    fixes:
+    - Handle HTTP redirect codes 307 and 308 in addition to 301 and 302
+    - Updated changed URL for AngularJS and Restlet
+    - Changed URLs to use HTTPS, e.g. for Maven Central
+    - Read POMs with loose requirements when generating POM index to include deployed artifacts even when parents are missing.
+    changes:
+    - Removed Codehaus repository, R.I.P.
+    additions:
+    - Added mx:repoupdate task to just update the Maven repo's index files without deploying anything
+    - Added 'keep' parameter to mx:ghpages to keep specified files from previous commit even if 'obliterate' is set to true
     dependencyChanges:
     - Ant 1.10.13
     - updated to JaCoCo 0.8.4
@@ -31,7 +38,8 @@ r19: {
     text: ~
     security: ~
     fixes: ~
-    changes: ~
+    changes:
+    - Export repository definitions in pom to ensure Maven can source all artifacts
     additions: ~
     dependencyChanges: ~
     contributors: ~
